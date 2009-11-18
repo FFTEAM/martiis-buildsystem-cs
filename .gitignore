@@ -1,0 +1,14 @@
+build_tmp
+ccache
+cross
+deps
+download
+hack
+host
+root
+store
+test
+tdsvn
+tuxbox.org
+local
+Makefile.local

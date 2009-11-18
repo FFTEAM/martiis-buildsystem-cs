@@ -1,0 +1,34 @@
+Index: b/configure
+===================================================================
+--- a/configure
++++ b/configure
+@@ -19097,11 +19097,11 @@ then
+     fi
+ 
+     case "$optimize" in
+ 	-O|"-O "*)
+ 	    optimize="-O"
+-	    optimize="$optimize -fforce-mem"
++	    : # optimize="$optimize -fforce-mem"
+ 	    optimize="$optimize -fforce-addr"
+ 	    : #x optimize="$optimize -finline-functions"
+ 	    : #- optimize="$optimize -fstrength-reduce"
+ 	    optimize="$optimize -fthread-jumps"
+ 	    optimize="$optimize -fcse-follow-jumps"
+Index: b/configure.ac
+===================================================================
+--- a/configure.ac
++++ b/configure.ac
+@@ -138,11 +138,11 @@ then
+     fi
+ 
+     case "$optimize" in
+ 	-O|"-O "*)
+ 	    optimize="-O"
+-	    optimize="$optimize -fforce-mem"
++	    : # optimize="$optimize -fforce-mem"
+ 	    optimize="$optimize -fforce-addr"
+ 	    : #x optimize="$optimize -finline-functions"
+ 	    : #- optimize="$optimize -fstrength-reduce"
+ 	    optimize="$optimize -fthread-jumps"
+ 	    optimize="$optimize -fcse-follow-jumps"
