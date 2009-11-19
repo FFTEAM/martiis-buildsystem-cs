@@ -1,0 +1,10 @@
+archive-patches/coolstream/*:
+
+These are the patches of libs checked into the coolstream svn vs. the
+native tarballs as downloaded from the respective projects.
+
+These patches are mainly for information purposes as they contain lots
+of noise due to pointless addition of autoconf output etc :-(
+
+Still they might be useful to find out what is actually different to
+upstream.
