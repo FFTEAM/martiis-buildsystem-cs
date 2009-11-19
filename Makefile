@@ -14,6 +14,7 @@ printenv:
 	@echo "CROSS_BASE:          $(CROSS_BASE)"
 	@echo "TARGET:              $(TARGET)"
 	@echo "BASE_DIR:            $(BASE_DIR)"
+	@echo "BUILD:               $(BUILD)"
 	@echo "PATH:                $(PATH)"
 	@echo '============================================================================== '
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
