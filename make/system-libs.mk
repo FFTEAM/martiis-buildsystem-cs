@@ -159,6 +159,7 @@ $(DEPDIR)/libogg:
 		$(MAKE) && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
+	$(REWRITE_LIBTOOL) $(TARGETLIB)/libogg.la
 	rm -rf $(BUILD_TMP)/libogg-1.1.4
 	touch $@
 
