@@ -151,7 +151,30 @@ $(DEPDIR)/ffmpeg:
 	rm -r $(BUILD_TMP)/ffmpeg-0.5
 	touch $@
 
+$(DEPDIR)/libogg:
+	tar -C $(BUILD_TMP)/ -xf $(ARCHIVE)/libogg-1.1.4.tar.gz
+	pushd $(BUILD_TMP)/libogg-1.1.4 && \
+		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff && \
+		$(CONFIGURE) --prefix= --enable-shared && \
+		$(MAKE) && \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
+	rm -rf $(BUILD_TMP)/libogg-1.1.4
+	touch $@
 
+# for some reason, libvorbis does not work with "--prefix=/"
+$(DEPDIR)/libvorbis: libogg
+	tar -C $(BUILD_TMP)/ -xf $(ARCHIVE)/libvorbis-1.2.3.tar.bz2
+	pushd $(BUILD_TMP)/libvorbis-1.2.3 && \
+		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff && \
+		$(CONFIGURE) --enable-shared --prefix=$(TARGETPREFIX) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" && \
+		$(MAKE) && \
+		make install
+	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbis.pc
+	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisenc.pc
+	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisfile.pc
+	rm -rf $(BUILD_TMP)/libvorbis-1.2.3
+	touch $@
 
 #############################################################################################
 #############################################################################################

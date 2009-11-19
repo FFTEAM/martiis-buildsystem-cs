@@ -1,0 +1,33 @@
+Index: b/Makefile.am
+===================================================================
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,10 +1,10 @@
+ ## Process this file with automake to produce Makefile.in
+ 
+ AUTOMAKE_OPTIONS = 1.6 foreign dist-zip dist-bzip2
+ 
+-SUBDIRS = m4 include vq lib examples test doc
++SUBDIRS = m4 include vq lib examples test
+ 
+ m4datadir = $(datadir)/aclocal
+ m4data_DATA = vorbis.m4
+ 
+ pkgconfigdir = $(libdir)/pkgconfig
+Index: b/Makefile.in
+===================================================================
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -226,11 +226,11 @@ target_os = @target_os@
+ target_vendor = @target_vendor@
+ top_build_prefix = @top_build_prefix@
+ top_builddir = @top_builddir@
+ top_srcdir = @top_srcdir@
+ AUTOMAKE_OPTIONS = 1.6 foreign dist-zip dist-bzip2
+-SUBDIRS = m4 include vq lib examples test doc
++SUBDIRS = m4 include vq lib examples test
+ m4datadir = $(datadir)/aclocal
+ m4data_DATA = vorbis.m4
+ pkgconfigdir = $(libdir)/pkgconfig
+ pkgconfig_DATA = vorbis.pc vorbisenc.pc vorbisfile.pc
+ EXTRA_DIST = \
