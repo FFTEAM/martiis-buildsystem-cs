@@ -105,7 +105,7 @@ $(DEPDIR)/libboost:
 	touch $@
 
 $(DEPDIR)/openssl:
-	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/openssl-0.9.8l.tar.gz
+	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/openssl-0.9.8l.tar.gz
 	pushd $(BUILD_TMP)/openssl-0.9.8l && \
 		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove && \
@@ -119,6 +119,39 @@ $(DEPDIR)/openssl:
 	rm -rf $(BUILD_TMP)/openssl-0.9.8l
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
+
+$(DEPDIR)/ffmpeg:
+	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/ffmpeg-0.5.tar.bz2
+	pushd $(BUILD_TMP)/ffmpeg-0.5 && \
+		CFLAGS=-march=armv6 \
+		./configure \
+			--enable-parsers --disable-decoders --disable-encoders --enable-demuxers \
+			--disable-muxers --disable-ffplay --disable-ffmpeg --disable-ffserver \
+			--enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video \
+			--enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio \
+			--enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 \
+			--enable-demuxer=mpegps \
+			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
+			--disable-protocols --enable-protocol=file --enable-bsfs \
+			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
+			--disable-network --disable-ipv6 \
+			--disable-static --enable-shared \
+			--disable-vhook \
+			--enable-cross-compile \
+			--cross-prefix=$(TARGET)- \
+			--enable-armv6 --arch=arm \
+			--enable-debug --enable-stripping \
+			--prefix=/ && \
+		make && \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
+	rm -r $(BUILD_TMP)/ffmpeg-0.5
+	touch $@
+
+
 
 #############################################################################################
 #############################################################################################
