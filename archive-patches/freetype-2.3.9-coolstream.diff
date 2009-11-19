@@ -1,0 +1,89 @@
+    freetype-2.3.9 from coolstream
+
+ freetype-2.3.9/README.COOLSTREAM                  |    2 ++
+ freetype-2.3.9/hd_config                          |    2 ++
+ freetype-2.3.9/include/freetype/config/ftoption.h |    2 +-
+ freetype-2.3.9/modules.cfg                        |   12 ++++++------
+ 4 files changed, 11 insertions(+), 7 deletions(-)
+
+Index: b/README.COOLSTREAM
+===================================================================
+--- /dev/null
++++ b/README.COOLSTREAM
+@@ -0,0 +1,2 @@
++To compile FreeType check and, ifnecessary, adjust the prefix in the hd1_config script, 
++run hd1_config followe by make and make install.
+Index: b/hd_config
+===================================================================
+--- /dev/null
++++ b/hd_config
+@@ -0,0 +1,2 @@
++
++CC=arm-cx2450x-linux-gnueabi-gcc ./configure --host=arm-cx2450x-linux-gnueabi --prefix=/hd1
+Index: b/include/freetype/config/ftoption.h
+===================================================================
+--- a/include/freetype/config/ftoption.h
++++ b/include/freetype/config/ftoption.h
+@@ -668,11 +668,11 @@ FT_BEGIN_HEADER
+    *
+    * For embedded systems or building a new distribution from scratch, it
+    * is recommended to disable the macro since it reduces the library's code
+    * size and activates a few memory-saving optimizations as well.
+    */
+-#define FT_CONFIG_OPTION_OLD_INTERNALS
++/*#define FT_CONFIG_OPTION_OLD_INTERNALS */
+ 
+ 
+   /*
+    * This macro is defined if either unpatented or native TrueType
+    * hinting is requested by the definitions above.
+Index: b/modules.cfg
+===================================================================
+--- a/modules.cfg
++++ b/modules.cfg
+@@ -35,39 +35,39 @@
+ FONT_MODULES += truetype
+ 
+ # PostScript Type 1 font driver.
+ #
+ # This driver needs the `psaux', `pshinter', and `psnames' modules.
+-FONT_MODULES += type1
++#FONT_MODULES += type1
+ 
+ # CFF/OpenType font driver.
+ #
+ # This driver needs the `sfnt', `pshinter', and `psnames' modules.
+ FONT_MODULES += cff
+ 
+ # Type 1 CID-keyed font driver.
+ #
+ # This driver needs the `psaux', `pshinter', and `psnames' modules.
+-FONT_MODULES += cid
++#FONT_MODULES += cid
+ 
+ # PFR/TrueDoc font driver.  See optional extension ftpfr.c below also.
+-FONT_MODULES += pfr
++#FONT_MODULES += pfr
+ 
+ # PostScript Type 42 font driver.
+ #
+ # This driver needs the `truetype' module.
+-FONT_MODULES += type42
++#FONT_MODULES += type42
+ 
+ # Windows FONT/FNT font driver.  See optional extension ftwinfnt.c below
+ # also.
+ FONT_MODULES += winfonts
+ 
+ # PCF font driver.
+-FONT_MODULES += pcf
++#FONT_MODULES += pcf
+ 
+ # BDF font driver.  See optional extension ftbdf.c below also.
+-FONT_MODULES += bdf
++#FONT_MODULES += bdf
+ 
+ # SFNT files support.  If used without `truetype' or `cff', it supports
+ # bitmap-only fonts within an SFNT wrapper.
+ #
+ # This driver needs the `psnames' module.
