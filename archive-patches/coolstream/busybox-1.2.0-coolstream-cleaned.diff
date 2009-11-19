@@ -1,0 +1,901 @@
+ busybox-1.2.0/config.coolstream     |  645 +++++++++++++++++++++++++++++++++++
+ busybox-1.2.0/init/init.c           |   13 +-
+ busybox-1.2.0/networking/Config.in  |   14 +
+ busybox-1.2.0/networking/ifupdown.c |   11 +
+ busybox-1.2.0/util-linux/dmesg.c    |  114 +++++--
+ busybox-1.2.0/util-linux/mkswap.c   |    2 +-
+ 6 files changed, 765 insertions(+), 34 deletions(-)
+diff --git a/busybox-1.2.0/config.coolstream b/busybox-1.2.0/config.coolstream
+new file mode 100644
+index 0000000..a78f6c9
+--- /dev/null
++++ b/busybox-1.2.0/config.coolstream
+@@ -0,0 +1,645 @@
++#
++# Automatically generated make config: don't edit
++#
++HAVE_DOT_CONFIG=y
++
++#
++# Busybox Settings
++#
++
++#
++# General Configuration
++#
++CONFIG_NITPICK=y
++CONFIG_FEATURE_BUFFERS_USE_MALLOC=y
++# CONFIG_FEATURE_BUFFERS_GO_ON_STACK is not set
++# CONFIG_FEATURE_BUFFERS_GO_IN_BSS is not set
++CONFIG_SHOW_USAGE=y
++CONFIG_FEATURE_VERBOSE_USAGE=y
++CONFIG_FEATURE_COMPRESS_USAGE=y
++CONFIG_FEATURE_INSTALLER=y
++# CONFIG_LOCALE_SUPPORT is not set
++CONFIG_GETOPT_LONG=y
++CONFIG_FEATURE_DEVPTS=y
++# CONFIG_FEATURE_CLEAN_UP is not set
++CONFIG_FEATURE_SUID=y
++# CONFIG_FEATURE_SUID_CONFIG is not set
++# CONFIG_FEATURE_SUID_CONFIG_QUIET is not set
++# CONFIG_SELINUX is not set
++CONFIG_BUSYBOX_EXEC_PATH="/proc/self/exe"
++
++#
++# Build Options
++#
++# CONFIG_STATIC is not set
++# CONFIG_BUILD_LIBBUSYBOX is not set
++# CONFIG_FEATURE_FULL_LIBBUSYBOX is not set
++# CONFIG_FEATURE_SHARED_BUSYBOX is not set
++CONFIG_LFS=y
++USING_CROSS_COMPILER=y
++CROSS_COMPILER_PREFIX="arm-cx2450x-linux-gnueabi-"
++# CONFIG_BUILD_AT_ONCE is not set
++
++#
++# Debugging Options
++#
++# CONFIG_DEBUG is not set
++# CONFIG_DEBUG_PESSIMIZE is not set
++# CONFIG_NO_DEBUG_LIB is not set
++# CONFIG_DMALLOC is not set
++# CONFIG_EFENCE is not set
++CONFIG_DEBUG_YANK_SUSv2=y
++
++#
++# Installation Options
++#
++CONFIG_INSTALL_NO_USR=y
++CONFIG_INSTALL_APPLET_SYMLINKS=y
++# CONFIG_INSTALL_APPLET_HARDLINKS is not set
++# CONFIG_INSTALL_APPLET_DONT is not set
++PREFIX="./_install"
++
++#
++# Busybox Library Tuning
++#
++CONFIG_MD5_SIZE_VS_SPEED=2
++
++#
++# Applets
++#
++
++#
++# Archival Utilities
++#
++# CONFIG_AR is not set
++# CONFIG_FEATURE_AR_LONG_FILENAMES is not set
++CONFIG_BUNZIP2=y
++# CONFIG_CPIO is not set
++# CONFIG_DPKG is not set
++# CONFIG_DPKG_DEB is not set
++# CONFIG_FEATURE_DPKG_DEB_EXTRACT_ONLY is not set
++CONFIG_GUNZIP=y
++# CONFIG_FEATURE_GUNZIP_UNCOMPRESS is not set
++CONFIG_GZIP=y
++# CONFIG_RPM2CPIO is not set
++# CONFIG_RPM is not set
++CONFIG_TAR=y
++CONFIG_FEATURE_TAR_CREATE=y
++CONFIG_FEATURE_TAR_BZIP2=y
++# CONFIG_FEATURE_TAR_LZMA is not set
++CONFIG_FEATURE_TAR_FROM=y
++CONFIG_FEATURE_TAR_GZIP=y
++# CONFIG_FEATURE_TAR_COMPRESS is not set
++CONFIG_FEATURE_TAR_OLDGNU_COMPATIBILITY=y
++CONFIG_FEATURE_TAR_GNU_EXTENSIONS=y
++# CONFIG_FEATURE_TAR_LONG_OPTIONS is not set
++# CONFIG_UNCOMPRESS is not set
++# CONFIG_UNLZMA is not set
++# CONFIG_FEATURE_LZMA_FAST is not set
++CONFIG_UNZIP=y
++
++#
++# Common options for cpio and tar
++#
++# CONFIG_FEATURE_UNARCHIVE_TAPE is not set
++# CONFIG_FEATURE_DEB_TAR_GZ is not set
++# CONFIG_FEATURE_DEB_TAR_BZ2 is not set
++# CONFIG_FEATURE_DEB_TAR_LZMA is not set
++
++#
++# Coreutils
++#
++CONFIG_BASENAME=y
++# CONFIG_CAL is not set
++CONFIG_CAT=y
++# CONFIG_CATV is not set
++CONFIG_CHGRP=y
++CONFIG_CHMOD=y
++CONFIG_CHOWN=y
++CONFIG_CHROOT=y
++# CONFIG_CKSUM is not set
++CONFIG_CMP=y
++# CONFIG_COMM is not set
++CONFIG_CP=y
++CONFIG_CUT=y
++CONFIG_DATE=y
++CONFIG_FEATURE_DATE_ISOFMT=y
++CONFIG_DD=y
++CONFIG_FEATURE_DD_SIGNAL_HANDLING=y
++# CONFIG_FEATURE_DD_IBS_OBS is not set
++CONFIG_DF=y
++CONFIG_DIFF=y
++CONFIG_FEATURE_DIFF_BINARY=y
++CONFIG_FEATURE_DIFF_DIR=y
++# CONFIG_FEATURE_DIFF_MINIMAL is not set
++CONFIG_DIRNAME=y
++CONFIG_DOS2UNIX=y
++CONFIG_UNIX2DOS=y
++CONFIG_DU=y
++CONFIG_FEATURE_DU_DEFAULT_BLOCKSIZE_1K=y
++CONFIG_ECHO=y
++CONFIG_FEATURE_FANCY_ECHO=y
++CONFIG_ENV=y
++# CONFIG_FEATURE_ENV_LONG_OPTIONS is not set
++CONFIG_EXPR=y
++# CONFIG_EXPR_MATH_SUPPORT_64 is not set
++CONFIG_FALSE=y
++# CONFIG_FOLD is not set
++CONFIG_HEAD=y
++# CONFIG_FEATURE_FANCY_HEAD is not set
++# CONFIG_HOSTID is not set
++# CONFIG_ID is not set
++# CONFIG_INSTALL is not set
++# CONFIG_FEATURE_INSTALL_LONG_OPTIONS is not set
++# CONFIG_LENGTH is not set
++CONFIG_LN=y
++# CONFIG_LOGNAME is not set
++CONFIG_LS=y
++CONFIG_FEATURE_LS_FILETYPES=y
++CONFIG_FEATURE_LS_FOLLOWLINKS=y
++CONFIG_FEATURE_LS_RECURSIVE=y
++CONFIG_FEATURE_LS_SORTFILES=y
++CONFIG_FEATURE_LS_TIMESTAMPS=y
++CONFIG_FEATURE_LS_USERNAME=y
++CONFIG_FEATURE_LS_COLOR=y
++# CONFIG_FEATURE_LS_COLOR_IS_DEFAULT is not set
++CONFIG_MD5SUM=y
++CONFIG_MKDIR=y
++CONFIG_FEATURE_MKDIR_LONG_OPTIONS=y
++CONFIG_MKFIFO=y
++CONFIG_MKNOD=y
++CONFIG_MV=y
++# CONFIG_FEATURE_MV_LONG_OPTIONS is not set
++CONFIG_NICE=y
++CONFIG_NOHUP=y
++# CONFIG_OD is not set
++# CONFIG_PRINTENV is not set
++# CONFIG_PRINTF is not set
++CONFIG_PWD=y
++# CONFIG_REALPATH is not set
++CONFIG_RM=y
++CONFIG_RMDIR=y
++# CONFIG_SEQ is not set
++# CONFIG_SHA1SUM is not set
++CONFIG_SLEEP=y
++CONFIG_FEATURE_FANCY_SLEEP=y
++CONFIG_SORT=y
++CONFIG_FEATURE_SORT_BIG=y
++# CONFIG_STAT is not set
++# CONFIG_FEATURE_STAT_FORMAT is not set
++CONFIG_STTY=y
++# CONFIG_SUM is not set
++CONFIG_SYNC=y
++CONFIG_TAIL=y
++CONFIG_FEATURE_FANCY_TAIL=y
++# CONFIG_TEE is not set
++# CONFIG_FEATURE_TEE_USE_BLOCK_IO is not set
++CONFIG_TEST=y
++# CONFIG_FEATURE_TEST_64 is not set
++CONFIG_TOUCH=y
++# CONFIG_TR is not set
++# CONFIG_FEATURE_TR_CLASSES is not set
++# CONFIG_FEATURE_TR_EQUIV is not set
++CONFIG_TRUE=y
++# CONFIG_TTY is not set
++# CONFIG_UNAME is not set
++CONFIG_UNIQ=y
++CONFIG_USLEEP=y
++# CONFIG_UUDECODE is not set
++# CONFIG_UUENCODE is not set
++CONFIG_WATCH=y
++CONFIG_WC=y
++# CONFIG_WHO is not set
++# CONFIG_WHOAMI is not set
++CONFIG_YES=y
++
++#
++# Common options for cp and mv
++#
++CONFIG_FEATURE_PRESERVE_HARDLINKS=y
++
++#
++# Common options for ls, more and telnet
++#
++CONFIG_FEATURE_AUTOWIDTH=y
++
++#
++# Common options for df, du, ls
++#
++# CONFIG_FEATURE_HUMAN_READABLE is not set
++
++#
++# Common options for md5sum, sha1sum
++#
++# CONFIG_FEATURE_MD5_SHA1_SUM_CHECK is not set
++
++#
++# Console Utilities
++#
++# CONFIG_CHVT is not set
++# CONFIG_CLEAR is not set
++# CONFIG_DEALLOCVT is not set
++# CONFIG_DUMPKMAP is not set
++# CONFIG_LOADFONT is not set
++# CONFIG_LOADKMAP is not set
++# CONFIG_OPENVT is not set
++# CONFIG_RESET is not set
++# CONFIG_SETCONSOLE is not set
++# CONFIG_FEATURE_SETCONSOLE_LONG_OPTIONS is not set
++# CONFIG_SETKEYCODES is not set
++# CONFIG_SETLOGCONS is not set
++
++#
++# Debian Utilities
++#
++CONFIG_MKTEMP=y
++# CONFIG_PIPE_PROGRESS is not set
++# CONFIG_READLINK is not set
++# CONFIG_FEATURE_READLINK_FOLLOW is not set
++CONFIG_RUN_PARTS=y
++# CONFIG_FEATURE_RUN_PARTS_LONG_OPTIONS is not set
++# CONFIG_START_STOP_DAEMON is not set
++# CONFIG_FEATURE_START_STOP_DAEMON_FANCY is not set
++# CONFIG_FEATURE_START_STOP_DAEMON_LONG_OPTIONS is not set
++# CONFIG_WHICH is not set
++
++#
++# Editors
++#
++# CONFIG_AWK is not set
++# CONFIG_FEATURE_AWK_MATH is not set
++# CONFIG_ED is not set
++# CONFIG_PATCH is not set
++CONFIG_SED=y
++CONFIG_VI=y
++CONFIG_FEATURE_VI_COLON=y
++CONFIG_FEATURE_VI_YANKMARK=y
++CONFIG_FEATURE_VI_SEARCH=y
++CONFIG_FEATURE_VI_USE_SIGNALS=y
++CONFIG_FEATURE_VI_DOT_CMD=y
++CONFIG_FEATURE_VI_READONLY=y
++CONFIG_FEATURE_VI_SETOPTS=y
++CONFIG_FEATURE_VI_SET=y
++CONFIG_FEATURE_VI_WIN_RESIZE=y
++CONFIG_FEATURE_VI_OPTIMIZE_CURSOR=y
++
++#
++# Finding Utilities
++#
++CONFIG_FIND=y
++CONFIG_FEATURE_FIND_PRINT0=y
++CONFIG_FEATURE_FIND_MTIME=y
++CONFIG_FEATURE_FIND_MMIN=y
++CONFIG_FEATURE_FIND_PERM=y
++CONFIG_FEATURE_FIND_TYPE=y
++CONFIG_FEATURE_FIND_XDEV=y
++CONFIG_FEATURE_FIND_NEWER=y
++CONFIG_FEATURE_FIND_INUM=y
++CONFIG_FEATURE_FIND_EXEC=y
++CONFIG_GREP=y
++CONFIG_FEATURE_GREP_EGREP_ALIAS=y
++CONFIG_FEATURE_GREP_FGREP_ALIAS=y
++CONFIG_FEATURE_GREP_CONTEXT=y
++# CONFIG_XARGS is not set
++# CONFIG_FEATURE_XARGS_SUPPORT_CONFIRMATION is not set
++# CONFIG_FEATURE_XARGS_SUPPORT_QUOTES is not set
++# CONFIG_FEATURE_XARGS_SUPPORT_TERMOPT is not set
++# CONFIG_FEATURE_XARGS_SUPPORT_ZERO_TERM is not set
++
++#
++# Init Utilities
++#
++CONFIG_INIT=y
++# CONFIG_DEBUG_INIT is not set
++CONFIG_FEATURE_USE_INITTAB=y
++# CONFIG_FEATURE_INIT_SCTTY is not set
++CONFIG_FEATURE_EXTRA_QUIET=y
++# CONFIG_FEATURE_INIT_COREDUMPS is not set
++CONFIG_FEATURE_INITRD=y
++CONFIG_HALT=y
++CONFIG_MESG=y
++
++#
++# Login/Password Management Utilities
++#
++# CONFIG_FEATURE_SHADOWPASSWDS is not set
++# CONFIG_USE_BB_SHADOW is not set
++CONFIG_USE_BB_PWD_GRP=y
++# CONFIG_ADDGROUP is not set
++# CONFIG_DELGROUP is not set
++CONFIG_ADDUSER=y
++CONFIG_DELUSER=y
++# CONFIG_GETTY is not set
++# CONFIG_FEATURE_UTMP is not set
++# CONFIG_FEATURE_WTMP is not set
++CONFIG_LOGIN=y
++CONFIG_FEATURE_SECURETTY=y
++CONFIG_PASSWD=y
++# CONFIG_SU is not set
++# CONFIG_SULOGIN is not set
++# CONFIG_VLOCK is not set
++
++#
++# Linux Ext2 FS Progs
++#
++# CONFIG_CHATTR is not set
++CONFIG_E2FSCK=y
++CONFIG_FSCK=y
++CONFIG_LSATTR=y
++CONFIG_MKE2FS=y
++CONFIG_TUNE2FS=y
++# CONFIG_E2LABEL is not set
++# CONFIG_FINDFS is not set
++
++#
++# Linux Module Utilities
++#
++CONFIG_INSMOD=y
++# CONFIG_FEATURE_INSMOD_VERSION_CHECKING is not set
++# CONFIG_FEATURE_INSMOD_KSYMOOPS_SYMBOLS is not set
++# CONFIG_FEATURE_INSMOD_LOADINKMEM is not set
++# CONFIG_FEATURE_INSMOD_LOAD_MAP is not set
++# CONFIG_FEATURE_INSMOD_LOAD_MAP_FULL is not set
++CONFIG_RMMOD=y
++CONFIG_LSMOD=y
++CONFIG_FEATURE_LSMOD_PRETTY_2_6_OUTPUT=y
++CONFIG_MODPROBE=y
++CONFIG_FEATURE_MODPROBE_MULTIPLE_OPTIONS=y
++
++#
++# Options common to multiple modutils
++#
++CONFIG_FEATURE_CHECK_TAINTED_MODULE=y
++# CONFIG_FEATURE_2_4_MODULES is not set
++CONFIG_FEATURE_2_6_MODULES=y
++# CONFIG_FEATURE_QUERY_MODULE_INTERFACE is not set
++
++#
++# Linux System Utilities
++#
++CONFIG_DMESG=y
++# CONFIG_FBSET is not set
++# CONFIG_FEATURE_FBSET_FANCY is not set
++# CONFIG_FEATURE_FBSET_READMODE is not set
++# CONFIG_FDFLUSH is not set
++# CONFIG_FDFORMAT is not set
++CONFIG_FDISK=y
++FDISK_SUPPORT_LARGE_DISKS=y
++CONFIG_FEATURE_FDISK_WRITABLE=y
++# CONFIG_FEATURE_AIX_LABEL is not set
++# CONFIG_FEATURE_SGI_LABEL is not set
++# CONFIG_FEATURE_SUN_LABEL is not set
++# CONFIG_FEATURE_OSF_LABEL is not set
++CONFIG_FEATURE_FDISK_ADVANCED=y
++# CONFIG_FREERAMDISK is not set
++# CONFIG_FSCK_MINIX is not set
++# CONFIG_MKFS_MINIX is not set
++# CONFIG_FEATURE_MINIX2 is not set
++# CONFIG_GETOPT is not set
++# CONFIG_HEXDUMP is not set
++# CONFIG_HWCLOCK is not set
++# CONFIG_FEATURE_HWCLOCK_LONG_OPTIONS is not set
++# CONFIG_FEATURE_HWCLOCK_ADJTIME_FHS is not set
++CONFIG_IPCRM=y
++CONFIG_IPCS=y
++CONFIG_LOSETUP=y
++# CONFIG_MDEV is not set
++# CONFIG_FEATURE_MDEV_CONF is not set
++# CONFIG_FEATURE_MDEV_EXEC is not set
++CONFIG_MKSWAP=y
++CONFIG_FEATURE_MKSWAP_V0=y
++CONFIG_MORE=y
++CONFIG_FEATURE_USE_TERMIOS=y
++CONFIG_MOUNT=y
++CONFIG_FEATURE_MOUNT_NFS=y
++# CONFIG_PIVOT_ROOT is not set
++# CONFIG_RDATE is not set
++CONFIG_READPROFILE=y
++# CONFIG_SETARCH is not set
++CONFIG_SWAPONOFF=y
++# CONFIG_SWITCH_ROOT is not set
++CONFIG_UMOUNT=y
++CONFIG_FEATURE_UMOUNT_ALL=y
++
++#
++# Common options for mount/umount
++#
++CONFIG_FEATURE_MOUNT_LOOP=y
++# CONFIG_FEATURE_MTAB_SUPPORT is not set
++
++#
++# Miscellaneous Utilities
++#
++# CONFIG_ADJTIMEX is not set
++# CONFIG_BBCONFIG is not set
++# CONFIG_CROND is not set
++# CONFIG_DEBUG_CROND_OPTION is not set
++# CONFIG_FEATURE_CROND_CALL_SENDMAIL is not set
++# CONFIG_CRONTAB is not set
++# CONFIG_DC is not set
++# CONFIG_DEVFSD is not set
++# CONFIG_DEVFSD_MODLOAD is not set
++# CONFIG_DEVFSD_FG_NP is not set
++# CONFIG_DEVFSD_VERBOSE is not set
++# CONFIG_FEATURE_DEVFS is not set
++# CONFIG_EJECT is not set
++# CONFIG_LAST is not set
++# CONFIG_LESS is not set
++# CONFIG_FEATURE_LESS_BRACKETS is not set
++# CONFIG_FEATURE_LESS_FLAGS is not set
++# CONFIG_FEATURE_LESS_FLAGCS is not set
++# CONFIG_FEATURE_LESS_MARKS is not set
++# CONFIG_FEATURE_LESS_REGEXP is not set
++CONFIG_HDPARM=y
++CONFIG_FEATURE_HDPARM_GET_IDENTITY=y
++# CONFIG_FEATURE_HDPARM_HDIO_SCAN_HWIF is not set
++# CONFIG_FEATURE_HDPARM_HDIO_UNREGISTER_HWIF is not set
++# CONFIG_FEATURE_HDPARM_HDIO_DRIVE_RESET is not set
++# CONFIG_FEATURE_HDPARM_HDIO_TRISTATE_HWIF is not set
++# CONFIG_FEATURE_HDPARM_HDIO_GETSET_DMA is not set
++# CONFIG_MAKEDEVS is not set
++# CONFIG_FEATURE_MAKEDEVS_LEAF is not set
++# CONFIG_FEATURE_MAKEDEVS_TABLE is not set
++# CONFIG_MOUNTPOINT is not set
++# CONFIG_MT is not set
++# CONFIG_RUNLEVEL is not set
++# CONFIG_RX is not set
++# CONFIG_STRINGS is not set
++# CONFIG_SETSID is not set
++# CONFIG_TASKSET is not set
++CONFIG_TIME=y
++CONFIG_WATCHDOG=y
++
++#
++# Networking Utilities
++#
++# CONFIG_FEATURE_IPV6 is not set
++# CONFIG_ARPING is not set
++# CONFIG_DNSD is not set
++CONFIG_ETHER_WAKE=y
++# CONFIG_FAKEIDENTD is not set
++# CONFIG_FTPGET is not set
++# CONFIG_FTPPUT is not set
++# CONFIG_FEATURE_FTPGETPUT_LONG_OPTIONS is not set
++CONFIG_HOSTNAME=y
++# CONFIG_HTTPD is not set
++# CONFIG_FEATURE_HTTPD_WITHOUT_INETD is not set
++# CONFIG_FEATURE_HTTPD_RELOAD_CONFIG_SIGHUP is not set
++# CONFIG_FEATURE_HTTPD_SETUID is not set
++# CONFIG_FEATURE_HTTPD_BASIC_AUTH is not set
++# CONFIG_FEATURE_HTTPD_AUTH_MD5 is not set
++# CONFIG_FEATURE_HTTPD_CONFIG_WITH_MIME_TYPES is not set
++# CONFIG_FEATURE_HTTPD_CGI is not set
++# CONFIG_FEATURE_HTTPD_CONFIG_WITH_SCRIPT_INTERPR is not set
++# CONFIG_FEATURE_HTTPD_SET_REMOTE_PORT_TO_ENV is not set
++# CONFIG_FEATURE_HTTPD_ENCODE_URL_STR is not set
++CONFIG_IFCONFIG=y
++CONFIG_FEATURE_IFCONFIG_STATUS=y
++# CONFIG_FEATURE_IFCONFIG_SLIP is not set
++# CONFIG_FEATURE_IFCONFIG_MEMSTART_IOADDR_IRQ is not set
++CONFIG_FEATURE_IFCONFIG_HW=y
++# CONFIG_FEATURE_IFCONFIG_BROADCAST_PLUS is not set
++CONFIG_IFUPDOWN=y
++# CONFIG_FEATURE_IFUPDOWN_IP is not set
++CONFIG_FEATURE_IFUPDOWN_IP_BUILTIN=y
++CONFIG_FEATURE_IFUPDOWN_IPV4=y
++# CONFIG_FEATURE_IFUPDOWN_IPV6 is not set
++# CONFIG_FEATURE_IFUPDOWN_IPX is not set
++# CONFIG_FEATURE_IFUPDOWN_MAPPING is not set
++CONFIG_FEATURE_IFUPDOWN_CNXT_NORUNPARTS=y
++CONFIG_FEATURE_IFUPDOWN_CNXT_UDHCPCLOC=y
++CONFIG_INETD=y
++CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_ECHO=y
++CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_DISCARD=y
++CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_TIME=y
++CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_DAYTIME=y
++CONFIG_FEATURE_INETD_SUPPORT_BUILTIN_CHARGEN=y
++# CONFIG_FEATURE_INETD_RPC is not set
++# CONFIG_IP is not set
++# CONFIG_FEATURE_IP_ADDRESS is not set
++# CONFIG_FEATURE_IP_LINK is not set
++# CONFIG_FEATURE_IP_ROUTE is not set
++# CONFIG_FEATURE_IP_TUNNEL is not set
++# CONFIG_FEATURE_IP_SHORT_FORMS is not set
++# CONFIG_IPADDR is not set
++# CONFIG_IPLINK is not set
++# CONFIG_IPROUTE is not set
++# CONFIG_IPTUNNEL is not set
++# CONFIG_IPCALC is not set
++# CONFIG_FEATURE_IPCALC_FANCY is not set
++# CONFIG_FEATURE_IPCALC_LONG_OPTIONS is not set
++# CONFIG_NAMEIF is not set
++# CONFIG_NC is not set
++# CONFIG_NC_GAPING_SECURITY_HOLE is not set
++CONFIG_NETSTAT=y
++CONFIG_NSLOOKUP=y
++CONFIG_PING=y
++CONFIG_FEATURE_FANCY_PING=y
++# CONFIG_PING6 is not set
++# CONFIG_FEATURE_FANCY_PING6 is not set
++CONFIG_ROUTE=y
++CONFIG_TELNET=y
++CONFIG_FEATURE_TELNET_TTYPE=y
++CONFIG_FEATURE_TELNET_AUTOLOGIN=y
++CONFIG_TELNETD=y
++# CONFIG_FEATURE_TELNETD_INETD is not set
++# CONFIG_TFTP is not set
++# CONFIG_FEATURE_TFTP_GET is not set
++# CONFIG_FEATURE_TFTP_PUT is not set
++# CONFIG_FEATURE_TFTP_BLOCKSIZE is not set
++# CONFIG_DEBUG_TFTP is not set
++CONFIG_TRACEROUTE=y
++# CONFIG_FEATURE_TRACEROUTE_VERBOSE is not set
++# CONFIG_FEATURE_TRACEROUTE_SOURCE_ROUTE is not set
++# CONFIG_FEATURE_TRACEROUTE_USE_ICMP is not set
++
++#
++# udhcp Server/Client
++#
++# CONFIG_APP_UDHCPD is not set
++CONFIG_APP_UDHCPC=y
++# CONFIG_APP_DUMPLEASES is not set
++# CONFIG_FEATURE_UDHCP_SYSLOG is not set
++# CONFIG_FEATURE_UDHCP_DEBUG is not set
++# CONFIG_VCONFIG is not set
++CONFIG_WGET=y
++CONFIG_FEATURE_WGET_STATUSBAR=y
++CONFIG_FEATURE_WGET_AUTHENTICATION=y
++# CONFIG_FEATURE_WGET_IP6_LITERAL is not set
++# CONFIG_FEATURE_WGET_LONG_OPTIONS is not set
++# CONFIG_ZCIP is not set
++
++#
++# Process Utilities
++#
++CONFIG_FREE=y
++# CONFIG_FUSER is not set
++CONFIG_KILL=y
++CONFIG_KILLALL=y
++CONFIG_PIDOF=y
++# CONFIG_FEATURE_PIDOF_SINGLE is not set
++# CONFIG_FEATURE_PIDOF_OMIT is not set
++CONFIG_PS=y
++CONFIG_FEATURE_PS_WIDE=y
++CONFIG_RENICE=y
++# CONFIG_BB_SYSCTL is not set
++CONFIG_TOP=y
++CONFIG_FEATURE_TOP_CPU_USAGE_PERCENTAGE=y
++CONFIG_UPTIME=y
++
++#
++# Shells
++#
++CONFIG_FEATURE_SH_IS_ASH=y
++# CONFIG_FEATURE_SH_IS_HUSH is not set
++# CONFIG_FEATURE_SH_IS_LASH is not set
++# CONFIG_FEATURE_SH_IS_MSH is not set
++# CONFIG_FEATURE_SH_IS_NONE is not set
++CONFIG_ASH=y
++
++#
++# Ash Shell Options
++#
++CONFIG_ASH_JOB_CONTROL=y
++# CONFIG_ASH_READ_NCHARS is not set
++# CONFIG_ASH_READ_TIMEOUT is not set
++CONFIG_ASH_ALIAS=y
++CONFIG_ASH_MATH_SUPPORT=y
++# CONFIG_ASH_MATH_SUPPORT_64 is not set
++# CONFIG_ASH_GETOPTS is not set
++CONFIG_ASH_BUILTIN_ECHO=y
++CONFIG_ASH_BUILTIN_TEST=y
++# CONFIG_ASH_CMDCMD is not set
++CONFIG_ASH_MAIL=y
++CONFIG_ASH_OPTIMIZE_FOR_SIZE=y
++# CONFIG_ASH_RANDOM_SUPPORT is not set
++CONFIG_ASH_EXPAND_PRMT=y
++# CONFIG_HUSH is not set
++# CONFIG_LASH is not set
++# CONFIG_MSH is not set
++
++#
++# Bourne Shell Options
++#
++CONFIG_FEATURE_SH_EXTRA_QUIET=y
++CONFIG_FEATURE_SH_STANDALONE_SHELL=y
++CONFIG_FEATURE_COMMAND_EDITING=y
++# CONFIG_FEATURE_COMMAND_EDITING_VI is not set
++CONFIG_FEATURE_COMMAND_HISTORY=40
++# CONFIG_FEATURE_COMMAND_SAVEHISTORY is not set
++CONFIG_FEATURE_COMMAND_TAB_COMPLETION=y
++# CONFIG_FEATURE_COMMAND_USERNAME_COMPLETION is not set
++CONFIG_FEATURE_SH_FANCY_PROMPT=y
++
++#
++# System Logging Utilities
++#
++CONFIG_SYSLOGD=y
++# CONFIG_FEATURE_ROTATE_LOGFILE is not set
++# CONFIG_FEATURE_REMOTE_LOG is not set
++CONFIG_FEATURE_IPC_SYSLOG=y
++CONFIG_FEATURE_IPC_SYSLOG_BUFFER_SIZE=16
++CONFIG_LOGREAD=y
++# CONFIG_FEATURE_LOGREAD_REDUCED_LOCKING is not set
++CONFIG_KLOGD=y
++# CONFIG_LOGGER is not set
+diff --git a/busybox-1.2.0/init/init.c b/busybox-1.2.0/init/init.c
+index b3d1f6d..4640c35 100644
+--- a/busybox-1.2.0/init/init.c
++++ b/busybox-1.2.0/init/init.c
+@@ -338,7 +338,7 @@ static void console_init(void)
+ 	while ((fd = open(console, O_RDONLY | O_NONBLOCK)) < 0 && tried < 2) {
+ 		/* Can't open selected console -- try
+ 			logical system console and VT_MASTER */
+-		safe_strncpy(console, (tried == 0 ? CONSOLE_DEV : CURRENT_VC),
++		safe_strncpy(console, (tried == 0 ? CONSOLE_DEV : "/dev/ttyS0"),
+ 							sizeof(console));
+ 		tried++;
+ 	}
+@@ -606,15 +606,12 @@ static int waitfor(const struct init_action *a, pid_t pid)
+ 
+ 	runpid = (NULL == a)? pid : run(a);
+ 	while (1) {
+-		wpid = waitpid(runpid,&status,0);
++		wpid =wait(&status);
++		if (wpid > 0 && wpid != runpid) {
++			continue;
++		}
+ 		if (wpid == runpid)
+ 			break;
+-		if (wpid == -1 && errno == ECHILD) {
+-			/* we missed its termination */
+-			break;
+-		}
+-		/* FIXME other errors should maybe trigger an error, but allow
+-		 * the program to continue */
+ 	}
+ 	return wpid;
+ }
+diff --git a/busybox-1.2.0/networking/Config.in b/busybox-1.2.0/networking/Config.in
+index e95ae0d..4cf0449 100644
+--- a/busybox-1.2.0/networking/Config.in
++++ b/busybox-1.2.0/networking/Config.in
+@@ -285,6 +285,20 @@ config CONFIG_FEATURE_IFUPDOWN_MAPPING
+ 	  This enables support for the "mapping" stanza, unless you have
+ 	  a weird network setup you don't need it.
+ 
++config CONFIG_FEATURE_IFUPDOWN_CNXT_NORUNPARTS
++	bool "Cnxt dissable run-parts"
++	default n
++	depends on CONFIG_IFUPDOWN
++	help
++	  CNXT: This stops ifup/down executing runparts
++
++config CONFIG_FEATURE_IFUPDOWN_CNXT_UDHCPCLOC
++	bool "Cnxt location for udhcpc"
++	default n
++	depends on CONFIG_IFUPDOWN
++	help
++	  This searched for udhcpc script in /etc/network
++
+ config CONFIG_INETD
+ 	bool "inetd"
+ 	default n
+diff --git a/busybox-1.2.0/networking/ifupdown.c b/busybox-1.2.0/networking/ifupdown.c
+index ff47e60..2fa37eb 100644
+--- a/busybox-1.2.0/networking/ifupdown.c
++++ b/busybox-1.2.0/networking/ifupdown.c
+@@ -467,8 +467,15 @@ static int execable(char *program)
+ static int dhcp_up(struct interface_defn_t *ifd, execfn *exec)
+ {
+ 	if (execable("/sbin/udhcpc")) {
++#ifdef CONFIG_FEATURE_IFUPDOWN_CNXT_UDHCPCLOC
++		return( execute("udhcpc -n -p /var/run/udhcpc.%iface%.pid -t 5 "
++                        "-s /etc/network/udhcpc.sh -i "
++					"%iface% [[-H %hostname%]] [[-c %clientid%]]", ifd, exec));
++#else
+ 		return( execute("udhcpc -n -p /var/run/udhcpc.%iface%.pid -i "
+ 					"%iface% [[-H %hostname%]] [[-c %clientid%]]", ifd, exec));
++#endif
++        
+ 	} else if (execable("/sbin/pump")) {
+ 		return( execute("pump -i %iface% [[-h %hostname%]] [[-l %leasehours%]]", ifd, exec));
+ 	} else if (execable("/sbin/dhclient")) {
+@@ -917,7 +924,9 @@ static int doit(char *str)
+ static int execute_all(struct interface_defn_t *ifd, const char *opt)
+ {
+ 	int i;
++#ifndef CONFIG_FEATURE_IFUPDOWN_CNXT_NORUNPARTS 
+ 	char *buf;
++#endif
+ 	for (i = 0; i < ifd->n_options; i++) {
+ 		if (strcmp(ifd->option[i].name, opt) == 0) {
+ 			if (!doit(ifd->option[i].value)) {
+@@ -926,10 +935,12 @@ static int execute_all(struct interface_defn_t *ifd, const char *opt)
+ 		}
+ 	}
+ 
++#ifndef CONFIG_FEATURE_IFUPDOWN_CNXT_NORUNPARTS 
+ 	buf = bb_xasprintf("run-parts /etc/network/if-%s.d", opt);
+ 	if (doit(buf) != 1) {
+ 		return 0;
+ 	}
++#endif
+ 	return 1;
+ }
+ 
+diff --git a/busybox-1.2.0/util-linux/dmesg.c b/busybox-1.2.0/util-linux/dmesg.c
+index 6adba15..2ca8827 100644
+--- a/busybox-1.2.0/util-linux/dmesg.c
++++ b/busybox-1.2.0/util-linux/dmesg.c
+@@ -1,35 +1,99 @@
+-/* vi: set ts=4:
+- * 
+- * dmesg - display/control kernel ring buffer.
++/* vi: set sw=4 ts=4: */
++/* dmesg.c -- Print out the contents of the kernel ring buffer
++ * Created: Sat Oct  9 16:19:47 1993
++ * Revised: Thu Oct 28 21:52:17 1993 by faith@cs.unc.edu
++ * Copyright 1993 Theodore Ts'o (tytso@athena.mit.edu)
++ * This program comes with ABSOLUTELY NO WARRANTY.
++ * Modifications by Rick Sladkey (jrs@world.std.com)
++ * Larger buffersize 3 June 1998 by Nicolai Langfeldt, based on a patch
++ * by Peeter Joot.  This was also suggested by John Hudson.
++ * 1999-02-22 Arkadiusz Mi¶kiewicz <misiek@misiek.eu.org>
++ * - added Native Language Support
+  *
+- * Copyring 2006 Rob Landley <rob@landley.net>
++ * from util-linux -- adapted for busybox by
++ * Erik Andersen <andersen@codepoet.org>. I ripped out Native Language
++ * Support, replaced getopt, added some gotos for redundant stuff.
+  *
+- * Licensed under GPLv2 or later, see file LICENSE in this tarball for details.
++ * Audited and cleaned up on 7 March 2003 to reduce size of
++ * check error handling by Erik Andersen <andersen@codepoet.org>
+  */
+ 
+-#include "busybox.h"
+-#include <unistd.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <getopt.h>
++#include <errno.h>
+ #include <sys/klog.h>
+ 
+-int dmesg_main(int argc, char *argv[])
++#include "busybox.h"
++
++int dmesg_main(int argc, char **argv)
+ {
+-	char *size, *level;
+-	int flags = bb_getopt_ulflags(argc, argv, "c:s:n:", &size, &level);
+-
+-	if (flags & 4) {
+-		if(klogctl(8, NULL, bb_xgetlarg(size, 10, 0, 10)))
+-			bb_perror_msg_and_die("klogctl");
+-	} else {
+-		int len;
+-		char *buf;
+-
+-		len = (flags & 2) ? bb_xgetlarg(size, 10, 4096, INT_MAX) : 16384;
+-		buf = xmalloc(len);
+-		if (0 > (len = klogctl(3 + (flags & 1), buf, len)))
+-			bb_perror_msg_and_die("klogctl");
+-		write(1,buf,len);
+-		if (len && buf[len-1]!='\n') putchar('\n');
++	char *buf
++#ifdef CONFIG_FEATURE_CLEAN_UP
++		= NULL
++#endif
++		;
++	int bufsize = 8196;
++	int i, n;
++	int level = 0;
++	int lastc;
++	int cmd = 3;
++
++	while ((i = getopt(argc, argv, "cn:s:")) > 0) {
++		switch (i) {
++			case 'c':
++				cmd = 4;
++				break;
++			case 'n':
++				cmd = 8;
++				level = bb_xgetlarg(optarg, 10, 0, 10);
++				break;
++			case 's':
++				/* I think a 512k max kernel ring buffer is big enough for
++				 * anybody, as the default is 16k...  Could be wrong though.
++				 * If so I'm sure I'll hear about it by the enraged masses*/
++				bufsize = bb_xgetlarg(optarg, 10, 4096, 512*1024);
++				break;
++			default:
++				bb_show_usage();
++		}
++	}
++
++	if (optind < argc) {
++		bb_show_usage();
+ 	}
+ 
+-	return 0;
++	if (cmd == 8) {
++		if (klogctl(cmd, NULL, level) < 0)
++			goto die_the_death;
++		goto all_done;
++	}
++
++	buf = xmalloc(bufsize);
++	if ((n = klogctl(cmd, buf, bufsize)) < 0)
++		goto die_the_death;
++
++	lastc = '\n';
++	for (i = 0; i < n; i++) {
++		if (lastc == '\n' && buf[i] == '<') {
++			i++;
++			while (buf[i] >= '0' && buf[i] <= '9')
++				i++;
++			if (buf[i] == '>')
++				i++;
++		}
++		lastc = buf[i];
++		putchar(lastc);
++	}
++	if (lastc != '\n')
++		putchar('\n');
++all_done:
++#ifdef CONFIG_FEATURE_CLEAN_UP
++	if (buf) {
++		free(buf);
++	}
++#endif
++	return EXIT_SUCCESS;
++die_the_death:
++	bb_perror_nomsg_and_die();
+ }
+diff --git a/busybox-1.2.0/util-linux/mkswap.c b/busybox-1.2.0/util-linux/mkswap.c
+index b48d1f0..bac5871 100644
+--- a/busybox-1.2.0/util-linux/mkswap.c
++++ b/busybox-1.2.0/util-linux/mkswap.c
+@@ -41,7 +41,7 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>			/* for _IO */
+ #include <sys/utsname.h>
+-#include <asm/page.h>			/* for PAGE_SIZE and PAGE_SHIFT */
++//#include <asm/page.h>			/* for PAGE_SIZE and PAGE_SHIFT */
+ 				/* we also get PAGE_SIZE via getpagesize() */
+ 
+ static char *device_name = NULL;
