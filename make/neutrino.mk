@@ -27,7 +27,7 @@ $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
 	echo "imagename=HD-Neutrino"		>> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
-$(DEPDIR)/neutrino: libcurl libid3tag libmad libpng libboost libjpeg libvorbis ffmpeg openssl $(N_OBJDIR)/config.status
+$(DEPDIR)/neutrino: libcurl libid3tag libmad freetype libboost libjpeg libvorbis ffmpeg openssl $(N_OBJDIR)/config.status
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install
 	# make $(TARGETPREFIX)/.version
