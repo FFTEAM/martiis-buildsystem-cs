@@ -21,7 +21,7 @@ SOURCE_DIR   = $(BASE_DIR)/source
 CROSS_BASE   = $(BASE_DIR)/cross
 CROSS_DIR   ?= $(CROSS_BASE)/$(CROSS_BUILD_DIR)/$(TARGET)
 
-BUILD        = $(shell /usr/share/libtool/config/config.guess)
+BUILD       ?= $(shell /usr/share/libtool/config/config.guess)
 
 TARGETLIB       = $(TARGETPREFIX)/lib
 TARGET_CFLAGS   = -pipe -O2 -g -I$(TARGETPREFIX)/include

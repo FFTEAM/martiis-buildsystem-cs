@@ -2,3 +2,7 @@
 # this will skip the building of our own compiler/glibc combination!
 CROSS_DIR=/opt/cross
 TARGET=arm-linux-gnueabi
+
+# if /usr/share/libtool/config/config.guess does not supply a valid
+# build type, specify it here. THIS IS A WORKAROUND. Use with caution.
+# BUILD=x86_64-unknown-linux-gnu
