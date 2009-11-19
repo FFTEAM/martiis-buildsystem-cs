@@ -8,8 +8,7 @@ host
 root
 store
 test
-tdsvn
-tuxbox.org
+source
 local
 Makefile.local
 .ignore
