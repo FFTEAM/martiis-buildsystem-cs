@@ -16,7 +16,7 @@ $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
 	@echo "                     Cloning neutrino-hd git repo"
 	@echo ' ============================================================================== '
-	mkir -p $(SOURCE_DIR)
+	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
 		git clone git://gitorious.org/neutrino-hd/neutrino-hd.git
 
