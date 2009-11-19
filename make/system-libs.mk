@@ -107,6 +107,7 @@ $(DEPDIR)/libboost:
 $(DEPDIR)/openssl:
 	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/openssl-0.9.8l.tar.gz
 	pushd $(BUILD_TMP)/openssl-0.9.8l && \
+		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove && \
 		$(MAKE) depend && \
 		$(MAKE) all && \
