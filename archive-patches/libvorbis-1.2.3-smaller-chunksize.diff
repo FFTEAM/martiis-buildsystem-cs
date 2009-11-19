@@ -1,0 +1,18 @@
+Index: b/lib/vorbisfile.c
+===================================================================
+--- a/lib/vorbisfile.c
++++ b/lib/vorbisfile.c
+@@ -59,11 +59,12 @@
+  * harder to understand anyway.  The high level functions are last.  Begin
+  * grokking near the end of the file */
+ 
+ /* read a little more data from the file/pipe into the ogg_sync framer
+ */
+-#define CHUNKSIZE 65536
++//#define CHUNKSIZE 65536
++#define CHUNKSIZE 4096
+ 
+ static long _get_data(OggVorbis_File *vf){
+   errno=0;
+   if(!(vf->callbacks.read_func))return(-1);
+   if(vf->datasource){

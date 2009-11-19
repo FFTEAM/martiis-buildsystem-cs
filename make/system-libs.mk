@@ -168,6 +168,7 @@ $(DEPDIR)/libvorbis: libogg
 	tar -C $(BUILD_TMP)/ -xf $(ARCHIVE)/libvorbis-1.2.3.tar.bz2
 	pushd $(BUILD_TMP)/libvorbis-1.2.3 && \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff && \
+		patch -p1 < $(PATCHES)/libvorbis-1.2.3-smaller-chunksize.diff && \
 		$(CONFIGURE) --enable-shared --prefix=$(TARGETPREFIX) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" && \
 		$(MAKE) && \
 		make install
