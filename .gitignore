@@ -12,3 +12,4 @@ tdsvn
 tuxbox.org
 local
 Makefile.local
+.ignore
