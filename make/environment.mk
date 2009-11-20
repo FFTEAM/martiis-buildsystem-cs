@@ -37,9 +37,11 @@ PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig
 
 # helper-"functions":
-REWRITE_LIBTOOL = sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/lib',"
+REWRITE_LIBTOOL = sed -i "s,^libdir=.*,libdir='$(TARGETLIB)'," $(TARGETLIB)
 REWRITE_PKGCONF = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)',"
-
+# unpack tarbalss, clean up
+UNTAR = tar -C $(BUILD_TMP) -xf $(ARCHIVE)
+REMOVE = rm -rf $(BUILD_TMP)
 
 CONFIGURE_OPTS = \
 	--build=$(BUILD) --host=$(TARGET) \
