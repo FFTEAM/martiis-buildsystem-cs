@@ -6,3 +6,8 @@ TARGET=arm-linux-gnueabi
 # if /usr/share/libtool/config/config.guess does not supply a valid
 # build type, specify it here. THIS IS A WORKAROUND. Use with caution.
 # BUILD=x86_64-unknown-linux-gnu
+
+# if you want to build your own toolchain, with "make crosstool",
+# comment out the above settings of CROSS_DIR *and* TARGET and uncomment this.
+# DO NOT SET CROSS_DIR IN THIS CASE
+#TARGET=arm-cx2450x-linux-gnueabi

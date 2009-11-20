@@ -19,7 +19,7 @@ FROOTFS      = $(BASE_DIR)/root-flash
 SOURCE_DIR   = $(BASE_DIR)/source
 
 CROSS_BASE   = $(BASE_DIR)/cross
-CROSS_DIR   ?= $(CROSS_BASE)/$(CROSS_BUILD_DIR)/$(TARGET)
+CROSS_DIR   ?= $(CROSS_BASE)
 
 BUILD       ?= $(shell /usr/share/libtool/config.guess 2>/dev/null || /usr/share/libtool/config/config.guess)
 
