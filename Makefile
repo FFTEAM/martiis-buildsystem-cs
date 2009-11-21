@@ -48,7 +48,7 @@ update-self:
 	git pull
 
 update-neutrino:
-	cd $(SOURCE_DIR)/hd-neutrino && git pull
+	cd $(SOURCE_DIR)/neutrino-hd && git pull
 
 all:
 	@echo "'make all' is not a valid target. Please read the documentation."
