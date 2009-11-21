@@ -3,7 +3,9 @@
 N_CFLAGS  = -Wall -g0 -O2 -D__KERNEL_STRICT_NAMES -DUSE_NEVIS_GXA
 N_CFLAGS += -I$(TARGETPREFIX)/include
 N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
-N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -lssl -lcrypto -ldl
+# the original build script links against openssl, but it is not needed at all.
+# N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -lssl -lcrypto -ldl
+N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -ldl
 N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
 # this is needed to avoid a "av_free_packet" unresoved symbol error
 N_LDFLAGS += -Wl,-u,av_free_packet
@@ -27,7 +29,7 @@ $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
 	echo "imagename=HD-Neutrino"		>> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
-$(DEPDIR)/neutrino: libcurl libid3tag libmad freetype libboost libjpeg libungif libvorbis ffmpeg openssl $(N_OBJDIR)/config.status
+$(DEPDIR)/neutrino: libcurl libid3tag libmad freetype libboost libjpeg libungif libvorbis ffmpeg $(N_OBJDIR)/config.status
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install
 	# make $(TARGETPREFIX)/.version
