@@ -38,7 +38,7 @@ printenv:
 include make/prerequisites.mk
 include make/bootstrap.mk
 include make/system-libs.mk
-#include make/system-tools.mk
+include make/system-tools.mk
 #include make/tuxbox.mk
 include make/neutrino.mk
 #include make/cleantargets.mk
