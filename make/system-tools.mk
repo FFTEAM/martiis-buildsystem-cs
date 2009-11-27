@@ -86,3 +86,35 @@ $(DEPDIR)/e2fsprogs:
 	$(REMOVE)/.remove
 	touch $@
 
+#  NOTE:
+#  gdb built for target or local-PC
+$(DEPDIR)/gdb:
+	$(UNTAR)/gdb-7.0.tar.bz2
+	pushd $(BUILD_TMP)/gdb-7.0 && \
+		$(BUILDENV) \
+		./configure \
+			--nfp --disable-werror \
+			--prefix= \
+			--mandir=$(BUILD_TMP)/.remove \
+			--infodir=$(BUILD_TMP)/.remove \
+			--build=$(BUILD) --host=$(TARGET) && \
+		$(MAKE) all-gdb && \
+		make install-gdb prefix=$(TARGETPREFIX) && \
+	$(REMOVE)/gdb-7.0
+	$(REMOVE)/.remove
+	touch $@
+
+#  NOTE:
+#  gdb-remote built for local-PC or target
+$(DEPDIR)/gdb-remote:
+	$(UNTAR)/gdb-7.0.tar.bz2
+	pushd $(BUILD_TMP)/gdb-7.0 && \
+		./configure \
+			--nfp --disable-werror \
+			--prefix=$(HOSTPREFIX) \
+			--build=$(BUILD) --host=$(BUILD) --target=$(TARGET) && \
+		$(MAKE) all-gdb && \
+		make install-gdb && \
+	$(REMOVE)/gdb-7.0
+	touch $@
+
