@@ -48,3 +48,41 @@ $(DEPDIR)/strace:
 	$(REMOVE)/.remove
 	touch $@
 
+$(DEPDIR)/e2fsprogs:
+	$(UNTAR)/e2fsprogs-1.41.9.tar.gz
+	cd $(BUILD_TMP)/e2fsprogs-1.41.9 && \
+		ln -sf /bin/true ./ldconfig && \
+		CC=$(TARGET)-gcc \
+		RANLIB=$(TARGET)-ranlib \
+		CFLAGS="-Os -msoft-float" \
+		LDFLAGS="$(TARGET_LDFLAGS)" \
+		PATH=$(BUILD_TMP)/e2fsprogs-1.41.9:$(PATH) \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix=$(TARGETPREFIX) \
+			--mandir=$(BUILD_TMP)/.remove \
+			--with-cc=$(TARGET)-gcc \
+			--with-linker=$(TARGET)-ld \
+			--disable-evms \
+			--enable-elf-shlibs \
+			--enable-htree \
+			--disable-profile \
+			--disable-e2initrd-helper \
+			--disable-swapfs \
+			--disable-debugfs \
+			--disable-imager \
+			--disable-resizer \
+			--disable-uuidd \
+			--enable-dynamic-e2fsck \
+			--enable-fsck \
+			--with-gnu-ld \
+			--disable-nls && \
+		$(MAKE) libs progs && \
+		$(MAKE) install-libs && \
+		$(MAKE) install-progs-recursive
+	$(REMOVE)/e2fsprogs-1.41.9
+	$(REMOVE)/.remove
+	touch $@
+
