@@ -42,6 +42,7 @@ REWRITE_PKGCONF = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)',"
 # unpack tarbalss, clean up
 UNTAR = tar -C $(BUILD_TMP) -xf $(ARCHIVE)
 REMOVE = rm -rf $(BUILD_TMP)
+PATCH = patch -p1 -i $(PATCHES)
 
 CONFIGURE_OPTS = \
 	--build=$(BUILD) --host=$(TARGET) \
