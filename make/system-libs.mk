@@ -179,24 +179,25 @@ $(DEPDIR)/libvorbis: libogg
 	$(REMOVE)/libvorbis-1.2.3
 	touch $@
 
+$(DEPDIR)/libncurses:
+	$(UNTAR)/ncurses-5.6.tar.gz && \
+	pushd $(BUILD_TMP)/ncurses-5.6 && \
+		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
+			--prefix= --with-terminfo-dirs=/usr/share/terminfo \
+			--disable-big-core --without-debug --without-progs --without-ada --with-shared \
+			--without-profile --disable-rpath --without-cxx-binding \
+			--with-fallbacks='linux vt100 xterm' && \
+		$(MAKE) libs HOSTCC=gcc HOSTLDFLAGS="$(TARGET_LDFLAGS)" \
+			HOSTCCFLAGS="$(TARGET_CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include" && \
+		make install.libs DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/ncurses-5.6
+	touch $@
+
 #############################################################################################
 #############################################################################################
 ######### not yet needed and not tested #####################################################
 #############################################################################################
 #############################################################################################
-$(DEPDIR)/libncurses:
-	$(UNTAR)/ncurses-5.6.tar.gz && \
-	pushd $(BUILD_TMP)/ncurses-5.6 && \
-		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --prefix= --with-terminfo-dirs=/share/terminfo \
-					--disable-big-core --without-debug --without-progs --without-ada --with-shared \
-					--without-profile --disable-rpath --without-cxx-binding \
-					--with-fallbacks='linux vt100 xterm' && \
-		make libs HOSTCC=gcc HOSTLDFLAGS="$(TARGET_LDFLAGS)" HOSTCCFLAGS="$(TARGET_CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include" && \
-		make install.libs DESTDIR=$(TARGETPREFIX) && \
-		$(TARGET)-ar cru $(TARGETPREFIX)/lib/libncurses_pic.a obj_s/*.o
-	$(REMOVE)/ncurses-5.6
-	touch $@
-
 $(DEPDIR)/libvorbisidec:
 	$(UNTAR)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
 	pushd $(BUILD_TMP)/libvorbisidec-1.0.2+svn14261 && \
