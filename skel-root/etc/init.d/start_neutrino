@@ -1,0 +1,22 @@
+#!/bin/sh
+export PATH=/sbin:/bin:/usr/bin:/usr/sbin
+
+# because of the rsync-excludes, this might be necessary:
+for i in tuxtxt zapit links; do
+	[ -e /var/tuxbox/config/$i ] || mkdir -p /var/tuxbox/config/$i
+done
+[ -e /share/fonts/neutrino.ttf ] || ln -s md_khmurabi_10.ttf /share/fonts/neutrino.ttf
+
+touch /tmp/norestart
+until neutrino; do
+	echo "Neutrino exited with exit code $?"
+	while [ -e /tmp/norestart ]; do # for debugging: stop the restart loop
+		sleep 1;
+	done
+done
+
+#if [ -e /tmp/.reboot ]; then # gets created by neutrino
+	reboot
+#else
+#	halt
+#fi

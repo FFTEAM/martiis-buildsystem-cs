@@ -1,0 +1,11 @@
+::sysinit:/etc/init.d/rcS
+::once:/etc/init.d/start
+
+#tts/0::respawn:/bin/agetty -L tts/0 9600 vt102
+# this sucks
+::askfirst:-/bin/sh
+#vc/1::askfirst:-/bin/sh
+
+::restart:/sbin/init
+::ctrlaltdel:/sbin/reboot
+::shutdown:/etc/init.d/rcK

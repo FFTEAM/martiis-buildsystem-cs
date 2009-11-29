@@ -118,3 +118,6 @@ $(DEPDIR)/gdb-remote:
 	$(REMOVE)/gdb-7.0
 	touch $@
 
+$(DEPDIR)/skeleton:
+	cp -a skel-root/* $(TARGETPREFIX)/
+

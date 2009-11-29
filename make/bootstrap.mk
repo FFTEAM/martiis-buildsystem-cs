@@ -1,6 +1,6 @@
 # makefile to build crosstool
 
-bootstrap:	$(BUILD_TMP) $(CROSS_BASE) $(TARGETPREFIX) $(HOSTPREFIX)/bin includes-and-libs
+bootstrap:	$(BUILD_TMP) $(CROSS_BASE) $(TARGETPREFIX) $(HOSTPREFIX)/bin includes-and-libs cs-modules libc.so.6
 
 $(TARGETPREFIX):
 	mkdir -p $(TARGETPREFIX)
@@ -29,7 +29,17 @@ $(TARGETPREFIX)/lib/libnxp.so:
 $(TARGETPREFIX)/lib/libcoolstream.so:
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libcs/libcoolstream.so $@
 
+$(TARGETPREFIX)/lib/modules/2.6.26.8-nevis:
+	mkdir -p $@
+	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
+
+$(TARGETPREFIX)/lib/libc.so.6:
+	mkdir -p $(TARGETPREFIX)/lib
+	cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib
+
+cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
 includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/include/coolstream
+libc.so.6: $(TARGETPREFIX)/lib/libc.so.6
 
 crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(BUILD_TMP)

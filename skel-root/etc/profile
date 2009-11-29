@@ -1,0 +1,13 @@
+PATH=/var/bin:/bin:/sbin
+
+# make sure TZ is exported...
+read TZ < /etc/TZ
+export TZ
+
+alias l='ls -al'
+alias ll='ls -l'
+alias dir='ls -lA'
+alias ..='cd ..'
+
+# for top etc.
+TERM=linux
