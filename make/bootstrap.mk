@@ -42,7 +42,8 @@ includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstr
 libc.so.6: $(TARGETPREFIX)/lib/libc.so.6
 
 crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
-	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(BUILD_TMP)
+	make $(BUILD_TMP)
+	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(BUILD_TMP)/
 	cd $(BUILD_TMP)/crosstool-ng-1.3.2 && \
 		cp $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs/config-cx2450x-1.3.2 .config && \
 		sed -i -e 's#^CT_LOCAL_TARBALLS_DIR=.*#CT_LOCAL_TARBALLS_DIR="$(BASE_DIR)/download"#' \
