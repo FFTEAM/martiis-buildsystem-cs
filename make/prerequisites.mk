@@ -18,7 +18,9 @@ $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone git://gitorious.org/neutrino-hd/neutrino-hd.git
+		git clone git://gitorious.org/neutrino-hd/neutrino-hd.git && \
+		cd neutrino-hd && \
+		git checkout -b neutrino-experimental origin/neutrino-experimental
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
 	mkdir -p $(shell dirname $@)
