@@ -4,7 +4,7 @@ export TZ=`cat /etc/TZ`
 mount -n -t tmpfs tmp /dev
 /sbin/mknodes 2> /dev/null
 
-dmesg -n 5
+dmesg -n 4
 for i in /etc/init.d/S??* ; do
 	echo "$i start..."
 	$i start
