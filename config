@@ -1,7 +1,7 @@
 # if you want to use your precompiled toolchain, define those variables:
 # this will skip the building of our own compiler/glibc combination!
-CROSS_DIR=/opt/cross
-TARGET=arm-linux-gnueabi
+#CROSS_DIR=/opt/cross
+#TARGET=arm-linux-gnueabi
 
 # if /usr/share/libtool/config/config.guess does not supply a valid
 # build type, specify it here. THIS IS A WORKAROUND. Use with caution.
@@ -10,4 +10,4 @@ TARGET=arm-linux-gnueabi
 # if you want to build your own toolchain, with "make crosstool",
 # comment out the above settings of CROSS_DIR *and* TARGET and uncomment this.
 # DO NOT SET CROSS_DIR IN THIS CASE
-#TARGET=arm-cx2450x-linux-gnueabi
+TARGET=arm-cx2450x-linux-gnueabi
