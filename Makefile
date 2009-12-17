@@ -42,7 +42,7 @@ include make/system-tools.mk
 #include make/tuxbox.mk
 include make/neutrino.mk
 #include make/cleantargets.mk
-#include make/linuxkernel.mk
+include make/linuxkernel.mk
 
 update-self:
 	git pull
