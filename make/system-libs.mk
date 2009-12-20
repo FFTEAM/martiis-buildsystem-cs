@@ -124,6 +124,7 @@ $(DEPDIR)/openssl:
 $(DEPDIR)/ffmpeg:
 	$(UNTAR)/ffmpeg-0.5.tar.bz2
 	pushd $(BUILD_TMP)/ffmpeg-0.5 && \
+		$(PATCH)/ffmpeg-export-missing-symbol.diff && \
 		CFLAGS=-march=armv6 \
 		./configure \
 			--enable-parsers --disable-decoders --disable-encoders --enable-demuxers \
@@ -143,7 +144,7 @@ $(DEPDIR)/ffmpeg:
 			--enable-armv6 --arch=arm \
 			--enable-debug --enable-stripping \
 			--prefix=/ && \
-		make && \
+		$(MAKE) && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc

@@ -1,0 +1,41 @@
+Index: b/libavformat/avformat.h
+===================================================================
+--- a/libavformat/avformat.h
++++ b/libavformat/avformat.h
+@@ -206,16 +206,19 @@ int av_dup_packet(AVPacket *pkt);
+ /**
+  * Free a packet.
+  *
+  * @param pkt packet to free
+  */
++void av_free_packet(AVPacket *pkt);
++#if 0
+ static inline void av_free_packet(AVPacket *pkt)
+ {
+     if (pkt && pkt->destruct) {
+         pkt->destruct(pkt);
+     }
+ }
++#endif
+ 
+ /*************************************************/
+ /* fractional numbers for exact pts handling */
+ 
+ /**
+Index: b/libavformat/mmf.c
+===================================================================
+--- a/libavformat/mmf.c
++++ b/libavformat/mmf.c
+@@ -314,5 +314,12 @@ AVOutputFormat mmf_muxer = {
+     mmf_write_header,
+     mmf_write_packet,
+     mmf_write_trailer,
+ };
+ #endif
++
++void av_free_packet(AVPacket *pkt)
++{
++    if (pkt && pkt->destruct) {
++        pkt->destruct(pkt);
++    }
++}
