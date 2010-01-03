@@ -1,6 +1,6 @@
 #Makefile to build NEUTRINO
 
-N_CFLAGS  = -Wall -g -O2 -D__KERNEL_STRICT_NAMES -DUSE_NEVIS_GXA
+N_CFLAGS  = -Wall -W -Wshadow -g -O2 -D__KERNEL_STRICT_NAMES -DUSE_NEVIS_GXA
 N_CFLAGS += -I$(TARGETPREFIX)/include
 N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 # the original build script links against openssl, but it is not needed at all.
@@ -22,7 +22,7 @@ $(N_OBJDIR)/config.status:
 		export PKG_CONFIG=$(PKG_CONFIG) && \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
 		$(SOURCE_DIR)/neutrino-hd/configure --host=$(TARGET) --build=$(BUILD) --prefix=$(TARGETPREFIX) \
-				--with-target=cdk --disable-blinkenlights
+				--enable-maintainer-mode --with-target=cdk
 
 $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
