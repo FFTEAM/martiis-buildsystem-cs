@@ -46,6 +46,8 @@ crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/sv
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(BUILD_TMP)/
 	cd $(BUILD_TMP)/crosstool-ng-1.3.2 && \
 		$(PATCH)/crosstool-132-bash4.diff && \
+		mkdir -p patches/linux/2.6.26.8 && \
+		cp $(PATCHES)/linux-2.6.26.8-rename-getline.patch patches/linux/2.6.26.8 && \
 		cp -a $(PATCHES)/crosstool-ng-1.3.2-newconfig .config && \
 		sed -i -e 's#^CT_LOCAL_TARBALLS_DIR=.*#CT_LOCAL_TARBALLS_DIR="$(BASE_DIR)/download"#' \
 		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config && \
