@@ -1,7 +1,7 @@
 # makefile for basic prerequisites
 # version 2
 
-preqs: neutrino-hd cs-svn $(DEPDIR) $(PKG_CONFIG_PATH)
+preqs: neutrino-hd cs-svn $(DEPDIR) $(PKG_CONFIG_PATH) download
 
 $(DEPDIR):
 	mkdir $(DEPDIR)
@@ -10,7 +10,14 @@ $(PKG_CONFIG_PATH):
 	mkdir -p $(PKG_CONFIG_PATH)
 
 download:
-	mkdir download
+	@echo
+	@echo "Download directory missing:"
+	@echo "==========================="
+	@echo "You need to make a directory named 'download' by executing 'mkdir download'"
+	@echo "or create a symlink to the directory where you keep your sources, e.g. by"
+	@echo "typing 'ln -s /path/to/my/Archive download'."
+	@echo
+	@false
 
 $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
