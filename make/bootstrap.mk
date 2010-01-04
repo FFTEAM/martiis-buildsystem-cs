@@ -45,6 +45,7 @@ crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/sv
 	make $(BUILD_TMP)
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(BUILD_TMP)/
 	cd $(BUILD_TMP)/crosstool-ng-1.3.2 && \
+		$(PATCH)/crosstool-132-bash4.diff && \
 		cp $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs/config-cx2450x-1.3.2 .config && \
 		sed -i -e 's#^CT_LOCAL_TARBALLS_DIR=.*#CT_LOCAL_TARBALLS_DIR="$(BASE_DIR)/download"#' \
 		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config && \
