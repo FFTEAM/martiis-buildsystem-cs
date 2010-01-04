@@ -22,17 +22,19 @@ printenv:
 		echo "$(TARGET)-gcc found in PATH or in \$$CROSS_DIR/bin."; \
 	else \
 		echo "$(TARGET)-gcc not found in PATH or \$$CROSS_DIR/bin"; \
-		echo "please check your setup."; \
+		echo "please check your setup. Maybe you want to 'make crosstool'."; \
 	fi
 	@echo ""
 	@echo "a few helpful make targets:"
 	@echo "* make preqs         - downloads necessary stuff"
+	@echo "* make crosstool     - build cross toolchain"
 	@echo "* make bootstrap     - prepares for building"
 	@echo "* make neutrino      - builds neutrino"
 	@echo ""
 	@echo "later, you might find those useful:"
 	@echo "* make update-self     - update the build system"
 	@echo "* make update-neutrino - update the neutrino source"
+	@echo "* make update-svn      - update the coolstream svn parts"
 	@echo ""
 
 include make/prerequisites.mk
