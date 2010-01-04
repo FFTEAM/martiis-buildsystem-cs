@@ -10,14 +10,16 @@ N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
 # this is needed to avoid a "av_free_packet" unresoved symbol error
 N_LDFLAGS += -Wl,-u,av_free_packet
 
-# does not yet work...
-# N_OBJDIR = $(BUILD_TMP)/neutrino-hd
-N_OBJDIR = $(SOURCE_DIR)/neutrino-hd
+# finally we can build outside of the source directory
+N_OBJDIR = $(BUILD_TMP)/neutrino-hd
+# use this if you want to build inside the source dir - but you don't want that ;)
+# N_OBJDIR = $(SOURCE_DIR)/neutrino-hd
 
-$(N_OBJDIR)/config.status:
-	pushd $(SOURCE_DIR)/neutrino-hd && \
-		touch README && \
-		./autogen.sh
+$(N_OBJDIR):
+	mkdir -p $(N_OBJDIR)
+
+$(N_OBJDIR)/config.status: $(N_OBJDIR)
+	$(SOURCE_DIR)/neutrino-hd/autogen.sh
 	pushd $(N_OBJDIR) && \
 		export PKG_CONFIG=$(PKG_CONFIG) && \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
