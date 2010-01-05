@@ -17,8 +17,8 @@ $(DEPDIR)/procps: libncurses
 		make CC=$(TARGET)-gcc LDFLAGS="$(LD_FLAGS)" \
 			CPPFLAGS="-pipe -O2 -g -I$(TARGETPREFIX)/include -I$(TARGETPREFIX)/include/ncurses -D__GNU_LIBRARY__" \
 			top ps/ps && \
-		rm -f $(TARGETPREFIX)/bin/ps && \
 		mkdir -p $(TARGETPREFIX)/bin && \
+		rm -f $(TARGETPREFIX)/bin/ps $(TARGETPREFIX)/bin/top && \
 		install -m 755 top ps/ps $(TARGETPREFIX)/bin && \
 		install -m 755 proc/libproc-3.2.7.so $(TARGETPREFIX)/lib
 	$(REMOVE)/procps-3.2.7
