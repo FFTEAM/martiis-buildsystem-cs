@@ -1,6 +1,6 @@
 #Makefile to build system libs, potentially needed by neutrino and enigma
 
-$(DEPDIR)/zlib:
+$(DEPDIR)/zlib: $(ARCHIVE)/zlib-1.2.3.tar.bz2
 	$(UNTAR)/zlib-1.2.3.tar.bz2
 	cd $(BUILD_TMP)/zlib-1.2.3 && \
 		CC=$(TARGET)-gcc ./configure --prefix= --shared && \
@@ -10,7 +10,7 @@ $(DEPDIR)/zlib:
 	$(REMOVE)/zlib-1.2.3
 	touch $@
 
-$(DEPDIR)/libmad:
+$(DEPDIR)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz
 	$(UNTAR)/libmad-0.15.1b.tar.gz
 	pushd $(BUILD_TMP)/libmad-0.15.1b && \
 		patch -p1 < $(PATCHES)/libmad.diff && \
@@ -23,7 +23,7 @@ $(DEPDIR)/libmad:
 	$(REMOVE)/libmad-0.15.1b
 	touch $@
 
-$(DEPDIR)/libid3tag: zlib
+$(DEPDIR)/libid3tag: zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz
 	$(UNTAR)/libid3tag-0.15.1b.tar.gz
 	pushd $(BUILD_TMP)/libid3tag-0.15.1b && \
 		patch -p1 < $(PATCHES)/libid3tag.diff && \
@@ -35,7 +35,7 @@ $(DEPDIR)/libid3tag: zlib
 	$(REWRITE_LIBTOOL)/libid3tag.la
 	touch $@
 
-$(DEPDIR)/libungif:
+$(DEPDIR)/libungif: $(ARCHIVE)/libungif-4.1.3.tar.bz2
 	$(UNTAR)/libungif-4.1.3.tar.bz2
 	pushd $(BUILD_TMP)/libungif-4.1.3 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove && \
@@ -46,7 +46,7 @@ $(DEPDIR)/libungif:
 	$(REMOVE)/libungif-4.1.3
 	touch $@
 
-$(DEPDIR)/libcurl:
+$(DEPDIR)/libcurl: $(ARCHIVE)/curl-7.19.7.tar.bz2
 	$(UNTAR)/curl-7.19.7.tar.bz2
 	pushd $(BUILD_TMP)/curl-7.19.7 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --with-random --mandir=/.remove && \
@@ -61,7 +61,7 @@ $(DEPDIR)/libcurl:
 	$(REMOVE)/curl-7.19.7
 	touch $@
 
-$(DEPDIR)/libpng:
+$(DEPDIR)/libpng: $(ARCHIVE)/libpng-1.2.40.tar.bz2
 	$(UNTAR)/libpng-1.2.40.tar.bz2
 	pushd $(BUILD_TMP)/libpng-1.2.40 && \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman && \
@@ -70,7 +70,7 @@ $(DEPDIR)/libpng:
 	$(REMOVE)/libpng-1.2.40 $(BUILD_TMP)/tmpman
 	touch $@
 
-$(DEPDIR)/freetype: libpng
+$(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.9.tar.bz2
 	$(UNTAR)/freetype-2.3.9.tar.bz2
 	pushd $(BUILD_TMP)/freetype-2.3.9 && \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff && \
@@ -84,7 +84,7 @@ $(DEPDIR)/freetype: libpng
 	$(REMOVE)/freetype-2.3.9
 	touch $@
 
-$(DEPDIR)/libjpeg:
+$(DEPDIR)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz
 	$(UNTAR)/jpegsrc.v6b.tar.gz
 	pushd $(BUILD_TMP) && \
 		pushd jpeg-6b && \
@@ -97,7 +97,7 @@ $(DEPDIR)/libjpeg:
 	$(REMOVE)/jpeg-6b
 	touch $@
 
-$(DEPDIR)/libboost:
+$(DEPDIR)/libboost: $(ARCHIVE)/boost_1_40_0.tar.bz2
 	pushd $(BUILD_TMP) && \
 		tar xf $(ARCHIVE)/boost_1_40_0.tar.bz2 boost_1_40_0/boost && \
 		rm -rf $(TARGETPREFIX)/include/boost &&\
@@ -105,7 +105,7 @@ $(DEPDIR)/libboost:
 		rmdir boost_1_40_0
 	touch $@
 
-$(DEPDIR)/openssl:
+$(DEPDIR)/openssl: $(ARCHIVE)/openssl-0.9.8l.tar.gz
 	$(UNTAR)/openssl-0.9.8l.tar.gz
 	pushd $(BUILD_TMP)/openssl-0.9.8l && \
 		CC=$(TARGET)-gcc \
@@ -121,7 +121,7 @@ $(DEPDIR)/openssl:
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
 
-$(DEPDIR)/ffmpeg:
+$(DEPDIR)/ffmpeg: $(ARCHIVE)/ffmpeg-0.5.tar.bz2
 	$(UNTAR)/ffmpeg-0.5.tar.bz2
 	pushd $(BUILD_TMP)/ffmpeg-0.5 && \
 		$(PATCH)/ffmpeg-export-missing-symbol.diff && \
@@ -153,7 +153,7 @@ $(DEPDIR)/ffmpeg:
 	$(REMOVE)/ffmpeg-0.5
 	touch $@
 
-$(DEPDIR)/libogg:
+$(DEPDIR)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz
 	$(UNTAR)/libogg-1.1.4.tar.gz
 	pushd $(BUILD_TMP)/libogg-1.1.4 && \
 		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff && \
@@ -166,7 +166,7 @@ $(DEPDIR)/libogg:
 	touch $@
 
 # for some reason, libvorbis does not work with "--prefix=/"
-$(DEPDIR)/libvorbis: libogg
+$(DEPDIR)/libvorbis: libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2
 	$(UNTAR)/libvorbis-1.2.3.tar.bz2
 	pushd $(BUILD_TMP)/libvorbis-1.2.3 && \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff && \
@@ -180,7 +180,7 @@ $(DEPDIR)/libvorbis: libogg
 	$(REMOVE)/libvorbis-1.2.3
 	touch $@
 
-$(DEPDIR)/libncurses:
+$(DEPDIR)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz && \
 	$(UNTAR)/ncurses-5.6.tar.gz && \
 	pushd $(BUILD_TMP)/ncurses-5.6 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
@@ -199,7 +199,7 @@ $(DEPDIR)/libncurses:
 ######### not yet needed and not tested #####################################################
 #############################################################################################
 #############################################################################################
-$(DEPDIR)/libvorbisidec:
+$(DEPDIR)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
 	$(UNTAR)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
 	pushd $(BUILD_TMP)/libvorbisidec-1.0.2+svn14261 && \
 		patch -p1 < $(PATCHES)/tremor.diff && \
@@ -212,7 +212,7 @@ $(DEPDIR)/libvorbisidec:
 	$(REMOVE)/libvorbisidec-1.0.2+svn14261
 	touch $@
 
-$(DEPDIR)/libpcap:
+$(DEPDIR)/libpcap: $(ARCHIVE)/libpcap-1.0.0.tar.gz
 	$(UNTAR)/libpcap-1.0.0.tar.gz
 	pushd $(BUILD_TMP)/libpcap-1.0.0 && \
 		echo "ac_cv_linux_vers=2" >> config.cache && \

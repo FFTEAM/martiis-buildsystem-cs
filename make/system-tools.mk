@@ -1,6 +1,6 @@
 #Makefile to build system tools
 
-$(DEPDIR)/rsync:
+$(DEPDIR)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz
 	$(UNTAR)/rsync-3.0.6.tar.gz
 	pushd $(BUILD_TMP)/rsync-3.0.6 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
@@ -10,7 +10,7 @@ $(DEPDIR)/rsync:
 	$(REMOVE)/.remove
 	touch $@
 
-$(DEPDIR)/procps: libncurses
+$(DEPDIR)/procps: libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
 	$(UNTAR)/procps-3.2.7.tar.gz
 	pushd $(BUILD_TMP)/procps-3.2.7 && \
 		$(PATCH)/procps-3.2.7-avoid-ICE-with-gcc-4.3.2-arm.diff && \
@@ -24,7 +24,7 @@ $(DEPDIR)/procps: libncurses
 	$(REMOVE)/procps-3.2.7
 	touch $@
 
-$(DEPDIR)/busybox:
+$(DEPDIR)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 	$(UNTAR)/busybox-1.15.2.tar.bz2
 	pushd $(BUILD_TMP)/busybox-1.15.2 && \
 		cp $(PATCHES)/busybox-hd1.config .config && \
@@ -34,7 +34,7 @@ $(DEPDIR)/busybox:
 	$(REMOVE)/busybox-1.15.2
 	touch $@
 
-$(DEPDIR)/strace:
+$(DEPDIR)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
 	$(UNTAR)/strace-4.5.19.tar.bz2
 	pushd $(BUILD_TMP)/strace-4.5.19 && \
 		CFLAGS="-W -Wall $(TARGET_CFLAGS)" \
@@ -48,7 +48,7 @@ $(DEPDIR)/strace:
 	$(REMOVE)/.remove
 	touch $@
 
-$(DEPDIR)/e2fsprogs:
+$(DEPDIR)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
 	$(UNTAR)/e2fsprogs-1.41.9.tar.gz
 	cd $(BUILD_TMP)/e2fsprogs-1.41.9 && \
 		ln -sf /bin/true ./ldconfig && \
@@ -88,7 +88,7 @@ $(DEPDIR)/e2fsprogs:
 
 #  NOTE:
 #  gdb built for target or local-PC
-$(DEPDIR)/gdb:
+$(DEPDIR)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2
 	$(UNTAR)/gdb-7.0.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.0 && \
 		$(BUILDENV) \
@@ -106,7 +106,7 @@ $(DEPDIR)/gdb:
 
 #  NOTE:
 #  gdb-remote built for local-PC or target
-$(DEPDIR)/gdb-remote:
+$(DEPDIR)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 	$(UNTAR)/gdb-7.0.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.0 && \
 		./configure \

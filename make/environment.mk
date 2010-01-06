@@ -39,10 +39,12 @@ PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig
 # helper-"functions":
 REWRITE_LIBTOOL = sed -i "s,^libdir=.*,libdir='$(TARGETLIB)'," $(TARGETLIB)
 REWRITE_PKGCONF = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)',"
-# unpack tarbalss, clean up
+# unpack tarballs, clean up
 UNTAR = tar -C $(BUILD_TMP) -xf $(ARCHIVE)
 REMOVE = rm -rf $(BUILD_TMP)
 PATCH = patch -p1 -i $(PATCHES)
+# wget tarballs into archive directory
+WGET = wget -t3 -T10 -c -P $(ARCHIVE)
 
 CONFIGURE_OPTS = \
 	--build=$(BUILD) --host=$(TARGET) \
