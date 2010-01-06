@@ -118,6 +118,8 @@ $(DEPDIR)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 	$(REMOVE)/gdb-7.0
 	touch $@
 
+$(DEPDIR)/system-tools-all: $(DEPDIR)/rsync $(DEPDIR)/procps $(DEPDIR)/busybox $(DEPDIR)/strace $(DEPDIR)/e2fsprogs $(DEPDIR)/gdb $(DEPDIR)/gdb-remote
+
 $(DEPDIR)/skeleton:
 	cp -a skel-root/* $(TARGETPREFIX)/
 
