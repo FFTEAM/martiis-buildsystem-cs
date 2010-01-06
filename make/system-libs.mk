@@ -180,7 +180,7 @@ $(DEPDIR)/libvorbis: libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2
 	$(REMOVE)/libvorbis-1.2.3
 	touch $@
 
-$(DEPDIR)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz && \
+$(DEPDIR)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz
 	$(UNTAR)/ncurses-5.6.tar.gz && \
 	pushd $(BUILD_TMP)/ncurses-5.6 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
