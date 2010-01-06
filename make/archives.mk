@@ -1,3 +1,5 @@
+# makefile for tarball download
+
 $(ARCHIVE)/zlib-1.2.3.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.3/zlib-1.2.3.tar.bz2?use_mirror=switch
 
