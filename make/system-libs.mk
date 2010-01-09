@@ -121,7 +121,7 @@ $(DEPDIR)/openssl: $(ARCHIVE)/openssl-0.9.8l.tar.gz
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
 
-$(DEPDIR)/ffmpeg: $(ARCHIVE)/ffmpeg-0.5.tar.bz2
+$(DEPDIR)/ffmpeg-0.5: $(ARCHIVE)/ffmpeg-0.5.tar.bz2
 	$(UNTAR)/ffmpeg-0.5.tar.bz2
 	pushd $(BUILD_TMP)/ffmpeg-0.5 && \
 		$(PATCH)/ffmpeg-export-missing-symbol.diff && \
@@ -151,6 +151,41 @@ $(DEPDIR)/ffmpeg: $(ARCHIVE)/ffmpeg-0.5.tar.bz2
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
 	$(REMOVE)/ffmpeg-0.5
+	touch $@
+
+# maybe put this into archive.mk?
+$(BUILD_TMP)/ffmpeg:
+	svn checkout svn://svn.ffmpeg.org/ffmpeg/trunk $(BUILD_TMP)/ffmpeg
+
+$(DEPDIR)/ffmpeg: $(BUILD_TMP)/ffmpeg
+	pushd $(BUILD_TMP)/ffmpeg && \
+		CFLAGS=-march=armv6 \
+		./configure \
+			--enable-parsers --disable-decoders --disable-encoders --enable-demuxers \
+			--disable-muxers --disable-ffplay --disable-ffmpeg --disable-ffserver \
+			--enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video \
+			--enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio \
+			--enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 \
+			--enable-demuxer=mpegps \
+			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
+			--disable-protocols --enable-protocol=file --enable-bsfs \
+			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
+			--disable-network --disable-ipv6 \
+			--disable-static --enable-shared \
+			--enable-cross-compile \
+			--cross-prefix=$(TARGET)- \
+			--enable-armv6 --arch=arm \
+			--enable-debug --enable-stripping \
+			--prefix=/ && \
+		$(MAKE) && \
+		make install DESTDIR=$(TARGETPREFIX) && \
+		./version.sh . $(TARGETPREFIX)/lib/ffmpeg-version.h
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
+	# don't check out everything every time...
+	# $(REMOVE)/ffmpeg
 	touch $@
 
 $(DEPDIR)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz
