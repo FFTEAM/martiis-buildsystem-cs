@@ -7,8 +7,6 @@ N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 # N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -lssl -lcrypto -ldl
 N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -ldl
 N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
-# this is needed to avoid a "av_free_packet" unresoved symbol error
-N_LDFLAGS += -Wl,-u,av_free_packet
 
 # finally we can build outside of the source directory
 N_OBJDIR = $(BUILD_TMP)/neutrino-hd
