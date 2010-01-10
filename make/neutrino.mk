@@ -16,7 +16,8 @@ N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 $(N_OBJDIR):
 	mkdir -p $(N_OBJDIR)
 
-$(N_OBJDIR)/config.status: $(N_OBJDIR)
+$(N_OBJDIR)/config.status:
+	make $(N_OBJDIR)
 	$(SOURCE_DIR)/neutrino-hd/autogen.sh
 	pushd $(N_OBJDIR) && \
 		export PKG_CONFIG=$(PKG_CONFIG) && \
