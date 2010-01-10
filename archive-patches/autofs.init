@@ -1,0 +1,63 @@
+#!/bin/sh
+#
+# simple autofs init script
+
+uname_r() {
+	read dummy dummy uname dummy < /proc/version
+	echo $uname
+}
+
+# load the module if necessary
+if ! grep -q autofs /proc/filesystems; then # the kernel does not know it
+	MODULE=/lib/modules/$(uname_r)/kernel/fs/autofs4/autofs4.ko
+	if ! insmod $MODULE > /dev/null 2>&1; then # module loading failed
+		exit 1;
+	fi
+fi
+
+# the MAPFILE is the "configfile" for automount
+# first check for "auto.net-HOSTNAME", to make it easy to auto-deploy machines
+MAPFILE=/etc/auto.net-$(hostname -s)
+if [ ! -e $MAPFILE ]; then
+	# fallback to auto.net
+	MAPFILE=/etc/auto.net
+fi
+# allow stopping the daemon even without a mapfile
+if [ ! -e $MAPFILE -a "x$1" = "xstart" ]; then
+	# no config file => no need to do anyhting else
+	echo "automount: $MAPFILE does not exist, cannot start"
+	exit 1;
+fi
+
+PIDFILE=/var/run/automount.pid
+
+# The parent directory of AUTOFSMOUNTDIR must be absolute, must exist,
+# and be writeable. The AUTOFSMOUNTDIR should not exist.
+AUTOFSMOUNTDIR=/tmp/automount
+
+# configure here:
+# debug parameters (-v and -d only meaningful with syslogd)
+#  -v :		verbose
+#  -d :		debug
+#  -t 30 :	shorter timeout (30 seconds instead of 600)
+
+# Use ghosting (-g), does not break anything if kernel support not present.
+DAEMON_PARAMS="-g -t 600 -p $PIDFILE $AUTOFSMOUNTDIR file $MAPFILE"
+
+case $1 in
+	stop)
+		read PID < $PIDFILE && kill -TERM $PID
+		;;
+	start)
+		# automount needs /var/lock or it will exit silently
+		[ ! -d /var/lock ] && mkdir -p /var/lock
+		echo "starting the automounter..."
+		automount $DAEMON_PARAMS
+		;;
+	reload)
+		read PID < $PIDFILE && kill -HUP $PID
+		;;
+	*)
+		echo "usage: $0 [start|stop|reload]"
+		;;
+esac

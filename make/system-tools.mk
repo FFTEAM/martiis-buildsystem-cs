@@ -123,3 +123,15 @@ system-tools-all: $(DEPDIR)/rsync $(DEPDIR)/procps $(DEPDIR)/busybox $(DEPDIR)/s
 $(DEPDIR)/skeleton:
 	cp -a skel-root/* $(TARGETPREFIX)/
 
+$(DEPDIR)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
+	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
+	$(UNTAR)/autofs-4.1.4.tar.bz2
+	cd $(BUILD_TMP)/autofs-4.1.4 && \
+		$(PATCH)/autofs-4.1.4-td.diff && \
+		$(BUILDENV) $(MAKE) CC=$(TARGET)-gcc STRIP=$(TARGET)-strip SUBDIRS="lib daemon modules"  && \
+		$(MAKE) install INSTALLROOT=$(TARGETPREFIX) SUBDIRS="lib daemon modules"
+	install -m 0755 -D $(PATCHES)/autofs.init $(TARGETPREFIX)/etc/init.d/S60autofs
+	ln -sf S60autofs $(TARGETPREFIX)/etc/init.d/K40autofs
+	$(REMOVE)/autofs-4.1.4
+	touch $@
+

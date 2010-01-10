@@ -1,5 +1,8 @@
 # makefile for tarball download
 
+$(ARCHIVE)/autofs-4.1.4.tar.bz2:
+	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4.tar.bz2
+
 $(ARCHIVE)/zlib-1.2.3.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.3/zlib-1.2.3.tar.bz2?use_mirror=switch
 
