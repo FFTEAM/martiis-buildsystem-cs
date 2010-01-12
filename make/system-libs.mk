@@ -215,7 +215,18 @@ $(DEPDIR)/libvorbis: libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2
 	$(REMOVE)/libvorbis-1.2.3
 	touch $@
 
-$(DEPDIR)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz
+ncurses-prereq:
+	@if type -p tic && type -p infocmp ; then \
+		true; \
+	else \
+		echo "**********************************************************"; \
+		echo "* tic or infocmp missing, but needed to build libncurses *"; \
+		echo "* install the ncurses development package on your system *"; \
+		echo "**********************************************************"; \
+		false; \
+	fi
+
+$(DEPDIR)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz ncurses-prereq
 	$(UNTAR)/ncurses-5.6.tar.gz && \
 	pushd $(BUILD_TMP)/ncurses-5.6 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
