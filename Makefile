@@ -46,6 +46,7 @@ include make/neutrino.mk
 #include make/cleantargets.mk
 include make/linuxkernel.mk
 include make/archives.mk
+include make/rootfs.mk
 
 update-self:
 	git pull
