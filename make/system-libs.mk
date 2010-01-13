@@ -55,6 +55,7 @@ $(DEPDIR)/libcurl: $(ARCHIVE)/curl-7.19.7.tar.bz2
 		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < curl-config > $(HOSTPREFIX)/bin/curl-config && \
 		chmod 755 $(HOSTPREFIX)/bin/curl-config && \
 		make install DESTDIR=$(TARGETPREFIX)
+	rm $(TARGETPREFIX)/bin/curl-config
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
@@ -79,6 +80,7 @@ $(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.9.tar.bz2
 		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < builds/unix/freetype-config > $(HOSTPREFIX)/bin/freetype-config && \
 		chmod 755 $(HOSTPREFIX)/bin/freetype-config && \
 		make install libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include bindir=$(TARGETPREFIX)/bin prefix=$(TARGETPREFIX)
+	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
 	$(REMOVE)/freetype-2.3.9

@@ -84,6 +84,7 @@ $(DEPDIR)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
 		$(MAKE) install-progs-recursive
 	$(REMOVE)/e2fsprogs-1.41.9
 	$(REMOVE)/.remove
+	rm -rf $(TARGETPREFIX)/{include,share}/{et,ss} $(TARGETPREFIX)/bin/{compile_et,mk_cmds}
 	touch $@
 
 #  NOTE:
