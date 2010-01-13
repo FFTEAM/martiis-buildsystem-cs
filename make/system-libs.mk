@@ -240,6 +240,16 @@ $(DEPDIR)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz ncurses-prereq
 	$(REMOVE)/ncurses-5.6
 	touch $@
 
+$(DEPDIR)/libiconv: $(ARCHIVE)/libiconv-1.13.tar.gz
+	$(UNTAR)/libiconv-1.13.tar.gz
+	pushd $(BUILD_TMP)/libiconv-1.13 && \
+		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --prefix= --datarootdir=/.remove && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	rm -fr $(TARGETPREFIX)/.remove
+	$(REMOVE)/libiconv-1.13
+	touch $@
+
 #############################################################################################
 #############################################################################################
 ######### not yet needed and not tested #####################################################

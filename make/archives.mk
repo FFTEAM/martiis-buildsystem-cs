@@ -9,6 +9,9 @@ $(ARCHIVE)/zlib-1.2.3.tar.bz2:
 $(ARCHIVE)/libmad-0.15.1b.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/0.15.1b/libmad-0.15.1b.tar.gz?use_mirror=switch
 
+$(ARCHIVE)/libiconv-1.13.tar.gz:
+	$(WGET) http://ftp.gnu.org/gnu/libiconv/libiconv-1.13.tar.gz
+
 $(ARCHIVE)/libid3tag-0.15.1b.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/0.15.1b/libid3tag-0.15.1b.tar.gz?use_mirror=switch
 
@@ -59,6 +62,9 @@ $(ARCHIVE)/procps-3.2.7.tar.gz:
 
 $(ARCHIVE)/busybox-1.15.2.tar.bz2:
 	$(WGET) http://busybox.net/downloads/busybox-1.15.2.tar.bz2
+
+$(ARCHIVE)/samba-3.3.9.tar.gz:
+	$(WGET) http://download.samba.org/samba/ftp/old-versions/samba-3.3.9.tar.gz
 
 $(ARCHIVE)/strace-4.5.19.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.19/strace-4.5.19.tar.bz2?use_mirror=switch

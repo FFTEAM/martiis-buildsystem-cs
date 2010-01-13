@@ -135,3 +135,28 @@ $(DEPDIR)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
 	$(REMOVE)/autofs-4.1.4
 	touch $@
 
+$(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
+	$(UNTAR)/samba-3.3.9.tar.gz
+	cd $(BUILD_TMP)/samba-3.3.9 && \
+		$(PATCH)/samba-3.3.9.diff && \
+		cp $(PATCHES)/samba-3.3.9-config.site source/config.site && \
+		cd source && \
+		export CONFIG_SITE=config.site && \
+		autoconf && \
+		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
+			--prefix= --mandir=/.remove \
+			--sysconfdir=/etc/samba \
+			--with-configdir=/etc/samba \
+			--with-privatedir=/etc/samba \
+			--with-modulesdir=/lib/samba \
+			--datadir=/var/samba \
+			--localstatedir=/var/samba \
+			--with-piddir=/tmp \
+			--with-libiconv=/lib \
+			--with-cifsumount --without-krb5 --without-ldap --without-ads --disable-cups --disable-swat \
+			&& \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	rm -f -r $(TARGETPREFIX)/.remove
+	$(REMOVE)/samba-3.3.9
+	touch $@

@@ -1,0 +1,8 @@
+linux_getgrouplist_ok=yes
+samba_cv_REPLACE_READDIR=no 
+samba_cv_HAVE_WRFILE_KEYTAB=no 
+samba_cv_HAVE_Wdeclaration_after_statement=yes 
+samba_cv_HAVE_Werror=yes 
+samba_cv_HAVE_w2=yes 
+samba_cv_HAVE_KERNEL_OPLOCKS_LINUX=no
+samba_cv_CC_NEGATIVE_ENUM_VALUES=yes
