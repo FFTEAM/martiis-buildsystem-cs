@@ -3,11 +3,12 @@
 $(DEPDIR)/zlib: $(ARCHIVE)/zlib-1.2.3.tar.bz2
 	$(UNTAR)/zlib-1.2.3.tar.bz2
 	cd $(BUILD_TMP)/zlib-1.2.3 && \
-		CC=$(TARGET)-gcc ./configure --prefix= --shared && \
+		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared && \
 		make && \
 		ln -sf /bin/true ldconfig && \
 		PATH=$(BUILD_TMP)/zlib-1.2.3:$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REMOVE)/zlib-1.2.3
+	$(REMOVE)/.remove
 	touch $@
 
 $(DEPDIR)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz
