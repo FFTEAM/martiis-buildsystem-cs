@@ -143,7 +143,7 @@ $(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
 		cp $(PATCHES)/samba-3.3.9-config.site source/config.site && \
 		cd source && \
 		export CONFIG_SITE=config.site && \
-		autoconf && \
+		./autogen.sh && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
 			--prefix= --mandir=/.remove \
 			--sysconfdir=/etc/samba \
