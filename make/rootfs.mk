@@ -15,5 +15,7 @@ rootfs:
 	@echo "*******************************************************"
 	@echo "*** The following warnings from strip are harmless! ***"
 	@echo "*******************************************************"
-	find $(BOX)/{bin,sbin,lib} -type f -print0 | xargs -0 $(TARGET)-strip || true
+	find $(BOX)/bin -type f -print0 | xargs -0 $(TARGET)-strip || true
+	find $(BOX)/sbin -type f -print0 | xargs -0 $(TARGET)-strip || true
+	find $(BOX)/lib -path $(BOX)/lib/modules -prune -o -type f -print0 | xargs -0 $(TARGET)-strip || true
 	du -sh $(BOX)
