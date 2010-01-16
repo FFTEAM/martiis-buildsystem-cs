@@ -37,9 +37,9 @@ $(DEPDIR)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 $(DEPDIR)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
 	$(UNTAR)/strace-4.5.19.tar.bz2
 	pushd $(BUILD_TMP)/strace-4.5.19 && \
-		CFLAGS="-W -Wall $(TARGET_CFLAGS)" \
+		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGETPREFIX)/include" \
-		CXXFLAGS="-W -Wall $(TARGET_CXXFLAGS)" \
+		CXXFLAGS="$(TARGET_CXXFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all && \

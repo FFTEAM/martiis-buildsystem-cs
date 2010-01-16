@@ -47,14 +47,13 @@ PATCH = patch -p1 -i $(PATCHES)
 WGET = wget -t3 -T10 -c -P $(ARCHIVE)
 
 CONFIGURE_OPTS = \
-	--build=$(BUILD) --host=$(TARGET) \
-	--enable-maintainer-mode \
+	--build=$(BUILD) --host=$(TARGET)
 
 BUILDENV = \
-	CFLAGS="-W -Wall $(TARGET_CFLAGS)" \
+	CFLAGS="$(TARGET_CFLAGS)" \
 	CPPFLAGS="$(TARGET_CPPFLAGS)" \
-	CXXFLAGS="-W -Wall $(TARGET_CXXFLAGS)" \
-	LDFLAGS=" -Wl,-O1 -L$(TARGETPREFIX)/lib" \
+	CXXFLAGS="$(TARGET_CXXFLAGS)" \
+	LDFLAGS="$(TARGET_LDFLAGS)" \
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH)
 
 CONFIGURE = \
