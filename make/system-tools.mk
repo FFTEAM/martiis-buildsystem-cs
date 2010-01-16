@@ -140,9 +140,8 @@ $(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
 	$(UNTAR)/samba-3.3.9.tar.gz
 	cd $(BUILD_TMP)/samba-3.3.9 && \
 		$(PATCH)/samba-3.3.9.diff && \
-		cp $(PATCHES)/samba-3.3.9-config.site source/config.site && \
 		cd source && \
-		export CONFIG_SITE=config.site && \
+		export CONFIG_SITE=$(PATCHES)/samba-3.3.9-config.site && \
 		./autogen.sh && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
 			--prefix= --mandir=/.remove \
