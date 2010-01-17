@@ -123,7 +123,7 @@ $(DEPDIR)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 system-tools-all: $(DEPDIR)/rsync $(DEPDIR)/procps $(DEPDIR)/busybox $(DEPDIR)/strace $(DEPDIR)/e2fsprogs $(DEPDIR)/gdb $(DEPDIR)/gdb-remote
 
 $(DEPDIR)/skeleton:
-	cp -a skel-root/* $(TARGETPREFIX)/
+	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
 
 $(DEPDIR)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
