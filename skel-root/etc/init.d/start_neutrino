@@ -15,8 +15,8 @@ until neutrino; do
 	done
 done
 
-#if [ -e /tmp/.reboot ]; then # gets created by neutrino
+if [ -e /tmp/.reboot ]; then # gets created by neutrino
 	reboot
 #else
 #	halt
-#fi
+fi
