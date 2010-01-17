@@ -27,6 +27,7 @@ $(DEPDIR)/procps: libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
 $(DEPDIR)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 	$(UNTAR)/busybox-1.15.2.tar.bz2
 	pushd $(BUILD_TMP)/busybox-1.15.2 && \
+		$(PATCH)/busybox-1.15.2-make-ftpd-more-tolerant.diff && \
 		cp $(PATCHES)/busybox-hd1.config .config && \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(TARGETPREFIX)"#' .config && \
 		$(MAKE) all  CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \

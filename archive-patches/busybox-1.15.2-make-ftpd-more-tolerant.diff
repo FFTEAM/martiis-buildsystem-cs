@@ -1,0 +1,25 @@
+Index: b/networking/ftpd.c
+===================================================================
+--- a/networking/ftpd.c
++++ b/networking/ftpd.c
+@@ -625,10 +625,20 @@ popen_ls(const char *opt)
+ 			NULL
+ 	};
+ 	struct fd_pair outfd;
+ 	pid_t pid;
+ 
++	/* improve compatibility with non-RFC conforming FTP clients.
++	   they send e.g. "LIST -l".
++	   for an example see https://bugs.kde.org/show_bug.cgi?id=195578 */
++	if (G.ftp_arg && G.ftp_arg[0] == '-') {
++		cwd = strchr(G.ftp_arg, ' ');
++		if (cwd) /* skip the space */
++			cwd++;
++		argv[3] = cwd;
++	}
++
+ 	cwd = xrealloc_getcwd_or_warn(NULL);
+ 	xpiped_pair(outfd);
+ 
+ 	/*fflush(NULL); - so far we dont use stdio on output */
+ 	pid = BB_MMU ? fork() : vfork();
