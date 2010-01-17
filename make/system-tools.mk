@@ -123,7 +123,7 @@ $(DEPDIR)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 system-tools-all: $(DEPDIR)/rsync $(DEPDIR)/procps $(DEPDIR)/busybox $(DEPDIR)/strace $(DEPDIR)/e2fsprogs $(DEPDIR)/gdb $(DEPDIR)/gdb-remote
 
 $(DEPDIR)/skeleton:
-	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
+	cp -a skel-root/* $(TARGETPREFIX)/
 
 $(DEPDIR)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
@@ -161,80 +161,3 @@ $(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
 	rm -f -r $(TARGETPREFIX)/.remove
 	$(REMOVE)/samba-3.3.9
 	touch $@
-
-# xfsprogs needs uuid header/lib of e2fsprogs -> just depend on e2fsprodx
-$(DEPDIR)/xfsprogs: e2fsprogs
-	$(UNTAR)/xfsprogs-3.0.5.tar.gz
-	cd $(BUILD_TMP)/xfsprogs-3.0.5 && \
-		cp $(TARGETPREFIX)/include/uuid include/ -a && \
-		ln -sf $(CROSS_DIR)/bin/$(TARGET)-gcc gcc && \
-		export PATH=$(BUILD_TMP)/xfsprogs-3.0.5:$(PATH) && \
-		LIBTOOL="libtool --tag=CC" \
-		CC=$(TARGET)-gcc LD=$(TARGET)-ld \
-		$(BUILDENV) \
-		./configure \
-			--build=$(BUILD) \
-			--host=$(TARGET) \
-			--includedir=$(TARGETPREFIX)/include \
-			--oldincludedir=$(TARGETPREFIX)/include \
-			--enable-gettext=no \
-			--prefix=$(TARGETPREFIX) &&\
-		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-#	rm -rf $(BUILD_TMP)/xfsprogs-2.9.4
-#	touch $@
-
-$(DEPDIR)/fbset:
-	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/fbset-2.1.tar.bz2
-	cd $(BUILD_TMP)/fbset-2.1 &&\
-		make CC="$(TARGET)-gcc -g -O0" && \
-		cp fbset $(TARGETPREFIX)/bin
-	rm -r $(BUILD_TMP)/fbset-2.1
-	touch $@
-
-$(DEPDIR)/openntpd:
-	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/openntpd-3.9p1.tar.gz
-	cd $(BUILD_TMP)/openntpd-3.9p1 && \
-		rm -f strip; ln -s `which $(TARGET)-strip` strip; \
-		echo "ac_cv_path_AR=$(TARGET)-ar" > config.cache; \
-		$(CONFIGURE) --cache-file=config.cache \
-			--prefix= --sysconfdir=/etc \
-			--with-privsep-user=nobody \
-			--with-privsep-path=/share/empty && \
-		make all && \
-		PATH=.:$(PATH) make install DESTDIR=$(TARGETPREFIX)
-	rm -r $(BUILD_TMP)/openntpd-3.9p1
-	touch $@
-
-$(DEPDIR)/debootstrap:
-	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/debootstrap_1.0.10lenny1.tar.gz
-	cd $(BUILD_TMP)/debootstrap && \
-		patch -p1 < $(PATCHES)/debootstrap.diff && \
-		tar -xpf $(ARCHIVE)/base-installer_1.98.tar.gz base-installer/pkgdetails.c && \
-		$(TARGET)-gcc -g -O2 -o pkgdetails base-installer/pkgdetails.c && \
-		ln -s /bin/true $(HOSTPREFIX)/bin/chown && \
-		make install DESTDIR=$(TARGETPREFIX); \
-		rm $(HOSTPREFIX)/bin/chown; \
-		cp pkgdetails $(TARGETPREFIX)/usr/share/debootstrap && \
-		chmod 0755 $(TARGETPREFIX)/usr/share/debootstrap/pkgdetails
-	rm -r $(BUILD_TMP)/debootstrap
-
-$(DEPDIR)/tcpdump: libpcap
-	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/tcpdump-4.0.0.tar.gz
-	cd $(BUILD_TMP)/tcpdump-4.0.0 && \
-		patch -p1 < $(PATCHES)/tcpdump.diff && \
-		echo "ac_cv_linux_vers=2" >> config.cache && \
-		$(CONFIGURE) --prefix= --disable-ipv6 --disable-smb --without-crypto --cache-file=config.cache && \
-		make all && \
-		make install DESTDIR=$(TARGETPREFIX)
-	rm -rf $(BUILD_TMP)/tcpdump-4.0.0
-	touch $@
-
-flashcp:
-	tar -C $(BUILD_TMP) -xpf $(ARCHIVE)/mtd-utils-1.2.0.tar.bz2
-	cd $(BUILD_TMP)/mtd-utils-1.2.0 && \
-		make $(TARGET)/flashcp CROSS=$(TARGET)- WITHOUT_XATTR=1 CFLAGS="$(TARGET_CFLAGS)" && \
-		install -d $(TARGETPREFIX)/sbin && \
-		install -m 0755 $(TARGET)/flashcp $(TARGETPREFIX)/sbin/ && \
-		ln -sf flashcp $(TARGETPREFIX)/sbin/fcp
-	rm -rf $(BUILD_TMP)/mtd-utils-1.2.0
