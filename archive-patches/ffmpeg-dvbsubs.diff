@@ -1,0 +1,211 @@
+Index: b/libavcodec/dvbsubdec.c
+===================================================================
+--- a/libavcodec/dvbsubdec.c
++++ b/libavcodec/dvbsubdec.c
+@@ -20,12 +20,14 @@
+  */
+ #include "avcodec.h"
+ #include "dsputil.h"
+ #include "get_bits.h"
+ #include "colorspace.h"
++#include <unistd.h>
+ 
+-//#define DEBUG
++#define DEBUG
++//#define DEBUG_CLUT
+ //#define DEBUG_PACKET_CONTENTS
+ //#define DEBUG_SAVE_IMAGES
+ 
+ #define DVBSUB_PAGE_SEGMENT     0x10
+ #define DVBSUB_REGION_SEGMENT   0x11
+@@ -100,16 +102,20 @@ static void png_save2(const char *filena
+     int x, y, v;
+     FILE *f;
+     char fname[40], fname2[40];
+     char command[1024];
+ 
++#ifdef DEBUG
++    av_log(0, AV_LOG_INFO, "SAVE FILE: %s\n", filename);
++#endif
+     snprintf(fname, sizeof(fname), "%s.ppm", filename);
+ 
+     f = fopen(fname, "w");
+     if (!f) {
+         perror(fname);
+-        exit(1);
++        //exit(1);
++        return;
+     }
+     fprintf(f, "P6\n"
+             "%d %d\n"
+             "%d\n",
+             w, h, 255);
+@@ -127,11 +133,12 @@ static void png_save2(const char *filena
+     snprintf(fname2, sizeof(fname2), "%s-a.pgm", filename);
+ 
+     f = fopen(fname2, "w");
+     if (!f) {
+         perror(fname2);
+-        exit(1);
++        //exit(1);
++        return;
+     }
+     fprintf(f, "P5\n"
+             "%d %d\n"
+             "%d\n",
+             w, h, 255);
+@@ -140,16 +147,17 @@ static void png_save2(const char *filena
+             v = bitmap[y * w + x];
+             putc((v >> 24) & 0xff, f);
+         }
+     }
+     fclose(f);
+-
++#if 0
+     snprintf(command, sizeof(command), "pnmtopng -alpha %s %s > %s.png 2> /dev/null", fname2, fname, filename);
+     system(command);
+ 
+     snprintf(command, sizeof(command), "rm %s %s", fname, fname2);
+     system(command);
++#endif
+ }
+ #endif
+ 
+ #define RGBA(r,g,b,a) (((a) << 24) | ((r) << 16) | ((g) << 8) | (b))
+ 
+@@ -759,12 +767,12 @@ static void dvbsub_parse_pixel_data_bloc
+ 
+     if ((y_pos & 1) != top_bottom)
+         y_pos++;
+ 
+     while (buf < buf_end) {
+-        if (x_pos > region->width || y_pos > region->height) {
+-            av_log(avctx, AV_LOG_ERROR, "Invalid object location!\n");
++        if (x_pos > region->width || y_pos >= region->height) {
++            av_log(avctx, AV_LOG_ERROR, "Invalid object location: x %d y %d, region %dx%d\n", x_pos, y_pos, region->width, region->height);
+             return;
+         }
+ 
+         switch (*buf++) {
+         case 0x10:
+@@ -964,11 +972,13 @@ static void dvbsub_parse_clut_segment(AV
+             alpha = 0xff;
+ 
+         YUV_TO_RGB1_CCIR(cb, cr);
+         YUV_TO_RGB2_CCIR(r, g, b, y);
+ 
++#ifdef DEBUG_CLUT
+         dprintf(avctx, "clut %d := (%d,%d,%d,%d)\n", entry_id, r, g, b, alpha);
++#endif
+ 
+         if (depth & 0x80)
+             clut->clut4[entry_id] = RGBA(r,g,b,255 - alpha);
+         if (depth & 0x40)
+             clut->clut16[entry_id] = RGBA(r,g,b,255 - alpha);
+@@ -1264,10 +1274,13 @@ static int dvbsub_display_end_segment(AV
+     AVSubtitleRect *rect;
+     DVBSubCLUT *clut;
+     uint32_t *clut_table;
+     int i;
+ 
++#ifdef DEBUG
++    av_log(avctx, AV_LOG_INFO, "************** dvbsub_display_end_segment ******************\n");
++#endif
+     sub->rects = NULL;
+     sub->start_display_time = 0;
+     sub->end_display_time = ctx->time_out * 1000;
+     sub->format = 0;
+ 
+@@ -1322,10 +1335,13 @@ static int dvbsub_display_end_segment(AV
+ 
+         i++;
+     }
+ 
+     sub->num_rects = i;
++#ifdef DEBUG
++    av_log(avctx, AV_LOG_INFO, "DVBSUB_DISPLAY_SEGMENT: %d rects\n", sub->num_rects);
++#endif
+ 
+ #ifdef DEBUG_SAVE_IMAGES
+     save_display_set(ctx);
+ #endif
+ 
+@@ -1343,10 +1359,14 @@ static int dvbsub_decode(AVCodecContext
+     const uint8_t *p, *p_end;
+     int segment_type;
+     int page_id;
+     int segment_length;
+ 
++#ifdef DEBUG
++av_log(avctx, AV_LOG_INFO, "dvbsub_decode: ctx %x data %x data_size %x (%d) avpkt %x len %d\n", avctx, data, data_size, *data_size, avpkt, buf_size);
++#endif
++
+ #ifdef DEBUG_PACKET_CONTENTS
+     int i;
+ 
+     av_log(avctx, AV_LOG_INFO, "DVB sub packet:\n");
+ 
+@@ -1373,25 +1393,46 @@ static int dvbsub_decode(AVCodecContext
+         page_id = AV_RB16(p);
+         p += 2;
+         segment_length = AV_RB16(p);
+         p += 2;
+ 
+-        if (page_id == ctx->composition_id || page_id == ctx->ancillary_id) {
++        //if (page_id == ctx->composition_id || page_id == ctx->ancillary_id)
++        {
+             switch (segment_type) {
+             case DVBSUB_PAGE_SEGMENT:
++#ifdef DEBUG
++                av_log(avctx, AV_LOG_INFO, "DVBSUB_PAGE_SEGMENT: page id %d, length %d (composition_id %d ancillary_id %d)\n",
++                              page_id, segment_length, ctx->composition_id, ctx->ancillary_id);
++#endif
+                 dvbsub_parse_page_segment(avctx, p, segment_length);
+                 break;
+             case DVBSUB_REGION_SEGMENT:
++#ifdef DEBUG
++                 av_log(avctx, AV_LOG_INFO, "DVBSUB_REGION_SEGMENT: page id %d, length %d (composition_id %d ancillary_id %d)\n",
++                               page_id, segment_length, ctx->composition_id, ctx->ancillary_id);
++#endif
+                 dvbsub_parse_region_segment(avctx, p, segment_length);
+                 break;
+             case DVBSUB_CLUT_SEGMENT:
++#ifdef DEBUG
++                av_log(avctx, AV_LOG_INFO, "DVBSUB_CLUT_SEGMENT: page id %d, length %d (composition_id %d ancillary_id %d)\n",
++                              page_id, segment_length, ctx->composition_id, ctx->ancillary_id);
++#endif
+                 dvbsub_parse_clut_segment(avctx, p, segment_length);
+                 break;
+             case DVBSUB_OBJECT_SEGMENT:
++#ifdef DEBUG
++                av_log(avctx, AV_LOG_INFO, "DVBSUB_OBJECT_SEGMENT: page id %d, length %d (composition_id %d ancillary_id %d)\n",
++                              page_id, segment_length, ctx->composition_id, ctx->ancillary_id);
++#endif
+                 dvbsub_parse_object_segment(avctx, p, segment_length);
+                 break;
+             case DVBSUB_DISPLAY_SEGMENT:
++#ifdef DEBUG
++                av_log(avctx, AV_LOG_INFO, "DVBSUB_DISPLAY_SEGMENT: page id %d, length %d (composition_id %d ancillary_id %d)\n",
++                              page_id, segment_length, ctx->composition_id, ctx->ancillary_id);
++#endif
+                 *data_size = dvbsub_display_end_segment(avctx, p, segment_length, sub);
+                 break;
+             default:
+                 dprintf(avctx, "Subtitling segment type 0x%x, page id %d, length %d\n",
+                         segment_type, page_id, segment_length);
+@@ -1401,12 +1442,13 @@ static int dvbsub_decode(AVCodecContext
+ 
+         p += segment_length;
+     }
+ 
+     if (p != p_end) {
+-        dprintf(avctx, "Junk at end of packet\n");
+-        return -1;
++        //dprintf(avctx, "Junk at end of packet\n");
++        av_log(avctx, AV_LOG_INFO, "Junk at end of packet, size %d, processed %d\n", p_end-p, p_end-buf);
++        //return -1;
+     }
+ 
+     return buf_size;
+ }
+ 

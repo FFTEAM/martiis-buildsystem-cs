@@ -159,6 +159,7 @@ $(DEPDIR)/ffmpeg-0.5: $(ARCHIVE)/ffmpeg-0.5.tar.bz2
 # maybe put this into archive.mk?
 $(BUILD_TMP)/ffmpeg:
 	svn checkout svn://svn.ffmpeg.org/ffmpeg/trunk $(BUILD_TMP)/ffmpeg
+	cd $(BUILD_TMP)/ffmpeg && $(PATCH)/ffmpeg-dvbsubs.diff
 
 $(DEPDIR)/ffmpeg: $(BUILD_TMP)/ffmpeg
 	pushd $(BUILD_TMP)/ffmpeg && \
@@ -169,7 +170,7 @@ $(DEPDIR)/ffmpeg: $(BUILD_TMP)/ffmpeg
 			--enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video \
 			--enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio \
 			--enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 \
-			--enable-demuxer=mpegps \
+			--enable-decoder=dvbsub --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
 			--disable-protocols --enable-protocol=file --enable-bsfs \
 			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
