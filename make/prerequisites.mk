@@ -40,6 +40,10 @@ $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && svn co http://www.coolstreamtech.de/coolstream_public_svn/CROSSENVIROMENT/$(shell basename $@)
 
+$(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug:
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && svn co http://www.coolstreamtech.de/coolstream_public_svn/THIRDPARTY/applications/$(shell basename $@)
+
 $(SOURCE_DIR)/svn/THIRDPARTY/libraries:
 	mkdir -p $@
 	cd $@ && svn co http://www.coolstreamtech.de/coolstream_public_svn/THIRDPARTY/libraries/libcs && \

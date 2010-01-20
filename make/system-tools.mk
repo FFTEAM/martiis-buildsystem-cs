@@ -161,3 +161,10 @@ $(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
 	rm -f -r $(TARGETPREFIX)/.remove
 	$(REMOVE)/samba-3.3.9
 	touch $@
+
+$(TARGETPREFIX)/sbin/hotplug: $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug/hotplug.c
+	mkdir -p $(TARGETPREFIX)/sbin
+	cd $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug && \
+		$(TARGET)-gcc -Wall -Wextra -Wshadow -O2 -g -o $@ hotplug.c
+
+hotplug: $(TARGETPREFIX)/sbin/hotplug

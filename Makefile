@@ -57,7 +57,8 @@ update-neutrino:
 # only updates important(?) stuff, no crosstool etc.
 update-svn:
 	cd $(SOURCE_DIR)/svn/COOLSTREAM && svn up
-	cd $(SOURCE_DIR)/svn/THIRDPARTY/libraries && svn up libcs libnxp
+	cd $(SOURCE_DIR)/svn/THIRDPARTY/libraries && svn up *
+	cd $(SOURCE_DIR)/svn/THIRDPARTY/applications && svn up *
 
 all:
 	@echo "'make all' is not a valid target. Please read the documentation."
