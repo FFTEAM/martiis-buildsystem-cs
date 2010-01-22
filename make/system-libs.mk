@@ -174,7 +174,7 @@ $(DEPDIR)/ffmpeg: $(BUILD_TMP)/ffmpeg
 			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
 			--disable-protocols --enable-protocol=file --enable-bsfs \
 			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
-			--disable-network --disable-ipv6 \
+			--disable-network \
 			--disable-static --enable-shared \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
