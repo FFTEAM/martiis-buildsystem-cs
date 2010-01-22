@@ -35,6 +35,17 @@ $(DEPDIR)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 	$(REMOVE)/busybox-1.15.2
 	touch $@
 
+# experimental
+$(DEPDIR)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2
+	$(UNTAR)/busybox-snapshot.tar.bz2
+	pushd $(BUILD_TMP)/busybox && \
+		cp $(PATCHES)/busybox-hd1-snapshot.config .config && \
+		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(TARGETPREFIX)"#' .config && \
+		$(MAKE) all  CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
+		make install CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)"
+	$(REMOVE)/busybox
+	touch $@
+
 $(DEPDIR)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
 	$(UNTAR)/strace-4.5.19.tar.bz2
 	pushd $(BUILD_TMP)/strace-4.5.19 && \
