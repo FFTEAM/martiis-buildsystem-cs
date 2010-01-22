@@ -21,7 +21,7 @@ $(BUILD_TMP)/linux-$(KVERSION):
 $(DEPDIR)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
 	pushd $(BUILD_TMP)/linux-$(KVERSION) && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- oldconfig && \
-		make ARCH=arm CROSS_COMPILE=$(TARGET)- && \
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	touch $@
 
