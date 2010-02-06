@@ -77,7 +77,7 @@ $(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.9.tar.bz2
 	pushd $(BUILD_TMP)/freetype-2.3.9 && \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) && \
-		make all && \
+		$(MAKE) all && \
 		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < builds/unix/freetype-config > $(HOSTPREFIX)/bin/freetype-config && \
 		chmod 755 $(HOSTPREFIX)/bin/freetype-config && \
 		make install libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include bindir=$(TARGETPREFIX)/bin prefix=$(TARGETPREFIX)
