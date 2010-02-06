@@ -21,8 +21,8 @@ $(ARCHIVE)/libungif-4.1.3.tar.bz2:
 $(ARCHIVE)/curl-7.19.7.tar.bz2:
 	$(WGET) ftp://gentoo.imj.fr/pub/gentoo/distfiles/curl-7.19.7.tar.bz2
 
-$(ARCHIVE)/libpng-1.2.40.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.40/libpng-1.2.40.tar.bz2?use_mirror=switch
+$(ARCHIVE)/libpng-1.2.42.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.42/libpng-1.2.42.tar.bz2?use_mirror=switch
 
 $(ARCHIVE)/freetype-2.3.9.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.9/freetype-2.3.9.tar.bz2?use_mirror=switch
