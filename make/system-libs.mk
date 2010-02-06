@@ -170,7 +170,7 @@ $(DEPDIR)/ffmpeg: $(BUILD_TMP)/ffmpeg
 			--enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video \
 			--enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio \
 			--enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 \
-			--enable-decoder=dvbsub --enable-demuxer=mpegps \
+			--enable-decoder=dvbsub --enable-decoder=iff_byterun1 --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
 			--disable-protocols --enable-protocol=file --enable-bsfs \
 			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
