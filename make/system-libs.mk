@@ -72,9 +72,9 @@ $(DEPDIR)/libpng: $(ARCHIVE)/libpng-1.2.42.tar.bz2
 	$(REMOVE)/libpng-1.2.42 $(BUILD_TMP)/tmpman
 	touch $@
 
-$(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.9.tar.bz2
-	$(UNTAR)/freetype-2.3.9.tar.bz2
-	pushd $(BUILD_TMP)/freetype-2.3.9 && \
+$(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.11.tar.bz2
+	$(UNTAR)/freetype-2.3.11.tar.bz2
+	pushd $(BUILD_TMP)/freetype-2.3.11 && \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) && \
 		$(MAKE) all && \
@@ -84,7 +84,7 @@ $(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.9.tar.bz2
 	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
-	$(REMOVE)/freetype-2.3.9
+	$(REMOVE)/freetype-2.3.11
 	touch $@
 
 $(DEPDIR)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz

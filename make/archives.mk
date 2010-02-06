@@ -24,8 +24,8 @@ $(ARCHIVE)/curl-7.19.7.tar.bz2:
 $(ARCHIVE)/libpng-1.2.42.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.42/libpng-1.2.42.tar.bz2?use_mirror=switch
 
-$(ARCHIVE)/freetype-2.3.9.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.9/freetype-2.3.9.tar.bz2?use_mirror=switch
+$(ARCHIVE)/freetype-2.3.11.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.11/freetype-2.3.11.tar.bz2?use_mirror=switch
 
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz
