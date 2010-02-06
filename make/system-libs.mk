@@ -63,13 +63,13 @@ $(DEPDIR)/libcurl: $(ARCHIVE)/curl-7.19.7.tar.bz2
 	$(REMOVE)/curl-7.19.7
 	touch $@
 
-$(DEPDIR)/libpng: $(ARCHIVE)/libpng-1.2.40.tar.bz2
-	$(UNTAR)/libpng-1.2.40.tar.bz2
-	pushd $(BUILD_TMP)/libpng-1.2.40 && \
+$(DEPDIR)/libpng: $(ARCHIVE)/libpng-1.2.42.tar.bz2
+	$(UNTAR)/libpng-1.2.42.tar.bz2
+	pushd $(BUILD_TMP)/libpng-1.2.42 && \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman && \
-		ECHO=echo make all && \
+		ECHO=echo $(MAKE) all && \
 		make install
-	$(REMOVE)/libpng-1.2.40 $(BUILD_TMP)/tmpman
+	$(REMOVE)/libpng-1.2.42 $(BUILD_TMP)/tmpman
 	touch $@
 
 $(DEPDIR)/freetype: libpng $(ARCHIVE)/freetype-2.3.9.tar.bz2
