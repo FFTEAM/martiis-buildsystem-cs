@@ -32,6 +32,7 @@ $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
 $(DEPDIR)/neutrino: libcurl libid3tag libmad freetype libboost libjpeg libungif libvorbis ffmpeg $(N_OBJDIR)/config.status
+	$(MAKE) check-repo
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install
 	# make $(TARGETPREFIX)/.version
@@ -40,4 +41,3 @@ $(DEPDIR)/neutrino: libcurl libid3tag libmad freetype libboost libjpeg libungif 
 neutrino-clean:
 	-make -C $(N_OBJDIR) uninstall distclean
 	-rm $(DEPDIR)/neutrino
-

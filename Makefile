@@ -52,6 +52,7 @@ update-self:
 	git pull
 
 update-neutrino:
+	make check-repo
 	cd $(SOURCE_DIR)/neutrino-hd && git pull
 
 # only updates important(?) stuff, no crosstool etc.
