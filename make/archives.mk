@@ -24,6 +24,9 @@ $(ARCHIVE)/curl-7.19.7.tar.bz2:
 $(ARCHIVE)/libpng-1.2.42.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.42/libpng-1.2.42.tar.bz2?use_mirror=switch
 
+$(ARCHIVE)/fbshot-0.3.tar.gz:
+	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-0.3.tar.gz
+
 $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.11/freetype-2.3.11.tar.bz2?use_mirror=switch
 

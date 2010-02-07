@@ -173,9 +173,16 @@ $(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
 	$(REMOVE)/samba-3.3.9
 	touch $@
 
+hotplug: $(TARGETPREFIX)/sbin/hotplug
 $(TARGETPREFIX)/sbin/hotplug: $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug/hotplug.c
 	mkdir -p $(TARGETPREFIX)/sbin
 	cd $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug && \
 		$(TARGET)-gcc -Wall -Wextra -Wshadow -O2 -g -o $@ hotplug.c
 
-hotplug: $(TARGETPREFIX)/sbin/hotplug
+fbshot: $(TARGETPREFIX)/bin/fbshot
+$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-0.3.tar.gz
+	$(UNTAR)/fbshot-0.3.tar.gz
+	cd $(BUILD_TMP)/fbshot-0.3 && \
+		$(PATCH)/fbshot-0.3-32bit_cs_fb.diff && \
+		$(TARGET)-gcc $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
+	$(REMOVE)/fbshot-0.3
