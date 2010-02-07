@@ -25,7 +25,7 @@ $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git
+		git clone git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git neutrino-hd
 
 check-repo:
 	@git --git-dir=$(SOURCE_DIR)/neutrino-hd/.git config remote.origin.url | \
