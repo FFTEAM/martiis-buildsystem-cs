@@ -1,6 +1,8 @@
 #!/bin/sh
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export TZ=`cat /etc/TZ`
+# for next boot ;)
+[ -e /dev/console ] || mknod -m 644 /dev/console c 5 1
 mount -n -t tmpfs tmp /dev
 /sbin/mknodes 2> /dev/null
 
