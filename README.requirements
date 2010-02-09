@@ -1,0 +1,12 @@
+Packages that need to be installed for building:
+================================================
+
+This was tested on a minimal installation of openSUSE 11.2 i386, other
+distributions will have similar package names.
+A few more packages are pulled in by dependencies, you'll need them as well.
+
+zypper install --no-recommends \
+	git make subversion patch \
+	gcc bison flex texinfo \
+	automake libtool \
+	ncurses-devel pkg-config
