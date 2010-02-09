@@ -1,10 +1,10 @@
 # makefile for basic prerequisites
 # version 2
 
-preqs: neutrino-hd cs-svn $(DEPDIR) $(PKG_CONFIG_PATH) download
+preqs: neutrino-hd cs-svn $(D) $(PKG_CONFIG_PATH) download
 
-$(DEPDIR):
-	mkdir $(DEPDIR)
+$(D):
+	mkdir $(D)
 
 $(PKG_CONFIG_PATH):
 	mkdir -p $(PKG_CONFIG_PATH)

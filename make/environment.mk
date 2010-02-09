@@ -10,7 +10,9 @@ ARCHIVE      = $(BASE_DIR)/download
 PATCHES      = $(BASE_DIR)/archive-patches
 #TARGET      ?= powerpc-405-linux-gnu
 BUILD_TMP    = $(BASE_DIR)/build_tmp
-DEPDIR       = $(BASE_DIR)/deps
+D            = $(BASE_DIR)/deps
+# backwards compatibility
+DEPDIR       = $(D)
 
 APPSDIR      = $(BASE_DIR)/tuxbox.org/apps
 HOSTPREFIX   = $(BASE_DIR)/host
@@ -30,7 +32,7 @@ TARGET_CXXFLAGS = $(TARGET_CFLAGS)
 TARGET_LDFLAGS  = -Wl,-O1 -L$(TARGETLIB)
 LD_FLAGS        = $(TARGET_LDFLAGS)
 
-VPATH = $(DEPDIR)
+VPATH = $(D)
 
 PATH := $(HOSTPREFIX)/bin:$(CROSS_DIR)/bin:$(PATH)
 PKG_CONFIG = /usr/bin/pkg-config

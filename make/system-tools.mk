@@ -1,6 +1,6 @@
 #Makefile to build system tools
 
-$(DEPDIR)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz
+$(D)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz
 	$(UNTAR)/rsync-3.0.6.tar.gz
 	pushd $(BUILD_TMP)/rsync-3.0.6 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
@@ -10,7 +10,7 @@ $(DEPDIR)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz
 	$(REMOVE)/.remove
 	touch $@
 
-$(DEPDIR)/procps: libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
+$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
 	$(UNTAR)/procps-3.2.7.tar.gz
 	pushd $(BUILD_TMP)/procps-3.2.7 && \
 		$(PATCH)/procps-3.2.7-avoid-ICE-with-gcc-4.3.2-arm.diff && \
@@ -24,7 +24,7 @@ $(DEPDIR)/procps: libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
 	$(REMOVE)/procps-3.2.7
 	touch $@
 
-$(DEPDIR)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
+$(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 	$(UNTAR)/busybox-1.15.2.tar.bz2
 	pushd $(BUILD_TMP)/busybox-1.15.2 && \
 		$(PATCH)/busybox-1.15.2-make-ftpd-more-tolerant.diff && \
@@ -36,7 +36,7 @@ $(DEPDIR)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 	touch $@
 
 # experimental
-$(DEPDIR)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2
+$(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2
 	$(UNTAR)/busybox-snapshot.tar.bz2
 	pushd $(BUILD_TMP)/busybox && \
 		cp $(PATCHES)/busybox-hd1-snapshot.config .config && \
@@ -46,7 +46,7 @@ $(DEPDIR)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2
 	$(REMOVE)/busybox
 	touch $@
 
-$(DEPDIR)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
+$(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
 	$(UNTAR)/strace-4.5.19.tar.bz2
 	pushd $(BUILD_TMP)/strace-4.5.19 && \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -60,7 +60,7 @@ $(DEPDIR)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
 	$(REMOVE)/.remove
 	touch $@
 
-$(DEPDIR)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
+$(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
 	$(UNTAR)/e2fsprogs-1.41.9.tar.gz
 	cd $(BUILD_TMP)/e2fsprogs-1.41.9 && \
 		ln -sf /bin/true ./ldconfig && \
@@ -101,7 +101,7 @@ $(DEPDIR)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
 
 #  NOTE:
 #  gdb built for target or local-PC
-$(DEPDIR)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2
+$(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2
 	$(UNTAR)/gdb-7.0.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.0 && \
 		$(BUILDENV) \
@@ -119,7 +119,7 @@ $(DEPDIR)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2
 
 #  NOTE:
 #  gdb-remote built for local-PC or target
-$(DEPDIR)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
+$(D)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 	$(UNTAR)/gdb-7.0.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.0 && \
 		./configure \
@@ -131,12 +131,12 @@ $(DEPDIR)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 	$(REMOVE)/gdb-7.0
 	touch $@
 
-system-tools-all: $(DEPDIR)/rsync $(DEPDIR)/procps $(DEPDIR)/busybox $(DEPDIR)/strace $(DEPDIR)/e2fsprogs $(DEPDIR)/gdb $(DEPDIR)/gdb-remote
+system-tools-all: $(D)/rsync $(D)/procps $(D)/busybox $(D)/strace $(D)/e2fsprogs $(D)/gdb $(D)/gdb-remote
 
-$(DEPDIR)/skeleton:
+$(D)/skeleton:
 	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
 
-$(DEPDIR)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
+$(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
 	$(UNTAR)/autofs-4.1.4.tar.bz2
 	cd $(BUILD_TMP)/autofs-4.1.4 && \
@@ -148,7 +148,7 @@ $(DEPDIR)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
 	$(REMOVE)/autofs-4.1.4
 	touch $@
 
-$(DEPDIR)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz libiconv
+$(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv
 	$(UNTAR)/samba-3.3.9.tar.gz
 	cd $(BUILD_TMP)/samba-3.3.9 && \
 		$(PATCH)/samba-3.3.9.diff && \

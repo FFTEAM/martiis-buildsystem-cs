@@ -16,7 +16,7 @@ N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 $(N_OBJDIR):
 	mkdir -p $(N_OBJDIR)
 
-$(N_OBJDIR)/config.status: libcurl libid3tag libmad freetype libboost libjpeg libungif libvorbis ffmpeg
+$(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype $(D)/libboost $(D)/libjpeg $(D)/libungif $(D)/libvorbis $(D)/ffmpeg
 	make $(N_OBJDIR)
 	$(SOURCE_DIR)/neutrino-hd/autogen.sh
 	pushd $(N_OBJDIR) && \
@@ -31,7 +31,7 @@ $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
 	echo "imagename=HD-Neutrino"		>> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
-$(DEPDIR)/neutrino: $(N_OBJDIR)/config.status
+$(D)/neutrino: $(N_OBJDIR)/config.status
 	$(MAKE) check-repo
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install
@@ -40,4 +40,4 @@ $(DEPDIR)/neutrino: $(N_OBJDIR)/config.status
 
 neutrino-clean:
 	-make -C $(N_OBJDIR) uninstall distclean
-	-rm $(DEPDIR)/neutrino
+	-rm $(D)/neutrino
