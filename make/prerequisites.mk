@@ -43,23 +43,23 @@ check-repo:
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
 	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && svn co http://www.coolstreamtech.de/coolstream_public_svn/COOLSTREAM
+	cd $(shell dirname $@) && $(SVNCO)/COOLSTREAM
 
 # instead of checking out everything, just check out the stuff that's really needed.
 $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream \
 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 \
 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && svn co http://www.coolstreamtech.de/coolstream_public_svn/CROSSENVIROMENT/$(shell basename $@)
+	cd $(shell dirname $@) && $(SVNCO)/CROSSENVIROMENT/$(shell basename $@)
 
 $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug:
 	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && svn co http://www.coolstreamtech.de/coolstream_public_svn/THIRDPARTY/applications/$(shell basename $@)
+	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/applications/$(shell basename $@)
 
 $(SOURCE_DIR)/svn/THIRDPARTY/libraries:
 	mkdir -p $@
-	cd $@ && svn co http://www.coolstreamtech.de/coolstream_public_svn/THIRDPARTY/libraries/libcs && \
-		 svn co http://www.coolstreamtech.de/coolstream_public_svn/THIRDPARTY/libraries/libnxp
+	cd $@ && $(SVNCO)/THIRDPARTY/libraries/libcs && \
+		 $(SVNCO)/THIRDPARTY/libraries/libnxp
 
 neutrino-hd: $(SOURCE_DIR)/neutrino-hd
 cs-svn: $(SOURCE_DIR)/svn/THIRDPARTY/libraries $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream

@@ -61,3 +61,5 @@ CONFIGURE = \
 	$(BUILDENV) \
 	./configure $(CONFIGURE_OPTS)
 
+SVN   ?= svn --username coolstream --password coolstream --no-auth-cache
+SVNCO ?= $(SVN) co http://www.coolstreamtech.de/coolstream_public_svn
