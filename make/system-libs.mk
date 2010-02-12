@@ -178,7 +178,7 @@ $(D)/ffmpeg: $(BUILD_TMP)/ffmpeg
 			--disable-static --enable-shared \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
-			--enable-armv6 --arch=arm \
+			--enable-armv6 --arch=arm --target-os=linux \
 			--enable-debug --enable-stripping \
 			--prefix=/ && \
 		$(MAKE) && \
