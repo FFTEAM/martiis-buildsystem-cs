@@ -1,11 +1,22 @@
 # makefile to build crosstool
 
-bootstrap:	$(BUILD_TMP) $(CROSS_BASE) $(TARGETPREFIX) $(HOSTPREFIX)/bin includes-and-libs cs-modules libc.so.6
+
+
+bootstrap: targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs cs-modules $(TARGETPREFIX)/lib/libc.so.6
+
+targetprefix:
+	mkdir -p $(TARGETPREFIX)
+	mkdir -p $(TARGETPREFIX)/bin
+	mkdir -p $(TARGETPREFIX)/include
+	mkdir -p $(PKG_CONFIG_PATH)
+	make skeleton
 
 $(TARGETPREFIX):
-	mkdir -p $(TARGETPREFIX)
-	mkdir -p $(TARGETPREFIX)/include
-	mkdir -p $(TARGETPREFIX)/lib
+	@echo "**********************************************************************"
+	@echo "TARGETPREFIX does not exist. You probably need to run 'make bootstrap'"
+	@echo "**********************************************************************"
+	@echo ""
+	@false
 
 $(HOSTPREFIX):
 	mkdir $@
@@ -19,27 +30,25 @@ $(BUILD_TMP):
 $(CROSS_BASE):
 	mkdir -p $(CROSS_BASE)
 
-$(TARGETPREFIX)/include/coolstream:
+$(TARGETPREFIX)/include/coolstream: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream/* $@/
 
-$(TARGETPREFIX)/lib/libnxp.so: $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libnxp/libnxp.so
+$(TARGETPREFIX)/lib/libnxp.so: $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libnxp/libnxp.so | $(TARGETPREFIX)
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libnxp/libnxp.so $@
 
-$(TARGETPREFIX)/lib/libcoolstream.so: $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libcs/libcoolstream.so
+$(TARGETPREFIX)/lib/libcoolstream.so: $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libcs/libcoolstream.so | $(TARGETPREFIX)
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libcs/libcoolstream.so $@
 
-$(TARGETPREFIX)/lib/modules/2.6.26.8-nevis:
+$(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
 
-$(TARGETPREFIX)/lib/libc.so.6:
-	mkdir -p $(TARGETPREFIX)/lib
+$(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
 	cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib
 
 cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
 includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/include/coolstream
-libc.so.6: $(TARGETPREFIX)/lib/libc.so.6
 
 crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
 	make $(BUILD_TMP)
@@ -61,3 +70,7 @@ ccache:
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/g++
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-gcc
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-g++
+
+# hack to make sure they are always copied
+PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
+PHONY += ccache crosstool includes-and-libs cs-modules targetprefix bootstrap

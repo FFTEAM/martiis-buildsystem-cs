@@ -1,5 +1,4 @@
 #master makefile
-
 include make/environment.mk
 
 ############################################################################
@@ -26,15 +25,24 @@ printenv:
 	fi
 	@echo ""
 	@echo "a few helpful make targets:"
-	@echo "* make preqs         - downloads necessary stuff"
-	@echo "* make crosstool     - build cross toolchain"
-	@echo "* make bootstrap     - prepares for building"
-	@echo "* make neutrino      - builds neutrino"
+	@echo "* make preqs             - downloads necessary stuff"
+	@echo "* make crosstool         - build cross toolchain"
+	@echo "* make bootstrap         - prepares for building"
+	@echo "* make neutrino          - builds neutrino"
+	@echo "* make neutrino-system   - should build enough to have a bootable system"
 	@echo ""
 	@echo "later, you might find those useful:"
-	@echo "* make update-self     - update the build system"
-	@echo "* make update-neutrino - update the neutrino source"
-	@echo "* make update-svn      - update the coolstream svn parts"
+	@echo "* make update-self       - update the build system"
+	@echo "* make update-neutrino   - update the neutrino source"
+	@echo "* make update-svn        - update the coolstream svn parts (mainly drivers)"
+	@echo "* make update-svn-target - copy updated svn parts into \$$TARGETPREFIX"
+	@echo ""
+	@echo "cleantargets:"
+	@echo "make clean               - clean neutrino build dir"
+	@echo "make rebuild-clean       - additionally remove \$$TARGETPREFIX, but keep the toolchain"
+	@echo "                           after that you need to restart with 'bootstrap'"
+	@echo "make all-clean           - additionally remove the crosscompiler"
+	@echo "                           you usually don't want to do that."
 	@echo ""
 
 include make/prerequisites.mk
@@ -43,7 +51,7 @@ include make/system-libs.mk
 include make/system-tools.mk
 #include make/tuxbox.mk
 include make/neutrino.mk
-#include make/cleantargets.mk
+include make/cleantargets.mk
 include make/linuxkernel.mk
 include make/archives.mk
 include make/rootfs.mk
@@ -63,6 +71,9 @@ update-svn:
 		cd $(SOURCE_DIR)/svn/THIRDPARTY/applications && $(SVN) up *; \
 	else true; fi
 
+update-svn-target:
+	make cs-modules includes-and-libs
+
 all:
 	@echo "'make all' is not a valid target. Please read the documentation."
 
@@ -70,3 +81,9 @@ all:
 # put them into $(BASE_DIR)/local since that is ignored in .gitignore
 -include ./Makefile.local
 
+.print-phony:
+	@echo $(PHONY)
+
+PHONY += all printenv .print-phony
+PHONY += update-svn update-svn-target update-neutrino update-self
+.PHONY: $(PHONY)

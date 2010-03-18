@@ -1,6 +1,6 @@
 #Makefile to build system tools
 
-$(D)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz
+$(D)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/rsync-3.0.6.tar.gz
 	pushd $(BUILD_TMP)/rsync-3.0.6 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
@@ -10,7 +10,7 @@ $(D)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz
 	$(REMOVE)/.remove
 	touch $@
 
-$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
+$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.7.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/procps-3.2.7.tar.gz
 	pushd $(BUILD_TMP)/procps-3.2.7 && \
 		$(PATCH)/procps-3.2.7-avoid-ICE-with-gcc-4.3.2-arm.diff && \
@@ -24,7 +24,7 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.7.tar.gz
 	$(REMOVE)/procps-3.2.7
 	touch $@
 
-$(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
+$(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/busybox-1.15.2.tar.bz2
 	pushd $(BUILD_TMP)/busybox-1.15.2 && \
 		$(PATCH)/busybox-1.15.2-make-ftpd-more-tolerant.diff && \
@@ -36,7 +36,7 @@ $(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2
 	touch $@
 
 # experimental
-$(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2
+$(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/busybox-snapshot.tar.bz2
 	pushd $(BUILD_TMP)/busybox && \
 		cp $(PATCHES)/busybox-hd1-snapshot.config .config && \
@@ -46,7 +46,7 @@ $(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2
 	$(REMOVE)/busybox
 	touch $@
 
-$(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
+$(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/strace-4.5.19.tar.bz2
 	pushd $(BUILD_TMP)/strace-4.5.19 && \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -60,7 +60,7 @@ $(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2
 	$(REMOVE)/.remove
 	touch $@
 
-$(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
+$(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/e2fsprogs-1.41.9.tar.gz
 	cd $(BUILD_TMP)/e2fsprogs-1.41.9 && \
 		ln -sf /bin/true ./ldconfig && \
@@ -101,7 +101,7 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz
 
 #  NOTE:
 #  gdb built for target or local-PC
-$(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2
+$(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/gdb-7.0.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.0 && \
 		$(BUILDENV) \
@@ -119,7 +119,7 @@ $(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2
 
 #  NOTE:
 #  gdb-remote built for local-PC or target
-$(D)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
+$(D)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/gdb-7.0.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.0 && \
 		./configure \
@@ -133,10 +133,10 @@ $(D)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2
 
 system-tools-all: $(D)/rsync $(D)/procps $(D)/busybox $(D)/strace $(D)/e2fsprogs $(D)/gdb $(D)/gdb-remote
 
-$(D)/skeleton:
+$(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
 
-$(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
+$(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
 	$(UNTAR)/autofs-4.1.4.tar.bz2
 	cd $(BUILD_TMP)/autofs-4.1.4 && \
@@ -148,7 +148,7 @@ $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2
 	$(REMOVE)/autofs-4.1.4
 	touch $@
 
-$(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv
+$(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 	$(UNTAR)/samba-3.3.9.tar.gz
 	cd $(BUILD_TMP)/samba-3.3.9 && \
 		$(PATCH)/samba-3.3.9.diff && \
@@ -174,15 +174,17 @@ $(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv
 	touch $@
 
 hotplug: $(TARGETPREFIX)/sbin/hotplug
-$(TARGETPREFIX)/sbin/hotplug: $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug/hotplug.c
+$(TARGETPREFIX)/sbin/hotplug: $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug/hotplug.c | $(TARGETPREFIX)
 	mkdir -p $(TARGETPREFIX)/sbin
 	cd $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug && \
 		$(TARGET)-gcc -Wall -Wextra -Wshadow -O2 -g -o $@ hotplug.c
 
 fbshot: $(TARGETPREFIX)/bin/fbshot
-$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-0.3.tar.gz
+$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-0.3.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/fbshot-0.3.tar.gz
 	cd $(BUILD_TMP)/fbshot-0.3 && \
 		$(PATCH)/fbshot-0.3-32bit_cs_fb.diff && \
 		$(TARGET)-gcc $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
 	$(REMOVE)/fbshot-0.3
+
+PHONY += hotplug system-tools-all

@@ -13,11 +13,8 @@ N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(SOURCE_DIR)/neutrino-hd
 
-$(N_OBJDIR):
-	mkdir -p $(N_OBJDIR)
-
 $(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype $(D)/libboost $(D)/libjpeg $(D)/libungif $(D)/libvorbis $(D)/ffmpeg
-	make $(N_OBJDIR)
+	test -d $(N_OBJDIR) || mkdir -p $(N_OBJDIR)
 	$(SOURCE_DIR)/neutrino-hd/autogen.sh
 	pushd $(N_OBJDIR) && \
 		export PKG_CONFIG=$(PKG_CONFIG) && \
@@ -41,3 +38,9 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 neutrino-clean:
 	-make -C $(N_OBJDIR) uninstall distclean
 	-rm $(D)/neutrino
+
+neutrino-system: $(D)/busybox $(D)/procps $(D)/rsync $(D)/gdb $(D)/strace
+
+neutrino-system-seife: neutrino-system $(D)/autofs
+
+PHONY += neutrino-clean neutrino-system neutrino-system-seife
