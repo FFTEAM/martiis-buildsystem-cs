@@ -158,7 +158,7 @@ $(D)/ffmpeg-0.5: $(ARCHIVE)/ffmpeg-0.5.tar.bz2 | $(TARGETPREFIX)
 
 # maybe put this into archive.mk?
 $(BUILD_TMP)/ffmpeg:
-	svn checkout svn://svn.ffmpeg.org/ffmpeg/trunk $(BUILD_TMP)/ffmpeg
+	svn checkout -r 22733 svn://svn.ffmpeg.org/ffmpeg/trunk $(BUILD_TMP)/ffmpeg
 	cd $(BUILD_TMP)/ffmpeg && $(PATCH)/ffmpeg-dvbsubs.diff
 
 $(D)/ffmpeg: $(BUILD_TMP)/ffmpeg | $(TARGETPREFIX)
