@@ -14,16 +14,17 @@ start)
 	im usbserial
 	im ftdi_sio
 	im cnxt_i2c
+	im cnxt_kal
+	im cnxt_base init=1
+	im cnxt_fb cnxtfb_standalone=1 cnxtfb_width=1280 cnxtfb_height=720
+	im cnxt_lnx
+	im cnxt_alsa
+	im cs_control
 	im stv6110 verbose=0
 	im stv090x verbose=0
 	im tda10023
 	im dvb-core
 	im cs_frontend
-	im cnxt_kal
-	im cnxt_base init=1
-	im cnxt_fb cnxtfb_standalone=1 cnxtfb_width=1280 cnxtfb_height=720
-	im cnxt_lnx
-	im cs_control
 	im cnxt_sata_drv
 	;;
 esac
