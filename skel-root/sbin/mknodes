@@ -9,6 +9,9 @@ dvb/adapter0		d 755 0 0
 fb			d 755 0 0
 input			d 755 0 0
 pts			d 755 0 0
+shm			d 755 0 0
+shm/usb			d 755 0 0
+
 mem			c 644 0 0 1	1
 kmem			c 644 0 0 1	2
 null			c 644 0 0 1	3
@@ -22,6 +25,7 @@ fuse			c 644 0 0 10	229
 fb0			c 644 0 0 29	0
 
 ram			b 644 0 0 1	0 0 1 5
+tty			c 644 0 0 5	0
 tty			c 644 0 0 4	0 0 1 5
 loop			b 644 0 0 7	0 0 1 5
 mtdblock		b 644 0 0 31	0 0 1 5
@@ -31,11 +35,19 @@ sda			b 644 0 0 8	0
 sdb			b 644 0 0 8	16
 sdc			b 644 0 0 8	32
 sdd			b 644 0 0 8	48
+sde			b 644 0 0 8	64
+sdf			b 644 0 0 8	80
+sdg			b 644 0 0 8	96
+sdh			b 644 0 0 8	112
 
 sda			b 644 0 0 8	1	1 1 15
 sdb			b 644 0 0 8	17	1 1 15
 sdc			b 644 0 0 8	33	1 1 15
 sdd			b 644 0 0 8	49	1 1 15
+sde			b 644 0 0 8	64	1 1 15
+sdf			b 644 0 0 8	80	1 1 15
+sdg			b 644 0 0 8	96	1 1 15
+sdh			b 644 0 0 8	112	1 1 15
 
 ttyUSB			c 644 0 0 188	0	0 1 4
 
@@ -50,11 +62,11 @@ cs_control_scart	c 644 0 0 250	0
 cs_control_pwm		c 644 0 0 251	0
 iolib			c 644 0 0 253	0
 
-ttyRI0			c 644 0 0 204	16	0 1 3
+ttyRI			c 644 0 0 204	16	0 1 3
 
 input/nevis_ir		c 644 0 0 240	0
 input/event0_uinput	c 644 0 0 10	223
-input/mouse0		c 644 0 0 13	32	0 1 4
+input/mouse		c 644 0 0 13	32	0 1 4
 input/mice		c 644 0 0 13	63
 input/event2		c 644 0 0 13	66
 input/event3		c 644 0 0 13	67
