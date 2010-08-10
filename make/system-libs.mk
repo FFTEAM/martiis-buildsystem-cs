@@ -282,5 +282,17 @@ $(D)/libpcap: $(ARCHIVE)/libpcap-1.0.0.tar.gz
 	$(REMOVE)/libpcap-1.0.0
 	touch $@
 
+# builds only static lib, needed e.g. by unfsd
+$(D)/libflex: $(ARCHIVE)/flex-2.5.35.tar.gz
+	$(UNTAR)/flex-2.5.35.tar.gz
+	cd $(BUILD_TMP)/flex-2.5.35 && \
+		echo "ac_cv_func_malloc_0_nonnull=yes" > config.cache && \
+		echo "ac_cv_func_realloc_0_nonnull=yes" >> config.cache && \
+		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	rm -fr $(TARGETPREFIX)/.remove
+	$(REMOVE)/flex-2.5.35
+	touch $@
 
 PHONY += ncurses-prereq

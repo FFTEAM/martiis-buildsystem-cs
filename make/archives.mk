@@ -27,6 +27,15 @@ $(ARCHIVE)/libpng-1.2.42.tar.bz2:
 $(ARCHIVE)/fbshot-0.3.tar.gz:
 	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-0.3.tar.gz
 
+$(ARCHIVE)/flex-2.5.35.tar.gz:
+	$(WGET) http://prdownloads.sourceforge.net/flex/flex-2.5.35.tar.gz
+
+$(ARCHIVE)/freetype-2.1.4.tar.bz2:
+	$(WGET) http://heanet.dl.sourceforge.net/sourceforge/freetype/freetype-2.1.4.tar.bz2
+
+$(ARCHIVE)/freetype-2.3.9.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.9/freetype-2.3.9.tar.bz2?use_mirror=switch
+
 $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.11/freetype-2.3.11.tar.bz2?use_mirror=switch
 
