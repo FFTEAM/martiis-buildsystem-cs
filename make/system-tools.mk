@@ -173,6 +173,17 @@ $(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 	$(REMOVE)/samba-3.3.9
 	touch $@
 
+$(D)/unfsd: $(D)/libflex $(ARCHIVE)/unfs3-0.9.22.tar.gz
+	$(UNTAR)/unfs3-0.9.22.tar.gz
+	cd $(BUILD_TMP)/unfs3-0.9.22 && \
+		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
+			--prefix= --mandir=/.remove && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	rm -f -r $(TARGETPREFIX)/.remove
+	$(REMOVE)/unfs3-0.9.22
+	touch $@
+
 hotplug: $(TARGETPREFIX)/sbin/hotplug
 $(TARGETPREFIX)/sbin/hotplug: $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug/hotplug.c | $(TARGETPREFIX)
 	mkdir -p $(TARGETPREFIX)/sbin

@@ -3,9 +3,6 @@
 $(ARCHIVE)/autofs-4.1.4.tar.bz2:
 	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4.tar.bz2
 
-$(ARCHIVE)/zlib-1.2.3.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.3/zlib-1.2.3.tar.bz2?use_mirror=switch
-
 $(ARCHIVE)/libmad-0.15.1b.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/0.15.1b/libmad-0.15.1b.tar.gz?use_mirror=switch
 
@@ -89,3 +86,9 @@ $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz:
 
 $(ARCHIVE)/gdb-7.0.tar.bz2:
 	$(WGET) http://ftp.gnu.org/gnu/gdb/gdb-7.0.tar.bz2
+
+$(ARCHIVE)/unfs3-0.9.22.tar.gz:
+	$(WGET) http://downloads.sourceforge.net/unfs3/unfs3-0.9.22.tar.gz
+
+$(ARCHIVE)/zlib-1.2.3.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.3/zlib-1.2.3.tar.bz2?use_mirror=switch
