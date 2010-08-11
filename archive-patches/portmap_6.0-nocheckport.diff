@@ -1,0 +1,27 @@
+diff --git a/Makefile b/Makefile
+index 9e9a4b4..07fece3 100644
+--- a/Makefile
++++ b/Makefile
+@@ -33,7 +33,7 @@ endif
+ # ports. You can find out by running "rpcinfo -p"; if all mountd and NIS
+ # daemons use a port >= 1024 you should probably disable the next line.
+ 
+-CPPFLAGS += -DCHECK_PORT
++#CPPFLAGS += -DCHECK_PORT
+ 
+ # The portmap daemon runs a uid=1/gid=1 by default.  You can change that
+ # be defining DAEMON_UID and DAMEON_GID to numbers, or RPCUSER to a
+diff --git a/pmap_check.c b/pmap_check.c
+index 84f2c12..8adc92d 100644
+--- a/pmap_check.c
++++ b/pmap_check.c
+@@ -44,7 +44,9 @@
+ #include <netinet/in.h>
+ #include <rpc/rpcent.h>
+ #endif
++#ifdef CHECK_PORT
+ #include <tcpd.h>
++#endif
+ #include <arpa/inet.h>
+ #include <grp.h>
+ 

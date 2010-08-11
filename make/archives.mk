@@ -66,6 +66,9 @@ $(ARCHIVE)/libpcap-1.0.0.tar.gz:
 $(ARCHIVE)/rsync-3.0.6.tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-3.0.6.tar.gz
 
+$(ARCHIVE)/portmap-6.0.tgz:
+	$(WGET) http://neil.brown.name/portmap/portmap-6.0.tgz
+
 $(ARCHIVE)/procps-3.2.7.tar.gz:
 	$(WGET) http://procps.sourceforge.net/procps-3.2.7.tar.gz
 

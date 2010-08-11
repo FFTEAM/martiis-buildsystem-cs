@@ -173,7 +173,18 @@ $(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 	$(REMOVE)/samba-3.3.9
 	touch $@
 
-$(D)/unfsd: $(D)/libflex $(ARCHIVE)/unfs3-0.9.22.tar.gz
+$(D)/portmap: $(ARCHIVE)/portmap-6.0.tgz
+	$(UNTAR)/portmap-6.0.tgz
+	cd $(BUILD_TMP)/portmap_6.0 && \
+		$(PATCH)/portmap_6.0-nocheckport.diff && \
+		$(BUILDENV) $(MAKE) NO_TCP_WRAPPER=1 DAEMON_UID=65534 DAEMON_GID=65535 CC="$(TARGET)-gcc" && \
+		install -m 0755 -s portmap $(TARGETPREFIX)/sbin && \
+		install -m 0755 -s pmap_dump $(TARGETPREFIX)/sbin && \
+		install -m 0755 -s pmap_set $(TARGETPREFIX)/sbin
+	$(REMOVE)/portmap_6.0
+	touch $@
+
+$(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-0.9.22.tar.gz
 	$(UNTAR)/unfs3-0.9.22.tar.gz
 	cd $(BUILD_TMP)/unfs3-0.9.22 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
