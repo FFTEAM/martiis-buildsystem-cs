@@ -156,7 +156,7 @@ $(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 		export CONFIG_SITE=$(PATCHES)/samba-3.3.9-config.site && \
 		./autogen.sh && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
-			--prefix= --mandir=/.remove \
+			--prefix=/ --mandir=/.remove \
 			--sysconfdir=/etc/samba \
 			--with-configdir=/etc/samba \
 			--with-privatedir=/etc/samba \
