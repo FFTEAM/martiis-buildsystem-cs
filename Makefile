@@ -70,6 +70,7 @@ update-svn:
 	if [ -d $(SOURCE_DIR)/svn/THIRDPARTY/applications ]; then \
 		cd $(SOURCE_DIR)/svn/THIRDPARTY/applications && $(SVN) up *; \
 	else true; fi
+	cd $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream && $(SVN) up
 
 update-svn-target:
 	make cs-modules includes-and-libs

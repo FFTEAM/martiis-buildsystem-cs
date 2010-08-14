@@ -30,7 +30,7 @@ $(BUILD_TMP):
 $(CROSS_BASE):
 	mkdir -p $(CROSS_BASE)
 
-$(TARGETPREFIX)/include/coolstream: | $(TARGETPREFIX)
+$(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream/* $@/
 
