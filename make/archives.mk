@@ -16,7 +16,7 @@ $(ARCHIVE)/libungif-4.1.3.tar.bz2:
 	$(WGET) ftp://ftp.splack.org/pub/alphaslack/alphaslack-8.3.0/source/l/libungif/libungif-4.1.3.tar.bz2
 
 $(ARCHIVE)/curl-7.19.7.tar.bz2:
-	$(WGET) ftp://gentoo.imj.fr/pub/gentoo/distfiles/curl-7.19.7.tar.bz2
+	$(WGET) http://curl.haxx.se/download/curl-7.19.7.tar.bz2
 
 $(ARCHIVE)/libpng-1.2.42.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.42/libpng-1.2.42.tar.bz2?use_mirror=switch
