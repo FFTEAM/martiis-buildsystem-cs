@@ -71,6 +71,7 @@ update-svn:
 		cd $(SOURCE_DIR)/svn/THIRDPARTY/applications && $(SVN) up *; \
 	else true; fi
 	cd $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream && $(SVN) up
+	touch $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream # trigger update-svn-target copy
 
 update-svn-target:
 	make cs-modules includes-and-libs
