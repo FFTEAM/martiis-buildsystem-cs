@@ -11,15 +11,15 @@ N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
 # finally we can build outside of the source directory
 N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 # use this if you want to build inside the source dir - but you don't want that ;)
-# N_OBJDIR = $(SOURCE_DIR)/neutrino-hd
+# N_OBJDIR = $(N_HD_SOURCE)
 
 $(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype $(D)/libboost $(D)/libjpeg $(D)/libungif $(D)/libvorbis $(D)/ffmpeg
 	test -d $(N_OBJDIR) || mkdir -p $(N_OBJDIR)
-	$(SOURCE_DIR)/neutrino-hd/autogen.sh
+	$(N_HD_SOURCE)/autogen.sh
 	pushd $(N_OBJDIR) && \
 		export PKG_CONFIG=$(PKG_CONFIG) && \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
-		$(SOURCE_DIR)/neutrino-hd/configure --host=$(TARGET) --build=$(BUILD) --prefix=$(TARGETPREFIX) \
+		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix=$(TARGETPREFIX) \
 				--enable-maintainer-mode --with-target=cdk
 
 $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino

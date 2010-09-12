@@ -27,6 +27,14 @@ $(SOURCE_DIR)/neutrino-hd:
 	cd $(SOURCE_DIR) && \
 		git clone git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git neutrino-hd
 
+$(SOURCE_DIR)/neutrino-hd-td:
+	@echo ' ============================================================================== '
+	@echo "                  Cloning neutrino-hd-tripledragon git repo"
+	@echo ' ============================================================================== '
+	mkdir -p $(SOURCE_DIR)
+	cd $(SOURCE_DIR) && \
+		git clone git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
+
 check-repo:
 	@git --git-dir=$(SOURCE_DIR)/neutrino-hd/.git config remote.origin.url | \
 		grep -q "neutrino-hd-experimental.git$$" || \
@@ -61,5 +69,5 @@ $(SOURCE_DIR)/svn/THIRDPARTY/libraries:
 	cd $@ && $(SVNCO)/THIRDPARTY/libraries/libcs && \
 		 $(SVNCO)/THIRDPARTY/libraries/libnxp
 
-neutrino-hd: $(SOURCE_DIR)/neutrino-hd
+neutrino-hd: $(N_HD_SOURCE)
 cs-svn: $(SOURCE_DIR)/svn/THIRDPARTY/libraries $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream

@@ -34,6 +34,12 @@ LD_FLAGS        = $(TARGET_LDFLAGS)
 
 VPATH = $(D)
 
+ifeq ("$(FLAVOUR)", "neutrino-hd-tripledragon")
+N_HD_SOURCE = $(SOURCE_DIR)/neutrino-hd-td
+else
+N_HD_SOURCE = $(SOURCE_DIR)/neutrino-hd
+endif
+
 PATH := $(HOSTPREFIX)/bin:$(CROSS_DIR)/bin:$(PATH)
 PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig

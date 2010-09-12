@@ -15,6 +15,7 @@ printenv:
 	@echo "BASE_DIR:            $(BASE_DIR)"
 	@echo "BUILD:               $(BUILD)"
 	@echo "PATH:                $(PATH)"
+	@echo "N_HD_SOURCE:         $(N_HD_SOURCE)"
 	@echo '============================================================================== '
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
 	if type -p $(TARGET)-gcc >/dev/null 2>&1; then \
@@ -61,7 +62,7 @@ update-self:
 
 update-neutrino:
 	make check-repo
-	cd $(SOURCE_DIR)/neutrino-hd && git pull
+	cd $(N_HD_SOURCE) && git pull
 
 # only updates important(?) stuff, no crosstool etc.
 update-svn:
