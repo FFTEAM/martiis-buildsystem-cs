@@ -74,3 +74,4 @@ ccache:
 # hack to make sure they are always copied
 PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
 PHONY += ccache crosstool includes-and-libs cs-modules targetprefix bootstrap
+PHONY += $(TARGETPREFIX)/include/coolstream
