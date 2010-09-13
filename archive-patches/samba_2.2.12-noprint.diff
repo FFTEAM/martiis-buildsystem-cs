@@ -1,0 +1,268 @@
+diff --git a/source/Makefile.in b/source/Makefile.in
+index f360f29..2826aa4 100644
+--- a/source/Makefile.in
++++ b/source/Makefile.in
+@@ -157,8 +157,8 @@ RPC_SERVER_OBJ = rpc_server/srv_lsa.o rpc_server/srv_lsa_nt.o \
+                  rpc_server/srv_pipe_hnd.o rpc_server/srv_reg.o rpc_server/srv_reg_nt.o \
+                  rpc_server/srv_samr.o rpc_server/srv_samr_nt.o rpc_server/srv_srvsvc.o rpc_server/srv_srvsvc_nt.o \
+                  rpc_server/srv_util.o rpc_server/srv_wkssvc.o rpc_server/srv_wkssvc_nt.o \
+-                 rpc_server/srv_pipe.o rpc_server/srv_dfs.o rpc_server/srv_dfs_nt.o \
+-		 rpc_server/srv_spoolss.o rpc_server/srv_spoolss_nt.o rpc_client/cli_spoolss_notify.o
++                 rpc_server/srv_pipe.o rpc_server/srv_dfs.o rpc_server/srv_dfs_nt.o
++
+ 
+ # this includes only the low level parse code, not stuff
+ # that requires knowledge of security contexts
+@@ -200,7 +200,7 @@ SMBD_OBJ1 = smbd/server.o smbd/files.o smbd/chgpasswd.o smbd/connection.o \
+ 	    smbd/vfs.o smbd/vfs-wrap.o smbd/statcache.o \
+             smbd/posix_acls.o lib/sysacls.o \
+ 	    smbd/process.o smbd/service.o smbd/error.o \
+-	    printing/printfsp.o lib/util_seaccess.o \
++	    lib/util_seaccess.o \
+ 	    libsmb/cli_pipe_util.o
+ 
+ PRINTING_OBJ = printing/pcap.o printing/print_svid.o \
+@@ -213,8 +213,8 @@ MSDFS_OBJ = msdfs/msdfs.o
+ 
+ SMBD_OBJ = $(SMBD_OBJ1) $(MSDFS_OBJ) $(PARAM_OBJ) $(LIBSMB_OBJ) $(UBIQX_OBJ) \
+            $(RPC_SERVER_OBJ) $(RPC_PARSE_OBJ) $(RPC_CLIENT_OBJ) \
+-           $(LOCKING_OBJ) $(PASSDB_OBJ) $(PRINTING_OBJ) $(PROFILE_OBJ) $(LIB_OBJ) \
+-	   $(PRINTBACKEND_OBJ) $(QUOTAOBJS) $(OPLOCK_OBJ) $(NOTIFY_OBJ)
++           $(LOCKING_OBJ) $(PASSDB_OBJ) $(PROFILE_OBJ) $(LIB_OBJ) \
++	   $(QUOTAOBJS) $(OPLOCK_OBJ) $(NOTIFY_OBJ)
+ 
+ 
+ NMBD_OBJ1 = nmbd/asyncdns.o nmbd/nmbd.o nmbd/nmbd_become_dmb.o \
+@@ -234,7 +234,7 @@ NMBD_OBJ = $(NMBD_OBJ1) $(PARAM_OBJ) $(LIBSMB_OBJ) $(UBIQX_OBJ) \
+            $(PROFILE_OBJ) $(LIB_OBJ)
+ 
+ SWAT_OBJ = web/cgi.o web/diagnose.o web/startstop.o web/statuspage.o \
+-           web/swat.o $(PRINTING_OBJ) $(LIBSMB_OBJ) $(LOCKING_OBJ) \
++           web/swat.o $(LIBSMB_OBJ) $(LOCKING_OBJ) \
+            $(PARAM_OBJ) $(PASSDB_OBJ) $(RPC_PARSE_OBJ) \
+            $(UBIQX_OBJ) $(LIB_OBJ) 
+ 
+diff --git a/source/rpc_server/srv_pipe.c b/source/rpc_server/srv_pipe.c
+index aa89441..34f8beb 100644
+--- a/source/rpc_server/srv_pipe.c
++++ b/source/rpc_server/srv_pipe.c
+@@ -515,7 +515,9 @@ static struct api_cmd api_fd_commands[] =
+     { "wkssvc",   "ntsvcs",  api_wkssvc_rpc },
+     { "NETLOGON", "lsass",   api_netlog_rpc },
+     { "winreg",   "winreg",  api_reg_rpc },
++#ifdef PRINTING_NOT_DISABLED
+     { "spoolss",  "spoolss", api_spoolss_rpc },
++#endif
+ #ifdef WITH_MSDFS
+     { "netdfs",   "netdfs" , api_netdfs_rpc },
+ #endif
+diff --git a/source/smbd/close.c b/source/smbd/close.c
+index 2080d5a..1b4c999 100644
+--- a/source/smbd/close.c
++++ b/source/smbd/close.c
+@@ -135,7 +135,9 @@ static int close_normal_file(files_struct *fsp, BOOL normal_close)
+ 		err1 = -1;
+ 
+ 	if (fsp->print_file) {
++#ifdef PRINTING_NOT_DISABLED
+ 		print_fsp_end(fsp, normal_close);
++#endif
+ 		file_free(fsp);
+ 		return 0;
+ 	}
+diff --git a/source/smbd/fileio.c b/source/smbd/fileio.c
+index 7af01a3..ae1acde 100644
+--- a/source/smbd/fileio.c
++++ b/source/smbd/fileio.c
+@@ -162,8 +162,10 @@ ssize_t write_file(files_struct *fsp, char *data, SMB_OFF_T pos, size_t n)
+ 	ssize_t total_written = 0;
+ 	int write_path = -1; 
+ 
++#ifdef PRINTING_NOT_DISABLED
+ 	if (fsp->print_file)
+ 		return print_job_write(fsp->print_jobid, data, n);
++#endif
+ 
+ 	if (!fsp->can_write) {
+ 		errno = EPERM;
+diff --git a/source/smbd/lanman.c b/source/smbd/lanman.c
+index 1c6db9c..ee501fc 100644
+--- a/source/smbd/lanman.c
++++ b/source/smbd/lanman.c
+@@ -771,6 +771,7 @@ static void fill_printq_info(connection_struct *conn, int snum, int uLevel,
+ 	}
+ }
+ 
++#if PRINTING_NOT_DISABLED
+ /* This function returns the number of files for a given driver */
+ static int get_printerdrivernumber(int snum)
+ {
+@@ -965,7 +966,6 @@ static BOOL api_DosPrintQGetInfo(connection_struct *conn,
+ /****************************************************************************
+  View list of all print jobs on all queues.
+ ****************************************************************************/
+-
+ static BOOL api_DosPrintQEnum(connection_struct *conn, uint16 vuid, char* param, char* data,
+  			      int mdrcnt, int mprcnt,
+  			      char **rdata, char** rparam,
+@@ -1066,6 +1066,7 @@ static BOOL api_DosPrintQEnum(connection_struct *conn, uint16 vuid, char* param,
+   
+   return True;
+ }
++#endif
+ 
+ /****************************************************************************
+   get info level for a server list query
+@@ -1902,6 +1903,7 @@ static BOOL api_SamOEMChangePassword(connection_struct *conn,uint16 vuid, char *
+   delete a print job
+   Form: <W> <> 
+   ****************************************************************************/
++#ifdef PRINTING_NOT_DISABLED
+ static BOOL api_RDosPrintJobDel(connection_struct *conn,uint16 vuid, char *param,char *data,
+ 				int mdrcnt,int mprcnt,
+ 				char **rdata,char **rparam,
+@@ -2092,7 +2094,7 @@ static BOOL api_PrintJobInfo(connection_struct *conn,uint16 vuid,char *param,cha
+ 	
+ 	return(True);
+ }
+-
++#endif
+ 
+ /****************************************************************************
+   get info about the server
+@@ -3292,6 +3294,7 @@ struct
+   {"RNetUserGetInfo",	RAP_WUserGetInfo,	api_RNetUserGetInfo,0},
+   {"NetUserGetGroups",	RAP_WUserGetGroups,	api_NetUserGetGroups,0},
+   {"NetWkstaGetInfo",	RAP_WWkstaGetInfo,	api_NetWkstaGetInfo,0},
++#ifdef PRINTING_NOT_DISABLED
+   {"DosPrintQEnum",	RAP_WPrintQEnum,	api_DosPrintQEnum,0},
+   {"DosPrintQGetInfo",	RAP_WPrintQGetInfo,	api_DosPrintQGetInfo,0},
+   {"WPrintQueuePause",  RAP_WPrintQPause,	api_WPrintQueueCtrl,0},
+@@ -3303,16 +3306,19 @@ struct
+   {"RDosPrintJobResume",RAP_WPrintJobContinue,	api_RDosPrintJobDel,0},
+   {"WPrintDestEnum",	RAP_WPrintDestEnum,	api_WPrintDestEnum,0},
+   {"WPrintDestGetInfo",	RAP_WPrintDestGetInfo,	api_WPrintDestGetInfo,0},
+-  {"NetRemoteTOD",	RAP_NetRemoteTOD,	api_NetRemoteTOD,0},
+   {"WPrintQueuePurge",	RAP_WPrintQPurge,	api_WPrintQueueCtrl,0},
++#endif
++  {"NetRemoteTOD",	RAP_NetRemoteTOD,	api_NetRemoteTOD,0},
+   {"NetServerEnum",	RAP_NetServerEnum2,	api_RNetServerEnum,0},
+   {"WAccessGetUserPerms",RAP_WAccessGetUserPerms,api_WAccessGetUserPerms,0},
+   {"SetUserPassword",	RAP_WUserPasswordSet2,	api_SetUserPassword,0},
+   {"WWkstaUserLogon",	RAP_WWkstaUserLogon,	api_WWkstaUserLogon,0},
++#ifdef PRINTING_NOT_DISABLED
+   {"PrintJobInfo",	RAP_WPrintJobSetInfo,	api_PrintJobInfo,0},
+   {"WPrintDriverEnum",	RAP_WPrintDriverEnum,	api_WPrintDriverEnum,0},
+   {"WPrintQProcEnum",	RAP_WPrintQProcessorEnum,api_WPrintQProcEnum,0},
+   {"WPrintPortEnum",	RAP_WPrintPortEnum,	api_WPrintPortEnum,0},
++#endif
+   {"SamOEMChangePassword",RAP_SamOEMChgPasswordUser2_P,api_SamOEMChangePassword,0},
+   {NULL,		-1,	api_Unsupported,0}};
+ 
+diff --git a/source/smbd/open.c b/source/smbd/open.c
+index 809b842..cb42829 100644
+--- a/source/smbd/open.c
++++ b/source/smbd/open.c
+@@ -790,6 +790,7 @@ files_struct *open_file_shared1(connection_struct *conn,char *fname, SMB_STRUCT_
+ 	mode_t new_mode = (mode_t)0;
+ 
+ 	if (conn->printer) {
++#ifdef PRINTING_NOT_DISABLED
+ 		/* printers are handled completely differently. Most
+ 			of the passed parameters are ignored */
+ 		if (Access)
+@@ -797,6 +798,9 @@ files_struct *open_file_shared1(connection_struct *conn,char *fname, SMB_STRUCT_
+ 		if (action)
+ 			*action = FILE_WAS_CREATED;
+ 		return print_fsp_open(conn, fname);
++#else
++		return NULL;
++#endif
+ 	}
+ 
+ 	fsp = file_new(conn);
+diff --git a/source/smbd/process.c b/source/smbd/process.c
+index 765fdef..358e563 100644
+--- a/source/smbd/process.c
++++ b/source/smbd/process.c
+@@ -546,10 +546,10 @@ struct smb_message_struct
+ /* 0xbd */ { NULL, NULL, 0 },
+ /* 0xbe */ { NULL, NULL, 0 },
+ /* 0xbf */ { NULL, NULL, 0 },
+-/* 0xc0 */ { "SMBsplopen",reply_printopen,AS_USER | QUEUE_IN_OPLOCK },
+-/* 0xc1 */ { "SMBsplwr",reply_printwrite,AS_USER},
+-/* 0xc2 */ { "SMBsplclose",reply_printclose,AS_USER},
+-/* 0xc3 */ { "SMBsplretq",reply_printqueue,AS_USER},
++/* 0xc0 */ { NULL, NULL, 0 /*"SMBsplopen",reply_printopen,AS_USER | QUEUE_IN_OPLOCK*/ },
++/* 0xc1 */ { NULL, NULL, 0 /*"SMBsplwr",reply_printwrite,AS_USER*/ },
++/* 0xc2 */ { NULL, NULL, 0 /*"SMBsplclose",reply_printclose,AS_USER*/ },
++/* 0xc3 */ { NULL, NULL, 0 /*"SMBsplretq",reply_printqueue,AS_USER*/},
+ /* 0xc4 */ { NULL, NULL, 0 },
+ /* 0xc5 */ { NULL, NULL, 0 },
+ /* 0xc6 */ { NULL, NULL, 0 },
+diff --git a/source/smbd/reply.c b/source/smbd/reply.c
+index 0efc29c..6e05b85 100644
+--- a/source/smbd/reply.c
++++ b/source/smbd/reply.c
+@@ -3421,7 +3421,7 @@ int reply_echo(connection_struct *conn,
+ /****************************************************************************
+  Reply to a printopen.
+ ****************************************************************************/
+-
++#ifdef PRINTING_NOT_DISABLED
+ int reply_printopen(connection_struct *conn, 
+ 		    char *inbuf,char *outbuf, int dum_size, int dum_buffsize)
+ {
+@@ -3559,6 +3559,7 @@ int reply_printqueue(connection_struct *conn,
+ 	END_PROFILE(SMBsplretq);
+ 	return(outsize);
+ }
++#endif
+ 
+ /****************************************************************************
+  Reply to a printwrite.
+diff --git a/source/smbd/server.c b/source/smbd/server.c
+index d7e9589..13376d8 100644
+--- a/source/smbd/server.c
++++ b/source/smbd/server.c
+@@ -399,7 +399,9 @@ BOOL reload_services(BOOL test)
+ 	
+ 	ret = lp_load(servicesf,False,False,True);
+ 
++#ifdef PRINTING_NOT_DISABLED
+ 	load_printers();
++#endif
+ 
+ 	/* perhaps the config filename is now set */
+ 	if (!test)
+@@ -888,8 +890,10 @@ static void usage(char *pname)
+ 	if (!locking_init(0))
+ 		exit(1);
+ 
++#ifdef PRINTING_NOT_DISABLED
+ 	if (!print_backend_init())
+ 		exit(1);
++#endif
+ 
+ 	if (!share_info_db_init())
+ 		exit(1);
+diff --git a/source/smbd/service.c b/source/smbd/service.c
+index 05d29d5..203f45f 100644
+--- a/source/smbd/service.c
++++ b/source/smbd/service.c
+@@ -143,6 +143,7 @@ int find_service(char *service)
+       iService = add_home_service(service,phome_dir);
+    }
+ 
++#ifdef PRINTING_NOT_DISABLED
+    /* If we still don't have a service, attempt to add it as a printer. */
+    if (iService < 0)
+    {
+@@ -167,6 +168,7 @@ int find_service(char *service)
+             DEBUG(3,("%s is not a valid printer name\n", service));
+       }
+    }
++#endif
+ 
+    /* Check for default vfs service?  Unsure whether to implement this */
+    if (iService < 0)

@@ -148,7 +148,7 @@ $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/autofs-4.1.4
 	touch $@
 
-$(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
+$(D)/samba3: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 	$(UNTAR)/samba-3.3.9.tar.gz
 	cd $(BUILD_TMP)/samba-3.3.9 && \
 		$(PATCH)/samba-3.3.9.diff && \
@@ -171,6 +171,57 @@ $(D)/samba: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -f -r $(TARGETPREFIX)/.remove
 	$(REMOVE)/samba-3.3.9
+	touch $@
+
+$(D)/samba2: $(ARCHIVE)/samba-2.2.12.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/samba-2.2.12.tar.gz
+	cd $(BUILD_TMP)/samba-2.2.12 && \
+		$(PATCH)/samba_2.2.12.diff && \
+		$(PATCH)/samba_2.2.12-noprint.diff && \
+		cd source && \
+		autoconf configure.in > configure && \
+		./configure \
+			--build=$(BUILD) \
+			--prefix= \
+			samba_cv_struct_timespec=yes \
+			samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
+			--with-configdir=/etc \
+			--with-privatedir=/etc/samba/private \
+			--with-lockdir=/var/lock \
+			--with-piddir=/var/run \
+			--with-logfilebase=/var/log \
+			--disable-cups \
+			--with-swatdir=$(TARGETPREFIX)/swat && \
+		$(MAKE) distclean; \
+		$(MAKE) bin/make_smbcodepage CC=$(CC) && \
+		install -d $(TARGETPREFIX)/lib/codepages && \
+		install -d $(TARGETPREFIX)/etc/samba/private && \
+		./bin/make_smbcodepage c 850 codepages/codepage_def.850 \
+			$(TARGETPREFIX)/lib/codepages/codepage.850 && \
+		$(MAKE) distclean; \
+		$(BUILDENV) \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--prefix= \
+			samba_cv_struct_timespec=yes \
+			samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
+			samba_cv_HAVE_IFACE_IFCONF=yes \
+			samba_cv_HAVE_EXPLICIT_LARGEFILE_SUPPORT=yes \
+			samba_cv_HAVE_OFF64_T=yes \
+			samba_cv_have_longlong=yes \
+			--with-configdir=/etc \
+			--with-privatedir=/etc/samba/private \
+			--with-lockdir=/var/lock \
+			--with-piddir=/var/run \
+			--with-logfilebase=/var/log \
+			--disable-cups \
+			--with-swatdir=$(TARGETPREFIX)/swat && \
+		for i in smbd nmbd smbclient smbmount smbmnt smbpasswd; do \
+			$(MAKE) bin/$$i || break; \
+			install bin/$$i $(TARGETPREFIX)/bin; \
+		done
+	$(REMOVE)/samba-2.2.12
 	touch $@
 
 $(D)/portmap: $(ARCHIVE)/portmap-6.0.tgz

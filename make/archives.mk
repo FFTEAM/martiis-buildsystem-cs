@@ -78,6 +78,12 @@ $(ARCHIVE)/busybox-1.15.2.tar.bz2:
 $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2
 
+$(ARCHIVE)/samba-2.0.10.tar.gz:
+	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.0.10.tar.gz
+
+$(ARCHIVE)/samba-2.2.12.tar.gz:
+	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.2.12.tar.gz
+
 $(ARCHIVE)/samba-3.3.9.tar.gz:
 	$(WGET) http://download.samba.org/samba/ftp/old-versions/samba-3.3.9.tar.gz
 
