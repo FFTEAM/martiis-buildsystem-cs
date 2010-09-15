@@ -139,3 +139,36 @@ diff -uNr samba-2.2.12.org//source/include/includes.h samba-2.2.12/source/includ
  #ifdef HAVE_POLL_H
  #include <poll.h>
  #endif
+diff --git a/source/client/smbmnt.c b/source/client/smbmnt.c
+index 3624898..bb93e2b 100644
+--- a/source/client/smbmnt.c
++++ b/source/client/smbmnt.c
+@@ -13,6 +13,12 @@
+ 
+ #include <asm/types.h>
+ #include <asm/posix_types.h>
++
++/* sorry, no real idea why this is needed on some toolchains :-(
++   I suspect some include breakage. Anyway, this avoids the build error */
++#if defined(_TIME_H) && !defined(_LINUX_TIME_H)
++#define _LINUX_TIME_H
++#endif
+ #include <linux/smb.h>
+ #include <linux/smb_mount.h>
+ #include <asm/unistd.h>
+diff --git a/source/client/smbmount.c b/source/client/smbmount.c
+index 40e21e1..30e72ac 100644
+--- a/source/client/smbmount.c
++++ b/source/client/smbmount.c
+@@ -25,6 +25,11 @@
+ 
+ #include <mntent.h>
+ #include <asm/types.h>
++/* sorry, no real idea why this is needed on some toolchains :-(
++   I suspect some include breakage. Anyway, this avoids the build error */
++#if defined(_TIME_H) && !defined(_LINUX_TIME_H)
++#define _LINUX_TIME_H
++#endif
+ #include <linux/smb_fs.h>
+ 
+ extern BOOL in_client;
