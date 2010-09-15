@@ -182,45 +182,55 @@ $(D)/samba2: $(ARCHIVE)/samba-2.2.12.tar.gz | $(TARGETPREFIX)
 		autoconf configure.in > configure && \
 		./configure \
 			--build=$(BUILD) \
-			--prefix= \
+			--prefix=/opt/samba \
 			samba_cv_struct_timespec=yes \
 			samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
-			--with-configdir=/etc \
-			--with-privatedir=/etc/samba/private \
+			--with-configdir=/opt/samba/etc \
+			--with-privatedir=/opt/samba/etc/samba/private \
 			--with-lockdir=/var/lock \
 			--with-piddir=/var/run \
-			--with-logfilebase=/var/log \
+			--with-logfilebase=/var/log/ \
 			--disable-cups \
 			--with-swatdir=$(TARGETPREFIX)/swat && \
-		$(MAKE) distclean; \
-		$(MAKE) bin/make_smbcodepage CC=$(CC) && \
-		install -d $(TARGETPREFIX)/lib/codepages && \
-		install -d $(TARGETPREFIX)/etc/samba/private && \
+		$(MAKE) clean; \
+		$(MAKE) bin/make_smbcodepage bin/make_unicodemap CC=$(CC) && \
+		install -d $(TARGETPREFIX)/opt/samba/lib/codepages && \
 		./bin/make_smbcodepage c 850 codepages/codepage_def.850 \
-			$(TARGETPREFIX)/lib/codepages/codepage.850 && \
-		$(MAKE) distclean; \
+			$(TARGETPREFIX)/opt/samba/lib/codepages/codepage.850 && \
+		./bin/make_unicodemap 850 codepages/CP850.TXT \
+			$(TARGETPREFIX)/opt/samba/lib/codepages/unicode_map.850 && \
+		./bin/make_unicodemap ISO8859-1 codepages/CPISO8859-1.TXT \
+			$(TARGETPREFIX)/opt/samba/lib/codepages/unicode_map.ISO8859-1
+	$(MAKE) -C $(BUILD_TMP)/samba-2.2.12/source distclean
+	cd $(BUILD_TMP)/samba-2.2.12/source && \
 		$(BUILDENV) \
 		./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
-			--prefix= \
+			--prefix=/opt/samba \
 			samba_cv_struct_timespec=yes \
 			samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 			samba_cv_HAVE_IFACE_IFCONF=yes \
 			samba_cv_HAVE_EXPLICIT_LARGEFILE_SUPPORT=yes \
 			samba_cv_HAVE_OFF64_T=yes \
 			samba_cv_have_longlong=yes \
-			--with-configdir=/etc \
-			--with-privatedir=/etc/samba/private \
+			--with-configdir=/opt/samba/etc \
+			--with-privatedir=/opt/samba/etc/samba/private \
 			--with-lockdir=/var/lock \
 			--with-piddir=/var/run \
-			--with-logfilebase=/var/log \
+			--with-logfilebase=/var/log/ \
 			--disable-cups \
-			--with-swatdir=$(TARGETPREFIX)/swat && \
-		for i in smbd nmbd smbclient smbmount smbmnt smbpasswd; do \
-			$(MAKE) bin/$$i || break; \
-			install bin/$$i $(TARGETPREFIX)/bin; \
-		done
+			--with-swatdir=$(TARGETPREFIX)/swat
+	install -d $(TARGETPREFIX)/opt/samba/bin
+	cd $(BUILD_TMP)/samba-2.2.12/source && \
+		$(MAKE) bin/smbd bin/nmbd bin/smbclient bin/smbmount bin/smbmnt bin/smbpasswd
+	for i in smbd nmbd smbclient smbmount smbmnt smbpasswd; do \
+		install $(BUILD_TMP)/samba-2.2.12/source/bin/$$i $(TARGETPREFIX)/opt/samba/bin; \
+	done
+	install -d $(TARGETPREFIX)/opt/samba/etc/samba/private
+	install -d $(TARGETPREFIX)/opt/samba/etc/init.d
+	install $(PATCHES)/smb.conf $(TARGETPREFIX)/opt/samba/etc
+	install -m 755 $(PATCHES)/samba2.init $(TARGETPREFIX)/opt/samba/etc/init.d/samba
 	$(REMOVE)/samba-2.2.12
 	touch $@
 
