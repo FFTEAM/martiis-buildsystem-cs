@@ -11,6 +11,18 @@ $(D)/zlib: $(ARCHIVE)/zlib-1.2.3.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/.remove
 	touch $@
 
+$(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/util-linux-ng-2.18.tar.bz2
+	cd $(BUILD_TMP)/util-linux-ng-2.18 && \
+		./configure --prefix= --build=$(BUILD) --host=$(TARGET) \
+			--mandir=/.remove && \
+		$(MAKE) -C shlibs/uuid && \
+		$(MAKE) -C shlibs/uuid install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/uuid.pc
+	rm -rf $(TARGETPREFIX)/.remove
+	$(REMOVE)/util-linux-ng-2.18
+	touch $@
+
 $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libmad-0.15.1b.tar.gz
 	pushd $(BUILD_TMP)/libmad-0.15.1b && \
