@@ -99,6 +99,24 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz | $(TARGETPREFIX)
 	rm -rf $(TARGETPREFIX)/{include,share}/{et,ss} $(TARGETPREFIX)/bin/{compile_et,mk_cmds}
 	touch $@
 
+$(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
+	$(UNTAR)/xfsprogs-3.1.3.tar.gz
+	cd $(BUILD_TMP)/xfsprogs-3.1.3 && \
+		$(BUILDENV) root_libdir=/opt/xfsprogs/lib root_sbindir=/opt/xfsprogs/sbin \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--includedir=$(TARGETPREFIX)/include \
+			--oldincludedir=$(TARGETPREFIX)/include \
+			--enable-gettext=no \
+			--datarootdir=/.remove \
+			--prefix=/opt/xfsprogs && \
+		LCFLAGS=-I$(TARGETPREFIX)/include $(MAKE) V=1 && \
+		DIST_ROOT=$(TARGETPREFIX) $(MAKE) install
+	rm -rf $(TARGETPREFIX)/.remove
+	$(REMOVE)/xfsprogs-3.1.3
+	touch $@
+
 #  NOTE:
 #  gdb built for target or local-PC
 $(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2 | $(TARGETPREFIX)

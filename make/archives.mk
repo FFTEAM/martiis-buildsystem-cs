@@ -102,5 +102,8 @@ $(ARCHIVE)/unfs3-0.9.22.tar.gz:
 $(ARCHIVE)/util-linux-ng-2.18.tar.bz2:
 	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.18/util-linux-ng-2.18.tar.bz2
 
+$(ARCHIVE)/xfsprogs-3.1.3.tar.gz:
+	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-3.1.3.tar.gz
+
 $(ARCHIVE)/zlib-1.2.3.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.3/zlib-1.2.3.tar.bz2?use_mirror=switch
