@@ -16,6 +16,8 @@ KVERSION_FULL = $(KVERSION)-nevis
 
 $(BUILD_TMP)/linux-$(KVERSION):
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
+	cd $(BUILD_TMP)/linux-$(KVERSION) && \
+		$(PATCH)/linux-2.6.26.8-new-make.patch
 	cp $(PATCHES)/kernel.config $@/.config
 
 $(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
