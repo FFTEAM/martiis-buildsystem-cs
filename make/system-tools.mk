@@ -1,27 +1,28 @@
 #Makefile to build system tools
 
-$(D)/rsync: $(ARCHIVE)/rsync-3.0.6.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/rsync-3.0.6.tar.gz
-	pushd $(BUILD_TMP)/rsync-3.0.6 && \
+$(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/rsync-3.0.7.tar.gz
+	pushd $(BUILD_TMP)/rsync-3.0.7 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all && \
 		make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/rsync-3.0.6
+	$(REMOVE)/rsync-3.0.7
 	$(REMOVE)/.remove
 	touch $@
 
-$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.7.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/procps-3.2.7.tar.gz
-	pushd $(BUILD_TMP)/procps-3.2.7 && \
+$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/procps-3.2.8.tar.gz
+	pushd $(BUILD_TMP)/procps-3.2.8 && \
 		$(PATCH)/procps-3.2.7-avoid-ICE-with-gcc-4.3.2-arm.diff && \
 		make CC=$(TARGET)-gcc LDFLAGS="$(LD_FLAGS)" \
-			CPPFLAGS="-pipe -O2 -g -I$(TARGETPREFIX)/include -I$(TARGETPREFIX)/include/ncurses -D__GNU_LIBRARY__" \
-			top ps/ps && \
+			CPPFLAGS="-pipe -O2 -g -I$(TARGETPREFIX)/include -I$(TARGETPREFIX)/include/ncurses -D__GNU_LIBRARY__" proc/libproc-3.2.8.so && \
+		make CC=$(TARGET)-gcc LDFLAGS="$(LD_FLAGS) proc/libproc-3.2.8.so" \
+			CPPFLAGS="-pipe -O2 -g -I$(TARGETPREFIX)/include -I$(TARGETPREFIX)/include/ncurses -D__GNU_LIBRARY__" top ps/ps && \
 		mkdir -p $(TARGETPREFIX)/bin && \
 		rm -f $(TARGETPREFIX)/bin/ps $(TARGETPREFIX)/bin/top && \
 		install -m 755 top ps/ps $(TARGETPREFIX)/bin && \
-		install -m 755 proc/libproc-3.2.7.so $(TARGETPREFIX)/lib
-	$(REMOVE)/procps-3.2.7
+		install -m 755 proc/libproc-3.2.8.so $(TARGETPREFIX)/lib
+	$(REMOVE)/procps-3.2.8
 	touch $@
 
 $(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
@@ -116,9 +117,9 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
 
 #  NOTE:
 #  gdb built for target or local-PC
-$(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/gdb-7.0.tar.bz2
-	pushd $(BUILD_TMP)/gdb-7.0 && \
+$(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/gdb-7.1.tar.bz2
+	pushd $(BUILD_TMP)/gdb-7.1 && \
 		$(BUILDENV) \
 		./configure \
 			--nfp --disable-werror \
@@ -128,22 +129,22 @@ $(D)/gdb: $(ARCHIVE)/gdb-7.0.tar.bz2 | $(TARGETPREFIX)
 			--build=$(BUILD) --host=$(TARGET) && \
 		$(MAKE) all-gdb && \
 		make install-gdb prefix=$(TARGETPREFIX) && \
-	$(REMOVE)/gdb-7.0
+	$(REMOVE)/gdb-7.1
 	$(REMOVE)/.remove
 	touch $@
 
 #  NOTE:
 #  gdb-remote built for local-PC or target
-$(D)/gdb-remote: $(ARCHIVE)/gdb-7.0.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/gdb-7.0.tar.bz2
-	pushd $(BUILD_TMP)/gdb-7.0 && \
+$(D)/gdb-remote: $(ARCHIVE)/gdb-7.1.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/gdb-7.1.tar.bz2
+	pushd $(BUILD_TMP)/gdb-7.1 && \
 		./configure \
 			--nfp --disable-werror \
 			--prefix=$(HOSTPREFIX) \
 			--build=$(BUILD) --host=$(BUILD) --target=$(TARGET) && \
 		$(MAKE) all-gdb && \
 		make install-gdb && \
-	$(REMOVE)/gdb-7.0
+	$(REMOVE)/gdb-7.1
 	touch $@
 
 system-tools-all: $(D)/rsync $(D)/procps $(D)/busybox $(D)/strace $(D)/e2fsprogs $(D)/gdb $(D)/gdb-remote

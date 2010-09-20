@@ -1,13 +1,13 @@
 #Makefile to build system libs, potentially needed by neutrino and enigma
 
-$(D)/zlib: $(ARCHIVE)/zlib-1.2.3.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/zlib-1.2.3.tar.bz2
-	cd $(BUILD_TMP)/zlib-1.2.3 && \
+$(D)/zlib: $(ARCHIVE)/zlib-1.2.4.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/zlib-1.2.4.tar.bz2
+	cd $(BUILD_TMP)/zlib-1.2.4 && \
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared && \
 		make && \
 		ln -sf /bin/true ldconfig && \
-		PATH=$(BUILD_TMP)/zlib-1.2.3:$(PATH) make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/zlib-1.2.3
+		PATH=$(BUILD_TMP)/zlib-1.2.4:$(PATH) make install prefix=$(TARGETPREFIX)
+	$(REMOVE)/zlib-1.2.4
 	$(REMOVE)/.remove
 	touch $@
 
@@ -51,20 +51,20 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libid3tag.la
 	touch $@
 
-$(D)/libungif: $(ARCHIVE)/libungif-4.1.3.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libungif-4.1.3.tar.bz2
-	pushd $(BUILD_TMP)/libungif-4.1.3 && \
+$(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libungif-4.1.4.tar.bz2
+	pushd $(BUILD_TMP)/libungif-4.1.4 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove && \
 		make all && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libungif.la
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/libungif-4.1.3
+	$(REMOVE)/libungif-4.1.4
 	touch $@
 
-$(D)/libcurl: $(ARCHIVE)/curl-7.19.7.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/curl-7.19.7.tar.bz2
-	pushd $(BUILD_TMP)/curl-7.19.7 && \
+$(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/curl-7.20.0.tar.bz2
+	pushd $(BUILD_TMP)/curl-7.20.0 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --with-random --mandir=/.remove && \
 		make all && \
 		mkdir -p $(HOSTPREFIX)/bin && \
@@ -75,7 +75,7 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.19.7.tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/curl-7.19.7
+	$(REMOVE)/curl-7.20.0
 	touch $@
 
 $(D)/libpng: $(ARCHIVE)/libpng-1.2.42.tar.bz2 | $(TARGETPREFIX)
@@ -87,9 +87,9 @@ $(D)/libpng: $(ARCHIVE)/libpng-1.2.42.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/libpng-1.2.42 $(BUILD_TMP)/tmpman
 	touch $@
 
-$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.11.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/freetype-2.3.11.tar.bz2
-	pushd $(BUILD_TMP)/freetype-2.3.11 && \
+$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/freetype-2.3.12.tar.bz2
+	pushd $(BUILD_TMP)/freetype-2.3.12 && \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) && \
 		$(MAKE) all && \
@@ -99,7 +99,7 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.11.tar.bz2 | $(TARGETPREFIX)
 	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
-	$(REMOVE)/freetype-2.3.11
+	$(REMOVE)/freetype-2.3.12
 	touch $@
 
 $(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
@@ -115,17 +115,17 @@ $(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/jpeg-6b
 	touch $@
 
-$(D)/libboost: $(ARCHIVE)/boost_1_40_0.tar.bz2 | $(TARGETPREFIX)
+$(D)/libboost: $(ARCHIVE)/boost_1_42_0.tar.bz2 | $(TARGETPREFIX)
 	pushd $(BUILD_TMP) && \
-		tar xf $(ARCHIVE)/boost_1_40_0.tar.bz2 boost_1_40_0/boost && \
+		tar xf $(ARCHIVE)/boost_1_42_0.tar.bz2 boost_1_42_0/boost && \
 		rm -rf $(TARGETPREFIX)/include/boost &&\
-		mv boost_1_40_0/boost $(TARGETPREFIX)/include/boost && \
-		rmdir boost_1_40_0
+		mv boost_1_42_0/boost $(TARGETPREFIX)/include/boost && \
+		rmdir boost_1_42_0
 	touch $@
 
-$(D)/openssl: $(ARCHIVE)/openssl-0.9.8l.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/openssl-0.9.8l.tar.gz
-	pushd $(BUILD_TMP)/openssl-0.9.8l && \
+$(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/openssl-0.9.8m.tar.gz
+	pushd $(BUILD_TMP)/openssl-0.9.8m && \
 		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove && \
 		$(MAKE) depend && \
@@ -135,7 +135,7 @@ $(D)/openssl: $(ARCHIVE)/openssl-0.9.8l.tar.gz | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcrypto.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libssl.pc
 	rm -r $(TARGETPREFIX)/.remove $(TARGETPREFIX)/bin/openssl $(TARGETPREFIX)/bin/c_rehash
-	$(REMOVE)/openssl-0.9.8l
+	$(REMOVE)/openssl-0.9.8m
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
 
@@ -259,14 +259,14 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz ncurses-prereq | $(TARGETPREFIX)
 	$(REMOVE)/ncurses-5.6
 	touch $@
 
-$(D)/libiconv: $(ARCHIVE)/libiconv-1.13.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libiconv-1.13.tar.gz
-	pushd $(BUILD_TMP)/libiconv-1.13 && \
+$(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libiconv-1.13.1.tar.gz
+	pushd $(BUILD_TMP)/libiconv-1.13.1 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --prefix= --datarootdir=/.remove && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
-	$(REMOVE)/libiconv-1.13
+	$(REMOVE)/libiconv-1.13.1
 	touch $@
 
 #############################################################################################
