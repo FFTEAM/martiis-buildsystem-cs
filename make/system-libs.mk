@@ -11,7 +11,8 @@ $(D)/zlib: $(ARCHIVE)/zlib-1.2.3.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/.remove
 	touch $@
 
-$(D)/libuuid $(D)/libblkid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
+$(D)/libblkid: $(D)/libuuid
+$(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/util-linux-ng-2.18.tar.bz2
 	cd $(BUILD_TMP)/util-linux-ng-2.18 && \
 		./configure --prefix= --build=$(BUILD) --host=$(TARGET) \
