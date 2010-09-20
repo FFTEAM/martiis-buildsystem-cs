@@ -1,11 +1,1 @@
-#!/bin/sh
-
-case $1 in
-	start)
-		rsync --daemon
-		;;
-	stop)
-		read PID < /var/run/rsyncd.pid 2>/dev/null && \
-			kill -TERM $PID
-		;;
-esac
+rsyncd

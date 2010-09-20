@@ -1,0 +1,17 @@
+#!/bin/sh
+
+case "$1" in
+    start)
+	/sbin/inetd
+	;;
+    stop)
+	killall inetd
+	;;
+    reload)
+	killall -HUP inetd
+	;;
+    restart)
+	$0 stop
+	$0 start
+	;;
+esac
