@@ -1,6 +1,10 @@
 #!/bin/sh
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export TZ=`cat /etc/TZ`
+#
+# reset colors, to not hurt my eyes...
+echo -e "\033[0m"
+
 # for next boot ;)
 [ -e /dev/console ] || mknod -m 644 /dev/console c 5 1
 mount -n -t tmpfs tmp /dev
