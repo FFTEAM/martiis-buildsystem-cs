@@ -1,0 +1,26 @@
+# functions that are used by init scripts...
+
+run_initscripts() {
+	if [ "x$1" == xstop ]; then
+		action="stop"
+		files="/opt/*/etc/init.d/K[0-9][0-9]* /etc/init.d/K[0-9][0-9]*"
+	else
+		action="start"
+		files="/opt/*/etc/init.d/S[0-9][0-9]* /etc/init.d/S[0-9][0-9]*"
+	fi
+
+	names=$(for file in $files ; do echo ${file##*/} ; done | sort -u)
+
+	for name in $names; do
+		for file in /opt/*/etc/init.d/$name /etc/init.d/$name; do
+			if [ -x "$file"  ]; then
+				echo "${action}ing $file ..."
+				"$file" $action
+				break;
+				# only execute the first of a given name,
+				# to allow overriding /etc from /opt
+			fi
+		done
+	done
+}
+

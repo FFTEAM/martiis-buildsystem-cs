@@ -1,7 +1,7 @@
 #!/bin/sh
 
 export TZ=`cat /etc/TZ`
-##dmesg -n1
-for i in /etc/init.d/K??* ; do
-    $i stop
-done
+
+. /etc/init.d/functions
+
+run_initscripts stop

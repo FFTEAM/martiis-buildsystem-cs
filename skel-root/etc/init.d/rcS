@@ -7,7 +7,7 @@ mount -n -t tmpfs tmp /dev
 /sbin/mknodes 2> /dev/null
 
 dmesg -n 4
-for i in /etc/init.d/S??* ; do
-	echo "$i start..."
-	$i start
-done
+
+. /etc/init.d/functions
+
+run_initscripts start
