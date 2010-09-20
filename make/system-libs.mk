@@ -245,7 +245,7 @@ ncurses-prereq:
 		false; \
 	fi
 
-$(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz ncurses-prereq | $(TARGETPREFIX)
+$(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
 	$(UNTAR)/ncurses-5.6.tar.gz && \
 	pushd $(BUILD_TMP)/ncurses-5.6 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
