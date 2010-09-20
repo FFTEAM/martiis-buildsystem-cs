@@ -90,8 +90,8 @@ $(ARCHIVE)/samba-3.3.9.tar.gz:
 $(ARCHIVE)/strace-4.5.19.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.19/strace-4.5.19.tar.bz2?use_mirror=switch
 
-$(ARCHIVE)/e2fsprogs-1.41.9.tar.gz:
-	$(WGET) http://downloads.sourceforge.net/project/e2fsprogs/e2fsprogs/1.41.9/e2fsprogs-1.41.9.tar.gz?use_mirror=switch
+$(ARCHIVE)/e2fsprogs-1.41.12.tar.gz:
+	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.41.12.tar.gz
 
 $(ARCHIVE)/gdb-7.0.tar.bz2:
 	$(WGET) http://ftp.gnu.org/gnu/gdb/gdb-7.0.tar.bz2

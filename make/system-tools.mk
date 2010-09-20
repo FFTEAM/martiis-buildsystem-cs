@@ -60,25 +60,24 @@ $(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/.remove
 	touch $@
 
-$(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/e2fsprogs-1.41.9.tar.gz
-	cd $(BUILD_TMP)/e2fsprogs-1.41.9 && \
+$(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/e2fsprogs-1.41.12.tar.gz
+	cd $(BUILD_TMP)/e2fsprogs-1.41.12 && \
 		ln -sf /bin/true ./ldconfig && \
 		CC=$(TARGET)-gcc \
 		RANLIB=$(TARGET)-ranlib \
 		CFLAGS="-Os -msoft-float" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
-		PATH=$(BUILD_TMP)/e2fsprogs-1.41.9:$(PATH) \
+		PATH=$(BUILD_TMP)/e2fsprogs-1.41.12:$(PATH) \
 		./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
 			--target=$(TARGET) \
-			--prefix=$(TARGETPREFIX) \
-			--mandir=$(BUILD_TMP)/.remove \
-			--with-cc=$(TARGET)-gcc \
+			--prefix=/ \
+			--infodir=/.remove \
+			--mandir=/.remove \
 			--with-linker=$(TARGET)-ld \
 			--disable-evms \
-			--enable-elf-shlibs \
 			--enable-htree \
 			--disable-profile \
 			--disable-e2initrd-helper \
@@ -91,12 +90,10 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.9.tar.gz | $(TARGETPREFIX)
 			--enable-fsck \
 			--with-gnu-ld \
 			--disable-nls && \
-		$(MAKE) libs progs && \
-		$(MAKE) install-libs && \
-		$(MAKE) install-progs-recursive
-	$(REMOVE)/e2fsprogs-1.41.9
-	$(REMOVE)/.remove
-	rm -rf $(TARGETPREFIX)/{include,share}/{et,ss} $(TARGETPREFIX)/bin/{compile_et,mk_cmds}
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/e2fsprogs-1.41.12
+	rm -r $(TARGETPREFIX)/.remove
 	touch $@
 
 $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
