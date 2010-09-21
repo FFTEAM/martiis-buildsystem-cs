@@ -1,13 +1,14 @@
 #Makefile to build system libs, potentially needed by neutrino and enigma
 
-$(D)/zlib: $(ARCHIVE)/zlib-1.2.4.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/zlib-1.2.4.tar.bz2
-	cd $(BUILD_TMP)/zlib-1.2.4 && \
+$(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/zlib-1.2.5.tar.bz2
+	cd $(BUILD_TMP)/zlib-1.2.5 && \
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared && \
 		make && \
 		ln -sf /bin/true ldconfig && \
-		PATH=$(BUILD_TMP)/zlib-1.2.4:$(PATH) make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/zlib-1.2.4
+		PATH=$(BUILD_TMP)/zlib-1.2.5:$(PATH) make install prefix=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
+	$(REMOVE)/zlib-1.2.5
 	$(REMOVE)/.remove
 	touch $@
 

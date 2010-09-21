@@ -111,5 +111,5 @@ $(ARCHIVE)/vsftpd-2.2.2.tar.gz:
 $(ARCHIVE)/xfsprogs-3.1.3.tar.gz:
 	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-3.1.3.tar.gz
 
-$(ARCHIVE)/zlib-1.2.4.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.4/zlib-1.2.4.tar.bz2?use_mirror=switch
+$(ARCHIVE)/zlib-1.2.5.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/1.2.5/zlib-1.2.5.tar.bz2
