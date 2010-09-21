@@ -18,8 +18,8 @@ $(ARCHIVE)/libungif-4.1.4.tar.bz2:
 $(ARCHIVE)/curl-7.20.0.tar.bz2:
 	$(WGET) http://curl.haxx.se/download/curl-7.20.0.tar.bz2
 
-$(ARCHIVE)/libpng-1.2.42.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libpng/00-libpng-stable/1.2.42/libpng-1.2.42.tar.bz2?use_mirror=switch
+$(ARCHIVE)/libpng-1.2.44.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libpng/03-libpng-previous/1.2.44/libpng-1.2.44.tar.bz2
 
 $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.41.12.tar.gz
