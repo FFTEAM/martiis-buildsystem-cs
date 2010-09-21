@@ -64,9 +64,9 @@ $(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/busybox
 	touch $@
 
-$(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/strace-4.5.19.tar.bz2
-	pushd $(BUILD_TMP)/strace-4.5.19 && \
+$(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/strace-4.5.20.tar.bz2
+	pushd $(BUILD_TMP)/strace-4.5.20 && \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGETPREFIX)/include" \
 		CXXFLAGS="$(TARGET_CXXFLAGS)" \
@@ -74,7 +74,7 @@ $(D)/strace: $(ARCHIVE)/strace-4.5.19.tar.bz2 | $(TARGETPREFIX)
 		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all && \
 		make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/strace-4.5.19
+	$(REMOVE)/strace-4.5.20
 	$(REMOVE)/.remove
 	touch $@
 
