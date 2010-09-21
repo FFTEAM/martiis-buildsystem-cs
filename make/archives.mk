@@ -105,6 +105,9 @@ $(ARCHIVE)/unfs3-0.9.22.tar.gz:
 $(ARCHIVE)/util-linux-ng-2.18.tar.bz2:
 	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v2.18/util-linux-ng-2.18.tar.bz2
 
+$(ARCHIVE)/vsftpd-2.2.2.tar.gz:
+	$(WGET) ftp://vsftpd.beasts.org/users/cevans/vsftpd-2.2.2.tar.gz
+
 $(ARCHIVE)/xfsprogs-3.1.3.tar.gz:
 	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-3.1.3.tar.gz
 

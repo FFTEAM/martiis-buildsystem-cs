@@ -1,5 +1,21 @@
 #Makefile to build system tools
 
+$(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz
+	$(UNTAR)/vsftpd-2.2.2.tar.gz
+	cd $(BUILD_TMP)/vsftpd-2.2.2 && \
+		$(PATCH)/vsftpd.diff && \
+		TARGETPREFIX=$(TARGETPREFIX) make CC=$(TARGET)-gcc CFLAGS="-pipe -O2 -g0 -I$(TARGETPREFIX)/include" LDFLAGS="$(LD_FLAGS)"
+	install -d $(TARGETPREFIX)/opt/vsftpd/sbin
+	install -d $(TARGETPREFIX)/opt/vsftpd/etc/init.d
+	install -d $(TARGETPREFIX)/share/empty
+	install -m755 $(BUILD_TMP)/vsftpd-2.2.2/vsftpd $(TARGETPREFIX)/opt/vsftpd/sbin/vsftpd
+	install -m 644 $(PATCHES)/vsftpd.conf $(TARGETPREFIX)/opt/vsftpd/etc/vsftpd.conf
+	install -m 755 $(PATCHES)/vsftpd.init $(TARGETPREFIX)/opt/vsftpd/etc/init.d/vsftpd
+	# it is important that vsftpd is started *before* inetd to override busybox ftpd...
+	ln -sf vsftpd $(TARGETPREFIX)/opt/vsftpd/etc/init.d/S80vsftpd
+	$(REMOVE)/vsftpd-2.2.2
+	touch $@
+
 $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/rsync-3.0.7.tar.gz
 	pushd $(BUILD_TMP)/rsync-3.0.7 && \

@@ -1,0 +1,14 @@
+--- a/vsf_findlibs.sh
++++ b/vsf_findlibs.sh
+@@ -1,8 +1,8 @@
+ #!/bin/sh
+ # Cheesy hacky location of additional link libraries.
+ 
+-locate_library() { [ ! "$1*" = "`echo $1*`" ]; }
+-find_func() { egrep $1 $2 >/dev/null; }
++locate_library() { [ ! "${TARGETPREFIX}$1*" = "`echo ${TARGETPREFIX}$1*`" ]; }
++find_func() { egrep ${TARGETPREFIX}$1 $2 >/dev/null; }
+ 
+ if find_func hosts_access tcpwrap.o; then
+   echo "-lwrap";
+ 
