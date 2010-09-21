@@ -5,10 +5,12 @@ case "$1" in
 	/sbin/inetd
 	;;
     stop)
-	killall inetd
+	read pid < /var/run/inetd.pid || exit 1
+	kill $pid
 	;;
     reload)
-	killall -HUP inetd
+	read pid < /var/run/inetd.pid || exit 1
+	kill -HUP $pid
 	;;
     restart)
 	$0 stop
