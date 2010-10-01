@@ -54,8 +54,8 @@ $(ARCHIVE)/boost_1_42_0.tar.bz2:
 $(ARCHIVE)/openssl-0.9.8m.tar.gz:
 	$(WGET) http://www.openssl.org/source/openssl-0.9.8m.tar.gz
 
-$(ARCHIVE)/ffmpeg-0.5.tar.bz2:
-	$(WGET) ftp://ftp.wh8.tu-dresden.de/pub/linux/distributions/gentoo/distfiles/ffmpeg-0.5.tar.bz2
+$(ARCHIVE)/ffmpeg-0.6.tar.bz2:
+	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-0.6.tar.bz2
 
 $(ARCHIVE)/libogg-1.1.4.tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-1.1.4.tar.gz

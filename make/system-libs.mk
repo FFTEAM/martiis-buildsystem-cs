@@ -140,10 +140,11 @@ $(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
 
-$(D)/ffmpeg-0.5: $(ARCHIVE)/ffmpeg-0.5.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/ffmpeg-0.5.tar.bz2
-	pushd $(BUILD_TMP)/ffmpeg-0.5 && \
-		$(PATCH)/ffmpeg-export-missing-symbol.diff && \
+$(D)/ffmpeg-0.6: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/ffmpeg-0.6.tar.bz2
+	cd $(BUILD_TMP)/ffmpeg-0.6 && \
+		$(PATCH)/ffmpeg-dvbsubs.diff && \
+		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff && \
 		CFLAGS=-march=armv6 \
 		./configure \
 			--enable-parsers --disable-decoders --disable-encoders --enable-demuxers \
@@ -151,25 +152,25 @@ $(D)/ffmpeg-0.5: $(ARCHIVE)/ffmpeg-0.5.tar.bz2 | $(TARGETPREFIX)
 			--enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video \
 			--enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio \
 			--enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 \
-			--enable-demuxer=mpegps \
+			--enable-decoder=dvbsub --enable-decoder=iff_byterun1 --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
 			--disable-protocols --enable-protocol=file --enable-bsfs \
 			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
-			--disable-network --disable-ipv6 \
+			--disable-network --disable-swscale --disable-ffprobe \
 			--disable-static --enable-shared \
-			--disable-vhook \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
-			--enable-armv6 --arch=arm \
+			--enable-armv6 --arch=arm --target-os=linux \
 			--enable-debug --enable-stripping \
 			--prefix=/ && \
 		$(MAKE) && \
-		make install DESTDIR=$(TARGETPREFIX)
+		make install DESTDIR=$(TARGETPREFIX) && \
+		cp version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
-	$(REMOVE)/ffmpeg-0.5
+	$(REMOVE)/ffmpeg-0.6
 	touch $@
 
 # maybe put this into archive.mk?

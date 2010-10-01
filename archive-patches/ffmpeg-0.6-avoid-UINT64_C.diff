@@ -1,0 +1,21 @@
+diff --git a/libavutil/common.h b/libavutil/common.h
+index 4aa00a9..b54dd48 100644
+--- a/libavutil/common.h
++++ b/libavutil/common.h
+@@ -151,8 +151,14 @@ static inline av_const int16_t av_clip_int16(int a)
+  */
+ static inline av_const int32_t av_clipl_int32(int64_t a)
+ {
+-    if ((a+0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (a>>63) ^ 0x7FFFFFFF;
+-    else                                         return a;
++    /* original:
++          if ((a+0x80000000u) & ~UINT64_C(0xFFFFFFFF)) return (a>>63) ^ 0x7FFFFFFF;
++       UINT64_C is defined as (or better, should be defined as but isn't...);
++          #define UINT64_C(value) __CONCAT(value, ULL)
++       so avoid UINT64_C for now
++     */
++    if ((a+0x80000000u) & ~0xFFFFFFFFULL) return (a>>63) ^ 0x7FFFFFFF;
++    else                                  return a;
+ }
+ 
+ /**
