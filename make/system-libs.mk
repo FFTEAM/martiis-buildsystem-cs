@@ -124,14 +124,15 @@ $(D)/libboost: $(ARCHIVE)/boost_1_42_0.tar.bz2 | $(TARGETPREFIX)
 		rmdir boost_1_42_0
 	touch $@
 
+# openssl seems to have problem with parallel builds, so use "make" instead of "$(MAKE)"
 $(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/openssl-0.9.8m.tar.gz
 	pushd $(BUILD_TMP)/openssl-0.9.8m && \
 		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove && \
-		$(MAKE) depend && \
-		$(MAKE) all && \
-		$(MAKE) install_sw INSTALL_PREFIX=$(TARGETPREFIX)
+		make depend && \
+		make all && \
+		make install_sw INSTALL_PREFIX=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/openssl.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcrypto.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libssl.pc
