@@ -69,5 +69,15 @@ $(SOURCE_DIR)/svn/THIRDPARTY/libraries:
 	cd $@ && $(SVNCO)/THIRDPARTY/libraries/libcs && \
 		 $(SVNCO)/THIRDPARTY/libraries/libnxp
 
+find-%:
+	@TOOL=$(patsubst find-%,%,$@); \
+		type -p $$TOOL >/dev/null || \
+		{ echo "required tool $$TOOL missing."; false; }
+
+toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-makeinfo find-automake find-tic
+	@echo
+	@echo "All required tools seem to be installed."
+	@echo
+
 neutrino-hd: $(N_HD_SOURCE)
 cs-svn: $(SOURCE_DIR)/svn/THIRDPARTY/libraries $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream

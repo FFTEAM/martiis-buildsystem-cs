@@ -45,7 +45,7 @@ printenv:
 	@echo "                           after that you need to restart with 'bootstrap'"
 	@echo "make all-clean           - additionally remove the crosscompiler"
 	@echo "                           you usually don't want to do that."
-	@echo ""
+	@make --no-print-directory toolcheck
 
 include make/prerequisites.mk
 include make/bootstrap.mk

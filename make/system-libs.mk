@@ -238,7 +238,7 @@ $(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX)
 	touch $@
 
 ncurses-prereq:
-	@if type -p tic && type -p infocmp ; then \
+	@if $(MAKE) find-tic find-infocmp ; then \
 		true; \
 	else \
 		echo "**********************************************************"; \
