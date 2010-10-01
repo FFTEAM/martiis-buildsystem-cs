@@ -118,8 +118,6 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
 	$(REMOVE)/xfsprogs-3.1.3
 	touch $@
 
-system-tools-all: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs
-
 $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
 
@@ -260,4 +258,8 @@ $(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-0.3.tar.gz | $(TARGETPREFIX)
 		$(TARGET)-gcc $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
 	$(REMOVE)/fbshot-0.3
 
-PHONY += hotplug system-tools-all
+system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs
+system-tools-opt: $(D)/samba2 $(D)/xfsprogs $(D)/vsftpd
+system-tools-all: system-tools system-tools-opt
+
+PHONY += hotplug system-tools system-tools-opt system-tools-all
