@@ -4,7 +4,7 @@ $(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/zlib-1.2.5.tar.bz2
 	cd $(BUILD_TMP)/zlib-1.2.5 && \
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared && \
-		make && \
+		$(MAKE) && \
 		ln -sf /bin/true ldconfig && \
 		PATH=$(BUILD_TMP)/zlib-1.2.5:$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
@@ -33,7 +33,7 @@ $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 		patch -p1 < $(PATCHES)/libmad.diff && \
 		patch -p1 < $(PATCHES)/libmad-0.15.1b-arm-buildfix.diff && \
 		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes --enable-speed --enable-fpm=arm --enable-sso && \
-		make all && \
+		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" mad.pc > $(PKG_CONFIG_PATH)/libmad.pc
 	$(REWRITE_LIBTOOL)/libmad.la
@@ -45,7 +45,7 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
 	pushd $(BUILD_TMP)/libid3tag-0.15.1b && \
 		patch -p1 < $(PATCHES)/libid3tag.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes && \
-		make all && \
+		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" id3tag.pc > $(PKG_CONFIG_PATH)/libid3tag.pc
 	$(REMOVE)/libid3tag-0.15.1b
@@ -56,7 +56,7 @@ $(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/libungif-4.1.4.tar.bz2
 	pushd $(BUILD_TMP)/libungif-4.1.4 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove && \
-		make all && \
+		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libungif.la
 	rm -rf $(TARGETPREFIX)/.remove
@@ -67,7 +67,7 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/curl-7.20.0.tar.bz2
 	pushd $(BUILD_TMP)/curl-7.20.0 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --with-random --mandir=/.remove && \
-		make all && \
+		$(MAKE) all && \
 		mkdir -p $(HOSTPREFIX)/bin && \
 		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < curl-config > $(HOSTPREFIX)/bin/curl-config && \
 		chmod 755 $(HOSTPREFIX)/bin/curl-config && \
@@ -110,7 +110,7 @@ $(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
 		export CC=$(TARGET)-gcc && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared && \
 		./ltconfig --no-verify ltmain.sh $(BUILD) && \
-		make  && \
+		$(MAKE)  && \
 		make install-lib libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include
 	$(REWRITE_LIBTOOL)/libjpeg.la
 	$(REMOVE)/jpeg-6b
