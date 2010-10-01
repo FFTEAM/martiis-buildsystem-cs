@@ -81,6 +81,9 @@ update-svn-target:
 all:
 	@echo "'make all' is not a valid target. Please read the documentation."
 
+# target for testing only. not useful otherwise
+everything: $(shell sed -n 's/^\$$.D.\/\(.*\):.*/\1/p' make/*.mk)
+
 # for local extensions, e.g. special plugins or similar...
 # put them into $(BASE_DIR)/local since that is ignored in .gitignore
 -include ./Makefile.local
@@ -88,6 +91,7 @@ all:
 .print-phony:
 	@echo $(PHONY)
 
+PHONY += everything
 PHONY += all printenv .print-phony
 PHONY += update-svn update-svn-target update-neutrino update-self
 .PHONY: $(PHONY)
