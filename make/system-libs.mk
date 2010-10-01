@@ -79,7 +79,7 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/curl-7.20.0
 	touch $@
 
-$(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 | $(TARGETPREFIX)
+$(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/libpng-1.2.44.tar.bz2
 	pushd $(BUILD_TMP)/libpng-1.2.44 && \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman && \
