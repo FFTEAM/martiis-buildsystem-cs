@@ -64,20 +64,6 @@ $(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/busybox
 	touch $@
 
-$(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/strace-4.5.20.tar.bz2
-	pushd $(BUILD_TMP)/strace-4.5.20 && \
-		CFLAGS="$(TARGET_CFLAGS)" \
-		CPPFLAGS="-I$(TARGETPREFIX)/include" \
-		CXXFLAGS="$(TARGET_CXXFLAGS)" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
-		$(MAKE) all && \
-		make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/strace-4.5.20
-	$(REMOVE)/.remove
-	touch $@
-
 $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/e2fsprogs-1.41.12.tar.gz
 	cd $(BUILD_TMP)/e2fsprogs-1.41.12 && \
@@ -132,39 +118,7 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
 	$(REMOVE)/xfsprogs-3.1.3
 	touch $@
 
-#  NOTE:
-#  gdb built for target or local-PC
-$(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/gdb-7.1.tar.bz2
-	pushd $(BUILD_TMP)/gdb-7.1 && \
-		$(BUILDENV) \
-		./configure \
-			--nfp --disable-werror \
-			--prefix= \
-			--mandir=$(BUILD_TMP)/.remove \
-			--infodir=$(BUILD_TMP)/.remove \
-			--build=$(BUILD) --host=$(TARGET) && \
-		$(MAKE) all-gdb && \
-		make install-gdb prefix=$(TARGETPREFIX) && \
-	$(REMOVE)/gdb-7.1
-	$(REMOVE)/.remove
-	touch $@
-
-#  NOTE:
-#  gdb-remote built for local-PC or target
-$(D)/gdb-remote: $(ARCHIVE)/gdb-7.1.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/gdb-7.1.tar.bz2
-	pushd $(BUILD_TMP)/gdb-7.1 && \
-		./configure \
-			--nfp --disable-werror \
-			--prefix=$(HOSTPREFIX) \
-			--build=$(BUILD) --host=$(BUILD) --target=$(TARGET) && \
-		$(MAKE) all-gdb && \
-		make install-gdb && \
-	$(REMOVE)/gdb-7.1
-	touch $@
-
-system-tools-all: $(D)/rsync $(D)/procps $(D)/busybox $(D)/strace $(D)/e2fsprogs $(D)/gdb $(D)/gdb-remote
+system-tools-all: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs
 
 $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/

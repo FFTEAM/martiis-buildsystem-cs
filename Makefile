@@ -31,6 +31,7 @@ printenv:
 	@echo "* make bootstrap         - prepares for building"
 	@echo "* make neutrino          - builds neutrino"
 	@echo "* make neutrino-system   - should build enough to have a bootable system"
+	@echo "* make devel-tools       - build gdb and strace for the target"
 	@echo ""
 	@echo "later, you might find those useful:"
 	@echo "* make update-self       - update the build system"
@@ -50,6 +51,7 @@ include make/prerequisites.mk
 include make/bootstrap.mk
 include make/system-libs.mk
 include make/system-tools.mk
+include make/devel-tools.mk
 #include make/tuxbox.mk
 include make/neutrino.mk
 include make/cleantargets.mk
