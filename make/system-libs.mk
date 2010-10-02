@@ -141,7 +141,7 @@ $(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
 
-$(D)/ffmpeg-0.6: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
+$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/ffmpeg-0.6.tar.bz2
 	cd $(BUILD_TMP)/ffmpeg-0.6 && \
 		$(PATCH)/ffmpeg-dvbsubs.diff && \
@@ -180,7 +180,7 @@ $(BUILD_TMP)/ffmpeg:
 	svn up -r 30474 $(BUILD_TMP)/ffmpeg/libswscale/
 	cd $(BUILD_TMP)/ffmpeg && $(PATCH)/ffmpeg-dvbsubs.diff
 
-$(D)/ffmpeg: $(BUILD_TMP)/ffmpeg | $(TARGETPREFIX)
+$(D)/ffmpeg-snapshot: $(BUILD_TMP)/ffmpeg | $(TARGETPREFIX)
 	pushd $(BUILD_TMP)/ffmpeg && \
 		CFLAGS=-march=armv6 \
 		./configure \
