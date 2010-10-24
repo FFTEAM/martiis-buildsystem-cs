@@ -12,6 +12,7 @@ run_initscripts() {
 	names=$(for file in $files ; do echo ${file##*/} ; done | sort -u)
 
 	for name in $names; do
+		[ "${name:1}" = "[0-9][0-9]*" ] && continue # mis-globbed /opt/*/...
 		for file in /opt/*/etc/init.d/$name /etc/init.d/$name; do
 			if [ -x "$file"  ]; then
 				echo "${action}ing $file ..."
