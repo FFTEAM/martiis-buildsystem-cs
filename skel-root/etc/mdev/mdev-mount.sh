@@ -39,9 +39,9 @@ create_symlinks() {
 	P=$PHYSDEVPATH
 	case "$P" in
 	/devices/platform/cx2450x-ehci.?/usb?/?-?/?-?.?/?-?.?:?.?/host*) # hub
-		BUS="usb-${P:31:1}"
 		PORT=${P#*.*.}	# strip off /devices/platform/cx2450x-ehci.?/usb?/?-?/?-?
 		PORT=${PORT%%/*}	# strip off /?-?.?:?.?/host*, leaving the port
+		BUS="usb-${P:31:1}-hub-${PORT}"
 		;;
 	/devices/platform/cx2450x-ehci.?/usb?/?-?/?-?:?.?/host*) # no hub
 		BUS="usb-${P:31:1}"
