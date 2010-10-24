@@ -15,7 +15,7 @@ start)
 	im ftdi_sio
 	im cnxt_i2c
 	im cnxt_kal
-	im cnxt_base init=1
+	im cnxt_base init=0
 	im cnxt_fb cnxtfb_standalone=1 cnxtfb_width=1280 cnxtfb_height=720
 	im cnxt_lnx
 	im cnxt_alsa
