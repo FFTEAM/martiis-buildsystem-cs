@@ -7,8 +7,22 @@ echo -e "\033[0m"
 
 # for next boot ;)
 [ -e /dev/console ] || mknod -m 644 /dev/console c 5 1
-mount -n -t tmpfs tmp /dev
-/sbin/mknodes 2> /dev/null
+mount /proc
+mount /dev
+mount /sys
+mount /tmp
+mkdir /dev/pts
+mkdir -p /dev/shm/usb
+# directory for mounting disks
+mkdir /tmp/media
+rm -f /media		# don't remove if it is a directory
+ln -s /tmp/media /	# /media points to /tmp/media/
+#
+# start up mdev with coldplugging
+mdev -s
+# manually create nodes for crappy drivers
+/sbin/mknodes
+echo $(which mdev) > /proc/sys/kernel/hotplug
 
 dmesg -n 4
 

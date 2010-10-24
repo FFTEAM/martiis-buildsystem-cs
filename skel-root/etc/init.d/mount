@@ -2,8 +2,7 @@
 
 case $1 in
 start)
-	# mount proc
-	/bin/mount -t proc proc /proc
+	# actually only mounts devpts with the default fstab...
 	/bin/mount -a
 
 	echo "Enable Swap space (if exist)..."
