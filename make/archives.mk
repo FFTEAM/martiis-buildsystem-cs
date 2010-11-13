@@ -75,6 +75,9 @@ $(ARCHIVE)/libvorbisidec_1.0.2+svn14261.orig.tar.gz:
 $(ARCHIVE)/libpcap-1.0.0.tar.gz:
 	$(WGET) ftp://ftp.wh8.tu-dresden.de/pub/linux/distributions/gentoo/distfiles/libpcap-1.0.0.tar.gz
 
+$(ARCHIVE)/links-2.3pre1.tar.bz2:
+	$(WGET) http://links.twibright.com/download/links-2.3pre1.tar.bz2
+
 $(ARCHIVE)/rsync-3.0.7.tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-3.0.7.tar.gz
 
