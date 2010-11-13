@@ -1,0 +1,32 @@
+diff --git a/gfxdrivers/cx2450x/cx2450x.c b/gfxdrivers/cx2450x/cx2450x.c
+index eae3a13..98c226b 100644
+--- a/gfxdrivers/cx2450x/cx2450x.c
++++ b/gfxdrivers/cx2450x/cx2450x.c
+@@ -65,6 +65,8 @@ static u32 gxa_const_color_reg;
+ static u32 gxa_blend_cfg_reg;
+ static u32 gxa_key_lower_reg;
+ static u32 gxa_key_upper_reg;
++static u32 gxa_bmp2_type_reg;
++static u32 gxa_bmp2_addr_reg;
+ 
+ static u32 _make_cx2450x_bmp_reg(DFBSurfacePixelFormat dfbcolorformat, u32 pitch);
+ 
+@@ -214,6 +216,9 @@ static DFBResult driver_init_device(CoreGraphicsDevice *device, GraphicsDeviceIn
+     gxa_blend_cfg_reg	 = _read_gxa(drv->gxa_base, GXA_BLEND_CFG_REG);
+     gxa_key_lower_reg	 = _read_gxa(drv->gxa_base, GXA_KEY_LOWER_REG);
+     gxa_key_upper_reg	 = _read_gxa(drv->gxa_base, GXA_KEY_UPPER_REG);
++    gxa_bmp2_type_reg	 = _read_gxa(drv->gxa_base, GXA_BMP2_TYPE_REG);
++    gxa_bmp2_addr_reg	 = _read_gxa(drv->gxa_base, GXA_BMP2_ADDR_REG);
++
+ 
+     /* setup config registers with our own defaults */
+     _write_gxa(drv->gxa_base, GXA_CFG_REG, DEF_CFG_REG);
+@@ -241,6 +246,8 @@ static void driver_close_device(CoreGraphicsDevice *device, void *driver_data,	v
+     _write_gxa(drv->gxa_base, GXA_BLEND_CFG_REG ,gxa_blend_cfg_reg);
+     _write_gxa(drv->gxa_base, GXA_KEY_LOWER_REG ,gxa_key_lower_reg);
+     _write_gxa(drv->gxa_base, GXA_KEY_UPPER_REG ,gxa_key_upper_reg);
++    _write_gxa(drv->gxa_base, GXA_BMP2_TYPE_REG ,gxa_bmp2_type_reg);
++    _write_gxa(drv->gxa_base, GXA_BMP2_ADDR_REG ,gxa_bmp2_addr_reg);
+ }
+ 
+ /*******************************************************************************/

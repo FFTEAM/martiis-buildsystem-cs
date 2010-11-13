@@ -277,6 +277,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/DirectFB-1.4.3.tar.gz
 	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
 		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
+		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
 		$(CONFIGURE) --prefix=/ --mandir=/.remove --bindir=/bin/directfb \
 			--build=$(BUILD) --host=$(TARGET) \
 			--with-inputdrivers=linuxinput --with-gfxdrivers=cx2450x --disable-video4linux \
@@ -285,6 +286,8 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX)
 			--enable-jpeg --with-tests && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	printf 'mode "1280x720-50"\n    geometry 1280 720 1280 720 32\n    timings 0 0 0 0 0 0 0\nendmode\n' > $(TARGETPREFIX)/etc/fb.modes
+	printf 'system=cx2450x\nlinux-input-devices=/dev/input/nevis_ir\nno-linux-input-grab\nmode=1280x720\npixelformat=ARGB\nbg-color=00000000\nno-debug\nautoflip-window\nno-cursor\n' > $(TARGETPREFIX)/etc/directfbrc
 	rm -fr $(TARGETPREFIX)/.remove
 	$(REMOVE)/DirectFB-1.4.3
 	touch $@
