@@ -273,6 +273,23 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libiconv-1.13.1
 	touch $@
 
+$(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/DirectFB-1.4.3.tar.gz
+	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
+		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
+		$(CONFIGURE) --prefix=/ --mandir=/.remove --bindir=/bin/directfb \
+			--build=$(BUILD) --host=$(TARGET) \
+			--with-inputdrivers=linuxinput --with-gfxdrivers=cx2450x --disable-video4linux \
+			--disable-video4linux2 --enable-zlib --disable-x11 --disable-osx --disable-vnc \
+			--enable-debug --disable-network --disable-devmem --disable-sysfs --enable-fbdev \
+			--enable-jpeg --with-tests && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	rm -fr $(TARGETPREFIX)/.remove
+	$(REMOVE)/DirectFB-1.4.3
+	touch $@
+
+
 #############################################################################################
 #############################################################################################
 ######### not yet needed and not tested #####################################################

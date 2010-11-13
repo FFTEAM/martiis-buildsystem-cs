@@ -3,6 +3,9 @@
 $(ARCHIVE)/autofs-4.1.4.tar.bz2:
 	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4.tar.bz2
 
+$(ARCHIVE)/DirectFB-1.4.3.tar.gz:
+	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-1.4.3.tar.gz
+
 $(ARCHIVE)/libmad-0.15.1b.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/0.15.1b/libmad-0.15.1b.tar.gz?use_mirror=switch
 
