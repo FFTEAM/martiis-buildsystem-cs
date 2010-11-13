@@ -273,7 +273,7 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libiconv-1.13.1
 	touch $@
 
-$(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX)
+$(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX) $(HOSTPREFIX)/bin
 	$(UNTAR)/DirectFB-1.4.3.tar.gz
 	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
 		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
@@ -285,10 +285,11 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX)
 			--enable-debug --disable-network --disable-devmem --disable-sysfs --enable-fbdev \
 			--enable-jpeg --with-tests && \
 		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+		$(MAKE) install DESTDIR=$(TARGETPREFIX) && \
+		cp -a directfb-config $(HOSTPREFIX)/bin/
 	printf 'mode "1280x720-50"\n    geometry 1280 720 1280 720 32\n    timings 0 0 0 0 0 0 0\nendmode\n' > $(TARGETPREFIX)/etc/fb.modes
 	printf 'system=cx2450x\nlinux-input-devices=/dev/input/nevis_ir\nno-linux-input-grab\nmode=1280x720\npixelformat=ARGB\nbg-color=00000000\nno-debug\nautoflip-window\nno-cursor\n' > $(TARGETPREFIX)/etc/directfbrc
-	rm -fr $(TARGETPREFIX)/.remove
+	rm -fr $(TARGETPREFIX)/.remove $(TARGETPREFIX)/bin/directfb/directfb-config
 	$(REMOVE)/DirectFB-1.4.3
 	touch $@
 
