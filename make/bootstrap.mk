@@ -2,7 +2,7 @@
 
 
 
-bootstrap: targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs cs-modules $(TARGETPREFIX)/lib/libc.so.6
+bootstrap: targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs cs-modules $(TARGETPREFIX)/lib/libc.so.6 $(TARGETPREFIX)/sbin/ldconfig
 
 targetprefix:
 	mkdir -p $(TARGETPREFIX)
@@ -72,6 +72,16 @@ ccache:
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/g++
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-gcc
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-g++
+
+ldconfig: $(TARGETPREFIX)/sbin/ldconfig
+$(TARGETPREFIX)/sbin/ldconfig:
+	if test -e $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig; then \
+		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig $@; \
+	elif test -e $(CROSS_DIR)/$(TARGET)/sbin/ldconfig; then \
+		cp -a $(CROSS_DIR)/$(TARGET)/sbin/ldconfig $@; \
+	else \
+		false; \
+	fi
 
 # hack to make sure they are always copied
 PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
