@@ -280,7 +280,8 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX) $(HOSTPREFIX)/
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
 		$(CONFIGURE) --prefix=/ --mandir=/.remove --bindir=/bin/directfb \
 			--build=$(BUILD) --host=$(TARGET) \
-			--with-inputdrivers=linuxinput --with-gfxdrivers=cx2450x --disable-video4linux \
+			--with-inputdrivers=linuxinput,keyboard,ps2mouse \
+			--with-gfxdrivers=cx2450x --disable-video4linux \
 			--disable-video4linux2 --enable-zlib --disable-x11 --disable-osx --disable-vnc \
 			--enable-debug --disable-network --disable-devmem --disable-sysfs --enable-fbdev \
 			--enable-jpeg --with-tests && \
