@@ -130,4 +130,5 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 		$(MAKE) && \
 		$(MAKE) INSTALL_ROOT=$(TARGETPREFIX) install
 	mv $(TARGETPREFIX)/opt/qt/bin/* $(HOSTPREFIX)/bin/
+	install -m 0755 -D $(PATCHES)/browser.sh $(TARGETPREFIX)/bin/browser.sh
 	touch $@
