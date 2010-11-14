@@ -65,9 +65,8 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 			-silent \
 			-platform qws/linux-x86-g++ \
 			-xplatform qws/linux-cx2450x-g++ \
-			-prefix $(TARGETPREFIX)/opt/qt \
-			-bindir $(HOSTPREFIX)/bin \
-			-R /opt/qt/lib -no-rpath \
+			-prefix /opt/qt \
+			-no-rpath \
 			-release \
 			-shared \
 			-no-fast \
@@ -85,7 +84,6 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 			-qt-libjpeg \
 			-qt-freetype \
 			-continue \
-			-verbose \
 			-no-nis \
 			-no-cups \
 			-no-iconv \
@@ -130,5 +128,6 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 			-plugin-gfx-directfb \
 			-no-glib && \
 		$(MAKE) && \
-		$(MAKE) install
+		$(MAKE) INSTALL_ROOT=$(TARGETPREFIX) install
+	mv $(TARGETPREFIX)/opt/qt/bin/* $(HOSTPREFIX)/bin/
 	touch $@
