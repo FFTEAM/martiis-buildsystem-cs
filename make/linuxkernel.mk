@@ -33,9 +33,18 @@ $(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
 # installs the already built module into the "proper" path
 $(TARGET_MODULE)/kernel/fs/autofs4/autofs4.ko: $(D)/cskernel
 	install -m 644 -D $(SOURCE_MODULE)/kernel/fs/autofs4/autofs4.ko $@
+	make depmod
 
 # input drivers: usbhid, evdev
 inputmodules: $(D)/cskernel
 	mkdir -p $(TARGET_MODULE)/kernel/drivers
 	cp -a	$(SOURCE_MODULE)/kernel/drivers/input $(SOURCE_MODULE)/kernel/drivers/hid \
 		$(TARGET_MODULE)/kernel/drivers/
+	make depmod
+
+# helper target...
+depmod:
+	depmod -b $(TARGETPREFIX) $(KVERSION_FULL)
+	mv $(TARGET_MODULE)/modules.dep $(TARGET_MODULE)/.modules.dep
+	rm $(TARGET_MODULE)/modules.*
+	mv $(TARGET_MODULE)/.modules.dep $(TARGET_MODULE)/modules.dep
