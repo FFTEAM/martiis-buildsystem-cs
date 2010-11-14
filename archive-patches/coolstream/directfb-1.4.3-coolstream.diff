@@ -46023,22 +46023,22 @@ index 09ecc9c..0000000
 -
 -* Thu Jul 11 2002 Götz Waschk <waschk@linux-mandrake.com> 0.9.12-1mdk
 -- initial package based on PLD effort
-diff --git a/DirectFB-1.4.3/docs/DirectFB Core Architecture.pdf b/DirectFB-1.4.3/docs/DirectFB Core Architecture.pdf
-new file mode 100644
-index 0000000..3c5fbc4
-Binary files /dev/null and b/DirectFB-1.4.3/docs/DirectFB Core Architecture.pdf differ
-diff --git a/DirectFB-1.4.3/docs/DirectFB Core Architecture.sxi b/DirectFB-1.4.3/docs/DirectFB Core Architecture.sxi
-new file mode 100644
-index 0000000..22ed034
-Binary files /dev/null and b/DirectFB-1.4.3/docs/DirectFB Core Architecture.sxi differ
-diff --git a/DirectFB-1.4.3/docs/GeneFX.odp b/DirectFB-1.4.3/docs/GeneFX.odp
-new file mode 100644
-index 0000000..550cff6
-Binary files /dev/null and b/DirectFB-1.4.3/docs/GeneFX.odp differ
-diff --git a/DirectFB-1.4.3/docs/GeneFX.pdf b/DirectFB-1.4.3/docs/GeneFX.pdf
-new file mode 100644
-index 0000000..6d16812
-Binary files /dev/null and b/DirectFB-1.4.3/docs/GeneFX.pdf differ
+# diff --git a/DirectFB-1.4.3/docs/DirectFB Core Architecture.pdf b/DirectFB-1.4.3/docs/DirectFB Core Architecture.pdf
+# new file mode 100644
+# index 0000000..3c5fbc4
+# Binary files /dev/null and b/DirectFB-1.4.3/docs/DirectFB Core Architecture.pdf differ
+# diff --git a/DirectFB-1.4.3/docs/DirectFB Core Architecture.sxi b/DirectFB-1.4.3/docs/DirectFB Core Architecture.sxi
+# new file mode 100644
+# index 0000000..22ed034
+# Binary files /dev/null and b/DirectFB-1.4.3/docs/DirectFB Core Architecture.sxi differ
+# diff --git a/DirectFB-1.4.3/docs/GeneFX.odp b/DirectFB-1.4.3/docs/GeneFX.odp
+# new file mode 100644
+# index 0000000..550cff6
+# Binary files /dev/null and b/DirectFB-1.4.3/docs/GeneFX.odp differ
+# diff --git a/DirectFB-1.4.3/docs/GeneFX.pdf b/DirectFB-1.4.3/docs/GeneFX.pdf
+# new file mode 100644
+# index 0000000..6d16812
+# Binary files /dev/null and b/DirectFB-1.4.3/docs/GeneFX.pdf differ
 diff --git a/DirectFB-1.4.3/docs/Makefile.in b/DirectFB-1.4.3/docs/Makefile.in
 deleted file mode 100644
 index 7f572e1..0000000
