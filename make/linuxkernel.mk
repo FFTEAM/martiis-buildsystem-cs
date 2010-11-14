@@ -13,6 +13,8 @@
 
 KVERSION = 2.6.26.8
 KVERSION_FULL = $(KVERSION)-nevis
+SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
+TARGET_MODULE = $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)
 
 $(BUILD_TMP)/linux-$(KVERSION):
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
@@ -29,5 +31,5 @@ $(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
 
 # rule for the autofs4 module - needed by the automounter
 # installs the already built module into the "proper" path
-$(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko: $(D)/cskernel
-	install -m 644 -D $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $@
+$(TARGET_MODULE)/kernel/fs/autofs4/autofs4.ko: $(D)/cskernel
+	install -m 644 -D $(SOURCE_MODULE)/kernel/fs/autofs4/autofs4.ko $@
