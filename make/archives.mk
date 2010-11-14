@@ -93,6 +93,9 @@ $(ARCHIVE)/busybox-1.15.2.tar.bz2:
 $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2
 
+$(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz:
+	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.3.tar.gz
+
 $(ARCHIVE)/samba-2.0.10.tar.gz:
 	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.0.10.tar.gz
 

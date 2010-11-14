@@ -33,3 +33,102 @@ $(D)/links: $(ARCHIVE)/links-2.3pre1.tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	cp -a $(PATCHES)/bookmarks.html $(PATCHES)/tables.tar.gz $(TARGETPREFIX)/var/tuxbox/config/links
 	$(REMOVE)/links-2.3pre1
 	touch $@
+
+QT_BUILD = $(BUILD_TMP)/qt-everywhere-opensource-src-4.6.3
+QT_CONF = $(QT_BUILD)/mkspecs/qws/linux-cx2450x-g++/
+$(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(TARGETPREFIX)
+	$(UNTAR)/qt-everywhere-opensource-src-4.6.3.tar.gz
+	-mkdir $(QT_CONF)
+	echo "include(../../common/g++.conf)"		 > $(QT_CONF)/qmake.conf
+	echo "include(../../common/linux.conf)"		>> $(QT_CONF)/qmake.conf
+	echo "include(../../common/qws.conf)"		>> $(QT_CONF)/qmake.conf
+	echo "# modifications to g++.conf"		>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_CC         = $(TARGET)-gcc"		>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_CXX        = $(TARGET)-g++"		>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_LINK       = $(TARGET)-g++"		>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_LINK_SHLIB = $(TARGET)-g++"		>> $(QT_CONF)/qmake.conf
+	echo "# modifications to linux.conf"		>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_AR         = $(TARGET)-ar cqs"	>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_OBJCOPY    = $(TARGET)-objcopy"	>> $(QT_CONF)/qmake.conf
+	echo "QMAKE_STRIP      = $(TARGET)-strip"	>> $(QT_CONF)/qmake.conf
+	echo "# for directfb"				>> $(QT_CONF)/qmake.conf
+	echo "QT_CFLAGS_DIRECTFB = -I$(TARGETPREFIX)/include/directfb -D_REENTRANT"	>> $(QT_CONF)/qmake.conf
+	echo "QT_LIBS_DIRECTFB   = -L$(TARGETPREFIX)/lib/ -ldirect -ldirectfb -lfusion"	>> $(QT_CONF)/qmake.conf
+	echo "QT_DEFINES_DIRECTFB = QT_NO_DIRECTFB_PREALLOCATED"			>> $(QT_CONF)/qmake.conf
+	echo ""						>> $(QT_CONF)/qmake.conf
+	echo "load(qt_config)"				>> $(QT_CONF)/qmake.conf
+	echo '#include "../../linux-g++/qplatformdefs.h"' > $(QT_CONF)/qplatformdefs.h
+	cd $(QT_BUILD) && \
+		sed -i 's/OPT_CONFIRM_LICENSE=no/OPT_CONFIRM_LICENSE=yes/' configure && \
+		./configure \
+			-embedded arm \
+			-silent \
+			-platform qws/linux-x86-g++ \
+			-xplatform qws/linux-cx2450x-g++ \
+			-prefix $(TARGETPREFIX)/opt/qt \
+			-bindir $(HOSTPREFIX)/bin \
+			-R /opt/qt/lib -no-rpath \
+			-release \
+			-shared \
+			-no-fast \
+			-largefile \
+			-exceptions \
+			-no-accessibility \
+			-no-stl \
+			-qt-sql-sqlite \
+			-no-qt3support \
+			-qt-zlib \
+			-qt-gif \
+			-no-libtiff \
+			-qt-libpng \
+			-no-libmng \
+			-qt-libjpeg \
+			-qt-freetype \
+			-continue \
+			-verbose \
+			-no-nis \
+			-no-cups \
+			-no-iconv \
+			-no-pch \
+			-no-dbus \
+			-no-separate-debug-info \
+			-no-mmx \
+			-no-3dnow \
+			-no-sse \
+			-no-sse2 \
+			-optimized-qmake \
+			-no-xmlpatterns \
+			-multimedia \
+			-audio-backend \
+			-no-phonon \
+			-no-phonon-backend \
+			-no-openssl \
+			-no-gtkstyle \
+			-svg \
+			-webkit \
+			-no-javascript-jit \
+			-no-script \
+			-no-scripttools \
+			-no-declarative \
+			-opensource \
+			-no-opengl \
+			-no-openvg \
+			-no-xshape \
+			-no-xsync \
+			-no-xinerama \
+			-no-xcursor \
+			-no-xfixes \
+			-no-xrandr \
+			-no-xrender \
+			-no-mitshm \
+			-no-fontconfig \
+			-no-xinput \
+			-no-xkb \
+			-qt-kbd-linuxinput \
+			-qt-mouse-pc \
+			-qt-gfx-linuxfb \
+			-plugin-gfx-directfb \
+			-no-glib && \
+		$(MAKE) && \
+		$(MAKE) install
+	touch $@
