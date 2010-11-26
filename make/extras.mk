@@ -132,3 +132,16 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 	mv $(TARGETPREFIX)/opt/qt/bin/* $(HOSTPREFIX)/bin/
 	install -m 0755 -D $(PATCHES)/browser.sh $(TARGETPREFIX)/bin/browser.sh
 	touch $@
+
+$(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/nbench-byte-2.2.3.tar.gz
+	cd $(BUILD_TMP)/nbench-byte-2.2.3 && \
+		$(PATCH)/nbench-byte-2.2.3-crossfix.diff && \
+		printf "#!/bin/sh\necho 4\n" > pointer && chmod 0755 pointer && \
+		$(BUILDENV) make CC=$(TARGET)-gcc && \
+		mkdir -p $(TARGETPREFIX)/opt/nbench-byte && \
+		printf '#!/bin/sh\ncd /opt/nbench-byte\n./nbench $$@\n' > nbench-run.sh && \
+		chmod 0755 nbench-run.sh && \
+		cp -a nbench nbench-run.sh *DAT $(TARGETPREFIX)/opt/nbench-byte
+	$(REMOVE)/nbench-byte-2.2.3
+	touch $@

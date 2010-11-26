@@ -78,6 +78,9 @@ $(ARCHIVE)/libpcap-1.0.0.tar.gz:
 $(ARCHIVE)/links-2.3pre1.tar.bz2:
 	$(WGET) http://links.twibright.com/download/links-2.3pre1.tar.bz2
 
+$(ARCHIVE)/nbench-byte-2.2.3.tar.gz:
+	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-2.2.3.tar.gz
+
 $(ARCHIVE)/rsync-3.0.7.tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-3.0.7.tar.gz
 

@@ -1,0 +1,17 @@
+diff --git a/Makefile b/Makefile
+index 5045c77..a269822 100644
+--- a/Makefile
++++ b/Makefile
+@@ -120,11 +120,8 @@ emfloat.o: emfloat.h emfloat.c nmglobal.h pointer.h Makefile
+ 		-c emfloat.c
+ 
+ pointer.h: pointer Makefile
+-	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
+-		-o pointer pointer.c
+ 	rm -f pointer.h
+-	if [ "4" = `./pointer` ] ; then touch pointer.h ;\
+-	else echo "#define LONG64" >pointer.h ; fi
++	touch pointer.h
+ 
+ misc.o: misc.h misc.c Makefile
+ 	$(CC) $(MACHINE) $(DEFINES) $(CFLAGS)\
