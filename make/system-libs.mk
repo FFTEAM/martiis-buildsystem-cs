@@ -273,11 +273,12 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libiconv-1.13.1
 	touch $@
 
-$(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz | $(TARGETPREFIX) $(HOSTPREFIX)/bin
+$(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
 	$(UNTAR)/DirectFB-1.4.3.tar.gz
 	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
 		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
+		./autogen.sh fail ; \
 		$(CONFIGURE) --prefix=/ --mandir=/.remove --bindir=/bin/directfb \
 			--build=$(BUILD) --host=$(TARGET) \
 			--with-inputdrivers=linuxinput,keyboard,ps2mouse \
