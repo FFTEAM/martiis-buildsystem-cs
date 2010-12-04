@@ -2,8 +2,14 @@
 im()
 {
 	modname=$1
+	# only "options" parameter is supported in modprobe.conf
+	# if you want more, you should probably use real modprobe
+	params=$(sed -n "/^options $modname/{
+				s/^options $modname\s\(.*\)\$/\1/;
+				p
+			}" /etc/modprobe.conf 2>/dev/null)
 	shift
-	/sbin/insmod /lib/modules/2.6.26.8-nevis/${modname}.ko $@
+	/sbin/insmod /lib/modules/2.6.26.8-nevis/${modname}.ko ${params:-$@}
 }
 
 case $1 in
