@@ -34,11 +34,11 @@ $(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream/* $@/
 
-$(TARGETPREFIX)/lib/libnxp.so: $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libnxp/libnxp.so | $(TARGETPREFIX)
-	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libnxp/libnxp.so $@
+$(TARGETPREFIX)/lib/libnxp.so: $(SVN_TP_LIBS)/libnxp/libnxp.so | $(TARGETPREFIX)
+	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $@
 
-$(TARGETPREFIX)/lib/libcoolstream.so: $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libcs/libcoolstream.so | $(TARGETPREFIX)
-	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/libraries/libcs/libcoolstream.so $@
+$(TARGETPREFIX)/lib/libcoolstream.so: $(SVN_TP_LIBS)/libcs/libcoolstream.so | $(TARGETPREFIX)
+	cp -a $(SVN_TP_LIBS)/libcs/libcoolstream.so $@
 
 $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	mkdir -p $@

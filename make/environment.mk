@@ -71,3 +71,7 @@ CONFIGURE = \
 
 SVN   ?= svn --username coolstream --password coolstream --no-auth-cache
 SVNCO ?= $(SVN) co http://www.coolstreamtech.de/coolstream_public_svn
+
+# shortcuts
+SVN_TP_LIBS = $(SOURCE_DIR)/svn/THIRDPARTY/libraries
+SVN_TP_APPS = $(SOURCE_DIR)/svn/THIRDPARTY/applications

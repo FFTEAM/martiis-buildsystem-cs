@@ -242,9 +242,9 @@ $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-0.9.22.tar.gz
 	touch $@
 
 hotplug: $(TARGETPREFIX)/sbin/hotplug
-$(TARGETPREFIX)/sbin/hotplug: $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug/hotplug.c $(D)/libblkid $(D)/libuuid | $(TARGETPREFIX)
+$(TARGETPREFIX)/sbin/hotplug: $(SVN_TP_APPS)/hotplug $(SVN_TP_APPS)/hotplug/hotplug.c $(D)/libblkid $(D)/libuuid | $(TARGETPREFIX)
 	mkdir -p $(TARGETPREFIX)/sbin
-	cd $(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug && \
+	cd $(SVN_TP_APPS)/hotplug && \
 		$(TARGET)-gcc -Wall -Wextra -Wshadow -O2 -g \
 			-I$(TARGETPREFIX)/include -L$(TARGETPREFIX)/lib \
 			-lblkid -luuid \

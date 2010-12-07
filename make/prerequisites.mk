@@ -60,14 +60,14 @@ $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/CROSSENVIROMENT/$(shell basename $@)
 
-$(SOURCE_DIR)/svn/THIRDPARTY/applications/hotplug:
+$(SVN_TP_APPS)/hotplug:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/applications/$(shell basename $@)
 
-$(SOURCE_DIR)/svn/THIRDPARTY/libraries:
-	mkdir -p $@
-	cd $@ && $(SVNCO)/THIRDPARTY/libraries/libcs && \
-		 $(SVNCO)/THIRDPARTY/libraries/libnxp
+$(SVN_TP_LIBS)/libcs \
+$(SVN_TP_LIBS)/libnxp:
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/libraries/$(shell basename $@)
 
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \
@@ -80,4 +80,4 @@ toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-ma
 	@echo
 
 neutrino-hd: $(N_HD_SOURCE)
-cs-svn: $(SOURCE_DIR)/svn/THIRDPARTY/libraries $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
+cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream

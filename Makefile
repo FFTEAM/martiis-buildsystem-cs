@@ -70,9 +70,9 @@ update-neutrino:
 # only updates important(?) stuff, no crosstool etc.
 update-svn:
 	cd $(SOURCE_DIR)/svn/COOLSTREAM && $(SVN) up
-	cd $(SOURCE_DIR)/svn/THIRDPARTY/libraries && $(SVN) up *
-	if [ -d $(SOURCE_DIR)/svn/THIRDPARTY/applications ]; then \
-		cd $(SOURCE_DIR)/svn/THIRDPARTY/applications && $(SVN) up *; \
+	cd $(SVN_TP_LIBS) && $(SVN) up *
+	if [ -d $(SVN_TP_APPS) ]; then \
+		cd $(SVN_TP_APPS) && $(SVN) up *; \
 	else true; fi
 	cd $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream && $(SVN) up
 
