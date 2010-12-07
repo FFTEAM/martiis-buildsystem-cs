@@ -295,6 +295,19 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 	$(REMOVE)/DirectFB-1.4.3
 	touch $@
 
+$(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
+	tar -C $(SVN_TP_LIBS) -cp OpenThreads-svn --exclude=.svn | tar -C $(BUILD_TMP) -x
+	cd $(BUILD_TMP)/OpenThreads-svn && \
+		rm CMakeFiles/* -rf CMakeCache.txt cmake_install.cmake && \
+		cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME="Linux" \
+			-DCMAKE_INSTALL_PREFIX="" \
+			-DCMAKE_C_COMPILER="$(TARGET)-gcc" \
+			-DCMAKE_CXX_COMPILER="$(TARGET)-g++" && \
+		$(MAKE) && \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/OpenThreads-svn
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/openthreads.pc
+	touch $@
 
 #############################################################################################
 #############################################################################################

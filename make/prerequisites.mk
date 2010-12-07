@@ -65,7 +65,8 @@ $(SVN_TP_APPS)/hotplug:
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/applications/$(shell basename $@)
 
 $(SVN_TP_LIBS)/libcs \
-$(SVN_TP_LIBS)/libnxp:
+$(SVN_TP_LIBS)/libnxp \
+$(SVN_TP_LIBS)/OpenThreads-svn:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/libraries/$(shell basename $@)
 
