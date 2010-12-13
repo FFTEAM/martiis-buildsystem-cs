@@ -74,6 +74,7 @@ update-svn:
 	if [ -d $(SVN_TP_APPS) ]; then \
 		cd $(SVN_TP_APPS) && $(SVN) up *; \
 	else true; fi
+	cd $(SOURCE_DIR)/svn/THIRDPARTY/lib && $(SVN) up *
 	cd $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream && $(SVN) up
 
 update-svn-target:

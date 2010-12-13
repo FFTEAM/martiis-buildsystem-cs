@@ -70,6 +70,10 @@ $(SVN_TP_LIBS)/OpenThreads-svn:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/libraries/$(shell basename $@)
 
+$(SOURCE_DIR)/svn/THIRDPARTY/lib:
+	mkdir -p $@
+	cd $@ && $(SVNCO)/THIRDPARTY/lib/firmware
+
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \
 		type -p $$TOOL >/dev/null || \
@@ -81,4 +85,4 @@ toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-ma
 	@echo
 
 neutrino-hd: $(N_HD_SOURCE)
-cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
+cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib

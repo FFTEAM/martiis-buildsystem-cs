@@ -40,6 +40,10 @@ $(TARGETPREFIX)/lib/libnxp.so: $(SVN_TP_LIBS)/libnxp/libnxp.so | $(TARGETPREFIX)
 $(TARGETPREFIX)/lib/libcoolstream.so: $(SVN_TP_LIBS)/libcs/libcoolstream.so | $(TARGETPREFIX)
 	cp -a $(SVN_TP_LIBS)/libcs/libcoolstream.so $@
 
+$(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
+	mkdir -p $@
+	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/* $@/
+
 $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
@@ -48,7 +52,7 @@ $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
 	cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib
 
 cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
-includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/include/coolstream
+includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
 
 crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
 	make $(BUILD_TMP)
@@ -85,5 +89,8 @@ $(TARGETPREFIX)/sbin/ldconfig:
 
 # hack to make sure they are always copied
 PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
-PHONY += ccache crosstool includes-and-libs cs-modules targetprefix bootstrap
 PHONY += $(TARGETPREFIX)/include/coolstream
+PHONY += $(TARGETPREFIX)/lib/libnxp.so
+PHONY += $(TARGETPREFIX)/lib/libcoolstream.so
+PHONY += $(TARGETPREFIX)/lib/firmware
+PHONY += ccache crosstool includes-and-libs cs-modules targetprefix bootstrap
