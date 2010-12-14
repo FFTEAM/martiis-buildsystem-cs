@@ -118,6 +118,23 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
 	$(REMOVE)/xfsprogs-3.1.3
 	touch $@
 
+$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2010.10.2.tgz | $(TARGETPREFIX)
+	$(UNTAR)/ntfs-3g-2010.10.2.tgz
+	cd $(BUILD_TMP)/ntfs-3g-2010.10.2 && \
+		$(BUILDENV) ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--prefix= \
+			--mandir=/.remove \
+			--docdir=/.remove \
+			--disable-ldconfig \
+			--disable-library \
+			&& \
+		$(MAKE) && \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/ntfs-3g $(TARGETPREFIX)/.remove
+	touch $@
+
 $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
 

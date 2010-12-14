@@ -81,6 +81,9 @@ $(ARCHIVE)/links-2.3pre1.tar.bz2:
 $(ARCHIVE)/nbench-byte-2.2.3.tar.gz:
 	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-2.2.3.tar.gz
 
+$(ARCHIVE)/ntfs-3g-2010.10.2.tgz:
+	$(WGET) http://tuxera.com/opensource/ntfs-3g-2010.10.2.tgz
+
 $(ARCHIVE)/rsync-3.0.7.tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-3.0.7.tar.gz
 
