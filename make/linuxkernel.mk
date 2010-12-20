@@ -44,7 +44,7 @@ inputmodules: $(D)/cskernel
 
 # helper target...
 depmod:
-	depmod -b $(TARGETPREFIX) $(KVERSION_FULL)
+	PATH=$(PATH):/sbin:/usr/sbin depmod -b $(TARGETPREFIX) $(KVERSION_FULL)
 	mv $(TARGET_MODULE)/modules.dep $(TARGET_MODULE)/.modules.dep
 	rm $(TARGET_MODULE)/modules.*
 	mv $(TARGET_MODULE)/.modules.dep $(TARGET_MODULE)/modules.dep
