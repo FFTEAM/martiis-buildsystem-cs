@@ -1,0 +1,48 @@
+--- a/proc/sig.c
++++ b/proc/sig.c	2010-10-29 09:15:13.872426803 +0000
+@@ -231,7 +231,7 @@ void unix_print_signals(void){
+ }
+ 
+ /* sanity check */
+-static int init_signal_list(void) __attribute__((constructor));
++static int init_signal_list(void) __attribute__((constructor (103)));
+ static int init_signal_list(void){
+   if(number_of_signals != 31){
+     fprintf(stderr, "WARNING: %d signals -- adjust and recompile.\n", number_of_signals);
+--- a/proc/sysinfo.c
++++ b/proc/sysinfo.c	2010-10-29 09:12:17.768426168 +0000
+@@ -158,6 +158,14 @@ static void old_Hertz_hack(void){
+   unsigned long long jiffies;
+   unsigned h;
+   char *restrict savelocale;
++  long hz;
++
++#ifdef _SC_CLK_TCK
++  if((hz = sysconf(_SC_CLK_TCK)) > 0){
++    Hertz = hz;
++    return;
++  }
++#endif
+ 
+   savelocale = setlocale(LC_NUMERIC, NULL);
+   setlocale(LC_NUMERIC, "C");
+@@ -258,7 +266,7 @@ long smp_num_cpus(void)
+   return(_smp_num_cpus);
+ }
+ 
+-static void init_libproc(void) __attribute__((constructor));
++static void init_libproc(void) __attribute__((constructor (102)));
+ static void init_libproc(void){
+   have_privs = check_for_privs();
+ 
+--- a/proc/version.c
++++ b/proc/version.c	2010-10-29 09:11:53.192426444 +0000
+@@ -33,7 +33,7 @@ void display_version(void) {
+ 
+ int linux_version_code;
+ 
+-static void init_Linux_version(void) __attribute__((constructor));
++static void init_Linux_version(void) __attribute__((constructor (101)));
+ static void init_Linux_version(void) {
+     static struct utsname uts;
+     int x = 0, y = 0, z = 0;	/* cleared in case sscanf() < 3 */
