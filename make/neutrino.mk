@@ -1,6 +1,6 @@
 #Makefile to build NEUTRINO
 
-N_CFLAGS  = -Wall -W -Wshadow -g -O2 -D__KERNEL_STRICT_NAMES -DUSE_NEVIS_GXA -DUSE_SPACE_EFFICIENTLY
+N_CFLAGS  = -Wall -W -Wshadow -g -O2 -D__KERNEL_STRICT_NAMES -DUSE_NEVIS_GXA
 N_CFLAGS += -I$(TARGETPREFIX)/include
 N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 # the original build script links against openssl, but it is not needed at all.
