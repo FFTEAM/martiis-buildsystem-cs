@@ -19,6 +19,7 @@ HOSTPREFIX   = $(BASE_DIR)/host
 TARGETPREFIX = $(BASE_DIR)/root
 FROOTFS      = $(BASE_DIR)/root-flash
 SOURCE_DIR   = $(BASE_DIR)/source
+MAKE_DIR     = $(BASE_DIR)/make
 
 CROSS_BASE   = $(BASE_DIR)/cross
 CROSS_DIR   ?= $(CROSS_BASE)

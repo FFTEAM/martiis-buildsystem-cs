@@ -13,7 +13,7 @@ N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(N_HD_SOURCE)
 
-$(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype $(D)/libboost $(D)/libjpeg $(D)/libungif $(D)/libvorbis $(D)/ffmpeg $(D)/openthreads
+$(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype $(D)/libboost $(D)/libjpeg $(D)/libungif $(D)/libvorbis $(D)/ffmpeg $(D)/openthreads $(MAKE_DIR)/neutrino.mk
 	test -d $(N_OBJDIR) || mkdir -p $(N_OBJDIR)
 	$(N_HD_SOURCE)/autogen.sh
 	pushd $(N_OBJDIR) && \
