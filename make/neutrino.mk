@@ -36,7 +36,9 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 	touch $@
 
 neutrino-clean:
-	-make -C $(N_OBJDIR) uninstall distclean
+	-make -C $(N_OBJDIR) uninstall
+	-make -C $(N_OBJDIR) distclean
+	-rm $(N_OBJDIR)/config.status
 	-rm $(D)/neutrino
 
 neutrino-system: $(D)/busybox $(D)/procps $(D)/rsync $(D)/gdb $(D)/strace
