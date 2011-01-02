@@ -302,6 +302,8 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 	$(REMOVE)/DirectFB-1.4.3
 	touch $@
 
+# the strange find | sed hack is needed for old cmake versions which
+# don't obey CMAKE_INSTALL_PREFIX (e.g debian lenny 5.0.7's cmake 2.6)
 $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 	tar -C $(SVN_TP_LIBS) -cp OpenThreads-svn --exclude=.svn | tar -C $(BUILD_TMP) -x
 	cd $(BUILD_TMP)/OpenThreads-svn && \
@@ -310,6 +312,8 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 			-DCMAKE_INSTALL_PREFIX="" \
 			-DCMAKE_C_COMPILER="$(TARGET)-gcc" \
 			-DCMAKE_CXX_COMPILER="$(TARGET)-g++" && \
+		find . -name cmake_install.cmake -print0 | xargs -0 \
+			sed -i 's@SET(CMAKE_INSTALL_PREFIX "/usr/local")@SET(CMAKE_INSTALL_PREFIX "")@' && \
 		$(MAKE) && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REMOVE)/OpenThreads-svn
