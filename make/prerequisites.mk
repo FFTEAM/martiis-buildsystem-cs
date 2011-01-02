@@ -76,7 +76,7 @@ find-%:
 		type -p $$TOOL >/dev/null || \
 		{ echo "required tool $$TOOL missing."; false; }
 
-toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-makeinfo find-automake find-tic
+toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-makeinfo find-automake find-tic find-svn find-cmake find-gzip find-bzip2 find-gawk find-pkg-config
 	@echo
 	@echo "All required tools seem to be installed."
 	@echo
