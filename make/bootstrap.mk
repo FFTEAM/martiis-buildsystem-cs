@@ -56,7 +56,7 @@ includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstr
 
 crosstool: $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
 	make $(BUILD_TMP)
-	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(BUILD_TMP)/
+	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
 	cd $(BUILD_TMP)/crosstool-ng-1.3.2 && \
 		$(PATCH)/crosstool-132-bash4.diff && \
 		mkdir -p patches/linux/2.6.26.8 && \
