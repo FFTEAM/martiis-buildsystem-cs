@@ -322,37 +322,37 @@ CT_LIBELF_VERSION="0.8.10"
 #
 # CT_DEBUG_dmalloc is not set
 # CT_DEBUG_duma is not set
-CT_DEBUG_gdb=y
-CT_GDB_CROSS=y
+# CT_DEBUG_gdb is not set
+# CT_GDB_CROSS is not set
 # CT_GDB_CROSS_STATIC is not set
 # CT_GDB_CROSS_INSIGHT is not set
-CT_GDB_NATIVE=y
+# CT_GDB_NATIVE is not set
 # CT_GDB_NATIVE_STATIC is not set
 # CT_GDB_NATIVE_USE_GMP_MPFR is not set
-CT_GDB_GDBSERVER=y
-CT_GDB_GDBSERVER_STATIC=y
+# CT_GDB_GDBSERVER is not set
+# CT_GDB_GDBSERVER_STATIC is not set
 # CT_GDB_V_6_4 is not set
 # CT_GDB_V_6_5 is not set
 # CT_GDB_V_6_6 is not set
 # CT_GDB_V_6_7 is not set
 # CT_GDB_V_6_7_1 is not set
-CT_GDB_V_6_8=y
+# CT_GDB_V_6_8 is not set
 # CT_GDB_V_snapshot is not set
 CT_GDB_VERSION="6.8"
 
 #
 # Native gdb needs the ncurses library on the target
 #
-CT_NCURSES_V_5_6=y
+# CT_NCURSES_V_5_6 is not set
 CT_NCURSES_VERSION="5.6"
-CT_DEBUG_ltrace=y
+# CT_DEBUG_ltrace is not set
 # CT_LTRACE_V_0_4 is not set
-CT_LTRACE_V_0_5=y
+# CT_LTRACE_V_0_5 is not set
 CT_LTRACE_VERSION="0.5"
-CT_DEBUG_strace=y
+# CT_DEBUG_strace is not set
 # CT_STRACE_V_4_5 is not set
 # CT_STRACE_V_4_5_14 is not set
-CT_STRACE_V_4_5_15=y
+# CT_STRACE_V_4_5_15 is not set
 # CT_STRACE_V_4_5_16 is not set
 # CT_STRACE_V_4_5_17 is not set
 # CT_STRACE_V_4_5_18 is not set
