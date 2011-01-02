@@ -273,13 +273,20 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libiconv-1.13.1
 	touch $@
 
+# this is butt ugly. For some reason, the old libtool in debian lenny 5.0.7
+# does not put "-lz" into LDFLAGS of some subdirs, and I was not able to fix that.
+# Hence the LDFLAGS="$(TARGET_LDFLAGS) -lz" hack... :-(
 $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
 	$(UNTAR)/DirectFB-1.4.3.tar.gz
 	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
 		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
 		./autogen.sh fail ; \
-		$(CONFIGURE) --prefix=/ --mandir=/.remove --bindir=/bin/directfb \
+		CFLAGS="$(TARGET_CFLAGS)" CPPFLAGS="$(TARGET_CPPFLAGS)" \
+			CXXFLAGS="$(TARGET_CXXFLAGS)" PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+			LDFLAGS="$(TARGET_LDFLAGS) -lz" \
+			./configure \
+			--prefix=/ --mandir=/.remove --bindir=/bin/directfb \
 			--build=$(BUILD) --host=$(TARGET) \
 			--with-inputdrivers=linuxinput,keyboard,ps2mouse \
 			--with-gfxdrivers=cx2450x --disable-video4linux \
