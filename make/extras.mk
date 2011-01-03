@@ -178,3 +178,25 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libdlna.pc
 	$(REMOVE)/libdlna-hg
 	touch $@
+
+$(ARCHIVE)/ushare-hg.tar.bz2: | find-hg
+	cd $(BUILD_TMP) && \
+		hg clone http://hg.geexbox.org/ushare ushare-hg && \
+		tar cvpjf $@ --exclude='*/.hg' ushare-hg
+	$(REMOVE)/ushare-hg
+
+$(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
+	$(UNTAR)/ushare-hg.tar.bz2
+	cd $(BUILD_TMP)/ushare-hg && \
+		$(PATCH)/ushare-fix-build.diff && \
+		$(BUILDENV) \
+		./configure --cross-compile --cross-prefix=$(TARGET)- \
+			--prefix= && \
+		echo "mandir=/.remove" >> config.mak && \
+		test -e src/config.h || ln -s ../config.h src/ && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	printf '#!/bin/sh\ncase $$1 in\nstart)	ushare -D -n "`hostname`";;\nstop)	trap '' INT;kill -INT `pidof ushare` ;;\nesac\n' > $(TARGETPREFIX)/etc/init.d/ushare
+	chmod 0755 $(TARGETPREFIX)/etc/init.d/ushare
+	$(REMOVE)/ushare-hg $(TARGETPREFIX)/.remove
+	touch $@

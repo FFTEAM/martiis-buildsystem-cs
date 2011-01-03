@@ -1,0 +1,12 @@
+diff -r 10b476c5b8a0 configure
+--- a/configure	Thu Mar 18 18:28:29 2010 +0100
++++ b/configure	Mon Jan 03 12:59:00 2011 +0100
+@@ -641,7 +641,7 @@
+   check_cflags -I$libdlnadir
+   check_ldflags -L$libdlnadir
+ fi
+-check_lib dlna.h dlna_register_all_media_profiles -ldlna || die "Error, can't find libdlna (install it) !"
++check_lib dlna.h dlna_register_all_media_profiles `pkg-config libdlna --libs` || die "Error, can't find libdlna (install it) !"
+ check_lib_version libdlna $libdlna_min_version || die "Error, libdlna < $libdlna_min_version !"
+ add_cflags `pkg-config libdlna --cflags`
+ add_extralibs `pkg-config libdlna --libs`
