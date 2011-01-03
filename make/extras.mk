@@ -158,3 +158,23 @@ $(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libupnp.la
 	$(REMOVE)/libupnp-1.6.10
 	touch $@
+
+$(ARCHIVE)/libdlna-hg.tar.bz2: | find-hg
+	cd $(BUILD_TMP) && \
+		hg clone http://hg.geexbox.org/libdlna libdlna-hg && \
+		tar cvpjf $@ --exclude='*/.hg' libdlna-hg
+	$(REMOVE)/libdlna-hg
+
+$(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETPREFIX)
+	$(UNTAR)/libdlna-hg.tar.bz2
+	cd $(BUILD_TMP)/libdlna-hg && \
+		$(PATCH)/libdlna-fix-build.diff && \
+		$(BUILDENV) \
+		./configure --cross-compile --cross-prefix=$(TARGET)- \
+			--disable-sqlite --prefix= && \
+		touch src/TAGS src/tags && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libdlna.pc
+	$(REMOVE)/libdlna-hg
+	touch $@

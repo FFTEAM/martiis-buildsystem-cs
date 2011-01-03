@@ -1,0 +1,36 @@
+diff -r 4117c5ff1f40 configure
+--- a/configure	Sun Mar 28 17:46:54 2010 +0200
++++ b/configure	Mon Jan 03 13:04:02 2011 +0100
+@@ -381,7 +381,7 @@
+ optimize="yes"
+ debug="no"
+ dostrip="yes"
+-extralibs=""
++extralibs="-lpthread"
+ installstrip="-s"
+ cross_compile="no"
+ INSTALL="/usr/bin/install -c"
+@@ -716,6 +716,8 @@
+ fi
+ if [ -z  "$lavfdir" -a -z "$lavfincdir" -a -z "$lavflibdir" ]; then
+   add_pkgconfig_deps libavformat
++  # hack - either libavformat's pkgconfig is broken or this configure
++  add_extralibs "-lavcodec -lavutil"
+ fi
+ 
+ echolog "Checking for libavformat ..."
+diff -r 4117c5ff1f40 utils/Makefile
+--- a/utils/Makefile	Sun Mar 28 17:46:54 2010 +0200
++++ b/utils/Makefile	Mon Jan 03 13:04:02 2011 +0100
+@@ -20,9 +20,9 @@
+ CFLAGS  += -I../src
+ LDFLAGS += -L../src -ldlna
+ 
+-ifeq ($(BUILD_STATIC),yes)
++# ifeq ($(BUILD_STATIC),yes)
+   LDFLAGS += $(EXTRALIBS)
+-endif
++# endif
+ 
+ all: banner $(PROFILER_BIN) $(DMS_BIN)
+ 
