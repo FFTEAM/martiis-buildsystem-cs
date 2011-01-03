@@ -18,6 +18,9 @@ $(ARCHIVE)/libid3tag-0.15.1b.tar.gz:
 $(ARCHIVE)/libungif-4.1.4.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-4.1.4/libungif-4.1.4.tar.bz2?use_mirror=switch
 
+$(ARCHIVE)/libupnp-1.6.10.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ 1.6.10/libupnp-1.6.10.tar.bz2
+
 $(ARCHIVE)/curl-7.20.0.tar.bz2:
 	$(WGET) http://curl.haxx.se/download/curl-7.20.0.tar.bz2
 

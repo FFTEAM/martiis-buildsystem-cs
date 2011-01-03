@@ -145,3 +145,16 @@ $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
 		cp -a nbench nbench-run.sh *DAT $(TARGETPREFIX)/opt/nbench-byte
 	$(REMOVE)/nbench-byte-2.2.3
 	touch $@
+
+$(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libupnp-1.6.10.tar.bz2
+	cd $(BUILD_TMP)/libupnp-1.6.10 && \
+		$(CONFIGURE) --prefix= && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libupnp.pc
+	$(REWRITE_LIBTOOL)/libixml.la
+	$(REWRITE_LIBTOOL)/libthreadutil.la
+	$(REWRITE_LIBTOOL)/libupnp.la
+	$(REMOVE)/libupnp-1.6.10
+	touch $@
