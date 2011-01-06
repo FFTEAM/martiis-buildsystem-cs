@@ -200,3 +200,18 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 	chmod 0755 $(TARGETPREFIX)/etc/init.d/ushare
 	$(REMOVE)/ushare-hg $(TARGETPREFIX)/.remove
 	touch $@
+
+$(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2
+	$(UNTAR)/dropbear-0.52.tar.bz2
+	cd $(BUILD_TMP)/dropbear-0.52 && \
+		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
+		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/dropbear/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/dropbear/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
+			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/dropbear && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	install -D -m 0755 $(PATCHES)/dropbear.init $(TARGETPREFIX)/opt/dropbear/etc/init.d/dropbear
+	install -d -m 0755 $(TARGETPREFIX)/opt/dropbear/etc/dropbear
+	ln -sf dropbear $(TARGETPREFIX)/opt/dropbear/etc/init.d/S60dropbear
+	ln -sf dropbear $(TARGETPREFIX)/opt/dropbear/etc/init.d/K60dropbear
+	$(REMOVE)/dropbear-0.52
+	touch $@

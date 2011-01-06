@@ -27,6 +27,9 @@ $(ARCHIVE)/curl-7.20.0.tar.bz2:
 $(ARCHIVE)/libpng-1.2.44.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/libpng12/1.2.44/libpng-1.2.44.tar.bz2
 
+$(ARCHIVE)/dropbear-0.52.tar.bz2:
+	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-0.52.tar.bz2
+
 $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.41.12.tar.gz
 
