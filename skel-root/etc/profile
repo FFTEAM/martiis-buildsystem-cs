@@ -1,5 +1,15 @@
 PATH=/var/bin:/bin:/sbin
 
+_tmp=$(echo /opt/*/bin)
+if test "$tmp" != "/opt/*/bin"; then
+	PATH=${PATH}:${_tmp// /:}
+fi
+_tmp=$(echo /opt/*/sbin)
+if test "$tmp" != "/opt/*/sbin"; then
+	PATH=${PATH}:${_tmp// /:}
+fi
+unset _tmp
+
 # make sure TZ is exported...
 read TZ < /etc/TZ
 export TZ
