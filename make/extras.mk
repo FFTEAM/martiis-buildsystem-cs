@@ -215,3 +215,24 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2
 	ln -sf dropbear $(TARGETPREFIX)/opt/dropbear/etc/init.d/K60dropbear
 	$(REMOVE)/dropbear-0.52
 	touch $@
+
+$(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/opkg-0.1.8.tar.gz
+	cd $(BUILD_TMP)/opkg-0.1.8 && \
+		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache && \
+		$(CONFIGURE) \
+		--prefix= \
+		--build=$(BUILD) \
+		--host=$(TARGET) \
+		--disable-curl \
+		--disable-gpg \
+		--config-cache \
+		--with-opkglibdir=/var/lib \
+		--mandir=$(BUILD_TMP)/.remove && \
+		$(MAKE) all exec_prefix= && \
+		make install prefix=$(TARGETPREFIX)
+	install -d -m 0755 $(TARGETPREFIX)/var/lib/opkg
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
+	$(REMOVE)/opkg-0.1.8
+	$(REMOVE)/.remove
+	touch $@

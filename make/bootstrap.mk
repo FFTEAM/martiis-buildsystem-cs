@@ -2,7 +2,7 @@
 
 
 
-bootstrap: targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs cs-modules $(TARGETPREFIX)/lib/libc.so.6 $(TARGETPREFIX)/sbin/ldconfig
+bootstrap: targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs cs-modules $(TARGETPREFIX)/lib/libc.so.6 $(TARGETPREFIX)/sbin/ldconfig $(HOSTPREFIX)/bin/opkg.sh
 
 targetprefix:
 	mkdir -p $(TARGETPREFIX)
@@ -23,6 +23,9 @@ $(HOSTPREFIX):
 
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
+
+$(HOSTPREFIX)/bin/opkg.sh: $(HOSTPREFIX)/bin
+	ln -sf $(BASE_DIR)/scripts/opkg.sh $(HOSTPREFIX)/bin
 
 $(BUILD_TMP):
 	mkdir -p $(BUILD_TMP)

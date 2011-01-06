@@ -105,6 +105,9 @@ $(ARCHIVE)/busybox-1.15.2.tar.bz2:
 $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2
 
+$(ARCHIVE)/opkg-0.1.8.tar.gz:
+	$(WGET) http://opkg.googlecode.com/files/opkg-0.1.8.tar.gz
+
 $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz:
 	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.3.tar.gz
 
