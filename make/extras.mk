@@ -196,7 +196,7 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 		test -e src/config.h || ln -s ../config.h src/ && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-	printf '#!/bin/sh\ncase $$1 in\nstart)	ushare -D -n "`hostname`";;\nstop)	trap '' INT;kill -INT `pidof ushare` ;;\nesac\n' > $(TARGETPREFIX)/etc/init.d/ushare
+	printf '#!/bin/sh\ncase $$1 in\n\tstart)\tushare -D -n "`hostname`";;\n\tstop)\ttrap "" INT;kill -INT `pidof ushare` ;;\nesac\n' > $(TARGETPREFIX)/etc/init.d/ushare
 	chmod 0755 $(TARGETPREFIX)/etc/init.d/ushare
 	$(REMOVE)/ushare-hg $(TARGETPREFIX)/.remove
 	touch $@
