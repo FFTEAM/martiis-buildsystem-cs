@@ -204,14 +204,19 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 		$(PATCH)/ushare-fix-build.diff && \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
-			--prefix= && \
+			--prefix=/opt/ushare && \
 		echo "mandir=/.remove" >> config.mak && \
 		test -e src/config.h || ln -s ../config.h src/ && \
 		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-	printf '#!/bin/sh\ncase $$1 in\n\tstart)\tushare -D -n "`hostname`";;\n\tstop)\ttrap "" INT;kill -INT `pidof ushare` ;;\nesac\n' > $(TARGETPREFIX)/etc/init.d/ushare
-	chmod 0755 $(TARGETPREFIX)/etc/init.d/ushare
-	$(REMOVE)/ushare-hg $(TARGETPREFIX)/.remove
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	install -D -m 0755 $(PATCHES)/ushare.init $(PKGPREFIX)/opt/ushare/etc/init.d/ushare
+	ln -s ushare $(PKGPREFIX)/opt/ushare/etc/init.d/S99ushare # start late, so that drives are mounted
+	ln -s ushare $(PKGPREFIX)/opt/ushare/etc/init.d/K01ushare # stop early...
+	rm -rf $(PKGPREFIX)/.remove
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	opkg.sh $(CONTROL_DIR)/ushare $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/ushare-*.opk $(PACKAGE_DIR)
+	$(REMOVE)/ushare-hg $(PKGPREFIX)
 	touch $@
 
 $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2
