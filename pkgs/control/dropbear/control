@@ -1,0 +1,10 @@
+Package: dropbear
+Version: 0.52-1
+Description: A small SSH 2 server and client
+Section: extras/servers
+Priority: optional
+Maintainer: @MAINT@
+Architecture: all
+Homepage: http://matt.ucc.asn.au/dropbear/dropbear.html
+Source:
+Depends:
