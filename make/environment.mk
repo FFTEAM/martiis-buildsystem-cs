@@ -3,6 +3,8 @@
 BASE_DIR    = $(shell pwd)
 include $(BASE_DIR)/config
 
+WHOAMI       = $(shell id -un)
+MAINTAINER  ?= $(shell sh -c "getent passwd $(WHOAMI)|awk -F: '{print \$$5}'")
 # crosstool puts "...-glibc-2.3.6-tls" configs still into "...-glibc-2.3.6"
 CROSS_BUILD_DIR = $(CROSS_BUILD_VERSION:-tls=)
 
@@ -17,9 +19,12 @@ DEPDIR       = $(D)
 APPSDIR      = $(BASE_DIR)/tuxbox.org/apps
 HOSTPREFIX   = $(BASE_DIR)/host
 TARGETPREFIX = $(BASE_DIR)/root
+PKGPREFIX    = $(TARGETPREFIX)/.pkg
 FROOTFS      = $(BASE_DIR)/root-flash
 SOURCE_DIR   = $(BASE_DIR)/source
 MAKE_DIR     = $(BASE_DIR)/make
+CONTROL_DIR  = $(BASE_DIR)/pkgs/control
+PACKAGE_DIR  = $(BASE_DIR)/pkgs/opkg
 
 CROSS_BASE   = $(BASE_DIR)/cross
 CROSS_DIR   ?= $(CROSS_BASE)
@@ -48,6 +53,9 @@ PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig
 # helper-"functions":
 REWRITE_LIBTOOL = sed -i "s,^libdir=.*,libdir='$(TARGETLIB)'," $(TARGETLIB)
 REWRITE_PKGCONF = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)',"
+REWRITE_LIBTOOL_OPT_C = sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/opt/common/lib'," $(TARGETPREFIX)/opt/common/lib
+REWRITE_PKGCONF_OPT_C = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)/opt/common',"
+
 # unpack tarballs, clean up
 UNTAR = tar -C $(BUILD_TMP) -xf $(ARCHIVE)
 REMOVE = rm -rf $(BUILD_TMP)
