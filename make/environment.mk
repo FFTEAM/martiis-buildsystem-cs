@@ -53,6 +53,8 @@ PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig
 # helper-"functions":
 REWRITE_LIBTOOL = sed -i "s,^libdir=.*,libdir='$(TARGETLIB)'," $(TARGETLIB)
 REWRITE_PKGCONF = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)',"
+REWRITE_LIBTOOL_OPT = sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/opt/pkg/lib'," $(TARGETPREFIX)/opt/pkg/lib
+REWRITE_PKGCONF_OPT = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)/opt/pkg',"
 REWRITE_LIBTOOL_OPT_C = sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/opt/common/lib'," $(TARGETPREFIX)/opt/common/lib
 REWRITE_PKGCONF_OPT_C = sed -i "s,^prefix=.*,prefix='$(TARGETPREFIX)/opt/common',"
 
