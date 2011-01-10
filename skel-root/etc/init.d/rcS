@@ -1,6 +1,8 @@
 #!/bin/sh
 export PATH=/sbin:/bin:/usr/sbin:/usr/bin
 export TZ=`cat /etc/TZ`
+# the default "vt102" is crap.
+export TERM=linux
 #
 # reset colors, to not hurt my eyes...
 echo -e "\033[0m"

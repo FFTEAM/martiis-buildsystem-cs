@@ -18,6 +18,3 @@ alias l='ls -al'
 alias ll='ls -l'
 alias dir='ls -lA'
 alias ..='cd ..'
-
-# for top etc.
-TERM=linux
