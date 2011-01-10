@@ -1,0 +1,10 @@
+Package: libglib
+Version: 2.8.6-1
+Description: General-Purpose Utility Library
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: all
+Homepage: http://www.gtk.org/
+Source:
+Depends:

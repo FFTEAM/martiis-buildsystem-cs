@@ -54,6 +54,9 @@ $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 $(ARCHIVE)/freetype-2.3.12.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.12/freetype-2.3.12.tar.bz2?use_mirror=switch
 
+$(ARCHIVE)/glib-2.8.6.tar.bz2:
+	$(WGET) http://ftp.se.debian.org/pub/gnome/sources/glib/2.8/glib-2.8.6.tar.bz2
+
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz
 

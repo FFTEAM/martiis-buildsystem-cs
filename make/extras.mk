@@ -257,3 +257,36 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/opkg-0.1.8
 	$(REMOVE)/.remove
 	touch $@
+
+#http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
+$(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/glib-2.8.6.tar.bz2
+	cd $(BUILD_TMP)/glib-2.8.6 && \
+		$(PATCH)/glib-2.13.4-gcc-4.2-fix.diff && \
+		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache && \
+		echo "glib_cv_stack_grows=no" >> config.cache && \
+		echo "glib_cv_uscore=no" >> config.cache && \
+		$(BUILDENV) \
+		./configure \
+			--cache-file=config.cache \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--with-html-dir=/.remove \
+			--mandir=/.remove \
+			--prefix=/opt/pkg &&\
+		$(MAKE) all && \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove
+	cd $(PKGPREFIX)/opt/pkg/lib/pkgconfig && for i in *; do \
+		mv $$i $(PKG_CONFIG_PATH) && $(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/$$i; done
+	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
+	rm $(PKGPREFIX)/opt/pkg/bin/glib-mkenums # no perl available on the box
+	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig
+	sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/opt/pkg/lib'," $(PKGPREFIX)/opt/pkg/lib/*.la
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	cd $(PKGPREFIX)/opt/pkg && \
+		rm -r include lib/*.so share
+	opkg.sh $(CONTROL_DIR)/libglib $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libglib-*.opk $(PACKAGE_DIR)
+	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
+	touch $@
