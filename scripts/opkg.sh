@@ -27,7 +27,7 @@ eval $(awk -F":[[:space:]*]" \
 echo "2.0" > debian-binary
 find root/ -type f -print0 | xargs -0 --no-run-if-empty ${TARGET}-strip || true
 sed -i 's!@MAINT@!$(MAINTAINER)!' CONTROL/control
-chmod 0755 CONTROL/p*	# prerm, postrm, preinst, postinst
+chmod 0755 CONTROL/p* || true	# prerm, postrm, preinst, postinst
 tar -cvzf data.tar.gz    --owner=0 --group=0 -C root .
 tar -cvzf control.tar.gz --owner=0 --group=0 -C CONTROL . && \
 ar -r ${SOURCE}/${PACKAGE}-${VERSION}.opk ./debian-binary ./data.tar.gz ./control.tar.gz
