@@ -290,3 +290,30 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	mv $(PKGPREFIX)/libglib-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
 	touch $@
+
+$(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses
+	$(UNTAR)/mc-4.6.2.tar.gz
+	cd $(BUILD_TMP)/mc-4.6.2 && \
+		$(PATCH)/mc-4.6.2.diff && \
+		./autogen.sh && \
+		$(BUILDENV) \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CONFIG_SHELL=/bin/bash \
+		./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--prefix=/opt/pkg \
+			--without-gpm-mouse \
+			--with-screen=ncurses \
+			--mandir=/.remove \
+			--without-x && \
+			$(CC) -o src/man2hlp src/man2hlp.c && \
+			$(BUILDENV) $(MAKE) all && \
+			make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove
+	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
+	rm $(PKGPREFIX)/opt/pkg/share/mc/mc.h*.* # mc.hint.*, mc.hlp.*
+	opkg.sh $(CONTROL_DIR)/mc $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/mc-*.opk $(PACKAGE_DIR)
+	$(REMOVE)/mc-4.6.2 $(PKGPREFIX)
+	touch $@

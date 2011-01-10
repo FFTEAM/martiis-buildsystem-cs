@@ -87,6 +87,9 @@ $(ARCHIVE)/libpcap-1.0.0.tar.gz:
 $(ARCHIVE)/links-2.3pre1.tar.bz2:
 	$(WGET) http://links.twibright.com/download/links-2.3pre1.tar.bz2
 
+$(ARCHIVE)/mc-4.6.2.tar.gz:
+	$(WGET) http://midnight-commander.org/downloads/mc-4.6.2.tar.gz
+
 $(ARCHIVE)/nbench-byte-2.2.3.tar.gz:
 	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-2.2.3.tar.gz
 
