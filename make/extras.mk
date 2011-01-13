@@ -149,16 +149,16 @@ $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
 $(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/libupnp-1.6.10.tar.bz2
 	cd $(BUILD_TMP)/libupnp-1.6.10 && \
-		$(CONFIGURE) --prefix=/opt/common && \
+		$(CONFIGURE) --prefix=/opt/pkg && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
-	mv $(PKGPREFIX)/opt/common/lib/pkgconfig/libupnp.pc $(PKG_CONFIG_PATH)/
+	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/libupnp.pc $(PKG_CONFIG_PATH)/
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	$(REWRITE_PKGCONF_OPT_C) $(PKG_CONFIG_PATH)/libupnp.pc
-	$(REWRITE_LIBTOOL_OPT_C)/libixml.la
-	$(REWRITE_LIBTOOL_OPT_C)/libthreadutil.la
-	$(REWRITE_LIBTOOL_OPT_C)/libupnp.la
-	cd $(PKGPREFIX)/opt/common && \
+	$(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/libupnp.pc
+	$(REWRITE_LIBTOOL_OPT)/libixml.la
+	$(REWRITE_LIBTOOL_OPT)/libthreadutil.la
+	$(REWRITE_LIBTOOL_OPT)/libupnp.la
+	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*a lib/*.so
 	opkg.sh $(CONTROL_DIR)/libupnp $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
 	mv $(PKGPREFIX)/libupnp-*.opk $(PACKAGE_DIR)
