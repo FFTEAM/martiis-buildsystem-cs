@@ -223,14 +223,15 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2
 	$(UNTAR)/dropbear-0.52.tar.bz2
 	cd $(BUILD_TMP)/dropbear-0.52 && \
 		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
-		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/dropbear/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/dropbear/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
-			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/dropbear && \
-		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(PKGPREFIX)
-	install -D -m 0755 $(PATCHES)/dropbear.init $(PKGPREFIX)/opt/dropbear/etc/init.d/dropbear
-	install -d -m 0755 $(PKGPREFIX)/opt/dropbear/etc/dropbear
-	ln -sf dropbear $(PKGPREFIX)/opt/dropbear/etc/init.d/S60dropbear
-	ln -sf dropbear $(PKGPREFIX)/opt/dropbear/etc/init.d/K60dropbear
+		$(PATCH)/dropbear-0.52-fix-scp-progressbar-build.diff && \
+		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
+			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg && \
+		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" SCPPROGRESS=1 && \
+		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" install DESTDIR=$(PKGPREFIX)
+	install -D -m 0755 $(PATCHES)/dropbear.init $(PKGPREFIX)/opt/pkg/etc/init.d/dropbear
+	install -d -m 0755 $(PKGPREFIX)/opt/pkg/etc/dropbear
+	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/S60dropbear
+	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	opkg.sh $(CONTROL_DIR)/dropbear $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
 	mv $(PKGPREFIX)/dropbear-*.opk $(PACKAGE_DIR)

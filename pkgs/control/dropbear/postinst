@@ -1,6 +1,6 @@
 #!/bin/sh
-ETC=/opt/dropbear/etc/dropbear
-BIN=/opt/dropbear/bin
+ETC=/opt/pkg/etc/dropbear
+BIN=/opt/pkg/bin
 for keytype in dss rsa; do
 	keyfile=${ETC}/dropbear_${keytype}_host_key
 	test -e $keyfile && continue

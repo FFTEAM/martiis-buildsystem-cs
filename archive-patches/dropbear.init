@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # where we installed
-R=/opt/dropbear
+R=/opt/pkg
 ETCDIR=${R}/etc/dropbear
 
 fixperms() {
