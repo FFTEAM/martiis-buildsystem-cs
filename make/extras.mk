@@ -177,15 +177,15 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 		$(PATCH)/libdlna-fix-build.diff && \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
-			--disable-sqlite --prefix=/opt/common && \
+			--disable-sqlite --prefix=/opt/pkg && \
 		touch src/TAGS src/tags && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
-	mv $(PKGPREFIX)/opt/common/lib/pkgconfig/libdlna.pc $(PKG_CONFIG_PATH)/
+	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/libdlna.pc $(PKG_CONFIG_PATH)/
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	sed -i 's/PREFIX/prefix/g' $(PKG_CONFIG_PATH)/libdlna.pc
-	$(REWRITE_PKGCONF_OPT_C) $(PKG_CONFIG_PATH)/libdlna.pc
-	cd $(PKGPREFIX)/opt/common && \
+	$(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/libdlna.pc
+	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*.so
 	opkg.sh $(CONTROL_DIR)/libdlna $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
 	mv $(PKGPREFIX)/libdlna-*.opk $(PACKAGE_DIR)

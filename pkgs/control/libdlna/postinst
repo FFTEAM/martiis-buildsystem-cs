@@ -1,5 +1,5 @@
 #!/bin/sh
-L=/opt/common/lib
+L=/opt/pkg/lib
 if ! grep -q ^$L /etc/ld.so.conf 2>/dev/null; then
 	echo "adding $L to /etc/ld.so.conf"
 	echo $L >> /etc/ld.so.conf
