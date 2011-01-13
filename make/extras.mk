@@ -204,14 +204,14 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 		$(PATCH)/ushare-fix-build.diff && \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
-			--prefix=/opt/ushare && \
+			--prefix=/opt/pkg && \
 		echo "mandir=/.remove" >> config.mak && \
 		test -e src/config.h || ln -s ../config.h src/ && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
-	install -D -m 0755 $(PATCHES)/ushare.init $(PKGPREFIX)/opt/ushare/etc/init.d/ushare
-	ln -s ushare $(PKGPREFIX)/opt/ushare/etc/init.d/S99ushare # start late, so that drives are mounted
-	ln -s ushare $(PKGPREFIX)/opt/ushare/etc/init.d/K01ushare # stop early...
+	install -D -m 0755 $(PATCHES)/ushare.init $(PKGPREFIX)/opt/pkg/etc/init.d/ushare
+	ln -s ushare $(PKGPREFIX)/opt/pkg/etc/init.d/S99ushare # start late, so that drives are mounted
+	ln -s ushare $(PKGPREFIX)/opt/pkg/etc/init.d/K01ushare # stop early...
 	rm -rf $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	opkg.sh $(CONTROL_DIR)/ushare $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
