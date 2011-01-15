@@ -18,8 +18,9 @@ $(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype
 	$(N_HD_SOURCE)/autogen.sh
 	pushd $(N_OBJDIR) && \
 		export PKG_CONFIG=$(PKG_CONFIG) && \
+		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
-		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix=$(TARGETPREFIX) \
+		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-maintainer-mode --with-target=cdk
 
 $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
@@ -31,7 +32,7 @@ $(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
 $(D)/neutrino: $(N_OBJDIR)/config.status
 	$(MAKE) check-repo
 	$(MAKE) -C $(N_OBJDIR) all
-	$(MAKE) -C $(N_OBJDIR) install
+	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
 	# make $(TARGETPREFIX)/.version
 	touch $@
 
