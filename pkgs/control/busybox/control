@@ -1,0 +1,10 @@
+Package: busybox
+Version: 1.15.2-1
+Description: The Swiss Army Knife of Embedded Linux
+Section: base
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://busybox.net
+Source:
+Depends: libc.so.6
