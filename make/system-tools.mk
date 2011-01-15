@@ -18,12 +18,23 @@ $(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz
 
 $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/rsync-3.0.7.tar.gz
+	rm -rf $(PKGPREFIX)
 	pushd $(BUILD_TMP)/rsync-3.0.7 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all && \
-		make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/rsync-3.0.7
-	$(REMOVE)/.remove
+		make install prefix=$(PKGPREFIX)
+	$(REMOVE)/rsync-3.0.7 $(BUILD_TMP)/.remove
+	install -D -m 0755 $(PATCHES)/rsyncd.init $(PKGPREFIX)/etc/init.d/rsyncd
+	ln -sf rsyncd $(PKGPREFIX)/etc/init.d/K40rsyncd
+	ln -sf rsyncd $(PKGPREFIX)/etc/init.d/S60rsyncd
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	cd $(TARGETPREFIX)/etc && { \
+		test -e rsyncd.conf    || cp $(PATCHES)/rsyncd.conf . ; \
+		test -e rsyncd.secrets || cp $(PATCHES)/rsyncd.secrets . ; }; true
+	cp -a $(PATCHES)/rsyncd.{conf,secrets} $(PKGPREFIX)/etc
+	opkg.sh $(CONTROL_DIR)/rsync $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)

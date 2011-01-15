@@ -1,0 +1,2 @@
+#!/bin/sh
+service rsyncd stop || true
