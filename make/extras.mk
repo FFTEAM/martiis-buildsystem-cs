@@ -204,6 +204,7 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 		$(PATCH)/ushare-fix-build.diff && \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
+			--with-libdlna-dir=$(TARGETPREFIX)/opt/pkg/include \
 			--prefix=/opt/pkg && \
 		echo "mandir=/.remove" >> config.mak && \
 		test -e src/config.h || ln -s ../config.h src/ && \
