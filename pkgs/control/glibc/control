@@ -1,0 +1,11 @@
+Package: glibc
+Version: 2.8-1
+Description: The GNU C libray
+Section: base/libraries
+Priority: required
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://www.gnu.org/software/libc/
+Source:
+Depends:
+Provides: libc.so.6
