@@ -74,7 +74,12 @@ $(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libungif.la
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/libungif-4.1.4
+	$(REMOVE)/libungif-4.1.4 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libungif.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libungif $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libungif-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
@@ -109,7 +114,12 @@ $(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman && \
 		ECHO=echo $(MAKE) all && \
 		make install
-	$(REMOVE)/libpng-1.2.44 $(BUILD_TMP)/tmpman
+	$(REMOVE)/libpng-1.2.44 $(BUILD_TMP)/tmpman $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libpng12 $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libpng-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
@@ -124,7 +134,12 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
 	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
-	$(REMOVE)/freetype-2.3.12
+	$(REMOVE)/freetype-2.3.12 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libfreetype.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libfreetype $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libfreetype-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
@@ -137,7 +152,12 @@ $(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
 		$(MAKE)  && \
 		make install-lib libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include
 	$(REWRITE_LIBTOOL)/libjpeg.la
-	$(REMOVE)/jpeg-6b
+	$(REMOVE)/jpeg-6b $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libjpeg.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libjpeg $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libjpeg-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/libboost: $(ARCHIVE)/boost_1_42_0.tar.bz2 | $(TARGETPREFIX)
@@ -248,7 +268,12 @@ $(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX)
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
 	$(REWRITE_LIBTOOL)/libogg.la
-	$(REMOVE)/libogg-1.1.4
+	$(REMOVE)/libogg-1.1.4 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libogg.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libogg $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libogg-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 # for some reason, libvorbis does not work with "--prefix=/"
@@ -263,7 +288,13 @@ $(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX)
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbis.pc
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisenc.pc
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisfile.pc
-	$(REMOVE)/libvorbis-1.2.3
+	$(REMOVE)/libvorbis-1.2.3 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libvorbis.so.* $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libvorbisfile.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libvorbis $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libvorbis-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 ncurses-prereq:
@@ -333,6 +364,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 # the strange find | sed hack is needed for old cmake versions which
 # don't obey CMAKE_INSTALL_PREFIX (e.g debian lenny 5.0.7's cmake 2.6)
 $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
+	opkg-chksvn.sh $(CONTROL_DIR)/libOpenThreads $(SVN_TP_LIBS)/OpenThreads-svn
 	tar -C $(SVN_TP_LIBS) -cp OpenThreads-svn --exclude=.svn | tar -C $(BUILD_TMP) -x
 	cd $(BUILD_TMP)/OpenThreads-svn && \
 		rm CMakeFiles/* -rf CMakeCache.txt cmake_install.cmake && \
@@ -344,8 +376,13 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 			sed -i 's@SET(CMAKE_INSTALL_PREFIX "/usr/local")@SET(CMAKE_INSTALL_PREFIX "")@' && \
 		$(MAKE) && \
 		make install DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/OpenThreads-svn
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/openthreads.pc
+	$(REMOVE)/OpenThreads-svn $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libOpenThreads.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libOpenThreads $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libOpenThreads-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 #############################################################################################

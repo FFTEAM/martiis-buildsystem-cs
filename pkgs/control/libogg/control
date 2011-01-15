@@ -1,0 +1,11 @@
+Package: libogg
+Version: 1.1.4-1
+Description: Library to Create, Decode and work with OGG Bitstreams
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://www.xiph.org/ogg/
+Source:
+Depends:
+Provides: libogg.so.0

@@ -1,0 +1,11 @@
+Package: libjpeg
+Version: 6b-1
+Description: A Free, High-Quality, and Portable Font Engine
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://www.ijg.org/
+Source:
+Depends:
+Provides: libjpeg.so.62

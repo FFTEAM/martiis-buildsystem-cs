@@ -1,0 +1,11 @@
+Package: libpng
+Version: 1.2.44-1
+Description: Portable Network Graphics Library
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://www.libpng.org/
+Source:
+Depends: libz.so.1
+Provides: libpng12.so.0

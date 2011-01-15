@@ -1,0 +1,11 @@
+Package: libOpenThreads
+Version: 928-1
+Description: Lightweight C++ Thread API
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://openthreads.sourceforge.net/
+Source:
+Depends:
+Provides: libOpenThreads.so.12

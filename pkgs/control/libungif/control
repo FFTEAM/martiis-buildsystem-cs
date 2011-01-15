@@ -1,0 +1,11 @@
+Package: libungif
+Version: 4.1.4-1
+Description: Library for Processing GIF Images
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://sourceforge.net/projects/giflib/
+Source:
+Depends:
+Provides: libungif.so.4
