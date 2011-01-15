@@ -1,10 +1,10 @@
 Package: libdlna
-Version: 0.2.99.439-2
+Version: 0.2.99.439-3
 Description: Reference implementation of DLNA standards
 Section: extras/libraries
 Priority: optional
 Maintainer: @MAINT@
-Architecture: all
+Architecture: arm
 Homepage: http://libdlna.geexbox.org
 Source:
 Depends: libupnp(> 0.16.10-1)
