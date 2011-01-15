@@ -165,13 +165,17 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
 			--enable-debug --enable-stripping \
 			--prefix=/ && \
 		$(MAKE) && \
-		make install DESTDIR=$(TARGETPREFIX) && \
-		cp version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
+		make install DESTDIR=$(PKGPREFIX)
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	cp $(BUILD_TMP)/ffmpeg-0.6/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
+	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so
+	opkg.sh $(CONTROL_DIR)/ffmpeg $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/ffmpeg-*.opk $(PACKAGE_DIR)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
-	$(REMOVE)/ffmpeg-0.6
+	$(REMOVE)/ffmpeg-0.6 $(PKGPREFIX)
 	touch $@
 
 # maybe put this into archive.mk?
