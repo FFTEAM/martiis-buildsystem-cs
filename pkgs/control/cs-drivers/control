@@ -1,0 +1,10 @@
+Package: cs-drivers
+Version: 932-1
+Description: Drivers and Firmware for Coolstream HD1 Hardware
+Section: base/drivers
+Priority: required
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://coolstreamtech.com/
+Source:
+Depends: cs-libs (>= 941)
