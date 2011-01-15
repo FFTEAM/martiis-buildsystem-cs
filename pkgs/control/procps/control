@@ -1,0 +1,12 @@
+Package: procps
+Version: 3.2.8-1
+Description: Full Featured 'top' and 'ps' Tools
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://procps.sourceforge.net/
+Source:
+Depends: libncurses.so.5
+Conflicts: top, ps
+Provides: top, ps

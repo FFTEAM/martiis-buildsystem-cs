@@ -50,7 +50,13 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)
 		rm -f $(TARGETPREFIX)/bin/ps $(TARGETPREFIX)/bin/top && \
 		install -m 755 top ps/ps $(TARGETPREFIX)/bin && \
 		install -m 755 proc/libproc-3.2.8.so $(TARGETPREFIX)/lib
-	$(REMOVE)/procps-3.2.8
+	$(REMOVE)/procps-3.2.8 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib $(PKGPREFIX)/bin
+	cp -a $(TARGETPREFIX)/bin/{ps,top} $(PKGPREFIX)/bin
+	cp -a $(TARGETPREFIX)/lib/libproc-3.2.8.so $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/procps $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
