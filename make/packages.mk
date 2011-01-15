@@ -36,4 +36,14 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	mv $(PKGPREFIX)/cs-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
-PHONY += glibc-pkg cs-driver-pkg cs-libs-pkg
+aaa_base-pkg:
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)
+	cp -a skel-root/* $(PKGPREFIX)/
+	find $(PKGPREFIX) -name .gitignore | xargs rm
+	cd $(PKGPREFIX) && rm etc/ntpd.conf
+	opkg.sh $(CONTROL_DIR)/aaa_base $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
+
+PHONY += glibc-pkg cs-driver-pkg cs-libs-pkg aaa_base-pkg
