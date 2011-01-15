@@ -169,14 +169,22 @@ $(D)/skeleton: | $(TARGETPREFIX)
 
 $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/autofs-4.1.4.tar.bz2
 	cd $(BUILD_TMP)/autofs-4.1.4 && \
 		$(PATCH)/autofs-4.1.4-td.diff && \
 		$(BUILDENV) $(MAKE) CC=$(TARGET)-gcc STRIP=$(TARGET)-strip SUBDIRS="lib daemon modules"  && \
-		$(MAKE) install INSTALLROOT=$(TARGETPREFIX) SUBDIRS="lib daemon modules"
-	install -m 0755 -D $(PATCHES)/autofs.init $(TARGETPREFIX)/etc/init.d/S60autofs
-	ln -sf S60autofs $(TARGETPREFIX)/etc/init.d/K40autofs
+		$(MAKE) install INSTALLROOT=$(PKGPREFIX) SUBDIRS="lib daemon modules"
 	$(REMOVE)/autofs-4.1.4
+	install -m 0755 -D $(PATCHES)/autofs.init $(PKGPREFIX)/etc/init.d/autofs
+	ln -sf autofs $(PKGPREFIX)/etc/init.d/S60autofs
+	ln -sf autofs $(PKGPREFIX)/etc/init.d/K40autofs
+	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4
+	cp -a $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/
+	cp -a --remove-destination $(PKGPREFIX)/* $(TARGETPREFIX)/
+	opkg.sh $(CONTROL_DIR)/autofs $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/samba3: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
