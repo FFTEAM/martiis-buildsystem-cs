@@ -68,7 +68,7 @@ update-neutrino:
 	cd $(N_HD_SOURCE) && git pull
 
 # only updates important(?) stuff, no crosstool etc.
-update-svn:
+update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
 	cd $(SOURCE_DIR)/svn/COOLSTREAM && $(SVN) up
 	cd $(SVN_TP_LIBS) && $(SVN) up *
 	if [ -d $(SVN_TP_APPS) ]; then \
