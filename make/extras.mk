@@ -297,7 +297,7 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/opt/pkg/lib'," $(PKGPREFIX)/opt/pkg/lib/*.la
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
-		rm -r include lib/*.so share
+		rm -r include lib/*.so lib/*.la share
 	opkg.sh $(CONTROL_DIR)/libglib $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
 	mv $(PKGPREFIX)/libglib-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
