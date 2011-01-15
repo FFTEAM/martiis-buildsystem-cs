@@ -8,8 +8,12 @@ $(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
 		ln -sf /bin/true ldconfig && \
 		PATH=$(BUILD_TMP)/zlib-1.2.5:$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
-	$(REMOVE)/zlib-1.2.5
-	$(REMOVE)/.remove
+	$(REMOVE)/zlib-1.2.5 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libz.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libz $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libz-*.opk $(PACKAGE_DIR)
+	$(REMOVE)/.remove $(PKGPREFIX)
 	touch $@
 
 $(D)/libblkid: $(D)/libuuid
