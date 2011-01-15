@@ -248,11 +248,21 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 		--host=$(TARGET) \
 		--disable-curl \
 		--disable-gpg \
+		--disable-shared \
 		--config-cache \
 		--with-opkglibdir=/var/lib \
 		--mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all exec_prefix= && \
-		make install prefix=$(TARGETPREFIX)
+		make install prefix=$(TARGETPREFIX) && \
+		make distclean && \
+		./configure \
+		--prefix= \
+		--disable-curl \
+		--disable-gpg \
+		--disable-shared \
+		--with-opkglibdir=/var/lib && \
+		$(MAKE) all && \
+		cp -a src/opkg-cl $(HOSTPREFIX)/bin
 	install -d -m 0755 $(TARGETPREFIX)/var/lib/opkg
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
 	$(REMOVE)/opkg-0.1.8
