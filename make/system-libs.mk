@@ -67,20 +67,30 @@ $(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/libungif-4.1.4
 	touch $@
 
-$(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 | $(TARGETPREFIX)
+$(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/curl-7.20.0.tar.bz2
 	pushd $(BUILD_TMP)/curl-7.20.0 && \
-		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --with-random --mandir=/.remove && \
+		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
+			--disable-manual --disable-file --disable-rtsp --disable-dict \
+			--disable-imap --disable-pop3 --disable-smtp \
+			--with-random --mandir=/.remove && \
 		$(MAKE) all && \
 		mkdir -p $(HOSTPREFIX)/bin && \
 		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < curl-config > $(HOSTPREFIX)/bin/curl-config && \
 		chmod 755 $(HOSTPREFIX)/bin/curl-config && \
-		make install DESTDIR=$(TARGETPREFIX)
-	rm $(TARGETPREFIX)/bin/curl-config
+		make install DESTDIR=$(PKGPREFIX)
+	rm $(PKGPREFIX)/bin/curl-config
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	mkdir $(BUILD_TMP)/pkg-lib
+	cd $(PKGPREFIX) && rm -r include lib/pkgconfig lib/*.so lib/*a .remove/ && mv lib $(BUILD_TMP)/pkg-lib
+	opkg.sh $(CONTROL_DIR)/curl $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/curl-*.opk $(PACKAGE_DIR)
+	opkg.sh $(CONTROL_DIR)/libcurl $(TARGET) "$(MAINTAINER)" $(BUILD_TMP)/pkg-lib $(BUILD_TMP)
+	mv $(BUILD_TMP)/pkg-lib/libcurl-*.opk $(PACKAGE_DIR)
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/curl-7.20.0
+	$(REMOVE)/curl-7.20.0 $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
 	touch $@
 
 $(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)

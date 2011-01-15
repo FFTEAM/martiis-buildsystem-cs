@@ -1,0 +1,11 @@
+Package: libcurl
+Version: 7.20.0-1
+Description: Client-side URL Transfer Library
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://curl.haxx.se
+Source:
+Depends: libz.so.1
+Provides: libcurl.so.4
