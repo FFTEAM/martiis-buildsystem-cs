@@ -23,7 +23,8 @@ $(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-maintainer-mode --with-target=cdk
 
-$(TARGETPREFIX)/.version: $(TARGETPREFIX)/bin/neutrino
+$(PKGPREFIX)/.version \
+$(TARGETPREFIX)/.version:
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
 	echo "creator=`id -un`"			>> $@
 	echo "imagename=HD-Neutrino"		>> $@
@@ -35,6 +36,16 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
 	# make $(TARGETPREFIX)/.version
 	touch $@
+
+neutrino-pkg: $(N_OBJDIR)/config.status
+	$(MAKE) check-repo
+	rm -rf $(PKGPREFIX)
+	$(MAKE) -C $(N_OBJDIR) all
+	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
+	make $(PKGPREFIX)/.version
+	opkg.sh $(CONTROL_DIR)/neutrino-hd $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/neutrino-hd*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 
 neutrino-clean:
 	-make -C $(N_OBJDIR) uninstall
