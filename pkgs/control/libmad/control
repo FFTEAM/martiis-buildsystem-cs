@@ -1,0 +1,11 @@
+Package: libmad
+Version: 0.15.1b-1
+Description: High-quality MPEG Audio Decoder Library
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://www.underbit.com/products/mad/
+Source:
+Depends:
+Provides: libmad.so.0

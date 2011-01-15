@@ -41,7 +41,12 @@ $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" mad.pc > $(PKG_CONFIG_PATH)/libmad.pc
 	$(REWRITE_LIBTOOL)/libmad.la
-	$(REMOVE)/libmad-0.15.1b
+	$(REMOVE)/libmad-0.15.1b $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libmad.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libmad $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libmad-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
@@ -52,8 +57,13 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
 		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" id3tag.pc > $(PKG_CONFIG_PATH)/libid3tag.pc
-	$(REMOVE)/libid3tag-0.15.1b
 	$(REWRITE_LIBTOOL)/libid3tag.la
+	$(REMOVE)/libid3tag-0.15.1b $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libid3tag.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libid3tag $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/libid3tag-*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
