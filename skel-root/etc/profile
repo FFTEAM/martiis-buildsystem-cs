@@ -1,11 +1,11 @@
 PATH=/var/bin:/bin:/sbin
 
 _tmp=$(echo /opt/*/bin)
-if test "$tmp" != "/opt/*/bin"; then
+if test "$_tmp" != "/opt/*/bin"; then
 	PATH=${PATH}:${_tmp// /:}
 fi
 _tmp=$(echo /opt/*/sbin)
-if test "$tmp" != "/opt/*/sbin"; then
+if test "$_tmp" != "/opt/*/sbin"; then
 	PATH=${PATH}:${_tmp// /:}
 fi
 
@@ -27,3 +27,6 @@ alias l='ls -al'
 alias ll='ls -l'
 alias dir='ls -lA'
 alias ..='cd ..'
+alias ldd='/lib/ld-linux.so.3 --list'
+
+test -e /etc/profile.local && . /etc/profile.local
