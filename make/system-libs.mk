@@ -319,7 +319,13 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
 		$(MAKE) libs HOSTCC=gcc HOSTLDFLAGS="$(TARGET_LDFLAGS)" \
 			HOSTCCFLAGS="$(TARGET_CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include" && \
 		make install.libs DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/ncurses-5.6
+	$(REMOVE)/ncurses-5.6 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	# deliberately ignore libforms and libpanel - not yet needed
+	cp -a $(TARGETPREFIX)/lib/libncurses.so.* $(PKGPREFIX)/lib
+	opkg.sh $(CONTROL_DIR)/libncurses $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/lib*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)

@@ -1,0 +1,11 @@
+Package: libncurses
+Version: 5.6-1
+Description: The New Curses Library
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://www.gnu.org/software/ncurses/
+Source:
+Depends:
+Provides: libncurses.so.5
