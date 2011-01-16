@@ -83,7 +83,7 @@ ccache:
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-g++
 
 ldconfig: $(TARGETPREFIX)/sbin/ldconfig
-$(TARGETPREFIX)/sbin/ldconfig:
+$(TARGETPREFIX)/sbin/ldconfig: | $(TARGETPREFIX)
 	if test -e $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig; then \
 		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig $@; \
 	elif test -e $(CROSS_DIR)/$(TARGET)/sbin/ldconfig; then \
