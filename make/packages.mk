@@ -49,11 +49,29 @@ aaa_base-pkg:
 pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh
 	cd $(PACKAGE_DIR) && opkg-make-index.sh . > Packages
 
-install-pkgs:
-	$(REMOVE)/install
+prepare-pkginstall: pkg-index
+	$(REMOVE)/install $(BUILD_TMP)/opkg.conf
 	mkdir -p $(BUILD_TMP)/install/var/lib/opkg
+	cp $(PATCHES)/opkg.conf $(BUILD_TMP)/
+	echo "src local file:/$(PACKAGE_DIR)" >> $(BUILD_TMP)/opkg.conf
+	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
+
+# install-pkgs installs everything the hard way, just to check dependencies...
+install-pkgs: prepare-pkginstall
 	opkg-cl -f $(PATCHES)/opkg.conf -o $(BUILD_TMP)/install install $(PACKAGE_DIR)/*
 	# postinst does not really work on cross-arch installation... TODO: make more flexible
-	-test -d $(BUILD_TMP)/install/opt/pkg/lib && echo "/opt/pkg/lib" > $(BUILD_TMP)/install/etc/ld.so.conf
+	test -d $(BUILD_TMP)/install/opt/pkg/lib && \
+		echo "/opt/pkg/lib" > $(BUILD_TMP)/install/etc/ld.so.conf || true
+
+# minimal-system-pkgs allows booting, not much else
+minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginstall
+	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
+		aaa_base busybox opkg procps
+
+# system-pkgs installs actually enough to get a TV picture
+system-pkgs: neutrino-pkg cs-libs-pkg cs-drivers-pkg minimal-system-pkgs
+	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
+		neutrino-hd
 
 PHONY += glibc-pkg cs-drivers-pkg cs-libs-pkg aaa_base-pkg pkg-index install-pkgs
+PHONY += prepare-pkginstall minimal-system-pkgs system-pkgs
