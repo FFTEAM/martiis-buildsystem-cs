@@ -1,6 +1,6 @@
 #Makefile to build system tools
 
-$(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz
+$(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/vsftpd-2.2.2.tar.gz
 	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/vsftpd-2.2.2 && \
@@ -18,7 +18,7 @@ $(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz
 	$(REMOVE)/vsftpd-2.2.2 $(PKGPREFIX)
 	touch $@
 
-$(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
+$(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/rsync-3.0.7.tar.gz
 	rm -rf $(PKGPREFIX)
 	pushd $(BUILD_TMP)/rsync-3.0.7 && \
@@ -39,7 +39,7 @@ $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)
+$(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/procps-3.2.8.tar.gz
 	pushd $(BUILD_TMP)/procps-3.2.8 && \
 		$(PATCH)/procps-3.2.7-avoid-ICE-with-gcc-4.3.2-arm.diff && \
@@ -61,7 +61,7 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
+$(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/busybox-1.15.2.tar.bz2
 	cd $(BUILD_TMP)/busybox-1.15.2 && \
 		$(PATCH)/busybox-1.15.2-make-ftpd-more-tolerant.diff && \
@@ -169,7 +169,7 @@ $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2010.10.2.tgz | $(TARGETPREFIX)
 $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/* $(TARGETPREFIX)/
 
-$(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
+$(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/autofs-4.1.4.tar.bz2

@@ -1,6 +1,6 @@
 #Makefile to build system libs, potentially needed by neutrino and enigma
 
-$(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
+$(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/zlib-1.2.5.tar.bz2
 	cd $(BUILD_TMP)/zlib-1.2.5 && \
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared && \
@@ -31,7 +31,7 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/util-linux-ng-2.18
 	touch $(D)/libuuid $(D)/libblkid
 
-$(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
+$(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/libmad-0.15.1b.tar.gz
 	pushd $(BUILD_TMP)/libmad-0.15.1b && \
 		patch -p1 < $(PATCHES)/libmad.diff && \
@@ -49,7 +49,7 @@ $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
+$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/libid3tag-0.15.1b.tar.gz
 	pushd $(BUILD_TMP)/libid3tag-0.15.1b && \
 		patch -p1 < $(PATCHES)/libid3tag.diff && \
@@ -66,7 +66,7 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
+$(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/libungif-4.1.4.tar.bz2
 	pushd $(BUILD_TMP)/libungif-4.1.4 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove && \
@@ -82,7 +82,7 @@ $(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+$(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/curl-7.20.0.tar.bz2
 	pushd $(BUILD_TMP)/curl-7.20.0 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
@@ -108,7 +108,7 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(REMOVE)/curl-7.20.0 $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
 	touch $@
 
-$(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+$(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/libpng-1.2.44.tar.bz2
 	pushd $(BUILD_TMP)/libpng-1.2.44 && \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman && \
@@ -122,7 +122,7 @@ $(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
+$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/freetype-2.3.12.tar.bz2
 	pushd $(BUILD_TMP)/freetype-2.3.12 && \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff && \
@@ -142,7 +142,7 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
+$(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/jpegsrc.v6b.tar.gz
 	pushd $(BUILD_TMP) && \
 		pushd jpeg-6b && \
@@ -185,7 +185,7 @@ $(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	touch $@
 
-$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
+$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/ffmpeg-0.6.tar.bz2
 	cd $(BUILD_TMP)/ffmpeg-0.6 && \
 		$(PATCH)/ffmpeg-dvbsubs.diff && \
@@ -259,7 +259,7 @@ $(D)/ffmpeg-snapshot: $(BUILD_TMP)/ffmpeg | $(TARGETPREFIX)
 	# $(REMOVE)/ffmpeg
 	touch $@
 
-$(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX)
+$(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/libogg-1.1.4.tar.gz
 	pushd $(BUILD_TMP)/libogg-1.1.4 && \
 		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff && \
@@ -277,7 +277,7 @@ $(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX)
 	touch $@
 
 # for some reason, libvorbis does not work with "--prefix=/"
-$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX)
+$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/libvorbis-1.2.3.tar.bz2
 	pushd $(BUILD_TMP)/libvorbis-1.2.3 && \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff && \
@@ -308,7 +308,7 @@ ncurses-prereq:
 		false; \
 	fi
 
-$(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
+$(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX) $(D)/opkg
 	$(UNTAR)/ncurses-5.6.tar.gz && \
 	pushd $(BUILD_TMP)/ncurses-5.6 && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
@@ -369,7 +369,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 
 # the strange find | sed hack is needed for old cmake versions which
 # don't obey CMAKE_INSTALL_PREFIX (e.g debian lenny 5.0.7's cmake 2.6)
-$(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
+$(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX) $(D)/opkg
 	opkg-chksvn.sh $(CONTROL_DIR)/libOpenThreads $(SVN_TP_LIBS)/OpenThreads-svn
 	tar -C $(SVN_TP_LIBS) -cp OpenThreads-svn --exclude=.svn | tar -C $(BUILD_TMP) -x
 	cd $(BUILD_TMP)/OpenThreads-svn && \

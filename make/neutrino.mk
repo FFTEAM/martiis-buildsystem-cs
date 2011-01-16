@@ -37,7 +37,7 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 	# make $(TARGETPREFIX)/.version
 	touch $@
 
-neutrino-pkg: $(N_OBJDIR)/config.status
+neutrino-pkg: $(N_OBJDIR)/config.status | $(D)/opkg
 	$(MAKE) check-repo
 	rm -rf $(PKGPREFIX)
 	$(MAKE) -C $(N_OBJDIR) all
