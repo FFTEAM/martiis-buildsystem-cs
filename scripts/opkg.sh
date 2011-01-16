@@ -25,7 +25,7 @@ eval $(awk -F":[[:space:]*]" \
 	'/^Package:/{print "PACKAGE=\""$2"\""};
 	 /^Version:/{print "VERSION=\""$2"\""}' CONTROL/control)
 echo "2.0" > debian-binary
-find root/ -type f -print0 | xargs -0 --no-run-if-empty ${TARGET}-strip || true
+find root/ -type f ! -name '*.ko' -print0| xargs -0 --no-run-if-empty ${TARGET}-strip || true
 sed -i "s!@MAINT@!${MAINTAINER}!" CONTROL/control
 chmod 0755 CONTROL/p* || true	# prerm, postrm, preinst, postinst
 tar -cvzf data.tar.gz    --owner=0 --group=0 -C root .
