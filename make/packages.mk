@@ -46,6 +46,9 @@ aaa_base-pkg:
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
+pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh
+	cd $(PACKAGE_DIR) && opkg-make-index.sh . > Packages
+
 install-pkgs:
 	$(REMOVE)/install
 	mkdir -p $(BUILD_TMP)/install/var/lib/opkg
@@ -53,4 +56,4 @@ install-pkgs:
 	# postinst does not really work on cross-arch installation... TODO: make more flexible
 	-test -d $(BUILD_TMP)/install/opt/pkg/lib && echo "/opt/pkg/lib" > $(BUILD_TMP)/install/etc/ld.so.conf
 
-PHONY += glibc-pkg cs-driver-pkg cs-libs-pkg aaa_base-pkg install-pkgs
+PHONY += glibc-pkg cs-drivers-pkg cs-libs-pkg aaa_base-pkg pkg-index install-pkgs
