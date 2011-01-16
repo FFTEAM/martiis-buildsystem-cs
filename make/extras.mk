@@ -254,7 +254,7 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 		--with-opkglibdir=/var/lib \
 		--mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all exec_prefix= && \
-		make install prefix=$(TARGETPREFIX) && \
+		make install prefix=$(PKGPREFIX) && \
 		make distclean && \
 		./configure \
 		--prefix= \
@@ -264,10 +264,14 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 		--with-opkglibdir=/var/lib && \
 		$(MAKE) all && \
 		cp -a src/opkg-cl $(HOSTPREFIX)/bin
-	install -d -m 0755 $(TARGETPREFIX)/var/lib/opkg
+	install -d -m 0755 $(PKGPREFIX)/var/lib/opkg
+	$(REMOVE)/opkg-0.1.8 $(PKGPREFIX)/.remove
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
-	$(REMOVE)/opkg-0.1.8
-	$(REMOVE)/.remove
+	rm -rf $(PKGPREFIX)/lib $(PKGPREFIX)/include
+	opkg.sh $(CONTROL_DIR)/opkg $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv -v $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/

@@ -1,0 +1,10 @@
+Package: opkg
+Version: 0.1.8-1
+Description: Lightweight Package Management System
+Section: base
+Priority: required
+Maintainer: @MAINT@
+Architecture: arm
+Homepage: http://code.google.com/p/opkg/
+Source:
+Depends: libc.so.6
