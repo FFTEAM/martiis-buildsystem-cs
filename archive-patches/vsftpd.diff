@@ -11,4 +11,12 @@
  
  if find_func hosts_access tcpwrap.o; then
    echo "-lwrap";
+@@ -34,7 +34,7 @@ locate_library /lib/libdl.so && echo "-ldl";
+ locate_library /lib/libsocket.so && echo "-lsocket";
  
+ # Look for libnsl. Solaris needs this.
+-locate_library /lib/libnsl.so && echo "-lnsl";
++# locate_library /lib/libnsl.so && echo "-lnsl";
+ 
+ # Look for libresolv. Solaris needs this.
+ locate_library /lib/libresolv.so && echo "-lresolv";

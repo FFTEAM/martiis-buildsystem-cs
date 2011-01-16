@@ -2,18 +2,20 @@
 
 $(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz
 	$(UNTAR)/vsftpd-2.2.2.tar.gz
+	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/vsftpd-2.2.2 && \
 		$(PATCH)/vsftpd.diff && \
 		TARGETPREFIX=$(TARGETPREFIX) make CC=$(TARGET)-gcc CFLAGS="-pipe -O2 -g0 -I$(TARGETPREFIX)/include" LDFLAGS="$(LD_FLAGS)"
-	install -d $(TARGETPREFIX)/opt/vsftpd/sbin
-	install -d $(TARGETPREFIX)/opt/vsftpd/etc/init.d
-	install -d $(TARGETPREFIX)/share/empty
-	install -m755 $(BUILD_TMP)/vsftpd-2.2.2/vsftpd $(TARGETPREFIX)/opt/vsftpd/sbin/vsftpd
-	install -m 644 $(PATCHES)/vsftpd.conf $(TARGETPREFIX)/opt/vsftpd/etc/vsftpd.conf
-	install -m 755 $(PATCHES)/vsftpd.init $(TARGETPREFIX)/opt/vsftpd/etc/init.d/vsftpd
+	install -d $(PKGPREFIX)/share/empty
+	install -D -m 755 $(BUILD_TMP)/vsftpd-2.2.2/vsftpd $(PKGPREFIX)/opt/pkg/sbin/vsftpd
+	install -D -m 644 $(PATCHES)/vsftpd.conf $(PKGPREFIX)/opt/pkg/etc/vsftpd.conf
+	install -D -m 755 $(PATCHES)/vsftpd.init $(PKGPREFIX)/opt/pkg/etc/init.d/vsftpd
 	# it is important that vsftpd is started *before* inetd to override busybox ftpd...
-	ln -sf vsftpd $(TARGETPREFIX)/opt/vsftpd/etc/init.d/S80vsftpd
-	$(REMOVE)/vsftpd-2.2.2
+	ln -sf vsftpd $(PKGPREFIX)/opt/pkg/etc/init.d/S80vsftpd
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/
+	opkg.sh $(CONTROL_DIR)/vsftpd $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	$(REMOVE)/vsftpd-2.2.2 $(PKGPREFIX)
 	touch $@
 
 $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)

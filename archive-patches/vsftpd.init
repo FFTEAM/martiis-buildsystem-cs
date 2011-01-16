@@ -1,6 +1,6 @@
 #!/bin/sh
-CONF=/opt/vsftpd/etc/vsftpd.conf
-PATH=/opt/vsftpd/sbin:$PATH
+CONF=/opt/pkg/etc/vsftpd.conf
+PATH=/opt/pkg/sbin:$PATH
 export PATH
 
 case $1 in
