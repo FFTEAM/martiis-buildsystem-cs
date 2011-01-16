@@ -146,7 +146,7 @@ $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/nbench-byte-2.2.3
 	touch $@
 
-$(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
+$(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/libupnp-1.6.10.tar.bz2
 	cd $(BUILD_TMP)/libupnp-1.6.10 && \
 		$(CONFIGURE) --prefix=/opt/pkg && \
@@ -171,7 +171,7 @@ $(ARCHIVE)/libdlna-hg.tar.bz2: | find-hg
 		tar cvpjf $@ --exclude='*/.hg' libdlna-hg
 	$(REMOVE)/libdlna-hg
 
-$(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETPREFIX) $(D)/opkg
+$(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETPREFIX)
 	$(UNTAR)/libdlna-hg.tar.bz2
 	cd $(BUILD_TMP)/libdlna-hg && \
 		$(PATCH)/libdlna-fix-build.diff && \
@@ -198,7 +198,7 @@ $(ARCHIVE)/ushare-hg.tar.bz2: | find-hg
 		tar cvpjf $@ --exclude='*/.hg' ushare-hg
 	$(REMOVE)/ushare-hg
 
-$(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX) $(D)/opkg
+$(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 	$(UNTAR)/ushare-hg.tar.bz2
 	cd $(BUILD_TMP)/ushare-hg && \
 		$(PATCH)/ushare-fix-build.diff && \
@@ -220,7 +220,7 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX) $(D)/op
 	$(REMOVE)/ushare-hg $(PKGPREFIX)
 	touch $@
 
-$(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
+$(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2
 	$(UNTAR)/dropbear-0.52.tar.bz2
 	cd $(BUILD_TMP)/dropbear-0.52 && \
 		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
@@ -275,7 +275,7 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	touch $@
 
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
-$(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
+$(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/glib-2.8.6.tar.bz2
 	cd $(BUILD_TMP)/glib-2.8.6 && \
 		$(PATCH)/glib-2.13.4-gcc-4.2-fix.diff && \
@@ -307,7 +307,7 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX) $(D)/opkg
 	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
 	touch $@
 
-$(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX) $(D)/opkg
+$(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses
 	$(UNTAR)/mc-4.6.2.tar.gz
 	cd $(BUILD_TMP)/mc-4.6.2 && \
 		$(PATCH)/mc-4.6.2.diff && \

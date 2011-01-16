@@ -24,7 +24,7 @@ $(HOSTPREFIX):
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
-$(HOSTPREFIX)/bin/opk%.sh: $(HOSTPREFIX)/bin
+$(HOSTPREFIX)/bin/opkg%.sh: $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
 $(BUILD_TMP):
