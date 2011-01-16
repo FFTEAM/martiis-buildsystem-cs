@@ -1,6 +1,6 @@
 #Makefile to build system tools
 
-$(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz
+$(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/vsftpd-2.2.2.tar.gz
 	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/vsftpd-2.2.2 && \

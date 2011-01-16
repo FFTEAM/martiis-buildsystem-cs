@@ -198,7 +198,7 @@ $(ARCHIVE)/ushare-hg.tar.bz2: | find-hg
 		tar cvpjf $@ --exclude='*/.hg' ushare-hg
 	$(REMOVE)/ushare-hg
 
-$(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
+$(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 	$(UNTAR)/ushare-hg.tar.bz2
 	cd $(BUILD_TMP)/ushare-hg && \
 		$(PATCH)/ushare-fix-build.diff && \
@@ -220,7 +220,7 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna
 	$(REMOVE)/ushare-hg $(PKGPREFIX)
 	touch $@
 
-$(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2
+$(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/dropbear-0.52.tar.bz2
 	cd $(BUILD_TMP)/dropbear-0.52 && \
 		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
@@ -307,7 +307,7 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
 	touch $@
 
-$(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses
+$(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX)
 	$(UNTAR)/mc-4.6.2.tar.gz
 	cd $(BUILD_TMP)/mc-4.6.2 && \
 		$(PATCH)/mc-4.6.2.diff && \

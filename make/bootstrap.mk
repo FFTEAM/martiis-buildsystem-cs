@@ -24,7 +24,7 @@ $(HOSTPREFIX):
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
-$(HOSTPREFIX)/bin/opkg%.sh: $(HOSTPREFIX)/bin
+$(HOSTPREFIX)/bin/opk%.sh: $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
 $(BUILD_TMP):
@@ -75,7 +75,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng
 		./ct-ng oldconfig && ./ct-ng build.2
 
 # helper target to create ccache links (make sure to have ccache installed in /usr/bin ;)
-ccache:
+ccache: $(HOSTPREFIX)/bin
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/cc
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/gcc
 	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/g++
