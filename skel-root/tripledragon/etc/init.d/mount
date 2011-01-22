@@ -1,0 +1,43 @@
+#!/bin/sh
+
+case $1 in
+start)
+	# for convenience, create links to classic hda* and hdb* devices
+	for i in /dev/discs/disc*; do
+		case $i in
+			*/disc0) link=hda ;;
+			*/disc1) link=hdb ;;
+			*) break ;;
+		esac
+		ln -sf $i/disc /dev/$link
+		for j in $i/part*; do
+			ln -sf $j /dev/${link}${j#*/part}
+		done
+	done
+	# enable swap before potential fsck...
+	if grep -q swap /etc/fstab; then # todo: better grep ;-)
+		echo "Enable Swap space..."
+		/sbin/swapon -a
+	fi
+
+	if [ -e /dev/root ]; then # does not exist on NFS boot...
+		if touch /.fsck 2>/dev/null ; then
+			rm /.fsck
+			echo "root FS is mounted rw, skipping filesystem check"
+		else
+			echo "running 'fsck /dev/root'"
+			fsck -p /dev/root
+			echo "remounting root FS rw..."
+		fi
+		mount / -o rw,remount,noatime,nodiratime
+	fi
+
+	/bin/mount -a
+	exit 0
+	;;
+stop)
+	umount -a -r		# unmount, if busy remount readonly
+	/sbin/swapoff -a	# so that swapping doesn't wake up the drive
+	/sbin/hdparm -y /dev/hd*[^0-9]	# whole devices only, no partitions
+	;;
+esac
