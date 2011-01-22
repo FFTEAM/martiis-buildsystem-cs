@@ -31,12 +31,18 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/util-linux-ng-2.18
 	touch $(D)/libuuid $(D)/libblkid
 
+ifeq ($(BOXARCH), arm)
+MAD_FPM = arm
+endif
+ifeq ($(BOXARCH), powerpc)
+MAD_FPM = ppc
+endif
 $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libmad-0.15.1b.tar.gz
 	pushd $(BUILD_TMP)/libmad-0.15.1b && \
 		patch -p1 < $(PATCHES)/libmad.diff && \
 		patch -p1 < $(PATCHES)/libmad-0.15.1b-arm-buildfix.diff && \
-		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes --enable-speed --enable-fpm=arm --enable-sso && \
+		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes --enable-speed --enable-fpm=$(MAD_FPM) --enable-sso && \
 		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" mad.pc > $(PKG_CONFIG_PATH)/libmad.pc
