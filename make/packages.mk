@@ -40,6 +40,7 @@ aaa_base-pkg:
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
 	cp -a skel-root/common/* $(PKGPREFIX)/
+	cp -a skel-root/$(PLATFORM)/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
 	cd $(PKGPREFIX) && rm etc/ntpd.conf
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base

@@ -168,6 +168,7 @@ $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2010.10.2.tgz | $(TARGETPREFIX)
 
 $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/common/* $(TARGETPREFIX)/
+	cp --remove-destination -a skel-root/$(PLATFORM)/* $(TARGETPREFIX)/
 
 $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
