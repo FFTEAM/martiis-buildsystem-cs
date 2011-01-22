@@ -160,7 +160,7 @@ $(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL_OPT)/libupnp.la
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*a lib/*.so
-	opkg.sh $(CONTROL_DIR)/libupnp $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/libupnp
 	mv $(PKGPREFIX)/libupnp-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/libupnp-1.6.10 $(PKGPREFIX)
 	touch $@
@@ -187,7 +187,7 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 	$(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/libdlna.pc
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*.so
-	opkg.sh $(CONTROL_DIR)/libdlna $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/libdlna
 	mv $(PKGPREFIX)/libdlna-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/libdlna-hg $(PKGPREFIX)
 	touch $@
@@ -215,7 +215,7 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 	ln -s ushare $(PKGPREFIX)/opt/pkg/etc/init.d/K01ushare # stop early...
 	rm -rf $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	opkg.sh $(CONTROL_DIR)/ushare $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/ushare
 	mv $(PKGPREFIX)/ushare-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/ushare-hg $(PKGPREFIX)
 	touch $@
@@ -234,7 +234,7 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/S60dropbear
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	opkg.sh $(CONTROL_DIR)/dropbear $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/dropbear
 	mv $(PKGPREFIX)/dropbear-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/dropbear-0.52 $(PKGPREFIX)
 	touch $@
@@ -269,7 +269,7 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
 	rm -rf $(PKGPREFIX)/lib $(PKGPREFIX)/include
-	opkg.sh $(CONTROL_DIR)/opkg $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/opkg
 	mv -v $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
@@ -302,7 +302,7 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/*.so lib/*.la share
-	opkg.sh $(CONTROL_DIR)/libglib $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/libglib
 	mv $(PKGPREFIX)/libglib-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
 	touch $@
@@ -329,7 +329,7 @@ $(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFI
 	rm -rf $(PKGPREFIX)/.remove
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/share/mc/mc.h*.* # mc.hint.*, mc.hlp.*
-	opkg.sh $(CONTROL_DIR)/mc $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/mc
 	mv $(PKGPREFIX)/mc-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/mc-4.6.2 $(PKGPREFIX)
 	touch $@

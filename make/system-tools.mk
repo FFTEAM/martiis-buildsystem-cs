@@ -13,7 +13,7 @@ $(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz | $(TARGETPREFIX)
 	# it is important that vsftpd is started *before* inetd to override busybox ftpd...
 	ln -sf vsftpd $(PKGPREFIX)/opt/pkg/etc/init.d/S80vsftpd
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/
-	opkg.sh $(CONTROL_DIR)/vsftpd $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/vsftpd
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	$(REMOVE)/vsftpd-2.2.2 $(PKGPREFIX)
 	touch $@
@@ -34,7 +34,7 @@ $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
 		test -e rsyncd.conf    || cp $(PATCHES)/rsyncd.conf . ; \
 		test -e rsyncd.secrets || cp $(PATCHES)/rsyncd.secrets . ; }; true
 	cp -a $(PATCHES)/rsyncd.{conf,secrets} $(PKGPREFIX)/etc
-	opkg.sh $(CONTROL_DIR)/rsync $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/rsync
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
@@ -56,7 +56,7 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib $(PKGPREFIX)/bin
 	cp -a $(TARGETPREFIX)/bin/{ps,top} $(PKGPREFIX)/bin
 	cp -a $(TARGETPREFIX)/lib/libproc-3.2.8.so $(PKGPREFIX)/lib
-	opkg.sh $(CONTROL_DIR)/procps $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/procps
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
@@ -79,7 +79,7 @@ $(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
 	sed -i 's/,$$//' $(BUILD_TMP)/bb-control/control
 	sed -i 's/\(^Provides:\)\(.*$$\)/\1\2\nConflicts:\2/' $(BUILD_TMP)/bb-control/control
 	echo >> $(BUILD_TMP)/bb-control/control
-	opkg.sh $(BUILD_TMP)/bb-control $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(BUILD_TMP)/bb-control
 	mv $(PKGPREFIX)/busybox-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/busybox-1.15.2 $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	touch $@
@@ -184,7 +184,7 @@ $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4
 	cp -a $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/
 	cp -a --remove-destination $(PKGPREFIX)/* $(TARGETPREFIX)/
-	opkg.sh $(CONTROL_DIR)/autofs $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/autofs
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@

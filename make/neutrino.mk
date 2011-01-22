@@ -43,7 +43,7 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
 	make $(PKGPREFIX)/.version
-	opkg.sh $(CONTROL_DIR)/neutrino-hd $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/neutrino-hd
 	mv $(PKGPREFIX)/neutrino-hd*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 

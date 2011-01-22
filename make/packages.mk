@@ -9,7 +9,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		   lib/libmudflap* lib/libnsl*
 	find $(PKGPREFIX) -type f -print0 | xargs -0 $(TARGET)-strip
 	touch $(PKGPREFIX)/etc/ld.so.conf
-	opkg.sh $(CONTROL_DIR)/glibc $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/glibc
 	mv $(PKGPREFIX)/glibc-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
@@ -22,7 +22,7 @@ cs-drivers-pkg:
 	mkdir    $(PKGPREFIX)/lib/firmware
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
-	opkg.sh $(CONTROL_DIR)/cs-drivers $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/cs-drivers
 	mv $(PKGPREFIX)/cs-drivers-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
@@ -32,7 +32,7 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(PKGPREFIX)/lib
-	opkg.sh $(CONTROL_DIR)/cs-libs $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/cs-libs
 	mv $(PKGPREFIX)/cs-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
@@ -42,7 +42,7 @@ aaa_base-pkg:
 	cp -a skel-root/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
 	cd $(PKGPREFIX) && rm etc/ntpd.conf
-	opkg.sh $(CONTROL_DIR)/aaa_base $(TARGET) "$(MAINTAINER)" $(PKGPREFIX) $(BUILD_TMP)
+	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
