@@ -1,10 +1,15 @@
 # makefile for basic prerequisites
 
+TOOLCHECK  = find-git find-svn find-gzip find-bzip2 find-patch find-gawk
+TOOLCHECK += find-makeinfo find-automake find-gcc find-libtool
+TOOLCHECK += find-yacc find-flex find-tic find-pkg-config
+
 PREQS = neutrino-hd $(D) download
 ifeq ($(PLATFORM), tripledragon)
 PREQS += tdsvn preqs-directfb-td
 else
 PREQS += cs-svn
+TOOLCHECK += find-cmake
 endif
 
 DFB_TD_DEPS  = $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb
@@ -87,8 +92,7 @@ find-%:
 		type -p $$TOOL >/dev/null || \
 		{ echo "required tool $$TOOL missing."; false; }
 
-toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-makeinfo find-automake find-tic find-svn find-cmake find-gzip find-bzip2 find-gawk find-pkg-config
-	@echo
+toolcheck: $(TOOLCHECK)
 	@echo "All required tools seem to be installed."
 	@echo
 
