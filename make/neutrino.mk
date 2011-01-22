@@ -1,8 +1,21 @@
 #Makefile to build NEUTRINO
 
-N_CFLAGS  = -Wall -W -Wshadow -g -O2 -D__KERNEL_STRICT_NAMES -DUSE_NEVIS_GXA
+NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif libvorbis ffmpeg
+
+N_CFLAGS  = -Wall -W -Wshadow -g -O2
 N_CFLAGS += -I$(TARGETPREFIX)/include
 N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
+ifneq ($(PLATFORM), tripledragon)
+# coolstream
+N_CFLAGS += -DUSE_NEVIS_GXA
+NEUTRINO_DEPS += openthreads
+else
+# tripledragon
+N_CFLAGS += -I$(TARGETPREFIX)/include/hardware
+# TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
+N_CFLAGS += -D_FILE_OFFSET_BITS=64
+endif
+
 # the original build script links against openssl, but it is not needed at all.
 # N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -lssl -lcrypto -ldl
 N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -ldl
@@ -13,7 +26,7 @@ N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(N_HD_SOURCE)
 
-$(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype $(D)/libboost $(D)/libjpeg $(D)/libungif $(D)/libvorbis $(D)/ffmpeg $(D)/openthreads $(MAKE_DIR)/neutrino.mk
+$(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 	test -d $(N_OBJDIR) || mkdir -p $(N_OBJDIR)
 	$(N_HD_SOURCE)/autogen.sh
 	pushd $(N_OBJDIR) && \
@@ -21,7 +34,7 @@ $(N_OBJDIR)/config.status: $(D)/libcurl $(D)/libid3tag $(D)/libmad $(D)/freetype
 		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
-				--enable-maintainer-mode --with-target=cdk
+				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM)
 
 $(PKGPREFIX)/.version \
 $(TARGETPREFIX)/.version:
@@ -31,14 +44,12 @@ $(TARGETPREFIX)/.version:
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
 $(D)/neutrino: $(N_OBJDIR)/config.status
-	$(MAKE) check-repo
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
 	# make $(TARGETPREFIX)/.version
 	touch $@
 
 neutrino-pkg: $(N_OBJDIR)/config.status
-	$(MAKE) check-repo
 	rm -rf $(PKGPREFIX)
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
