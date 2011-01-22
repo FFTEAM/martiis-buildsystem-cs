@@ -18,14 +18,21 @@ printenv:
 	@echo "N_HD_SOURCE:         $(N_HD_SOURCE)"
 	@echo "BOXARCH:             $(BOXARCH)"
 	@echo '============================================================================== '
+	@echo ""
+	@echo "'make help' lists useful targets."
+	@echo ""
+	@make --no-print-directory toolcheck
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
 	if type -p $(TARGET)-gcc >/dev/null 2>&1; then \
 		echo "$(TARGET)-gcc found in PATH or in \$$CROSS_DIR/bin."; \
 	else \
 		echo "$(TARGET)-gcc not found in PATH or \$$CROSS_DIR/bin"; \
-		echo "please check your setup. Maybe you want to 'make crosstool'."; \
+		echo "=> please check your setup. Maybe you need to 'make crosstool'."; \
 	fi
-	@echo ""
+	@if ! LANG=C make -n preqs|grep -q "Nothing to be done"; then \
+		echo;echo "Your next target to do is probably 'make preqs'"; fi
+
+help:
 	@echo "a few helpful make targets:"
 	@echo "* make preqs             - downloads necessary stuff"
 	@echo "* make crosstool         - build cross toolchain"
@@ -46,7 +53,6 @@ printenv:
 	@echo "                           after that you need to restart with 'bootstrap'"
 	@echo "make all-clean           - additionally remove the crosscompiler"
 	@echo "                           you usually don't want to do that."
-	@make --no-print-directory toolcheck
 
 include make/prerequisites.mk
 include make/bootstrap.mk
