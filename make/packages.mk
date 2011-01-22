@@ -39,7 +39,7 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 aaa_base-pkg:
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
-	cp -a skel-root/* $(PKGPREFIX)/
+	cp -a skel-root/common/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
 	cd $(PKGPREFIX) && rm etc/ntpd.conf
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
