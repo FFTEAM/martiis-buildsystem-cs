@@ -1,5 +1,12 @@
+# The type of box to build for.
+# either "tripledragon" or "coolstream"
+# default (if empty) is "coolstream"
+#PLATFORM=tripledragon
+
 # if you want to use your precompiled toolchain, define those variables:
 # this will skip the building of our own compiler/glibc combination!
+#
+# do not set this if you want to build a toolchain with these makefiles.
 #CROSS_DIR=/opt/cross
 #TARGET=arm-linux-gnueabi
 
@@ -7,14 +14,10 @@
 # build type, specify it here. THIS IS A WORKAROUND. Use with caution.
 # BUILD=x86_64-unknown-linux-gnu
 
-# if you want to build your own toolchain, with "make crosstool",
-# comment out the above settings of CROSS_DIR *and* TARGET and uncomment this.
-# DO NOT SET CROSS_DIR IN THIS CASE
-TARGET=arm-cx2450x-linux-gnueabi
-
 #
 #
-# set the flavour of neutrono you want to build
-# empty or "neutrino-hd": use git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git
+# set the flavour of neutrino you want to build
+# "neutrino-hd":              use git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git
 # "neutrino-hd-tripledragon": use git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git
+# empty: choose one of the above depending on PLATFORM
 #FLAVOUR=neutrino-hd-tripledragon

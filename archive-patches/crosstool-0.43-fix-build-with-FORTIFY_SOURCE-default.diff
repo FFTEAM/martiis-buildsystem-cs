@@ -1,0 +1,31 @@
+diff --git a/crosstool.sh b/crosstool.sh
+index d10ff12..56d9591 100755
+--- a/crosstool.sh
++++ b/crosstool.sh
+@@ -368,7 +368,7 @@ if test '!' -f Makefile; then
+     ${BINUTILS_DIR}/configure $CANADIAN_BUILD --target=$TARGET --host=$GCC_HOST --prefix=$PREFIX --disable-nls ${BINUTILS_EXTRA_CONFIG} $BINUTILS_SYSROOT_ARG
+ fi
+ 
+-make $PARALLELMFLAGS all 
++make $PARALLELMFLAGS CFLAGS=-U_FORTIFY_SOURCE all 
+ make install 
+ 
+ if test x"$CORE_PREFIX" != x"$PREFIX"; then
+@@ -494,7 +494,7 @@ if test '!' -f Makefile; then
+ fi
+ 
+ test "$CANADIAN_BUILD" = "" || make $PARALLELMFLAGS all-build-libiberty || true
+-make $PARALLELMFLAGS all-gcc 
++make $PARALLELMFLAGS CFLAGS=-U_FORTIFY_SOURCE all-gcc 
+ make install-gcc
+ 
+ cd ..
+@@ -643,7 +643,7 @@ case `basename ${GCC_DIR}` in
+     ;;
+ esac
+ 
+-make $PARALLELMFLAGS all 
++make $PARALLELMFLAGS CFLAGS=-U_FORTIFY_SOURCE all
+ make install 
+ 
+ # FIXME: shouldn't people who want this just --disable-multilib in final gcc and be done with it?

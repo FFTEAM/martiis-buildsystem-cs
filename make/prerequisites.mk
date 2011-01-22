@@ -1,7 +1,18 @@
 # makefile for basic prerequisites
-# version 2
 
-preqs: neutrino-hd cs-svn $(D) download
+PREQS = neutrino-hd $(D) download
+ifeq ($(PLATFORM), tripledragon)
+PREQS += tdsvn preqs-directfb-td
+else
+PREQS += cs-svn
+endif
+
+DFB_TD_DEPS  = $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb
+DFB_TD_DEPS += $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig
+DFB_TD_DEPS += $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib
+
+preqs: $(PREQS)
+preqs-directfb-td: $(DFB_TD_DEPS)
 
 $(D):
 	mkdir $(D)
@@ -83,3 +94,36 @@ toolcheck: find-git find-libtool find-patch find-gcc find-yacc find-flex find-ma
 
 neutrino-hd: $(N_HD_SOURCE)
 cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
+
+# TRIPLEDRAGON stuff...
+#
+# instead of checking out everything, just check out the stuff that's really needed.
+$(TD_SVN):
+	mkdir -p $(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/
+	mkdir -p $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/
+	mkdir -p $(TD_SVN)/ARMAS/linux-enviroment/
+	cd $(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/ && \
+		$(SVNCO)/ARMAS/filesystem-skeleton/lib/modules/2.6.12
+	cd $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/ && \
+		$(SVNCO)/ARMAS/cross-enivroment-build/stb/include/hardware
+	cd $(TD_SVN)/ARMAS/linux-enviroment/ && \
+		$(SVNCO)/ARMAS/linux-enviroment/drivers && \
+		$(SVNCO)/ARMAS/linux-enviroment/kernel
+
+# BASE_DIR/tdsvn already creates .../stb/include
+$(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb: $(TD_SVN)
+	cd $(shell dirname $@) && \
+		$(SVNCO)/ARMAS/cross-enivroment-build/stb/include/directfb
+
+$(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig: | $(TD_SVN)
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && \
+		$(SVNCO)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig
+
+$(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib: | $(TD_SVN)
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && \
+		$(SVNCO)/ARMAS/filesystem-skeleton/stb/lib
+
+tdsvn: $(TD_SVN)
+

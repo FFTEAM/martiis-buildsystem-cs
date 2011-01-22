@@ -8,7 +8,7 @@ include make/environment.mk
 #
 printenv:
 	@echo '============================================================================== '
-	@echo "Coolstream Environment Varibles:"
+	@echo "Build Environment Varibles:"
 	@echo "CROSS_DIR:           $(CROSS_DIR)"
 	@echo "CROSS_BASE:          $(CROSS_BASE)"
 	@echo "TARGET:              $(TARGET)"
@@ -16,6 +16,7 @@ printenv:
 	@echo "BUILD:               $(BUILD)"
 	@echo "PATH:                $(PATH)"
 	@echo "N_HD_SOURCE:         $(N_HD_SOURCE)"
+	@echo "BOXARCH:             $(BOXARCH)"
 	@echo '============================================================================== '
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
 	if type -p $(TARGET)-gcc >/dev/null 2>&1; then \

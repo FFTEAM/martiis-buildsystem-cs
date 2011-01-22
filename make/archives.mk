@@ -3,6 +3,9 @@
 $(ARCHIVE)/autofs-4.1.4.tar.bz2:
 	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4.tar.bz2
 
+$(ARCHIVE)/crosstool-0.43.tar.gz:
+	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
+
 $(ARCHIVE)/DirectFB-1.4.3.tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-1.4.3.tar.gz
 

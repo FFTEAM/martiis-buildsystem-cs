@@ -59,6 +59,7 @@ includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstr
 
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 
+ifneq ($(PLATFORM), tripledragon)
 $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
 	make $(BUILD_TMP)
 	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
@@ -73,6 +74,31 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng
 		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config && \
 		./configure --local &&  make && chmod 0755 ct-ng && \
 		./ct-ng oldconfig && ./ct-ng build.2
+else
+$(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
+	@echo ' ============================================================================== '
+	@echo "                       Preparing to Build crosstool"
+	@echo ' ============================================================================== '
+	@echo ' '
+	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
+		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
+	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
+	cp $(PATCHES)/glibc-2.3.6-allow-binutils-2.20+.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
+	cp $(PATCHES)/glibc-2.3.6-new_make.patch             $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
+	pushd $(BUILD_TMP)/crosstool-0.43 && \
+		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff && \
+		export TARBALLS_DIR=$(ARCHIVE) && \
+		export RESULT_TOP=$(CROSS_BASE) && \
+		export GCC_LANGUAGES="c,c++" && \
+		export PARALLELMFLAGS="-s -j 3" && \
+		export QUIET_EXTRACTIONS=y && \
+		eval `cat powerpc-405.dat $(CROSS_BUILD_VER).dat` LINUX_DIR=linux-2.6.12 bash all.sh --notest && \
+		echo done
+	# crosstool should do that, but it doesnt
+	if [ ! -e $(CROSS_DIR)/$(TARGET)/include/mtd ]; then \
+		cp -a $(BUILD_TMP)/crosstool-0.43/build/$(TARGET)/$(CROSS_BUILD_DIR)/linux-2.6.12/include/mtd $(CROSS_DIR)/$(TARGET)/include/;\
+	fi
+endif
 
 # helper target to create ccache links (make sure to have ccache installed in /usr/bin ;)
 ccache: $(HOSTPREFIX)/bin
