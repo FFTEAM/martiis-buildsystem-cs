@@ -9,14 +9,15 @@ include make/environment.mk
 printenv:
 	@echo '============================================================================== '
 	@echo "Build Environment Varibles:"
-	@echo "CROSS_DIR:           $(CROSS_DIR)"
-	@echo "CROSS_BASE:          $(CROSS_BASE)"
-	@echo "TARGET:              $(TARGET)"
-	@echo "BASE_DIR:            $(BASE_DIR)"
-	@echo "BUILD:               $(BUILD)"
-	@echo "PATH:                $(PATH)"
-	@echo "N_HD_SOURCE:         $(N_HD_SOURCE)"
-	@echo "BOXARCH:             $(BOXARCH)"
+	@echo "CROSS_DIR:   $(CROSS_DIR)"
+	@echo "CROSS_BASE:  $(CROSS_BASE)"
+	@echo "TARGET:      $(TARGET)"
+	@echo "BASE_DIR:    $(BASE_DIR)"
+	@echo "BUILD:       $(BUILD)"
+	@echo "PATH:        `type -p fmt>/dev/null&&echo $(PATH)|sed 's/:/ /g' |fmt -65|sed 's/ /:/g; 2,$$s/^/             /;'||echo $(PATH)`"
+	@echo "N_HD_SOURCE: $(N_HD_SOURCE)"
+	@echo "BOXARCH:     $(BOXARCH)"
+	@echo "PLATFORM:    $(PLATFORM)"
 	@echo '============================================================================== '
 	@echo ""
 	@echo "'make help' lists useful targets."
@@ -31,6 +32,9 @@ printenv:
 	fi
 	@if ! LANG=C make -n preqs|grep -q "Nothing to be done"; then \
 		echo;echo "Your next target to do is probably 'make preqs'"; fi
+	@if ! test -e $(BASE_DIR)/config; then \
+		echo;echo "If you want to change the configuration, copy 'config.example' to 'config'"; \
+		echo "and edit it to fit your needs. See the comments in there."; echo; fi
 
 help:
 	@echo "a few helpful make targets:"
