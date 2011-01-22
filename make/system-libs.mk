@@ -144,17 +144,17 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libjpeg: $(ARCHIVE)/jpegsrc.v6b.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/jpegsrc.v6b.tar.gz
-	pushd $(BUILD_TMP) && \
-		pushd jpeg-6b && \
+$(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-1.0.1.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libjpeg-turbo-1.0.1.tar.gz
+	cd $(BUILD_TMP)/libjpeg-turbo-1.0.1 && \
 		export CC=$(TARGET)-gcc && \
-		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared && \
-		./ltconfig --no-verify ltmain.sh $(BUILD) && \
+		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared \
+			--mandir=/.remove --bindir=/.remove && \
 		$(MAKE)  && \
-		make install-lib libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include
+		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libjpeg.la
-	$(REMOVE)/jpeg-6b $(PKGPREFIX)
+	rm -f $(TARGETPREFIX)/lib/libturbojpeg* $(TARGETPREFIX)/include/turbojpeg.h
+	$(REMOVE)/libjpeg-turbo-1.0.1 $(TARGETPREFIX)/.remove $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libjpeg.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libjpeg

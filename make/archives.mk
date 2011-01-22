@@ -18,6 +18,9 @@ $(ARCHIVE)/libiconv-1.13.1.tar.gz:
 $(ARCHIVE)/libid3tag-0.15.1b.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/0.15.1b/libid3tag-0.15.1b.tar.gz?use_mirror=switch
 
+$(ARCHIVE)/libjpeg-turbo-1.0.1.tar.gz:
+	$(WGET) http://sourceforge.net/projects/libjpeg-turbo/files/1.0.1/libjpeg-turbo-1.0.1.tar.gz
+
 $(ARCHIVE)/libungif-4.1.4.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-4.1.4/libungif-4.1.4.tar.bz2?use_mirror=switch
 
