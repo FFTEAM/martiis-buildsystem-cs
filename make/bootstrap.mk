@@ -1,8 +1,19 @@
 # makefile to build crosstool
 
+BOOTSTRAP  = targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs
+BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
+BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
 
+ifeq ($(PLATFORM), tripledragon)
+BOOTSTRAP += directfb-includes-and-libs
+PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
+else
+BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
+PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so
+PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
+endif
 
-bootstrap: targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs cs-modules $(TARGETPREFIX)/lib/libc.so.6 $(TARGETPREFIX)/sbin/ldconfig $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
+bootstrap: $(BOOTSTRAP)
 
 targetprefix:
 	mkdir -p $(TARGETPREFIX)
@@ -54,12 +65,12 @@ $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
 	cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib
 
-cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
-includes-and-libs:  $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
-
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
+includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 
 ifneq ($(PLATFORM), tripledragon)
+cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
+
 $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs
 	make $(BUILD_TMP)
 	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
@@ -74,7 +85,10 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng
 		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config && \
 		./configure --local &&  make && chmod 0755 ct-ng && \
 		./ct-ng oldconfig && ./ct-ng build.2
+
 else
+# TRIPLEDRAGON
+
 $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	@echo ' ============================================================================== '
 	@echo "                       Preparing to Build crosstool"
@@ -98,6 +112,39 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	if [ ! -e $(CROSS_DIR)/$(TARGET)/include/mtd ]; then \
 		cp -a $(BUILD_TMP)/crosstool-0.43/build/$(TARGET)/$(CROSS_BUILD_DIR)/linux-2.6.12/include/mtd $(CROSS_DIR)/$(TARGET)/include/;\
 	fi
+
+$(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX)
+	@echo ' ============================================================================== '
+	@echo "    Preparing to copy crosstool and supporting files to required directories"
+	@echo ' ============================================================================== '
+	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/ hardware | \
+		tar -vxC $(TARGETPREFIX)/include/
+	cp -a $(PATCHES)/xp_osd_user.h			$(TARGETPREFIX)/include/hardware/xp/
+
+$(TARGETPREFIX)/stb/lib/directfb-0.9.24: $(TARGETPREFIX)
+	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/filesystem-skeleton stb/lib/directfb-0.9.24 | \
+		tar -vxC $(TARGETPREFIX)/
+	ln -sf /lib/libjpeg.so.6 $(shell dirname $@)/libjpeg.so.62
+
+$(TARGETPREFIX)/include/directfb: $(TARGETPREFIX)
+	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/cross-enivroment-build/stb include/directfb | \
+		tar -vxC $(TARGETPREFIX)/
+
+directfb-includes-and-libs: preqs-directfb-td $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREFIX)/include/directfb
+	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/directfb.pc $(PKG_CONFIG_PATH)/
+	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/direct.pc   $(PKG_CONFIG_PATH)/
+	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/fusion.pc   $(PKG_CONFIG_PATH)/
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/directfb.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/direct.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/fusion.pc
+	cp -av $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib/libdirect* $(TARGETPREFIX)/lib/
+	cp -av $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib/libfusion* $(TARGETPREFIX)/lib/
+	ln -sf libdirect-0.9.so.24   $(TARGETPREFIX)/lib/libdirect.so
+	ln -sf libfusion-0.9.so.24   $(TARGETPREFIX)/lib/libfusion.so
+	ln -sf libdirectfb-0.9.so.24 $(TARGETPREFIX)/lib/libdirectfb.so
+
+
+# PLATFORM = tripledagon
 endif
 
 # helper target to create ccache links (make sure to have ccache installed in /usr/bin ;)
