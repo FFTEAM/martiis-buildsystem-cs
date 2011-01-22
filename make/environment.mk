@@ -1,7 +1,7 @@
 # set up environment for other makefiles
 
 BASE_DIR    = $(shell pwd)
-include $(BASE_DIR)/config
+-include $(BASE_DIR)/config
 
 ifeq ($(PLATFORM), tripledragon)
 TARGET      ?= powerpc-405-linux-gnu
