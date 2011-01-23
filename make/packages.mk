@@ -102,6 +102,22 @@ install-pkgs: prepare-pkginstall
 minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginstall
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		aaa_base busybox opkg procps
+	rm -f $(BUILD_TMP)/min-root-$(PLATFORM).tar.gz
+	tar -czf $(BUILD_TMP)/min-root-$(PLATFORM).tar.gz \
+		--owner=0 --group=0 -C $(BUILD_TMP)/install .
+	@echo
+	@echo "====================================================================="
+	@echo "A minimal system has been installed in $(subst $(BASE_DIR)/,,$(BUILD_TMP))/install."
+	@echo "A tarball of this installation was created as"
+	@echo "$(subst $(BASE_DIR)/,,$(BUILD_TMP))/min-root-$(PLATFORM).tar.gz"
+	@echo "Unpack this onto an empty root fs, which will enable you to install"
+	@echo "further packages via 'opkg-cl' after configuring in /etc/opkg/."
+	@echo "List of installed packages:"
+	@opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install list-installed | \
+		while read a b c; do printf "\t%-15s %s\n" $$a $$c; done
+	@echo
+	@echo "Have a lot of fun..."
+	@echo
 
 # system-pkgs installs actually enough to get a TV picture
 system-pkgs: $(SYSTEM_PKGS)
