@@ -4,7 +4,7 @@ Description: ffmpeg Audio/Video Processing Libraries
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://ffmpeg.org/
 Source:
 Depends:

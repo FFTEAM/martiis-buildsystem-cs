@@ -4,7 +4,7 @@ Description: Automounter Kernel Module and Userspace Daemon
 Section: base
 Priority: optional
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.kernel.org/pub/linux/daemons/autofs
 Source:
 Depends:

@@ -4,7 +4,7 @@ Description: Lightweight Package Management System
 Section: base
 Priority: required
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://code.google.com/p/opkg/
 Source:
 Depends: libc.so.6

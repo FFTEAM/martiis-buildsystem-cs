@@ -4,7 +4,7 @@ Description: The New Curses Library
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.gnu.org/software/ncurses/
 Source:
 Depends:

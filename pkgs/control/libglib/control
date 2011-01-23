@@ -4,7 +4,7 @@ Description: General-Purpose Utility Library
 Section: extras/libraries
 Priority: optional
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.gtk.org/
 Source:
 Depends:

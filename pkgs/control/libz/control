@@ -4,7 +4,7 @@ Description: Zlib Compression Library
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.zlib.net/
 Source:
 Depends:

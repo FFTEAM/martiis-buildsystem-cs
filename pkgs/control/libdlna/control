@@ -4,7 +4,7 @@ Description: Reference implementation of DLNA standards
 Section: extras/libraries
 Priority: optional
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://libdlna.geexbox.org
 Source:
 Depends: libupnp(> 0.16.10-1)

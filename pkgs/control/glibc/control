@@ -4,7 +4,7 @@ Description: The GNU C libray
 Section: base/libraries
 Priority: required
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.gnu.org/software/libc/
 Source:
 Depends:

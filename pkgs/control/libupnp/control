@@ -4,7 +4,7 @@ Description: Portable SDK for UPnP Devices
 Section: extras/libraries
 Priority: optional
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://pupnp.sourceforge.net
 Source:
 Depends:

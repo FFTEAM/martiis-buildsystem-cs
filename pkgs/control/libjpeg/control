@@ -4,7 +4,7 @@ Description: A Free, High-Quality, and Portable Font Engine
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.ijg.org/
 Source:
 Depends:

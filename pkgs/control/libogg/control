@@ -4,7 +4,7 @@ Description: Library to Create, Decode and work with OGG Bitstreams
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.xiph.org/ogg/
 Source:
 Depends:

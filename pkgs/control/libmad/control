@@ -4,7 +4,7 @@ Description: High-quality MPEG Audio Decoder Library
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
-Architecture: arm
+Architecture: @ARCH@
 Homepage: http://www.underbit.com/products/mad/
 Source:
 Depends:
