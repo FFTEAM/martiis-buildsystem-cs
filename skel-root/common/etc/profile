@@ -1,5 +1,13 @@
-PATH=/var/bin:/bin:/sbin
+# /etc/profile
+#
+# DON'T EDIT THIS FILE. USE /etc/profile.local INSTEAD!
+# /etc/profile will get overwritten on package update!
+#
 
+# /var/bin has highest priority...
+PATH=/var/bin
+
+# /opt/*/bin and /opt/*/sbin come next
 _tmp=$(echo /opt/*/bin)
 if test "$_tmp" != "/opt/*/bin"; then
 	PATH=${PATH}:${_tmp// /:}
@@ -8,6 +16,9 @@ _tmp=$(echo /opt/*/sbin)
 if test "$_tmp" != "/opt/*/sbin"; then
 	PATH=${PATH}:${_tmp// /:}
 fi
+
+# default /bin and /sbin come last
+PATH=${PATH}:/bin:/sbin
 
 # if ldconfig did not work, set up LD_LIBRARY_PATH
 if test -e /etc/ld.so.conf -a ! -e /etc/ld.so.cache; then
@@ -27,6 +38,7 @@ alias l='ls -al'
 alias ll='ls -l'
 alias dir='ls -lA'
 alias ..='cd ..'
-alias ldd='/lib/ld-linux.so.3 --list'
+alias ldd='/lib/ld-*.so --list'
 
+# Add your own modifications to profile.local!
 test -e /etc/profile.local && . /etc/profile.local
