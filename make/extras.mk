@@ -238,6 +238,7 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
 $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/opkg-0.1.8.tar.gz
 	cd $(BUILD_TMP)/opkg-0.1.8 && \
+		$(PATCH)/opkg-0.1.8-dont-segfault.diff && \
 		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache && \
 		$(CONFIGURE) \
 		--prefix= \
@@ -261,6 +262,9 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 		$(MAKE) all && \
 		cp -a src/opkg-cl $(HOSTPREFIX)/bin
 	install -d -m 0755 $(PKGPREFIX)/var/lib/opkg
+	install -d -m 0755 $(PKGPREFIX)/etc/opkg
+	echo "# example config file, copy to opkg.conf and edit" > $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "src server http://server/dist/$(PLATFORM)" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	$(REMOVE)/opkg-0.1.8 $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
