@@ -40,7 +40,7 @@ $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
 $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-3.2.8.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/procps-3.2.8.tar.gz
 	pushd $(BUILD_TMP)/procps-3.2.8 && \
-		$(PATCH)/procps-3.2.7-avoid-ICE-with-gcc-4.3.2-arm.diff && \
+		$(PATCH)/procps-3.2.8-avoid-ICE-with-gcc-4.3.2-arm.diff && \
 		$(PATCH)/procps-3.2.8-fix-unknown-HZ-compatible.diff && \
 		make CC=$(TARGET)-gcc LDFLAGS="$(LD_FLAGS)" \
 			CPPFLAGS="-pipe -O2 -g -I$(TARGETPREFIX)/include -I$(TARGETPREFIX)/include/ncurses -D__GNU_LIBRARY__" proc/libproc-3.2.8.so && \

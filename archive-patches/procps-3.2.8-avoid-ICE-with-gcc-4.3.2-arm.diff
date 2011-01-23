@@ -1,0 +1,25 @@
+For some reason, arm-cx2450x-linux-gnueabi-gcc built with
+crosstool-NG 1.3.2 does not like this code and barfs with an
+internal compiler error :-(
+
+Index: b/proc/sysinfo.c
+===================================================================
+--- a/proc/sysinfo.c
++++ b/proc/sysinfo.c
+@@ -884,6 +884,10 @@ unsigned int getslabinfo (struct slab_cache **slab){
+ ///////////////////////////////////////////////////////////////////////////
+ 
+ unsigned get_pid_digits(void){
++  /* the routine below throws an ICE on arm-gcc 4.3.2,
++     and we know our kernel anyway */
++  return 5;
++#if 0
+   char pidbuf[24];
+   char *endp;
+   long rc;
+@@ -909,4 +913,5 @@ unsigned get_pid_digits(void){
+   }
+ out:
+   return ret;
++#endif
+ }
