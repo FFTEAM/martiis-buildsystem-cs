@@ -161,7 +161,6 @@ $(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*a lib/*.so
 	$(OPKG_SH) $(CONTROL_DIR)/libupnp
-	mv $(PKGPREFIX)/libupnp-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/libupnp-1.6.10 $(PKGPREFIX)
 	touch $@
 
@@ -188,7 +187,6 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*.so
 	$(OPKG_SH) $(CONTROL_DIR)/libdlna
-	mv $(PKGPREFIX)/libdlna-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/libdlna-hg $(PKGPREFIX)
 	touch $@
 
@@ -216,7 +214,6 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(OPKG_SH) $(CONTROL_DIR)/ushare
-	mv $(PKGPREFIX)/ushare-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/ushare-hg $(PKGPREFIX)
 	touch $@
 
@@ -235,7 +232,6 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(OPKG_SH) $(CONTROL_DIR)/dropbear
-	mv $(PKGPREFIX)/dropbear-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/dropbear-0.52 $(PKGPREFIX)
 	touch $@
 
@@ -270,7 +266,6 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
 	rm -rf $(PKGPREFIX)/lib $(PKGPREFIX)/include
 	$(OPKG_SH) $(CONTROL_DIR)/opkg
-	mv -v $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -303,7 +298,6 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/*.so lib/*.la share
 	$(OPKG_SH) $(CONTROL_DIR)/libglib
-	mv $(PKGPREFIX)/libglib-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
 	touch $@
 
@@ -330,6 +324,5 @@ $(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFI
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/share/mc/mc.h*.* # mc.hint.*, mc.hlp.*
 	$(OPKG_SH) $(CONTROL_DIR)/mc
-	mv $(PKGPREFIX)/mc-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/mc-4.6.2 $(PKGPREFIX)
 	touch $@

@@ -12,7 +12,6 @@ $(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libz.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libz
-	mv $(PKGPREFIX)/libz-*.opk $(PACKAGE_DIR)
 	$(REMOVE)/.remove $(PKGPREFIX)
 	touch $@
 
@@ -51,7 +50,6 @@ $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libmad.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libmad
-	mv $(PKGPREFIX)/libmad-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -68,7 +66,6 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libid3tag.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libid3tag
-	mv $(PKGPREFIX)/libid3tag-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -84,7 +81,6 @@ $(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libungif.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libungif
-	mv $(PKGPREFIX)/libungif-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -105,11 +101,9 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(REMOVE)/pkg-lib; mkdir $(BUILD_TMP)/pkg-lib
 	cd $(PKGPREFIX) && rm -r include lib/pkgconfig lib/*.so lib/*a .remove/ && mv lib $(BUILD_TMP)/pkg-lib
 	$(OPKG_SH) $(CONTROL_DIR)/curl
-	mv $(PKGPREFIX)/curl-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)/*
 	mv $(BUILD_TMP)/pkg-lib/* $(PKGPREFIX)/
 	$(OPKG_SH) $(CONTROL_DIR)/libcurl
-	mv $(PKGPREFIX)/libcurl-*.opk $(PACKAGE_DIR)
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
@@ -126,7 +120,6 @@ $(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libpng12
-	mv $(PKGPREFIX)/libpng-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -146,7 +139,6 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libfreetype.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libfreetype
-	mv $(PKGPREFIX)/libfreetype-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -164,7 +156,6 @@ $(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-1.0.1.tar.gz | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libjpeg.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libjpeg
-	mv $(PKGPREFIX)/libjpeg-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -234,7 +225,6 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
 	cp $(BUILD_TMP)/ffmpeg-0.6/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so
 	$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
-	mv $(PKGPREFIX)/ffmpeg-*.opk $(PACKAGE_DIR)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
@@ -292,7 +282,6 @@ $(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libogg.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libogg
-	mv $(PKGPREFIX)/libogg-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -313,7 +302,6 @@ $(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX)
 	cp -a $(TARGETPREFIX)/lib/libvorbis.so.* $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisfile.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libvorbis
-	mv $(PKGPREFIX)/libvorbis-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -344,7 +332,6 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
 	# deliberately ignore libforms and libpanel - not yet needed
 	cp -a $(TARGETPREFIX)/lib/libncurses.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libncurses
-	mv $(PKGPREFIX)/lib*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -407,7 +394,6 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libOpenThreads.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libOpenThreads
-	mv $(PKGPREFIX)/libOpenThreads-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 	touch $@
 

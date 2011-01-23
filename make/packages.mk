@@ -16,7 +16,6 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	VER=`cd $(PKGPREFIX)/lib; echo ld-*.so` && VER=$${VER#ld-} && VER=$${VER%.so} && \
 		sed -i "s/@VER@/$$VER/" $(BUILD_TMP)/glibc-control/control
 	$(OPKG_SH) $(BUILD_TMP)/glibc-control
-	mv $(PKGPREFIX)/glibc-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/glibc-control
 
 cs-drivers-pkg:
@@ -29,7 +28,6 @@ cs-drivers-pkg:
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
 	$(OPKG_SH) $(CONTROL_DIR)/cs-drivers
-	mv $(PKGPREFIX)/cs-drivers-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
 cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so
@@ -39,7 +37,6 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/cs-libs
-	mv $(PKGPREFIX)/cs-*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
 aaa_base-pkg:
@@ -49,8 +46,7 @@ aaa_base-pkg:
 	cp -a skel-root/$(PLATFORM)/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
 	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules # ugly...
-	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
-	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
+	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
 pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh

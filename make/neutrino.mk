@@ -55,7 +55,6 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
 	make $(PKGPREFIX)/.version
 	$(OPKG_SH) $(CONTROL_DIR)/neutrino-hd
-	mv $(PKGPREFIX)/neutrino-hd*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
 
 neutrino-clean:
