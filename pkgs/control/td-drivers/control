@@ -1,0 +1,10 @@
+Package: td-drivers
+Version: 396-1
+Description: Kernel modules for the Tripledragon Settopbox
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage
+Source:
+Depends:

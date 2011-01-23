@@ -1,3 +1,6 @@
+# SYSTEM_PKGS is "install enough to get a TV picture"
+SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
+
 glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
@@ -18,6 +21,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	$(OPKG_SH) $(BUILD_TMP)/glibc-control
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/glibc-control
 
+ifneq ($(PLATFORM), tripledragon)
 cs-drivers-pkg:
 	# we have two directories packed, the newer one determines the package version
 	opkg-chksvn.sh $(CONTROL_DIR)/cs-drivers $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis || \
@@ -38,6 +42,30 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/cs-libs
 	rm -rf $(PKGPREFIX)
+
+PHONY += cs-drivers-pkg cs-libs-pkg
+SYSTEM_PKGS += cs-libs-pkg cs-drivers-pkg
+else
+td-module-pkg:
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	make $(PKGPREFIX)/lib/modules/2.6.12
+	mkdir -p $(PKGPREFIX)/etc/init.d
+	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
+	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/td-drivers
+	rm -rf $(PKGPREFIX)
+
+td-directfb-pkg:
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/etc
+	make $(PKGPREFIX)/stb/lib/directfb-0.9.24
+	cp -a $(SCRIPTS)/directfbrc-td $(PKGPREFIX)/etc/directfbrc
+	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/td-directfb
+	rm -rf $(PKGPREFIX)
+
+PHONY += td-module-pkg td-directfb-pkg
+SYSTEM_PKGS += td-module-pkg td-directfb-pkg
+endif
 
 aaa_base-pkg:
 	rm -rf $(PKGPREFIX)
@@ -72,9 +100,9 @@ minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginsta
 		aaa_base busybox opkg procps
 
 # system-pkgs installs actually enough to get a TV picture
-system-pkgs: neutrino-pkg cs-libs-pkg cs-drivers-pkg minimal-system-pkgs
+system-pkgs: $(SYSTEM_PKGS)
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		neutrino-hd
 
-PHONY += glibc-pkg cs-drivers-pkg cs-libs-pkg aaa_base-pkg pkg-index install-pkgs
+PHONY += glibc-pkg aaa_base-pkg pkg-index install-pkgs
 PHONY += prepare-pkginstall minimal-system-pkgs system-pkgs

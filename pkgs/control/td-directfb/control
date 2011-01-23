@@ -1,0 +1,10 @@
+Package: directfb
+Version: 0.9.24-1
+Description: DirectFB drivers for the Tripledragon Settopbox
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage
+Source:
+Depends:
