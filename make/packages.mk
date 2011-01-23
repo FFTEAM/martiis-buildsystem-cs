@@ -3,15 +3,21 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	mkdir -p $(PKGPREFIX)
 	cd $(PKGPREFIX) && \
 		mkdir lib sbin etc && \
-		cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* lib/ && \
-		cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/ &&  \
-		rm lib/libnss_hesiod* lib/libnss_nis* lib/libnss_compat* \
-		   lib/libmudflap* lib/libnsl*
+		cp -a $(CROSS_DIR)/$(TARGET)/lib/*.so* lib/ && \
+		(cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/||true) &&  \
+		rm -fv lib/libnss_hesiod* lib/libnss_nis* lib/libnss_compat* \
+		   lib/libmudflap* lib/libnsl* lib/libc.so lib/libpthread.so \
+		   lib/libcidn* lib/*.so_orig && \
+		find lib -name '*.so' -type l -print0 | xargs -0 --no-run-if-empty rm -v
 	find $(PKGPREFIX) -type f -print0 | xargs -0 $(TARGET)-strip
 	touch $(PKGPREFIX)/etc/ld.so.conf
-	$(OPKG_SH) $(CONTROL_DIR)/glibc
+	$(REMOVE)/control
+	cp -a $(CONTROL_DIR)/glibc $(BUILD_TMP)/glibc-control
+	VER=`cd $(PKGPREFIX)/lib; echo ld-*.so` && VER=$${VER#ld-} && VER=$${VER%.so} && \
+		sed -i "s/@VER@/$$VER/" $(BUILD_TMP)/glibc-control/control
+	$(OPKG_SH) $(BUILD_TMP)/glibc-control
 	mv $(PKGPREFIX)/glibc-*.opk $(PACKAGE_DIR)
-	rm -rf $(PKGPREFIX)
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/glibc-control
 
 cs-drivers-pkg:
 	# we have two directories packed, the newer one determines the package version

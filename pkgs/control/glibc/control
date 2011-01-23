@@ -1,5 +1,5 @@
 Package: glibc
-Version: 2.8-1
+Version: @VER@-1
 Description: The GNU C libray
 Section: base/libraries
 Priority: required
