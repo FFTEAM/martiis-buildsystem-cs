@@ -48,7 +48,7 @@ aaa_base-pkg:
 	cp -a skel-root/common/* $(PKGPREFIX)/
 	cp -a skel-root/$(PLATFORM)/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
-	cd $(PKGPREFIX) && rm etc/ntpd.conf
+	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules # ugly...
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
