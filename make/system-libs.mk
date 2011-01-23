@@ -203,6 +203,7 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
 	cd $(BUILD_TMP)/ffmpeg-0.6 && \
 		$(PATCH)/ffmpeg-dvbsubs.diff && \
 		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff && \
+		$(PATCH)/ffmpeg-0.6-remove-buildtime.diff && \
 		$(FFMPEG_ENV) \
 		./configure \
 			$(FFMPEG_CONFIGURE) \
@@ -218,17 +219,19 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
 			--cross-prefix=$(TARGET)- \
 			--target-os=linux \
 			--enable-debug --enable-stripping \
+			--mandir=/.remove \
 			--prefix=/ && \
 		$(MAKE) && \
 		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/share/ffmpeg
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cp $(BUILD_TMP)/ffmpeg-0.6/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
-	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so
-	$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
+	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/.remove
+	$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
 	$(REMOVE)/ffmpeg-0.6 $(PKGPREFIX)
 	touch $@
 
