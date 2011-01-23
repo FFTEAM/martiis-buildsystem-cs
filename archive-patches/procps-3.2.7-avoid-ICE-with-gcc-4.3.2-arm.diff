@@ -27,7 +27,7 @@ Index: b/proc/sysinfo.c
 -  if(rc<42) goto out;
 -  if(*endp && *endp!='\n') goto out;
 +  if(rc<42) return ret;// goto out;
-+  if(*endp && *endp!='\n') return ret; goto out;
++  if(*endp && *endp!='\n') return ret;// goto out;
    rc--;  // the pid_max value is really the max PID plus 1
    ret = 0;
    while(rc){
