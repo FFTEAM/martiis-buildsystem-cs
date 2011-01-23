@@ -31,7 +31,9 @@ cs-drivers-pkg:
 	mkdir    $(PKGPREFIX)/lib/firmware
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
-	$(OPKG_SH) $(CONTROL_DIR)/cs-drivers
+	mkdir -p $(PKGPREFIX)/etc/init.d
+	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
+	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/cs-drivers
 	rm -rf $(PKGPREFIX)
 
 cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so
