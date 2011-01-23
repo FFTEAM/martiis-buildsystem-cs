@@ -62,9 +62,10 @@ $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
 
+$(PKGPREFIX)/lib/modules/2.6.12 \
 $(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX)
-	mkdir $(TARGETPREFIX)/lib/modules # fail if no bootstrap has been done
-	cp -a "$(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/2.6.12"  $(TARGETPREFIX)/lib/modules/
+	mkdir $(subst /2.6.12,,$@) # fail if no bootstrap has been done
+	cp -a "$(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/2.6.12" $(subst 2.6.12,,$@)
 	find $@ -name .svn -type d -print0 | xargs --no-run-if-empty -0 rm -rf
 
 $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
@@ -127,10 +128,11 @@ $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX)
 		tar -vxC $(TARGETPREFIX)/include/
 	cp -a $(PATCHES)/xp_osd_user.h			$(TARGETPREFIX)/include/hardware/xp/
 
+$(PKGPREFIX)/stb/lib/directfb-0.9.24 \
 $(TARGETPREFIX)/stb/lib/directfb-0.9.24: $(TARGETPREFIX)
 	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/filesystem-skeleton stb/lib/directfb-0.9.24 | \
-		tar -vxC $(TARGETPREFIX)/
-	ln -sf /lib/libjpeg.so.6 $(shell dirname $@)/libjpeg.so.62
+		tar -vxC $(subst /stb/lib/directfb-0.9.24,,$@)
+	ln -sf ../../lib/libjpeg.so.62 $(subst /directfb-0.9.24,,$@)/libjpeg.so.62
 
 $(TARGETPREFIX)/include/directfb: $(TARGETPREFIX)
 	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/cross-enivroment-build/stb include/directfb | \
