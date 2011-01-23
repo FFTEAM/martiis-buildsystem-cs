@@ -5,7 +5,7 @@ BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
 
 ifeq ($(PLATFORM), tripledragon)
-BOOTSTRAP += directfb-includes-and-libs
+BOOTSTRAP += directfb-includes-and-libs td-modules
 PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
 else
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
@@ -62,6 +62,11 @@ $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
 
+$(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX)
+	mkdir $(TARGETPREFIX)/lib/modules # fail if no bootstrap has been done
+	cp -a "$(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/2.6.12"  $(TARGETPREFIX)/lib/modules/
+	find $@ -name .svn -type d -print0 | xargs --no-run-if-empty -0 rm -rf
+
 $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
 	cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib
 
@@ -88,6 +93,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng
 
 else
 # TRIPLEDRAGON
+td-modules: $(TARGETPREFIX)/lib/modules/2.6.12
 
 $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	@echo ' ============================================================================== '
