@@ -55,8 +55,8 @@ pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh
 prepare-pkginstall: pkg-index
 	$(REMOVE)/install $(BUILD_TMP)/opkg.conf
 	mkdir -p $(BUILD_TMP)/install/var/lib/opkg
-	cp $(PATCHES)/opkg.conf $(BUILD_TMP)/
-	echo "src local file:/$(PACKAGE_DIR)" >> $(BUILD_TMP)/opkg.conf
+	printf "arch all 1\narch noarch 1\narch $(BOXARCH) 10\n" > $(BUILD_TMP)/opkg.conf
+	printf "src local file:/$(PACKAGE_DIR)\n" >> $(BUILD_TMP)/opkg.conf
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
 
 # install-pkgs installs everything the hard way, just to check dependencies...
