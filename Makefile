@@ -75,11 +75,15 @@ include make/packages.mk
 update-self:
 	git pull
 
+ifneq ($(PLATFORM), tripledragon)
+# TODO: maybe the more sophisticated mechanism used on TD would
+#       be useful here, too? tell me what you think!
 update-neutrino:
 	make check-repo
 	cd $(N_HD_SOURCE) && git pull
 
 # only updates important(?) stuff, no crosstool etc.
+# not useful on tripledragon, because that SVN never changes
 update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
 	cd $(SOURCE_DIR)/svn/COOLSTREAM && $(SVN) up
 	cd $(SVN_TP_LIBS) && $(SVN) up *
@@ -91,6 +95,31 @@ update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 update-svn-target:
 	make cs-modules includes-and-libs
+else
+NOW = $(shell date +%Y%m%d-%H%M%S)
+N_HD_SOURCE_S = $(subst $(BASE_DIR)/,"",$(N_HD_SOURCE))
+
+update-svn:
+	@echo "update-svn is not useful on $(PLATFORM)"
+
+update-neutrino:
+	-cd $(N_HD_SOURCE) && { git branch "before-update-$(NOW)"; git stash save "before update $(NOW)" ; git pull; }
+	@echo ""
+	@echo "Sources updated. Local changes before update were stashed away,"
+	@echo "try 'git stash list' in $(N_HD_SOURCE_S) and restore with"
+	@echo "'git stash pop' there."
+	@echo ""
+	@echo "If you had lots of merge errors, then this is probably due to"
+	@echo "a rebased upstream tree. In this case, the easiest way to recover"
+	@echo "is probably to do 'make update-neutrino-hard', which will do a"
+	@echo "'git reset --hard origin/master' in $(N_HD_SOURCE_S)".
+	@echo ""
+	@echo "The state before update was saved in branch 'before-update-$(NOW)'"
+
+update-neutrino-hard:
+	cd $(N_HD_SOURCE) && git reset --hard origin/master
+endif
+
 
 all:
 	@echo "'make all' is not a valid target. Please read the documentation."
