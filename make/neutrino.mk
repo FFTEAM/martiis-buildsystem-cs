@@ -50,11 +50,17 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 	touch $@
 
 neutrino-pkg: $(N_OBJDIR)/config.status
-	rm -rf $(PKGPREFIX)
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
 	$(MAKE) -C $(N_OBJDIR) all
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
+	install -D -m 0755 skel-root/common/etc/init.d/start_neutrino $(PKGPREFIX)/etc/init.d/start_neutrino
 	make $(PKGPREFIX)/.version
-	$(OPKG_SH) $(CONTROL_DIR)/neutrino-hd
+	cp -a $(CONTROL_DIR)/neutrino-hd $(BUILD_TMP)/neutrino-hd-control
+ifeq ($(PLATFORM), tripledragon)
+	# ugly: tripledragon neutrino has different requirements...
+	sed -i 's/libOpenThreads.so.12.*/directfb, td-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
+endif
+	$(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
 
 neutrino-clean:

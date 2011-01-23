@@ -77,7 +77,7 @@ aaa_base-pkg:
 	cp -a skel-root/common/* $(PKGPREFIX)/
 	cp -a skel-root/$(PLATFORM)/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
-	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules # ugly...
+	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules && rm etc/init.d/start_neutrino # ugly...
 	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
