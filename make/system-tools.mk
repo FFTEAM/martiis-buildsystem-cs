@@ -65,6 +65,8 @@ $(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
 		$(PATCH)/busybox-1.15.2-new-make.diff && \
 		cp $(PATCHES)/busybox-hd1.config .config && \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config && \
+		grep -q DBB_BT=AUTOCONF_TIMESTAMP Makefile.flags && \
+		sed -i 's#AUTOCONF_TIMESTAMP#"\\"$(PLATFORM)\\""#' Makefile.flags && \
 		$(MAKE) all  CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		make install CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)"
 	install -m 0755 $(SCRIPTS)/run-parts $(PKGPREFIX)/bin
