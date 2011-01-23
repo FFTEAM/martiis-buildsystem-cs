@@ -1,0 +1,13 @@
+#!/bin/sh
+case $1 in
+start)
+	/sbin/modprobe tdcore
+	/sbin/modprobe tdav
+	/sbin/modprobe tdpanel
+	/sbin/modprobe tdtuner
+	/sbin/modprobe tdca
+	/sbin/modprobe tdci
+	/sbin/modprobe tdgfx
+	/sbin/modprobe tdoss
+	;;
+esac

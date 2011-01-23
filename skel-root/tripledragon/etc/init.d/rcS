@@ -14,6 +14,8 @@ mount -t usbfs usbfs /proc/bus/usb
 mkdir /tmp/media
 rm -f /media		# don't remove if it is a directory
 ln -s /tmp/media /	# /media points to /tmp/media/
+# manually create nodes for crappy drivers
+/sbin/mknodes
 # update library cache before running init scripts
 ldconfig
 # if ldconfig is not there, set up LD_LIBRARY_PATH
