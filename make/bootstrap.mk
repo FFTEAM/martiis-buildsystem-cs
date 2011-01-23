@@ -163,12 +163,16 @@ ccache: $(HOSTPREFIX)/bin
 
 ldconfig: $(TARGETPREFIX)/sbin/ldconfig
 $(TARGETPREFIX)/sbin/ldconfig: | $(TARGETPREFIX)
-	if test -e $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig; then \
+	@if test -e $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig; then \
 		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig $@; \
 	elif test -e $(CROSS_DIR)/$(TARGET)/sbin/ldconfig; then \
 		cp -a $(CROSS_DIR)/$(TARGET)/sbin/ldconfig $@; \
 	else \
-		false; \
+		# triggers on crosstool-0.43 built Tripledragon toolchain ; \
+		echo "====================================================="; \
+		echo "Your toolchain did not build ldconfig for the target."; \
+		echo "This is not an error, just a hint."; \
+		echo "====================================================="; \
 	fi
 
 # hack to make sure they are always copied
