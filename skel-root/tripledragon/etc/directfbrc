@@ -1,0 +1,11 @@
+no-debug
+quiet
+no-cursor
+no-banner
+memcpy=ppccache
+hardware
+forcexy
+center
+mode=720x576
+depth=32
+pixelformat=ARGB

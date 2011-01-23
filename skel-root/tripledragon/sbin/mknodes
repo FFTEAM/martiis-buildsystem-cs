@@ -1,0 +1,24 @@
+#!/bin/sh
+
+mkdir /dev/stb
+mkdir /dev/fusion
+mknod /dev/stb/tdsc0         u 233 0
+mknod /dev/stb/tdsc1         u 233 1
+mknod /dev/stb/tdci          u 234 0
+mknod /dev/stb/tdtuner0      u 235 0
+mknod /dev/stb/tdtuner1      u 235 1
+mknod /dev/stb/tdtuner2      u 235 2
+mknod /dev/stb/tddemux0      u 236 0
+mknod /dev/stb/tddemux1      u 236 1
+mknod /dev/stb/tddemux2      u 236 2
+mknod /dev/stb/tdpvr         u 236 3
+mknod /dev/stb/tdvideo       u 237 0
+mknod /dev/stb/tdlcd         u 238 0
+mknod /dev/stb/tdremote      u 240 0
+mknod /dev/stb/tdsystem      u 241 0
+mknod /dev/stb/tdaudio       u 242 0
+mknod /dev/stb/tdaudio_mixer u 242 5
+mknod /dev/stb/tdgfx         u 251 0
+mkdir /dev/fusion
+mknod /dev/fusion/0          u 252 0
+ln -s /dev/fb/0 /dev/fb0
