@@ -37,6 +37,7 @@ SOURCE_DIR   = $(BASE_DIR)/source
 MAKE_DIR     = $(BASE_DIR)/make
 CONTROL_DIR  = $(BASE_DIR)/pkgs/control
 PACKAGE_DIR  = $(BASE_DIR)/pkgs/opkg
+SCRIPTS      = $(BASE_DIR)/scripts/target
 
 CROSS_BASE   = $(BASE_DIR)/cross
 ifeq ($(PLATFORM), tripledragon)

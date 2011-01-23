@@ -30,7 +30,7 @@ $(D)/links: $(ARCHIVE)/links-2.3pre1.tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	echo "bookmarkcount=0"		 > $(TARGETPREFIX)/var/tuxbox/config/bookmarks
 	mkdir -p $(TARGETPREFIX)/var/tuxbox/config/links
 	touch $(TARGETPREFIX)/var/tuxbox/config/links/links.his
-	cp -a $(PATCHES)/bookmarks.html $(PATCHES)/tables.tar.gz $(TARGETPREFIX)/var/tuxbox/config/links
+	cp -a $(SCRIPTS)/bookmarks.html $(SCRIPTS)/tables.tar.gz $(TARGETPREFIX)/var/tuxbox/config/links
 	$(REMOVE)/links-2.3pre1
 	touch $@
 
@@ -130,7 +130,7 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 		$(MAKE) && \
 		$(MAKE) INSTALL_ROOT=$(TARGETPREFIX) install
 	mv $(TARGETPREFIX)/opt/qt/bin/* $(HOSTPREFIX)/bin/
-	install -m 0755 -D $(PATCHES)/browser.sh $(TARGETPREFIX)/bin/browser.sh
+	install -m 0755 -D $(SCRIPTS)/browser.sh $(TARGETPREFIX)/bin/browser.sh
 	touch $@
 
 $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
@@ -210,7 +210,7 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 		test -e src/config.h || ln -s ../config.h src/ && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
-	install -D -m 0755 $(PATCHES)/ushare.init $(PKGPREFIX)/opt/pkg/etc/init.d/ushare
+	install -D -m 0755 $(SCRIPTS)/ushare.init $(PKGPREFIX)/opt/pkg/etc/init.d/ushare
 	ln -s ushare $(PKGPREFIX)/opt/pkg/etc/init.d/S99ushare # start late, so that drives are mounted
 	ln -s ushare $(PKGPREFIX)/opt/pkg/etc/init.d/K01ushare # stop early...
 	rm -rf $(PKGPREFIX)/.remove
@@ -229,7 +229,7 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
 			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg && \
 		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" SCPPROGRESS=1 && \
 		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" install DESTDIR=$(PKGPREFIX)
-	install -D -m 0755 $(PATCHES)/dropbear.init $(PKGPREFIX)/opt/pkg/etc/init.d/dropbear
+	install -D -m 0755 $(SCRIPTS)/dropbear.init $(PKGPREFIX)/opt/pkg/etc/init.d/dropbear
 	install -d -m 0755 $(PKGPREFIX)/opt/pkg/etc/dropbear
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/S60dropbear
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear

@@ -148,6 +148,8 @@ directfb-includes-and-libs: preqs-directfb-td $(TARGETPREFIX)/stb/lib/directfb-0
 	ln -sf libdirect-0.9.so.24   $(TARGETPREFIX)/lib/libdirect.so
 	ln -sf libfusion-0.9.so.24   $(TARGETPREFIX)/lib/libfusion.so
 	ln -sf libdirectfb-0.9.so.24 $(TARGETPREFIX)/lib/libdirectfb.so
+	mkdir -p $(TARGETPREFIX)/etc
+	cp -a $(SCRIPTS)/directfbrc-td $(TARGETPREFIX)/etc/directfbrc
 
 
 # PLATFORM = tripledagon

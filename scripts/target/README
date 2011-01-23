@@ -1,0 +1,12 @@
+This directory contains scripts / config files, that are
+intended to be installed onto the target filesystem.
+Examples are:
+* init scripts for daemons
+* config files
+
+Generally speaking, stuff that is not always needed on the
+target rootfs.
+Files from here are typically installed from the daemon's
+make target.
+Stuff that needs to be always there on the target rootfs
+should go to skel-root/*

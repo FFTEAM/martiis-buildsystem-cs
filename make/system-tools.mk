@@ -8,8 +8,8 @@ $(D)/vsftpd: $(ARCHIVE)/vsftpd-2.2.2.tar.gz | $(TARGETPREFIX)
 		TARGETPREFIX=$(TARGETPREFIX) make CC=$(TARGET)-gcc CFLAGS="-pipe -O2 -g0 -I$(TARGETPREFIX)/include" LDFLAGS="$(LD_FLAGS)"
 	install -d $(PKGPREFIX)/share/empty
 	install -D -m 755 $(BUILD_TMP)/vsftpd-2.2.2/vsftpd $(PKGPREFIX)/opt/pkg/sbin/vsftpd
-	install -D -m 644 $(PATCHES)/vsftpd.conf $(PKGPREFIX)/opt/pkg/etc/vsftpd.conf
-	install -D -m 755 $(PATCHES)/vsftpd.init $(PKGPREFIX)/opt/pkg/etc/init.d/vsftpd
+	install -D -m 644 $(SCRIPTS)/vsftpd.conf $(PKGPREFIX)/opt/pkg/etc/vsftpd.conf
+	install -D -m 755 $(SCRIPTS)/vsftpd.init $(PKGPREFIX)/opt/pkg/etc/init.d/vsftpd
 	# it is important that vsftpd is started *before* inetd to override busybox ftpd...
 	ln -sf vsftpd $(PKGPREFIX)/opt/pkg/etc/init.d/S80vsftpd
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/
@@ -26,14 +26,14 @@ $(D)/rsync: $(ARCHIVE)/rsync-3.0.7.tar.gz | $(TARGETPREFIX)
 		$(MAKE) all && \
 		make install prefix=$(PKGPREFIX)
 	$(REMOVE)/rsync-3.0.7 $(BUILD_TMP)/.remove
-	install -D -m 0755 $(PATCHES)/rsyncd.init $(PKGPREFIX)/etc/init.d/rsyncd
+	install -D -m 0755 $(SCRIPTS)/rsyncd.init $(PKGPREFIX)/etc/init.d/rsyncd
 	ln -sf rsyncd $(PKGPREFIX)/etc/init.d/K40rsyncd
 	ln -sf rsyncd $(PKGPREFIX)/etc/init.d/S60rsyncd
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cd $(TARGETPREFIX)/etc && { \
-		test -e rsyncd.conf    || cp $(PATCHES)/rsyncd.conf . ; \
-		test -e rsyncd.secrets || cp $(PATCHES)/rsyncd.secrets . ; }; true
-	cp -a $(PATCHES)/rsyncd.{conf,secrets} $(PKGPREFIX)/etc
+		test -e rsyncd.conf    || cp $(SCRIPTS)/rsyncd.conf . ; \
+		test -e rsyncd.secrets || cp $(SCRIPTS)/rsyncd.secrets . ; }; true
+	cp -a $(SCRIPTS)/rsyncd.{conf,secrets} $(PKGPREFIX)/etc
 	$(OPKG_SH) $(CONTROL_DIR)/rsync
 	mv $(PKGPREFIX)/*.opk $(PACKAGE_DIR)
 	rm -rf $(PKGPREFIX)
@@ -70,7 +70,7 @@ $(D)/busybox: $(ARCHIVE)/busybox-1.15.2.tar.bz2 | $(TARGETPREFIX)
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config && \
 		$(MAKE) all  CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)" && \
 		make install CROSS_COMPILE=$(TARGET)- CFLAGS_EXTRA="$(TARGET_CFLAGS)"
-	install -m 0755 $(PATCHES)/run-parts $(PKGPREFIX)/bin
+	install -m 0755 $(SCRIPTS)/run-parts $(PKGPREFIX)/bin
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cp -a $(CONTROL_DIR)/busybox $(BUILD_TMP)/bb-control
 	# "auto-provides/conflicts". let's hope opkg can deal with this...
@@ -179,7 +179,7 @@ $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 		$(BUILDENV) $(MAKE) CC=$(TARGET)-gcc STRIP=$(TARGET)-strip SUBDIRS="lib daemon modules"  && \
 		$(MAKE) install INSTALLROOT=$(PKGPREFIX) SUBDIRS="lib daemon modules"
 	$(REMOVE)/autofs-4.1.4
-	install -m 0755 -D $(PATCHES)/autofs.init $(PKGPREFIX)/etc/init.d/autofs
+	install -m 0755 -D $(SCRIPTS)/autofs.init $(PKGPREFIX)/etc/init.d/autofs
 	ln -sf autofs $(PKGPREFIX)/etc/init.d/S60autofs
 	ln -sf autofs $(PKGPREFIX)/etc/init.d/K40autofs
 	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4
@@ -271,8 +271,8 @@ $(D)/samba2: $(ARCHIVE)/samba-2.2.12.tar.gz | $(TARGETPREFIX)
 	done
 	install -d $(TARGETPREFIX)/opt/samba/etc/samba/private
 	install -d $(TARGETPREFIX)/opt/samba/etc/init.d
-	install $(PATCHES)/smb.conf $(TARGETPREFIX)/opt/samba/etc
-	install -m 755 $(PATCHES)/samba2.init $(TARGETPREFIX)/opt/samba/etc/init.d/samba
+	install $(SCRIPTS)/smb.conf $(TARGETPREFIX)/opt/samba/etc
+	install -m 755 $(SCRIPTS)/samba2.init $(TARGETPREFIX)/opt/samba/etc/init.d/samba
 	$(REMOVE)/samba-2.2.12
 	touch $@
 
