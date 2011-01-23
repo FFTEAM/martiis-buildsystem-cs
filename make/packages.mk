@@ -59,8 +59,10 @@ td-module-pkg:
 
 td-directfb-pkg:
 	rm -rf $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/etc
+	mkdir -p $(PKGPREFIX)/etc $(PKGPREFIX)/lib
 	make $(PKGPREFIX)/stb/lib/directfb-0.9.24
+	cp -av $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib/libdirect* $(PKGPREFIX)/lib/
+	cp -av $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib/libfusion* $(PKGPREFIX)/lib/
 	cp -a $(SCRIPTS)/directfbrc-td $(PKGPREFIX)/etc/directfbrc
 	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/td-directfb
 	rm -rf $(PKGPREFIX)
