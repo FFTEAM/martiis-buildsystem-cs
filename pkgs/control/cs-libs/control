@@ -1,5 +1,5 @@
 Package: cs-libs
-Version: 941-1
+Version: 1041-1
 Description: Libraries for Coolstream HD1 Hardware
 Section: base/drivers
 Priority: required
