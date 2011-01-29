@@ -24,8 +24,12 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 ifneq ($(PLATFORM), tripledragon)
 cs-drivers-pkg:
 	# we have two directories packed, the newer one determines the package version
-	opkg-chksvn.sh $(CONTROL_DIR)/cs-drivers $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis || \
-	opkg-chksvn.sh $(CONTROL_DIR)/cs-drivers $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
+	rm -rf $(BUILD_TMP)/tmp-ctrl
+	cp -a $(CONTROL_DIR)/cs-drivers $(BUILD_TMP)/tmp-ctrl
+	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
+		$(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis || \
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	mkdir    $(PKGPREFIX)/lib/firmware
@@ -33,17 +37,21 @@ cs-drivers-pkg:
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
 	mkdir -p $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
-	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/cs-drivers
-	rm -rf $(PKGPREFIX)
+	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
 cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so
-	opkg-chksvn.sh $(CONTROL_DIR)/cs-libs $(SVN_TP_LIBS)/libnxp/libnxp.so || \
-	opkg-chksvn.sh $(CONTROL_DIR)/cs-libs $(SVN_TP_LIBS)/libcs/libcoolstream.so
+	rm -rf $(BUILD_TMP)/tmp-ctrl
+	cp -a $(CONTROL_DIR)/cs-libs $(BUILD_TMP)/tmp-ctrl
+	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
+		$(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libnxp/libnxp.so || \
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream.so
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/cs-libs
-	rm -rf $(PKGPREFIX)
+	$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
 PHONY += cs-drivers-pkg cs-libs-pkg
 SYSTEM_PKGS += cs-libs-pkg cs-drivers-pkg

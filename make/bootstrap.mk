@@ -8,6 +8,7 @@ ifeq ($(PLATFORM), tripledragon)
 BOOTSTRAP += directfb-includes-and-libs td-modules
 PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
 else
+BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
 PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so
 PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
