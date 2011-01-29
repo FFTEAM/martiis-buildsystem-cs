@@ -89,7 +89,7 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	pushd $(BUILD_TMP)/curl-7.20.0 && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
 			--disable-manual --disable-file --disable-rtsp --disable-dict \
-			--disable-imap --disable-pop3 --disable-smtp \
+			--disable-imap --disable-pop3 --disable-smtp --without-ssl \
 			--with-random --mandir=/.remove && \
 		$(MAKE) all && \
 		mkdir -p $(HOSTPREFIX)/bin && \
