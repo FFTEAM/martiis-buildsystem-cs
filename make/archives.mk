@@ -69,9 +69,6 @@ $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 $(ARCHIVE)/boost_1_42_0.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/boost/boost/1.42.0/boost_1_42_0.tar.bz2?use_mirror=switch
 
-$(ARCHIVE)/openssl-0.9.8m.tar.gz:
-	$(WGET) http://www.openssl.org/source/openssl-0.9.8m.tar.gz
-
 $(ARCHIVE)/ffmpeg-0.6.tar.bz2:
 	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-0.6.tar.bz2
 
@@ -101,6 +98,9 @@ $(ARCHIVE)/nbench-byte-2.2.3.tar.gz:
 
 $(ARCHIVE)/ntfs-3g-2010.10.2.tgz:
 	$(WGET) http://tuxera.com/opensource/ntfs-3g-2010.10.2.tgz
+
+$(ARCHIVE)/openssl-0.9.8q.tar.gz:
+	$(WGET) http://www.openssl.org/source/openssl-0.9.8q.tar.gz
 
 $(ARCHIVE)/rsync-3.0.7.tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-3.0.7.tar.gz

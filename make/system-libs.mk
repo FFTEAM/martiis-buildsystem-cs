@@ -168,9 +168,10 @@ $(D)/libboost: $(ARCHIVE)/boost_1_42_0.tar.bz2 | $(TARGETPREFIX)
 	touch $@
 
 # openssl seems to have problem with parallel builds, so use "make" instead of "$(MAKE)"
-$(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/openssl-0.9.8m.tar.gz
-	pushd $(BUILD_TMP)/openssl-0.9.8m && \
+$(D)/openssl: $(ARCHIVE)/openssl-0.9.8q.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/openssl-0.9.8q.tar.gz
+	cd $(BUILD_TMP)/openssl-0.9.8q && \
+		sed -i 's/#define DATE.*/#define DATE \\"($(PLATFORM))\\""; \\/' crypto/Makefile && \
 		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove && \
 		make depend && \
@@ -180,8 +181,13 @@ $(D)/openssl: $(ARCHIVE)/openssl-0.9.8m.tar.gz | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcrypto.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libssl.pc
 	rm -r $(TARGETPREFIX)/.remove $(TARGETPREFIX)/bin/openssl $(TARGETPREFIX)/bin/c_rehash
-	$(REMOVE)/openssl-0.9.8m
+	$(REMOVE)/openssl-0.9.8q
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/lib{crypto,ssl}.so.0.9.8 $(PKGPREFIX)/lib
+	$(OPKG_SH) $(CONTROL_DIR)/openssl-libs
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 ifeq ($(BOXARCH), arm)

@@ -1,0 +1,12 @@
+Package: openssl-libs
+Version: 0.9.8-1
+Description: OpenSSL Libraries for SSL Encryption
+Section: base/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.openssl.org/
+Source:
+Depends:
+Provides: libcrypto.so.0.9.8 libssl.so.0.9.8
+
