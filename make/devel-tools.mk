@@ -1,6 +1,7 @@
 #Makefile to build devel-tools
 
 $(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/strace-4.5.20.tar.bz2
 	pushd $(BUILD_TMP)/strace-4.5.20 && \
 		CFLAGS="$(TARGET_CFLAGS)" \
@@ -9,8 +10,11 @@ $(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
 		LDFLAGS="$(TARGET_LDFLAGS)" \
 		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
 		$(MAKE) all && \
-		make install prefix=$(TARGETPREFIX)
-	$(REMOVE)/strace-4.5.20
+		make install prefix=$(PKGPREFIX)
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm $(PKGPREFIX)/bin/strace-graph
+	$(OPKG_SH) $(CONTROL_DIR)/strace
+	$(REMOVE)/strace-4.5.20 $(PKGPREFIX)
 	$(REMOVE)/.remove
 	touch $@
 

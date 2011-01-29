@@ -1,0 +1,10 @@
+Package: strace
+Version: 4.5.20-1
+Description: System Call Tracer
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceforge.net/projects/strace/
+Source:
+Depends: libc.so.6
