@@ -60,7 +60,8 @@ ifeq ($(PLATFORM), tripledragon)
 	# ugly: tripledragon neutrino has different requirements...
 	sed -i 's/libOpenThreads.so.12.*/directfb, td-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
 endif
-	$(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
+	# ignore the .version file for package  comparison
+	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
 
 neutrino-clean:
