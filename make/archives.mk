@@ -96,8 +96,8 @@ $(ARCHIVE)/mc-4.6.2.tar.gz:
 $(ARCHIVE)/nbench-byte-2.2.3.tar.gz:
 	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-2.2.3.tar.gz
 
-$(ARCHIVE)/ntfs-3g-2010.10.2.tgz:
-	$(WGET) http://tuxera.com/opensource/ntfs-3g-2010.10.2.tgz
+$(ARCHIVE)/ntfs-3g-2011.1.15.tgz:
+	$(WGET) http://tuxera.com/opensource/ntfs-3g-2011.1.15.tgz
 
 $(ARCHIVE)/openssl-0.9.8q.tar.gz:
 	$(WGET) http://www.openssl.org/source/openssl-0.9.8q.tar.gz

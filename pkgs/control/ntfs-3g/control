@@ -1,0 +1,11 @@
+Package: ntfs-3g
+Version: 2011.1.15-1
+Description: Full Featured NTFS read-write Driver for Linux
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.tuxera.com/community/
+Source:
+Depends:
+Provides: libntfs-3g.so.80, ntfs-3g, mount.ntfs-3g, ntfs-3g.probe

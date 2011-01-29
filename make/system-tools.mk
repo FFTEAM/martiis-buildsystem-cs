@@ -147,9 +147,9 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
 	$(REMOVE)/xfsprogs-3.1.3
 	touch $@
 
-$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2010.10.2.tgz | $(TARGETPREFIX)
-	$(UNTAR)/ntfs-3g-2010.10.2.tgz
-	cd $(BUILD_TMP)/ntfs-3g-2010.10.2 && \
+$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2011.1.15.tgz | $(TARGETPREFIX)
+	$(UNTAR)/ntfs-3g-2011.1.15.tgz
+	cd $(BUILD_TMP)/ntfs-3g-2011.1.15 && \
 		$(BUILDENV) ./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
@@ -157,11 +157,17 @@ $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2010.10.2.tgz | $(TARGETPREFIX)
 			--mandir=/.remove \
 			--docdir=/.remove \
 			--disable-ldconfig \
-			--disable-library \
+			--disable-static \
 			&& \
 		$(MAKE) && \
-		make install DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/ntfs-3g $(TARGETPREFIX)/.remove
+		make install DESTDIR=$(PKGPREFIX)
+	$(REMOVE)/ntfs-3g $(PKGPREFIX)/.remove
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -r $(PKGPREFIX)/include $(PKGPREFIX)/lib/*.la $(PKGPREFIX)/lib/*.so \
+		$(PKGPREFIX)/lib/pkgconfig/ $(PKGPREFIX)/bin/ntfs-3g.{usermap,secaudit}
+	find $(PKGPREFIX) -name '*lowntfs*' | xargs rm
+	$(OPKG_SH) $(CONTROL_DIR)/ntfs-3g
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/skeleton: | $(TARGETPREFIX)
