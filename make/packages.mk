@@ -132,5 +132,15 @@ system-pkgs: $(SYSTEM_PKGS)
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		neutrino-hd
 
+dist-pkgs: pkg-index
+ifeq ($(PKG_DEST_DIR),)
+	@printf "\ndist-pkgs needs the variable PKG_DEST_DIR set in config.\n\n"
+	@false
+else
+	rsync -avP --exclude=.cache --exclude=.old --exclude=.gitignore --delete \
+		$(PACKAGE_DIR)/. $(PKG_DEST_DIR)/.
+endif
+
+PHONY += dist-pkgs
 PHONY += glibc-pkg aaa_base-pkg pkg-index install-pkgs
 PHONY += prepare-pkginstall minimal-system-pkgs system-pkgs

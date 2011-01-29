@@ -21,3 +21,7 @@
 # "neutrino-hd-tripledragon": use git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git
 # empty: choose one of the above depending on PLATFORM
 #FLAVOUR=neutrino-hd-tripledragon
+
+#
+# configure the directory where "make dist-pkgs"
+# PKG_DEST_DIR = /srv/www/dist/$(PLATFORM)
