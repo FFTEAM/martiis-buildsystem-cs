@@ -12,7 +12,7 @@ fi
 
 which md5sum 2>&1 >/dev/null || alias md5sum=md5
 
-for pkg in `find $pkg_dir -name '*.opk' | sort`; do
+for pkg in `find $pkg_dir -type d -name '.?*' -prune -o -name '*.opk' -print | sort`; do
 	echo "Generating index for package $pkg" >&2
 	file_size=$(stat -c %s $pkg)
 	md5sum=$(md5sum < $pkg)
