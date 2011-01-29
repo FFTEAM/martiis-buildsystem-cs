@@ -1,11 +1,11 @@
-Package: libjpeg
-Version: 6b-1
-Description: A Free, High-Quality, and Portable Font Engine
+Package: libjpeg-turbo
+Version: 1.0.1-1
+Description: JPEG processing library
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
 Architecture: @ARCH@
-Homepage: http://www.ijg.org/
+Homepage: http://sourceforge.net/projects/libjpeg-turbo/
 Source:
 Depends:
 Provides: libjpeg.so.62
