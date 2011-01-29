@@ -20,20 +20,31 @@ $(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
 
 #  NOTE:
 #  gdb built for target or local-PC
-$(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 | $(TARGETPREFIX)
+$(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 libncurses zlib | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/gdb-7.1.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.1 && \
 		$(BUILDENV) \
 		./configure \
 			--nfp --disable-werror \
-			--prefix= \
+			--prefix=/opt/pkg \
 			--mandir=$(BUILD_TMP)/.remove \
 			--infodir=$(BUILD_TMP)/.remove \
 			--build=$(BUILD) --host=$(TARGET) && \
 		$(MAKE) all-gdb && \
-		make install-gdb prefix=$(TARGETPREFIX) && \
-	$(REMOVE)/gdb-7.1
-	$(REMOVE)/.remove
+		make install-gdb prefix=$(PKGPREFIX)/opt/pkg
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -fr $(PKGPREFIX)/opt/pkg/share
+	rm $(PKGPREFIX)/opt/pkg/bin/gdbtui
+	rm -rf $(BUILD_TMP)/gdb-tmp
+	mkdir $(BUILD_TMP)/gdb-tmp
+	mv $(PKGPREFIX)/opt/pkg/bin/gdbserver $(BUILD_TMP)/gdb-tmp
+	$(OPKG_SH) $(CONTROL_DIR)/gdb
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/bin
+	mv $(BUILD_TMP)/gdb-tmp/gdbserver $(PKGPREFIX)/bin
+	$(OPKG_SH) $(CONTROL_DIR)/gdbserver
+	$(REMOVE)/gdb-7.1 $(PKGPREFIX) $(BUILD_TMP)/gdb-tmp $(BUILD_TMP)/.remove
 	touch $@
 
 #  NOTE:
