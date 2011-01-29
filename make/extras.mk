@@ -1,6 +1,7 @@
 #Makefile to build Extras
 
 $(D)/links: $(ARCHIVE)/links-2.3pre1.tar.bz2 $(D)/directfb | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/links-2.3pre1.tar.bz2
 	cd $(BUILD_TMP)/links-2.3pre1 && \
 		$(PATCH)/links-2.3pre1.diff && \
@@ -16,22 +17,23 @@ $(D)/links: $(ARCHIVE)/links-2.3pre1.tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 			--without-libtiff \
 			--enable-graphics \
 			--enable-javascript && \
-		make && \
-		DESTDIR=$(TARGETPREFIX) make install prefix=$(TARGETPREFIX)
-	mkdir -p $(TARGETPREFIX)/lib/tuxbox/plugins
-	cp -f $(TARGETPREFIX)/bin/links $(TARGETPREFIX)/lib/tuxbox/plugins/links.so
-	rm -f $(TARGETPREFIX)/bin/links
-	echo "name=Links web browser"	 > $(TARGETPREFIX)/lib/tuxbox/plugins/links.cfg
-	echo "desc=Web Browser"		>> $(TARGETPREFIX)/lib/tuxbox/plugins/links.cfg
-	echo "type=2"			>> $(TARGETPREFIX)/lib/tuxbox/plugins/links.cfg
-	echo "needfb=1"			>> $(TARGETPREFIX)/lib/tuxbox/plugins/links.cfg
-	echo "needrc=1"			>> $(TARGETPREFIX)/lib/tuxbox/plugins/links.cfg
-	echo "needoffsets=1"		>> $(TARGETPREFIX)/lib/tuxbox/plugins/links.cfg
-	echo "bookmarkcount=0"		 > $(TARGETPREFIX)/var/tuxbox/config/bookmarks
-	mkdir -p $(TARGETPREFIX)/var/tuxbox/config/links
-	touch $(TARGETPREFIX)/var/tuxbox/config/links/links.his
-	cp -a $(SCRIPTS)/bookmarks.html $(SCRIPTS)/tables.tar.gz $(TARGETPREFIX)/var/tuxbox/config/links
-	$(REMOVE)/links-2.3pre1
+		$(MAKE) && \
+		DESTDIR=$(PKGPREFIX) make install prefix=$(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/tuxbox/plugins $(PKGPREFIX)/var/tuxbox/config/links
+	mv $(PKGPREFIX)/bin/links $(PKGPREFIX)/lib/tuxbox/plugins/links.so
+	rmdir $(PKGPREFIX)/bin
+	echo "name=Links web browser"	 > $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "desc=Web Browser"		>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "type=2"			>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "needfb=1"			>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "needrc=1"			>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "needoffsets=1"		>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "bookmarkcount=0"		 > $(PKGPREFIX)/var/tuxbox/config/bookmarks
+	touch $(PKGPREFIX)/var/tuxbox/config/links/links.his
+	cp -a $(SCRIPTS)/bookmarks.html $(SCRIPTS)/tables.tar.gz $(PKGPREFIX)/var/tuxbox/config/links
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(OPKG_SH) $(CONTROL_DIR)/links
+	$(REMOVE)/links-2.3pre1 $(BUILD_TMP)/.remove $(PKGPREFIX)
 	touch $@
 
 QT_BUILD = $(BUILD_TMP)/qt-everywhere-opensource-src-4.6.3
