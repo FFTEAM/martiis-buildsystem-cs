@@ -354,16 +354,18 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
 # does not put "-lz" into LDFLAGS of some subdirs, and I was not able to fix that.
 # Hence the LDFLAGS="$(TARGET_LDFLAGS) -lz" hack... :-(
 $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/DirectFB-1.4.3.tar.gz
 	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
 		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
+		sed -i 's/"-DBUILDTIME=.*/"-DBUILDTIME=\\"($(PLATFORM))\\""/' src/core/Makefile.am && \
 		./autogen.sh fail ; \
 		CFLAGS="$(TARGET_CFLAGS)" CPPFLAGS="$(TARGET_CPPFLAGS)" \
 			CXXFLAGS="$(TARGET_CXXFLAGS)" PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 			LDFLAGS="$(TARGET_LDFLAGS) -lz" \
 			./configure \
-			--prefix=/ --mandir=/.remove --bindir=/bin/directfb \
+			--prefix=/ --mandir=/.remove --bindir=/opt/pkg/bin \
 			--build=$(BUILD) --host=$(TARGET) \
 			--with-inputdrivers=linuxinput,keyboard,ps2mouse \
 			--with-gfxdrivers=cx2450x --disable-video4linux \
@@ -371,12 +373,24 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 			--enable-debug --disable-network --disable-devmem --disable-sysfs --enable-fbdev \
 			--enable-jpeg --with-tests && \
 		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX) && \
+		$(MAKE) install DESTDIR=$(PKGPREFIX) && \
 		cp -a directfb-config $(HOSTPREFIX)/bin/
-	printf 'mode "1280x720-50"\n    geometry 1280 720 1280 720 32\n    timings 0 0 0 0 0 0 0\nendmode\n' > $(TARGETPREFIX)/etc/fb.modes
-	printf 'system=cx2450x\nlinux-input-devices=/dev/input/nevis_ir\nno-linux-input-grab\nmode=1280x720\npixelformat=ARGB\nbg-color=00000000\nno-debug\nautoflip-window\nno-cursor\n' > $(TARGETPREFIX)/etc/directfbrc
-	rm -fr $(TARGETPREFIX)/.remove $(TARGETPREFIX)/bin/directfb/directfb-config
-	$(REMOVE)/DirectFB-1.4.3
+	mkdir $(PKGPREFIX)/etc
+	printf 'mode "1280x720-50"\n    geometry 1280 720 1280 720 32\n    timings 0 0 0 0 0 0 0\nendmode\n' > $(PKGPREFIX)/etc/fb.modes
+	printf 'system=cx2450x\nlinux-input-devices=/dev/input/nevis_ir\nno-linux-input-grab\nmode=1280x720\npixelformat=ARGB\nbg-color=00000000\nno-debug\nautoflip-window\nno-cursor\n' > $(PKGPREFIX)/etc/directfbrc
+	rm -fr $(PKGPREFIX)/.remove $(PKGPREFIX)/opt/pkg/bin/directfb-config
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/
+	find $(PKGPREFIX) -name '*.la' | xargs --no-run-if-empty rm
+	rm -fr $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so
+	$(REMOVE)/dfb-tmp
+	mkdir $(BUILD_TMP)/dfb-tmp
+	mv $(PKGPREFIX)/opt $(BUILD_TMP)/dfb-tmp
+	$(OPKG_SH) $(CONTROL_DIR)/libdirectfb
+	rm -rf $(PKGPREFIX)/*
+	mv $(BUILD_TMP)/dfb-tmp/opt $(PKGPREFIX)
+	rmdir $(BUILD_TMP)/dfb-tmp
+	$(OPKG_SH) $(CONTROL_DIR)/directfb-tools
+	$(REMOVE)/DirectFB-1.4.3 $(PKGPREFIX)
 	touch $@
 
 # the strange find | sed hack is needed for old cmake versions which

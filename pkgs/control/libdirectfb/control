@@ -1,0 +1,11 @@
+Package: libdirectfb
+Version: 1.4.3-1
+Description: Graphics Library for Framebuffer Devices
+Section: base/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://directfb.org/
+Source:
+Depends: libc.so.6 libz.so.1 libfreetype.so.6 libjpeg.so.62 libpng12.so.0
+Provides: libdirect-1.4.so.0 libfusion-1.4.so.0 libdirectfb-1.4.so.0
