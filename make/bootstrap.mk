@@ -170,8 +170,12 @@ ldconfig: $(TARGETPREFIX)/sbin/ldconfig
 $(TARGETPREFIX)/sbin/ldconfig: | $(TARGETPREFIX)
 	@if test -e $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig; then \
 		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/sbin/ldconfig $@; \
+		mkdir -p $(TARGETPREFIX)/etc; \
+		touch $(TARGETPREFIX)/etc/ld.so.conf; \
 	elif test -e $(CROSS_DIR)/$(TARGET)/sbin/ldconfig; then \
 		cp -a $(CROSS_DIR)/$(TARGET)/sbin/ldconfig $@; \
+		mkdir -p $(TARGETPREFIX)/etc; \
+		touch $(TARGETPREFIX)/etc/ld.so.conf; \
 	else \
 		# triggers on crosstool-0.43 built Tripledragon toolchain ; \
 		echo "====================================================="; \
