@@ -16,6 +16,25 @@ KVERSION_FULL = $(KVERSION)-nevis
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
 TARGET_MODULE = $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)
 
+# try to build a compiler that's similar to the one that built the kernel...
+# this should be only needed if you are using e.g. an external toolchain with gcc4
+kernelgcc: $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin/powerpc-405-linux-gnu-gcc
+
+# powerpc-405-linux-gnu-gcc is the "marker file" for crosstool
+$(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin/powerpc-405-linux-gnu-gcc:
+	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
+		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
+	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
+	cp $(PATCHES)/glibc-2.3.3-allow-gcc-4.0-configure.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
+	cd $(BUILD_TMP)/crosstool-0.43 && \
+		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff && \
+		export TARBALLS_DIR=$(ARCHIVE) && \
+		export RESULT_TOP=$(CROSS_BASE) && \
+		export GCC_LANGUAGES="c,c++" && \
+		export PARALLELMFLAGS="-j 3" && \
+		export QUIET_EXTRACTIONS=y && \
+		eval `cat powerpc-405.dat gcc-3.4.1-glibc-2.3.2.dat` LINUX_DIR=linux-2.6.12 sh all.sh --notest
+
 $(BUILD_TMP)/linux-$(KVERSION):
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
 	cd $(BUILD_TMP)/linux-$(KVERSION) && \
