@@ -1,0 +1,53 @@
+Index: b/drivers/ide/ppc/ibm_ocp_ide.c
+===================================================================
+--- a/drivers/ide/ppc/ibm_ocp_ide.c
++++ b/drivers/ide/ppc/ibm_ocp_ide.c
+@@ -60,17 +60,17 @@
+ #include <asm/io.h>
+ #include <asm/scatterlist.h>
+ #include <asm/dma-mapping.h>
+ 
+ 
+-#include "/projects/stb/drivers/include/os/registerio.h"
+-#include "/projects/stb/drivers/include/os/os-generic.h"
++#include <stb/registerio.h>
++#include <stb/os-generic.h>
+ 
+ #define _DRV_NAME_		"\rSTB04500 OCP IDE"
+ #define _DRV_VERSION_	"2.74"
+ 
+-#include "/projects/stb/drivers/include/os/pversion.h"
++#include <stb/pversion.h>
+ 
+ 
+ //--------------------------------------------------------------------------
+ static s32 ide_debug = 0;
+ module_param(ide_debug, int, 0644);
+Index: b/drivers/ide/ide-dma.c
+===================================================================
+--- a/drivers/ide/ide-dma.c
++++ b/drivers/ide/ide-dma.c
+@@ -164,10 +164,11 @@ static int in_drive_list(struct hd_drive
+  *
+  *	Handle an interrupt completing a read/write DMA transfer on an 
+  *	IDE device
+  */
+  
++#if 0
+ ide_startstop_t ide_dma_intr (ide_drive_t *drive)
+ {
+ 	u8 stat = 0, dma_stat = 0;
+ 
+ 	dma_stat = HWIF(drive)->ide_dma_end(drive);
+@@ -190,10 +191,11 @@ ide_startstop_t ide_dma_intr (ide_drive_
+ 	}
+ 	return ide_error(drive, "dma_intr", stat);
+ }
+ 
+ EXPORT_SYMBOL_GPL(ide_dma_intr);
++#endif
+ 
+ #ifdef CONFIG_BLK_DEV_IDEDMA_PCI
+ /**
+  *	ide_build_sglist	-	map IDE scatter gather for DMA I/O
+  *	@drive: the drive to build the DMA table for

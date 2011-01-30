@@ -11,10 +11,42 @@
 # be picked from there.                                       #
 ###############################################################
 
+ifeq ($(PLATFORM), tripledragon)
+KVERSION_FULL = 2.6.12
+K_DEP = $(D)/tdkernel
+else
 KVERSION = 2.6.26.8
 KVERSION_FULL = $(KVERSION)-nevis
+K_DEP = $(D)/cskernel
+endif
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
 TARGET_MODULE = $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)
+
+ifeq ($(PLATFORM), tripledragon)
+############################################################
+# stuff needed to build a td kernel (very experimental...) #
+############################################################
+$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
+	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
+	cd $(BUILD_TMP)/linux-2.6.12 && \
+		tar xvpf $(TD_SVN)/ARMAS/linux-enviroment/kernel/td_patchset_2.6.12.tar.bz2 && \
+		patch -p1 < kdiff_00_all.diff && \
+		patch -p1 < $(PATCHES)/kernel-fix-td-build.diff && \
+		mkdir -p include/stb/ && \
+		cp $(TARGETPREFIX)/include/hardware/os/os-generic.h include/stb -av && \
+		cp $(TARGETPREFIX)/include/hardware/os/registerio.h include/stb -av && \
+		cp $(TARGETPREFIX)/include/hardware/os/pversion.h include/stb -av && \
+		cp $(TARGETPREFIX)/include/hardware/os/os-types.h include/stb -av && \
+		cp $(PATCHES)/kernel.config-td .config
+
+$(DEPDIR)/tdkernel: $(BUILD_TMP)/linux-2.6.12
+	cd $(BUILD_TMP)/linux-2.6.12 && \
+		export PATH=$(BASE_DIR)/ccache:$(BASE_DIR)/cross/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin:$(PATH) && \
+		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig && \
+		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- && \
+		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+	touch $@
 
 # try to build a compiler that's similar to the one that built the kernel...
 # this should be only needed if you are using e.g. an external toolchain with gcc4
@@ -35,6 +67,8 @@ $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin/powerpc-405-linux-
 		export QUIET_EXTRACTIONS=y && \
 		eval `cat powerpc-405.dat gcc-3.4.1-glibc-2.3.2.dat` LINUX_DIR=linux-2.6.12 sh all.sh --notest
 
+else
+
 $(BUILD_TMP)/linux-$(KVERSION):
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
 	cd $(BUILD_TMP)/linux-$(KVERSION) && \
@@ -48,9 +82,11 @@ $(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	touch $@
 
+endif
+
 # rule for the autofs4 module - needed by the automounter
 # installs the already built module into the "proper" path
-$(TARGET_MODULE)/kernel/fs/autofs4/autofs4.ko: $(D)/cskernel
+$(TARGET_MODULE)/kernel/fs/autofs4/autofs4.ko: $(K_DEP)
 	install -m 644 -D $(SOURCE_MODULE)/kernel/fs/autofs4/autofs4.ko $@
 	make depmod
 
