@@ -1,0 +1,12 @@
+Package: libblkid
+Version: 2.18-1
+Description: Filesystem detection library
+Section: base/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://kernel.org/~kzak/util-linux/
+Source:
+Depends:
+Conflicts: libblkid.so.1
+Provides: libblkid.so.1

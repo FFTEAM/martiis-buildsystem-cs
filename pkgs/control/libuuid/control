@@ -1,0 +1,12 @@
+Package: libuuid
+Version: 2.18-1
+Description: Library to generate UUIDs
+Section: base/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://kernel.org/~kzak/util-linux/
+Source:
+Depends:
+Conflicts: libuuid.so.1
+Provides: libuuid.so.1
