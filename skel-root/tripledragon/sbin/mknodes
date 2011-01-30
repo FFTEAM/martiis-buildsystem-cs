@@ -1,7 +1,6 @@
 #!/bin/sh
 
 mkdir /dev/stb
-mkdir /dev/fusion
 mknod /dev/stb/tdsc0         u 233 0
 mknod /dev/stb/tdsc1         u 233 1
 mknod /dev/stb/tdci          u 234 0
@@ -19,6 +18,6 @@ mknod /dev/stb/tdsystem      u 241 0
 mknod /dev/stb/tdaudio       u 242 0
 mknod /dev/stb/tdaudio_mixer u 242 5
 mknod /dev/stb/tdgfx         u 251 0
-mkdir /dev/fusion
-mknod /dev/fusion/0          u 252 0
+# mkdir /dev/fusion
+# mknod /dev/fusion/0          u 252 0
 ln -s /dev/fb/0 /dev/fb0
