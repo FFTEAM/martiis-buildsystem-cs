@@ -1,0 +1,25 @@
+How to bootstrap your system using OPK packages
+===============================================
+
+Prepare everything:
+* make preqs
+* make crosstool
+* make bootstrap
+
+Build minimal system root tarball:
+* make minimal-system-pkgs
+After this finishes, you will have a tarball in build_tmp named
+min-root-$(PLATFORM).tar.gz
+
+Unpack this tarbal onto an empty partition on your box and boot
+from it.
+
+Build packages for a more complete system:
+* make system-pkgs
+
+Now copy pkgs/opkg onto a Server, adjust /etc/opkg.conf on the box.
+Then, on the box:
+  opkg-cl update
+  opkg-cl install neutrino-hd
+
+(see README.packages for more info on how to configure your server)
