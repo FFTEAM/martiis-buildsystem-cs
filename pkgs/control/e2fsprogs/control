@@ -1,0 +1,12 @@
+Package: e2fsprogs
+Version: 1.14.12-1
+Description: Filesystem Utilities for the ext2/3/4 Filesystems
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://e2fsprogs.sourceforge.net/
+Source:
+Depends:
+Conflicts: libuuid.so.1, libblkid.so.1
+Provides: libuuid.so.1, libblkid.so.1, libext2fs.so.2, mke2fs, e2fsck, tune2fs

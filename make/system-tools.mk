@@ -94,13 +94,13 @@ $(D)/busybox-snapshot: $(ARCHIVE)/busybox-snapshot.tar.bz2 | $(TARGETPREFIX)
 	touch $@
 
 $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/e2fsprogs-1.41.12.tar.gz
 	cd $(BUILD_TMP)/e2fsprogs-1.41.12 && \
 		ln -sf /bin/true ./ldconfig && \
 		CC=$(TARGET)-gcc \
 		RANLIB=$(TARGET)-ranlib \
 		CFLAGS="-Os -msoft-float" \
-		LDFLAGS="$(TARGET_LDFLAGS)" \
 		PATH=$(BUILD_TMP)/e2fsprogs-1.41.12:$(PATH) \
 		./configure \
 			--build=$(BUILD) \
@@ -109,24 +109,27 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz | $(TARGETPREFIX)
 			--prefix=/ \
 			--infodir=/.remove \
 			--mandir=/.remove \
-			--with-linker=$(TARGET)-ld \
-			--disable-evms \
+			--enable-elf-shlibs \
 			--enable-htree \
 			--disable-profile \
 			--disable-e2initrd-helper \
-			--disable-swapfs \
 			--disable-debugfs \
 			--disable-imager \
 			--disable-resizer \
 			--disable-uuidd \
-			--enable-dynamic-e2fsck \
-			--enable-fsck \
+			--disable-fsck \
 			--with-gnu-ld \
+			--enable-symlink-install \
 			--disable-nls && \
 		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/e2fsprogs-1.41.12
-	rm -r $(TARGETPREFIX)/.remove
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	$(REMOVE)/e2fsprogs-1.41.12 $(PKGPREFIX)/.remove
+	cp -a --remove-destination $(PKGPREFIX)/* $(TARGETPREFIX)/
+	cd $(PKGPREFIX) && rm sbin/badblocks sbin/dumpe2fs sbin/blkid sbin/logsave \
+		sbin/e2undo sbin/filefrag sbin/e2freefrag bin/chattr bin/lsattr bin/uuidgen \
+		lib/*.so
+	$(OPKG_SH) $(CONTROL_DIR)/e2fsprogs
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
