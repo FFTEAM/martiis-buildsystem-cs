@@ -1,0 +1,90 @@
+The .opk package build process
+==============================
+
+Packages are built using scripts/opkg.sh, or, easier, via the Makefile-
+"macro" $(OPKG_SH). A nice example (a trivial one ;) is the build of the
+aaa_base package. I'll explain this package here. opkg.sh internals will
+be explained below.
+
+First make sure that the "packaging root" is clean. $(PKGPREFIX) normally
+points to build_tmp/pkg, if it was not changed in environment.mk:
+
+	rm -rf $(PKGPREFIX)
+	mkdir $(PKGPREFIX)
+
+Now copy everything into the packaging root. This is often done by
+"make install DESTDIR=$(PKGPREFIX)" or similar. Here it is a simple
+file copy:
+
+	cp -a skel-root/common/* $(PKGPREFIX)/
+	cp -a skel-root/$(PLATFORM)/* $(PKGPREFIX)/
+
+Now we remove everything that we don't want to have in a Package. E.g.
+the .gitignore files, or in this case start scripts that actually belong
+into a different package:
+
+	find $(PKGPREFIX) -name .gitignore | xargs rm
+	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules && rm etc/init.d/start_neutrino
+
+The package root is now prepared, so we can pack it up. This is done by
+calling $(OPKG_SH) which gets a directory with debian control files as
+an argument:
+
+	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/aaa_base
+
+Clean up after yourself:
+
+	rm -rf $(PKGPREFIX)
+
+Done! Easy, isn't it?
+
+
+The gory details: opkg.sh
+=========================
+
+Most of the heavy lifting is actually done by opkg.sh, together with the
+$(OPKG_SH) "macro" which sets the important variables before calling opkg.sh.
+
+Some file locations:
+* Built packages are copied to $(PACKAGE_DIR), defaults to pkgs/opkg/
+* Old versions of the packages are moved to $(PACKAGE_DIR)/.old
+* Cache files are in $(PACKAGE_DIR)/.cache
+* Control files are usually kept in $(CONTROL_DIR)/<package-name>,
+  CONTROL_DIR defaults to pkgs/control/. For flexibility, the control
+  file location is passed as parameter to opkg.sh
+
+Opkg.sh does the following, in this order:
+* Extract name, version number and build revision from the control file.
+  The control file has to be in the directory given to opkg.sh as argument.
+  The version number is the version of the software package (e.g. 1.41.11
+  for e2fsprogs-1.41.11), the build revision is the number of rebuilds with
+  different results. Inside the control file, it is specified as
+	Version: 1.41.11-1
+  In addition to the control file, the cache file for the package is 
+  checked for the build number.
+* Unless DONT_STRIP is set, all files in the package are stripped.
+* Check, if a package with the same version and build number already exists
+  in $(PACKAGE_DIR).
+* If the package already exists, it is compared with the current contents
+  of the build root. The package metadata (control files) are also checked.
+* If the new build root differs from the old package, the build revision
+  is incremented and a new package is built.
+* The old package (if exists) is backed up.
+* The new package is copied to $(PACKAGE_DIR)
+* The cache file for the package, named <package-name>-<package-version>,
+  e.g. .../.cache/e2fsprogs-1.41.11 is updated, so that it comtains the new
+  build revision.
+
+
+The package is built. What now?
+===============================
+* Call "make pkg-index" to update the package index in $(PACKAGE_DIR)
+* Copy the contents of $(PACKAGE_DIR) to a web- or ftp-server,
+  accessible e.g. as "http://server.site/dist/stb"
+* Create an opkg config file on the box, in /etc/opkg/. The name has to
+  end in ".conf". The easiest way is to copy the existing opkg.conf.example
+  to opkg.conf and edit it. It should contain a line like
+	src server http://server.site/dist/stb
+  (of course adopted to your environment)
+* On the box, run "opkg-cl update" to update the package list
+* Install the package with "opkg-cl install"

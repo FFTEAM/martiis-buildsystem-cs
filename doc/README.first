@@ -1,0 +1,36 @@
+The Neutrino-HD Build System
+============================
+
+The build system is configured with the file "config" in the top directory.
+This file is normally not present, but an example config file is located
+in this doc/ directory which can be copied into the top directory.
+
+Defaults of the different options are:
+
+	PLATFORM = coolstream
+	CROSS_DIR =
+	TARGET =
+	BUILD =
+	FLAVOUR =
+	PKG_DEST_DIR =
+
+Empty settings mean that sensible defaults will be chosen, this is what
+you should probably try first.
+
+The command "make" without parameters will show you a summary of the
+current settings and give hints on potential configuration errors.
+
+The command "make help" will show you the most commonly used make targets.
+
+Some are also listed here:
+* make preqs - downloads necessary stuff, mainly the neutrino-hd source
+  code, according to your FLAVOUR and the drivers / libraries from the
+  Coolstream or Tripledragon SVN repositories. If something is wrong
+  or needs to be done manually, there will be a message telling you so.
+  So please read the output.
+* make crosstool - builds the cross toolchain. This is usually only
+  needed once. The toolchain is installed in the cross/ directory.
+* make bootstrap - prepares for building. Mainly by copying stuff into
+  the TARGETPREFIX (root/) and by setting up some symlinks in host/bin
+  for helper scripts. "make bootstrap" can (and should) be repeated,
+  if parts of the buildsystem have been updated.

@@ -21,6 +21,7 @@ printenv:
 	@echo '============================================================================== '
 	@echo ""
 	@echo "'make help' lists useful targets."
+	@echo "The doc/ directory contains documentation. Read it."
 	@echo ""
 	@make --no-print-directory toolcheck
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
@@ -33,7 +34,7 @@ printenv:
 	@if ! LANG=C make -n preqs|grep -q "Nothing to be done"; then \
 		echo;echo "Your next target to do is probably 'make preqs'"; fi
 	@if ! test -e $(BASE_DIR)/config; then \
-		echo;echo "If you want to change the configuration, copy 'config.example' to 'config'"; \
+		echo;echo "If you want to change the configuration, copy 'doc/config.example' to 'config'"; \
 		echo "and edit it to fit your needs. See the comments in there."; echo; fi
 
 help:
@@ -48,8 +49,10 @@ help:
 	@echo "later, you might find those useful:"
 	@echo "* make update-self       - update the build system"
 	@echo "* make update-neutrino   - update the neutrino source"
+ifeq ($(PLATFORM), coolstream)
 	@echo "* make update-svn        - update the coolstream svn parts (mainly drivers)"
 	@echo "* make update-svn-target - copy updated svn parts into \$$TARGETPREFIX"
+endif
 	@echo ""
 	@echo "cleantargets:"
 	@echo "make clean               - clean neutrino build dir"
