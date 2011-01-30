@@ -164,7 +164,7 @@ $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-2011.1.15.tgz | $(TARGETPREFIX)
 			&& \
 		$(MAKE) && \
 		make install DESTDIR=$(PKGPREFIX)
-	$(REMOVE)/ntfs-3g $(PKGPREFIX)/.remove
+	$(REMOVE)/ntfs-3g-2011.1.15 $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -r $(PKGPREFIX)/include $(PKGPREFIX)/lib/*.la $(PKGPREFIX)/lib/*.so \
 		$(PKGPREFIX)/lib/pkgconfig/ $(PKGPREFIX)/bin/ntfs-3g.{usermap,secaudit}
