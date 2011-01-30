@@ -6,6 +6,8 @@
 # if you want to use your precompiled toolchain, define those variables:
 # this will skip the building of our own compiler/glibc combination!
 #
+# ONLY CHANGE THOSE VARIABLES IF YOU KNOW WHAT YOU ARE DOING!
+#
 # do not set this if you want to build a toolchain with these makefiles.
 #CROSS_DIR=/opt/cross
 #TARGET=arm-linux-gnueabi
