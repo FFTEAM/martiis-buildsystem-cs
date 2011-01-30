@@ -26,6 +26,8 @@ ifeq ($(PLATFORM), tripledragon)
 ############################################################
 # stuff needed to build a td kernel (very experimental...) #
 ############################################################
+K_GCC_PATH = $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
+
 $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
 	cd $(BUILD_TMP)/linux-2.6.12 && \
@@ -41,7 +43,7 @@ $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 
 $(DEPDIR)/tdkernel: $(BUILD_TMP)/linux-2.6.12
 	cd $(BUILD_TMP)/linux-2.6.12 && \
-		export PATH=$(BASE_DIR)/ccache:$(BASE_DIR)/cross/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin:$(PATH) && \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH) && \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig && \
 		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- && \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
@@ -50,10 +52,10 @@ $(DEPDIR)/tdkernel: $(BUILD_TMP)/linux-2.6.12
 
 # try to build a compiler that's similar to the one that built the kernel...
 # this should be only needed if you are using e.g. an external toolchain with gcc4
-kernelgcc: $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin/powerpc-405-linux-gnu-gcc
+kernelgcc: $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 
 # powerpc-405-linux-gnu-gcc is the "marker file" for crosstool
-$(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin/powerpc-405-linux-gnu-gcc:
+$(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
 	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
 		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
