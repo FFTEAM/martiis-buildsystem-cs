@@ -128,7 +128,7 @@ minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginsta
 	@echo
 
 # system-pkgs installs actually enough to get a TV picture
-system-pkgs: $(SYSTEM_PKGS)
+system-pkgs: $(SYSTEM_PKGS) pkg-index
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		neutrino-hd
 
