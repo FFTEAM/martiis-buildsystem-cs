@@ -24,6 +24,11 @@ printenv:
 	@echo "The doc/ directory contains documentation. Read it."
 	@echo ""
 	@make --no-print-directory toolcheck
+ifeq ($(MAINTAINER),)
+	@echo "The MAINTAINER variable is not set. It defaults to your name from the"
+	@echo "passwd entry, but this seems to have failed. Pkease set it in 'config'."
+	@echo
+endif
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
 	if type -p $(TARGET)-gcc >/dev/null 2>&1; then \
 		echo "$(TARGET)-gcc found in PATH or in \$$CROSS_DIR/bin."; \

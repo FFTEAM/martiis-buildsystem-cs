@@ -31,10 +31,13 @@ ME=${0##*/}
 CONTROL_DIR="$1"
 
 test -n "$STRIP"
-test -n "$MAINTAINER"
 test -n "$ARCH"
 test -n "$SOURCE"
 test -n "$BUILD_TMP"
+if test -z "$MAINTAINER"; then
+	echo "MAINTAINER must not be empty!" >&2
+	exit 42
+fi
 
 # checks if an old package of the same name and version is already present in $PACKAGE_DIR.
 # if not present, return -1

@@ -27,3 +27,9 @@
 #
 # configure the directory where "make dist-pkgs"
 # PKG_DEST_DIR = /srv/www/dist/$(PLATFORM)
+
+#
+# the name used to replace "@MAINT@" in the opkg control files
+# defaults to your name from the passwd GECOS field
+#
+# MAINTAINER = "Johnny Walker"
