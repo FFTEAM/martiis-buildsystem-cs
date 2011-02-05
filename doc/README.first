@@ -34,3 +34,8 @@ Some are also listed here:
   the TARGETPREFIX (root/) and by setting up some symlinks in host/bin
   for helper scripts. "make bootstrap" can (and should) be repeated,
   if parts of the buildsystem have been updated.
+
+Those three targets, "preqs", "crosstool" and "bootstrap" must complete
+successfully before continuing. If one of them aborts with an error,
+simply continuing is not an option. Read the output (it might give hints
+on what went wrong), fix the problem and run the target again.
