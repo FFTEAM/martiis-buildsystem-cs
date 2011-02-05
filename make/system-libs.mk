@@ -431,12 +431,7 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-#############################################################################################
-#############################################################################################
-######### not yet needed and not tested #####################################################
-#############################################################################################
-#############################################################################################
-$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
+$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
 	$(UNTAR)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
 	pushd $(BUILD_TMP)/libvorbisidec-1.0.2+svn14261 && \
 		patch -p1 < $(PATCHES)/tremor.diff && \
@@ -446,8 +441,18 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
 		perl -pi -e "s,^prefix=.*$$,prefix=$(TARGETPREFIX)," vorbisidec.pc && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		install -m644 vorbisidec.pc $(TARGETPREFIX)/lib/pkgconfig
-	$(REMOVE)/libvorbisidec-1.0.2+svn14261
+	$(REMOVE)/libvorbisidec-1.0.2+svn14261 $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libvorbisidec.so.1* $(PKGPREFIX)/lib
+	$(OPKG_SH) $(CONTROL_DIR)/libvorbisidec
+	rm -rf $(PKGPREFIX)
 	touch $@
+
+#############################################################################################
+#############################################################################################
+######### not yet needed and not tested #####################################################
+#############################################################################################
+#############################################################################################
 
 $(D)/libpcap: $(ARCHIVE)/libpcap-1.0.0.tar.gz
 	$(UNTAR)/libpcap-1.0.0.tar.gz

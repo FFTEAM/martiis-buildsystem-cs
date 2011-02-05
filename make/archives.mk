@@ -81,8 +81,8 @@ $(ARCHIVE)/libvorbis-1.2.3.tar.bz2:
 $(ARCHIVE)/ncurses-5.6.tar.gz:
 	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-5.6.tar.gz
 
-$(ARCHIVE)/libvorbisidec_1.0.2+svn14261.orig.tar.gz:
-	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_1.0.2+svn14261.orig.tar.gz
+$(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz:
+	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_1.0.2+svn16259.orig.tar.gz
 
 $(ARCHIVE)/libpcap-1.0.0.tar.gz:
 	$(WGET) ftp://ftp.wh8.tu-dresden.de/pub/linux/distributions/gentoo/distfiles/libpcap-1.0.0.tar.gz

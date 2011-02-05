@@ -1,0 +1,11 @@
+Package: libvorbisidec
+Version: 1.0.2.16259-1
+Description: Library to decode Vorbis Bitstreams, integer only
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.xiph.org/vorbis
+Source:
+Depends:
+Provides: libvorbisidec.so.1
