@@ -4,7 +4,7 @@ TOOLCHECK  = find-git find-svn find-gzip find-bzip2 find-patch find-gawk
 TOOLCHECK += find-makeinfo find-automake find-gcc find-libtool
 TOOLCHECK += find-yacc find-flex find-tic find-pkg-config
 
-PREQS = neutrino-hd $(D) download
+PREQS = download neutrino-hd-source $(D)
 ifeq ($(PLATFORM), tripledragon)
 PREQS += tdsvn preqs-directfb-td
 else
@@ -96,7 +96,7 @@ toolcheck: $(TOOLCHECK)
 	@echo "All required tools seem to be installed."
 	@echo
 
-neutrino-hd: $(N_HD_SOURCE)
+neutrino-hd-source: $(N_HD_SOURCE)
 cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 # TRIPLEDRAGON stuff...
