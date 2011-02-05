@@ -12,13 +12,16 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		   lib/libmudflap* lib/libnsl* lib/libc.so lib/libpthread.so \
 		   lib/libcidn* lib/*.so_orig && \
 		find lib -name '*.so' -type l -print0 | xargs -0 --no-run-if-empty rm -v
-	find $(PKGPREFIX) -type f -print0 | xargs -0 $(TARGET)-strip
 	touch $(PKGPREFIX)/etc/ld.so.conf
 	$(REMOVE)/control
 	cp -a $(CONTROL_DIR)/glibc $(BUILD_TMP)/glibc-control
 	VER=`cd $(PKGPREFIX)/lib; echo ld-*.so` && VER=$${VER#ld-} && VER=$${VER%.so} && \
 		sed -i "s/@VER@/$$VER/" $(BUILD_TMP)/glibc-control/control
 	$(OPKG_SH) $(BUILD_TMP)/glibc-control
+	sed -i	-e 's/^Package: glibc$$/Package: glibc-debug/' \
+		-e 's/^Description:.*/Description: The GNU C library (unstripped)/' \
+		 $(BUILD_TMP)/glibc-control/control
+	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/glibc-control
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/glibc-control
 
 ifneq ($(PLATFORM), tripledragon)

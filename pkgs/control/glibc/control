@@ -1,6 +1,6 @@
 Package: glibc
 Version: @VER@-1
-Description: The GNU C libray
+Description: The GNU C library
 Section: base/libraries
 Priority: required
 Maintainer: @MAINT@
