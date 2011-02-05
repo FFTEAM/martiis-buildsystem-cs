@@ -1,6 +1,6 @@
 #Makefile to build NEUTRINO
 
-NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif libvorbis ffmpeg
+NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg
 
 N_CFLAGS  = -Wall -W -Wshadow -g -O2
 N_CFLAGS += -I$(TARGETPREFIX)/include
@@ -8,12 +8,14 @@ N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 ifneq ($(PLATFORM), tripledragon)
 # coolstream
 N_CFLAGS += -DUSE_NEVIS_GXA
-NEUTRINO_DEPS += openthreads
+NEUTRINO_DEPS += libvorbis openthreads
 else
 # tripledragon
 N_CFLAGS += -I$(TARGETPREFIX)/include/hardware
 # TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
 N_CFLAGS += -D_FILE_OFFSET_BITS=64
+N_CONFIG_OPTS = --with-tremor
+NEUTRINO_DEPS += libvorbisidec
 endif
 
 # the original build script links against openssl, but it is not needed at all.
@@ -34,7 +36,8 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
-				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM)
+				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
+				$(N_CONFIG_OPTS)
 
 $(PKGPREFIX)/.version \
 $(TARGETPREFIX)/.version:
@@ -59,6 +62,10 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 ifeq ($(PLATFORM), tripledragon)
 	# ugly: tripledragon neutrino has different requirements...
 	sed -i 's/libOpenThreads.so.12.*/directfb, td-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
+endif
+ifneq ($(findstring --with-tremor, $(N_CONFIG_OPTS)),)
+	# replace libvorbis/libogg with libvorbisidec...
+	sed -i 's/libvorbisf.*ogg.so.0,/libvorbisidec.so.1,/' $(BUILD_TMP)/neutrino-hd-control/control
 endif
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
