@@ -432,8 +432,8 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 	touch $@
 
 $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
-	$(UNTAR)/libvorbisidec_1.0.2+svn14261.orig.tar.gz
-	pushd $(BUILD_TMP)/libvorbisidec-1.0.2+svn14261 && \
+	$(UNTAR)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
+	pushd $(BUILD_TMP)/libvorbisidec-1.0.2+svn16259 && \
 		patch -p1 < $(PATCHES)/tremor.diff && \
 		./autogen.sh && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) && \
@@ -441,7 +441,7 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
 		perl -pi -e "s,^prefix=.*$$,prefix=$(TARGETPREFIX)," vorbisidec.pc && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		install -m644 vorbisidec.pc $(TARGETPREFIX)/lib/pkgconfig
-	$(REMOVE)/libvorbisidec-1.0.2+svn14261 $(PKGPREFIX)
+	$(REMOVE)/libvorbisidec-1.0.2+svn16259 $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisidec.so.1* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libvorbisidec
