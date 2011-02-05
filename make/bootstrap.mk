@@ -70,7 +70,11 @@ $(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX)
 	find $@ -name .svn -type d -print0 | xargs --no-run-if-empty -0 rm -rf
 
 $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
-	cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib
+	if test -e $(CROSS_DIR)/$(TARGET)/sys-root/lib; then \
+		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/lib/*so* $(TARGETPREFIX)/lib; \
+	else \
+		cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib; \
+	fi
 
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
