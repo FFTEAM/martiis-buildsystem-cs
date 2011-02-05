@@ -44,14 +44,14 @@ $(TARGETPREFIX)/.version:
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
 $(D)/neutrino: $(N_OBJDIR)/config.status
-	$(MAKE) -C $(N_OBJDIR) all
+	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
 	# make $(TARGETPREFIX)/.version
 	touch $@
 
 neutrino-pkg: $(N_OBJDIR)/config.status
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
-	$(MAKE) -C $(N_OBJDIR) all
+	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 skel-root/common/etc/init.d/start_neutrino $(PKGPREFIX)/etc/init.d/start_neutrino
 	make $(PKGPREFIX)/.version
