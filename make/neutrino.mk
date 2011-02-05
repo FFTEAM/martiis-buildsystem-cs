@@ -8,15 +8,19 @@ N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 ifneq ($(PLATFORM), tripledragon)
 # coolstream
 N_CFLAGS += -DUSE_NEVIS_GXA
-NEUTRINO_DEPS += libvorbis openthreads
+NEUTRINO_DEPS += openthreads
 else
 # tripledragon
 N_CFLAGS += -I$(TARGETPREFIX)/include/hardware
 # TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
 N_CFLAGS += -D_FILE_OFFSET_BITS=64
 N_CONFIG_OPTS = --with-tremor
-NEUTRINO_DEPS += libvorbisidec
 endif
+
+# if you really want slow libvorbis, leave N_CONFIG_OPTS empty and use
+# NEUTRINO_DEPS += libvorbis
+N_CONFIG_OPTS = --with-tremor
+NEUTRINO_DEPS += libvorbisidec
 
 # the original build script links against openssl, but it is not needed at all.
 # N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -lssl -lcrypto -ldl
