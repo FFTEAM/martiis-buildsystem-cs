@@ -287,9 +287,9 @@ $(D)/portmap: $(ARCHIVE)/portmap-6.0.tgz
 	cd $(BUILD_TMP)/portmap_6.0 && \
 		$(PATCH)/portmap_6.0-nocheckport.diff && \
 		$(BUILDENV) $(MAKE) NO_TCP_WRAPPER=1 DAEMON_UID=65534 DAEMON_GID=65535 CC="$(TARGET)-gcc" && \
-		install -m 0755 -s portmap $(TARGETPREFIX)/sbin && \
-		install -m 0755 -s pmap_dump $(TARGETPREFIX)/sbin && \
-		install -m 0755 -s pmap_set $(TARGETPREFIX)/sbin
+		install -m 0755 portmap $(TARGETPREFIX)/sbin && \
+		install -m 0755 pmap_dump $(TARGETPREFIX)/sbin && \
+		install -m 0755 pmap_set $(TARGETPREFIX)/sbin
 	$(REMOVE)/portmap_6.0
 	touch $@
 
