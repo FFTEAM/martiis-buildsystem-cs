@@ -15,7 +15,7 @@ BOXARCH      = arm
 endif
 
 WHOAMI       = $(shell id -un)
-MAINTAINER  ?= $(shell sh -c "getent passwd $(WHOAMI)|awk -F: '{print \$$5}'")
+MAINTAINER  ?= $(shell getent passwd $(WHOAMI)|awk -F: '{print $$5}')
 
 ## needed for the old Tripledragon crosstool
 # crosstool puts "...-glibc-2.3.6-tls" configs still into "...-glibc-2.3.6"

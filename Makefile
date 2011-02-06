@@ -18,6 +18,7 @@ printenv:
 	@echo "N_HD_SOURCE: $(N_HD_SOURCE)"
 	@echo "BOXARCH:     $(BOXARCH)"
 	@echo "PLATFORM:    $(PLATFORM)"
+	@echo "MAINTAINER:  $(MAINTAINER)"
 	@echo '============================================================================== '
 	@echo ""
 	@echo "'make help' lists useful targets."
@@ -25,8 +26,10 @@ printenv:
 	@echo ""
 	@make --no-print-directory toolcheck
 ifeq ($(MAINTAINER),)
-	@echo "The MAINTAINER variable is not set. It defaults to your name from the"
-	@echo "passwd entry, but this seems to have failed. Pkease set it in 'config'."
+	@echo "##########################################################################"
+	@echo "# The MAINTAINER variable is not set. It defaults to your name from the  #"
+	@echo "# passwd entry, but this seems to have failed. Please set it in 'config'.#"
+	@echo "##########################################################################"
 	@echo
 endif
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
