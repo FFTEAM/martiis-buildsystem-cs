@@ -24,6 +24,7 @@ $(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 libncurses zlib | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/gdb-7.1.tar.bz2
 	pushd $(BUILD_TMP)/gdb-7.1 && \
+		$(PATCH)/gdb-7.1-remove-builddate.diff && \
 		$(BUILDENV) \
 		./configure \
 			--nfp --disable-werror \
@@ -39,11 +40,11 @@ $(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 libncurses zlib | $(TARGETPREFIX)
 	rm -rf $(BUILD_TMP)/gdb-tmp
 	mkdir $(BUILD_TMP)/gdb-tmp
 	mv $(PKGPREFIX)/opt/pkg/bin/gdbserver $(BUILD_TMP)/gdb-tmp
-	$(OPKG_SH) $(CONTROL_DIR)/gdb
+	$(OPKG_SH) $(CONTROL_DIR)/gdb/gdb
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/bin
 	mv $(BUILD_TMP)/gdb-tmp/gdbserver $(PKGPREFIX)/bin
-	$(OPKG_SH) $(CONTROL_DIR)/gdbserver
+	$(OPKG_SH) $(CONTROL_DIR)/gdb/gdbserver
 	$(REMOVE)/gdb-7.1 $(PKGPREFIX) $(BUILD_TMP)/gdb-tmp $(BUILD_TMP)/.remove
 	touch $@
 
