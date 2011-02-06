@@ -51,7 +51,9 @@ $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 	pushd $(BUILD_TMP)/libmad-0.15.1b && \
 		patch -p1 < $(PATCHES)/libmad.diff && \
 		patch -p1 < $(PATCHES)/libmad-0.15.1b-arm-buildfix.diff && \
-		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes --enable-speed --enable-fpm=$(MAD_FPM) --enable-sso && \
+		touch NEWS AUTHORS ChangeLog && \
+		autoreconf -fi && \
+		$(CONFIGURE) --prefix= --enable-shared=yes --enable-speed --enable-fpm=$(MAD_FPM) --enable-sso && \
 		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" mad.pc > $(PKG_CONFIG_PATH)/libmad.pc
