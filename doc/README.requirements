@@ -10,3 +10,11 @@ zypper install --no-recommends \
 	gcc bison flex texinfo \
 	automake libtool \
 	ncurses-devel pkg-config
+
+For Debian based systems use these packages:
+
+apt-get install --yes \
+	git make subversion patch \
+	gcc bison flex texinfo \
+	automake libtool \
+	ncurses-dev pkg-config
