@@ -110,10 +110,10 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REMOVE)/pkg-lib; mkdir $(BUILD_TMP)/pkg-lib
 	cd $(PKGPREFIX) && rm -r include lib/pkgconfig lib/*.so lib/*a .remove/ && mv lib $(BUILD_TMP)/pkg-lib
-	$(OPKG_SH) $(CONTROL_DIR)/curl
+	$(OPKG_SH) $(CONTROL_DIR)/curl/curl
 	rm -rf $(PKGPREFIX)/*
 	mv $(BUILD_TMP)/pkg-lib/* $(PKGPREFIX)/
-	$(OPKG_SH) $(CONTROL_DIR)/libcurl
+	$(OPKG_SH) $(CONTROL_DIR)/curl/libcurl
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
