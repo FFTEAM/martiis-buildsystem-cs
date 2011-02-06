@@ -342,6 +342,7 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-1.30.tar.bz2 | $(TARGETPREFIX)
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REWRITE_LIBTOOL)/libsgutils2.la
 	rm -r $(PKGPREFIX)/lib $(PKGPREFIX)/include $(PKGPREFIX)/bin/sg_start
 	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/addon
 	rm -r $(PKGPREFIX)/*
