@@ -19,9 +19,10 @@ $(D)/libblkid: $(D)/libuuid
 $(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/util-linux-ng-2.18.tar.bz2
 	cd $(BUILD_TMP)/util-linux-ng-2.18 && \
-		./configure --prefix= --build=$(BUILD) --host=$(TARGET) \
+		$(CONFIGURE) --prefix= \
 			--disable-libmount \
 			--disable-static \
+			--without-ncurses \
 			--mandir=/.remove && \
 		$(MAKE) -C shlibs && \
 		$(MAKE) -C shlibs install DESTDIR=$(TARGETPREFIX)
@@ -32,10 +33,10 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
 	rm -fr $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libblkid.so.{1,1.1.0} $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libblkid
+	$(OPKG_SH) $(CONTROL_DIR)/util-linux/libblkid
 	rm $(PKGPREFIX)/lib/*
 	cp -a $(TARGETPREFIX)/lib/libuuid.so.{1,1.3.0} $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libuuid
+	$(OPKG_SH) $(CONTROL_DIR)/util-linux/libuuid
 	rm -rf $(PKGPREFIX)
 	touch $(D)/libuuid $(D)/libblkid
 
