@@ -332,3 +332,22 @@ $(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFI
 	$(OPKG_SH) $(CONTROL_DIR)/mc
 	$(REMOVE)/mc-4.6.2 $(PKGPREFIX)
 	touch $@
+
+$(D)/sg3-utils: $(ARCHIVE)/sg3_utils-1.30.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/sg3_utils-1.30.tar.bz2
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/sg3_utils-1.30 && \
+		$(CONFIGURE) --prefix= --mandir=/.remove && \
+		$(MAKE) && \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -r $(PKGPREFIX)/lib $(PKGPREFIX)/include $(PKGPREFIX)/bin/sg_start
+	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/addon
+	rm -r $(PKGPREFIX)/*
+	mkdir $(PKGPREFIX)/lib $(PKGPREFIX)/bin
+	cp -a $(TARGETPREFIX)/lib/libsgutils2.so.2* $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/bin/sg_start          $(PKGPREFIX)/bin
+	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/base
+	$(REMOVE)/sg3_utils-1.30 $(PKGPREFIX)
+	touch $@

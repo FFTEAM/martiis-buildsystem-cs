@@ -132,6 +132,9 @@ $(ARCHIVE)/samba-2.2.12.tar.gz:
 $(ARCHIVE)/samba-3.3.9.tar.gz:
 	$(WGET) http://download.samba.org/samba/ftp/old-versions/samba-3.3.9.tar.gz
 
+$(ARCHIVE)/sg3_utils-1.30.tar.bz2:
+	$(WGET) http://sg.danny.cz/sg/p/sg3_utils-1.30.tar.bz2
+
 $(ARCHIVE)/strace-4.5.20.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.20/strace-4.5.20.tar.bz2
 

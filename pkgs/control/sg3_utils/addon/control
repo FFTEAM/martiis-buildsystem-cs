@@ -1,0 +1,11 @@
+Package: sg3_utils-addon
+Version: 1.30-1
+Description: Additional sg3_utils tools
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sg.danny.cz/sg/sg3_utils.html
+Source:
+Depends: libsgutils2.so.2
+Provides:
