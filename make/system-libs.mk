@@ -375,7 +375,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/DirectFB-1.4.3.tar.gz
 	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
-		patch -p2 -i $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff && \
+		gzip -dc $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff | patch -p2 && \
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
 		sed -i 's/"-DBUILDTIME=.*/"-DBUILDTIME=\\"($(PLATFORM))\\""/' src/core/Makefile.am && \
 		./autogen.sh fail ; \
@@ -403,11 +403,11 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 	$(REMOVE)/dfb-tmp
 	mkdir $(BUILD_TMP)/dfb-tmp
 	mv $(PKGPREFIX)/opt $(BUILD_TMP)/dfb-tmp
-	$(OPKG_SH) $(CONTROL_DIR)/libdirectfb
+	$(OPKG_SH) $(CONTROL_DIR)/cs-directfb/libdirectfb
 	rm -rf $(PKGPREFIX)/*
 	mv $(BUILD_TMP)/dfb-tmp/opt $(PKGPREFIX)
 	rmdir $(BUILD_TMP)/dfb-tmp
-	$(OPKG_SH) $(CONTROL_DIR)/directfb-tools
+	$(OPKG_SH) $(CONTROL_DIR)/cs-directfb/directfb-tools
 	$(REMOVE)/DirectFB-1.4.3 $(PKGPREFIX)
 	touch $@
 
