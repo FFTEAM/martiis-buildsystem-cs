@@ -445,6 +445,7 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
 		make install DESTDIR=$(TARGETPREFIX) && \
 		install -m644 vorbisidec.pc $(TARGETPREFIX)/lib/pkgconfig
 	$(REMOVE)/libvorbisidec-1.0.2+svn16259 $(PKGPREFIX)
+	$(REWRITE_LIBTOOL)/libvorbisidec.la
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisidec.so.1* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libvorbisidec
