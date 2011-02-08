@@ -74,7 +74,7 @@ check_oldpackage() {
 		r=$R; FILE=$i
 	done
 	test -z "$FILE" && { echo "check_oldpackage: \$FILE is empty" >&2; exit 1; } # assert
-	echo "${ME}: package $FILE already exists, comparing..." >&2
+	echo "${ME}: package ${FILE#${PACKAGE_DIR}/} already exists, comparing..." >&2
 	mkdir oldroot oldCONTROL
 	ar p $FILE control.tar.gz | tar -xzf - -C oldCONTROL
 	ar p $FILE data.tar.gz    | tar -xzf - -C oldroot
