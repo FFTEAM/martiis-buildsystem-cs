@@ -32,7 +32,7 @@
 # the name used to replace "@MAINT@" in the opkg control files
 # defaults to your name from the passwd GECOS field
 #
-# MAINTAINER = "Johnny Walker"
+# MAINTAINER = Johnny Walker
 
 #
 # if you want to use a different source directory, set N_HD_SOURCE here.
