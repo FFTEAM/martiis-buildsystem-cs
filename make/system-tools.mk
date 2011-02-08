@@ -223,6 +223,7 @@ $(D)/samba3: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
 
 $(D)/samba2: $(ARCHIVE)/samba-2.2.12.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/samba-2.2.12.tar.gz
+	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/samba-2.2.12 && \
 		$(PATCH)/samba_2.2.12.diff && \
 		$(PATCH)/samba_2.2.12-noprint.diff && \
@@ -230,56 +231,67 @@ $(D)/samba2: $(ARCHIVE)/samba-2.2.12.tar.gz | $(TARGETPREFIX)
 		autoconf configure.in > configure && \
 		./configure \
 			--build=$(BUILD) \
-			--prefix=/opt/samba \
+			--prefix=/opt/pkg \
 			samba_cv_struct_timespec=yes \
 			samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
-			--with-configdir=/opt/samba/etc \
-			--with-privatedir=/opt/samba/etc/samba/private \
+			--with-configdir=/opt/pkg/etc \
+			--with-privatedir=/opt/pkg/etc/samba/private \
 			--with-lockdir=/var/lock \
 			--with-piddir=/var/run \
 			--with-logfilebase=/var/log/ \
 			--disable-cups \
-			--with-swatdir=$(TARGETPREFIX)/swat && \
+			--with-swatdir=$(PKGPREFIX)/swat && \
 		$(MAKE) clean; \
 		$(MAKE) bin/make_smbcodepage bin/make_unicodemap CC=$(CC) && \
-		install -d $(TARGETPREFIX)/opt/samba/lib/codepages && \
+		install -d $(PKGPREFIX)/opt/pkg/lib/codepages && \
 		./bin/make_smbcodepage c 850 codepages/codepage_def.850 \
-			$(TARGETPREFIX)/opt/samba/lib/codepages/codepage.850 && \
+			$(PKGPREFIX)/opt/pkg/lib/codepages/codepage.850 && \
 		./bin/make_unicodemap 850 codepages/CP850.TXT \
-			$(TARGETPREFIX)/opt/samba/lib/codepages/unicode_map.850 && \
+			$(PKGPREFIX)/opt/pkg/lib/codepages/unicode_map.850 && \
 		./bin/make_unicodemap ISO8859-1 codepages/CPISO8859-1.TXT \
-			$(TARGETPREFIX)/opt/samba/lib/codepages/unicode_map.ISO8859-1
+			$(PKGPREFIX)/opt/pkg/lib/codepages/unicode_map.ISO8859-1
 	$(MAKE) -C $(BUILD_TMP)/samba-2.2.12/source distclean
 	cd $(BUILD_TMP)/samba-2.2.12/source && \
 		$(BUILDENV) \
 		./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
-			--prefix=/opt/samba \
+			--prefix=/opt/pkg \
 			samba_cv_struct_timespec=yes \
 			samba_cv_HAVE_GETTIMEOFDAY_TZ=yes \
 			samba_cv_HAVE_IFACE_IFCONF=yes \
 			samba_cv_HAVE_EXPLICIT_LARGEFILE_SUPPORT=yes \
 			samba_cv_HAVE_OFF64_T=yes \
 			samba_cv_have_longlong=yes \
-			--with-configdir=/opt/samba/etc \
-			--with-privatedir=/opt/samba/etc/samba/private \
+			--with-configdir=/opt/pkg/etc \
+			--with-privatedir=/opt/pkg/etc/samba/private \
 			--with-lockdir=/var/lock \
 			--with-piddir=/var/run \
 			--with-logfilebase=/var/log/ \
 			--disable-cups \
-			--with-swatdir=$(TARGETPREFIX)/swat
-	install -d $(TARGETPREFIX)/opt/samba/bin
+			--with-swatdir=$(PKGPREFIX)/swat
+	install -d $(PKGPREFIX)/opt/pkg/bin
 	cd $(BUILD_TMP)/samba-2.2.12/source && \
 		$(MAKE) bin/smbd bin/nmbd bin/smbclient bin/smbmount bin/smbmnt bin/smbpasswd
-	for i in smbd nmbd smbclient smbmount smbmnt smbpasswd; do \
-		install $(BUILD_TMP)/samba-2.2.12/source/bin/$$i $(TARGETPREFIX)/opt/samba/bin; \
+	for i in smbd nmbd; do \
+		install $(BUILD_TMP)/samba-2.2.12/source/bin/$$i $(PKGPREFIX)/opt/pkg/bin; \
 	done
-	install -d $(TARGETPREFIX)/opt/samba/etc/samba/private
-	install -d $(TARGETPREFIX)/opt/samba/etc/init.d
-	install $(SCRIPTS)/smb.conf $(TARGETPREFIX)/opt/samba/etc
-	install -m 755 $(SCRIPTS)/samba2.init $(TARGETPREFIX)/opt/samba/etc/init.d/samba
-	$(REMOVE)/samba-2.2.12
+	install -d $(PKGPREFIX)/opt/pkg/etc/samba/private
+	install -d $(PKGPREFIX)/opt/pkg/etc/init.d
+	install $(SCRIPTS)/smb.conf $(PKGPREFIX)/opt/pkg/etc
+	install -m 755 $(SCRIPTS)/samba2.init $(PKGPREFIX)/opt/pkg/etc/init.d/samba
+	ln -s samba $(PKGPREFIX)/opt/pkg/etc/init.d/S99samba
+	ln -s samba $(PKGPREFIX)/opt/pkg/etc/init.d/K01samba
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(TARGET)-strip $(PKGPREFIX)/opt/pkg/bin/*
+	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/samba2/server
+	rm -rf $(PKGPREFIX)/*
+	install -d $(PKGPREFIX)/opt/pkg/bin
+	for i in smbclient smbmount smbmnt smbpasswd; do \
+		install $(BUILD_TMP)/samba-2.2.12/source/bin/$$i $(PKGPREFIX)/opt/pkg/bin; \
+	done
+	$(OPKG_SH) $(CONTROL_DIR)/samba2/client
+	$(REMOVE)/samba-2.2.12 $(PKGPREFIX)
 	touch $@
 
 $(D)/portmap: $(ARCHIVE)/portmap-6.0.tgz

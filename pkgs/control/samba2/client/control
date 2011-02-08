@@ -1,0 +1,10 @@
+Package: samba-client
+Version: 2.2.12-1
+Description: SMB client utilities
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.samba.org/
+Source:
+Depends:

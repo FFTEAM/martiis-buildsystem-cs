@@ -1,7 +1,5 @@
 #!/bin/sh
 
-PATH=/opt/samba/bin:$PATH
-
 case "$1" in
 	start)
 		for i in smbd nmbd; do
