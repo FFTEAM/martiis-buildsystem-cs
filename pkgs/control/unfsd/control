@@ -1,0 +1,10 @@
+Package: unfsd
+Version: 0.9.22-1
+Description: Userspace NFS daemon and portmapper
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://unfs3.sourceforge.net/ and http://neil.brown.name/portmap/
+Source:
+Depends:

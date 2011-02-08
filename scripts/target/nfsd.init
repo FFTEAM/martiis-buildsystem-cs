@@ -1,0 +1,39 @@
+#!/bin/sh
+#
+# start skript for userspace NFS daemon
+#
+PIDFILE=/var/run/unfsd.pid
+
+case $1 in
+	start)
+		if test -e /etc/exports; then
+			pidof portmap > /dev/null || portmap
+			pidof unfsd > /dev/null   || unfsd
+		else
+			echo "not starting unfsd: /etc/exports does not exist"
+		fi
+		;;
+	stop)	killall -TERM unfsd
+		killall -TERM portmap
+		;;
+	restart)
+		$0 stop
+		$0 start
+		;;
+	reload)	if killall -HUP unfsd; then
+			echo "reloaded unfsd"
+			exit 0
+		else
+			echo "reload unfsd failed"
+			exit 1
+		fi
+		;;
+	status)	if pidof unfsd > /dev/null; then
+			echo "unfsd is running"
+			exit 0
+		else
+			echo "unfsd is not running"
+			exit 1
+		fi
+		;;
+esac

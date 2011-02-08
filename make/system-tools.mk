@@ -301,7 +301,15 @@ $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-0.9.22.tar.gz
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -f -r $(TARGETPREFIX)/.remove
-	$(REMOVE)/unfs3-0.9.22
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/sbin
+	install -m 755 -D $(SCRIPTS)/nfsd.init $(TARGETPREFIX)/etc/init.d/nfsd
+	install -m 755 -D $(SCRIPTS)/nfsd.init $(PKGPREFIX)/etc/init.d/nfsd
+	ln -s nfsd $(PKGPREFIX)/etc/init.d/S99nfsd # needs to start after modules are loaded
+	ln -s nfsd $(PKGPREFIX)/etc/init.d/K01nfsd
+	cp -a $(TARGETPREFIX)/sbin/{unfsd,portmap} $(PKGPREFIX)/sbin
+	$(OPKG_SH) $(CONTROL_DIR)/unfsd
+	$(REMOVE)/unfs3-0.9.22 $(PKGPREFIX)
 	touch $@
 
 hotplug: $(TARGETPREFIX)/sbin/hotplug

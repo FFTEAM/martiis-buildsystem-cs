@@ -1,0 +1,2 @@
+#!/bin/sh
+service nfsd stop || true
