@@ -32,6 +32,7 @@ ifeq ($(MAINTAINER),)
 	@echo "##########################################################################"
 	@echo
 endif
+	@make -i -s $(TARGETPREFIX)
 	@PATH=$(PATH):$(CROSS_DIR)/bin && \
 	if type -p $(TARGET)-gcc >/dev/null 2>&1; then \
 		echo "$(TARGET)-gcc found in PATH or in \$$CROSS_DIR/bin."; \
