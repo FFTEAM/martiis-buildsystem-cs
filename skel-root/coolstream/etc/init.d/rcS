@@ -37,14 +37,9 @@ echo $(which mdev) > /proc/sys/kernel/hotplug
 dmesg -n 4
 # update library cache before running init scripts
 ldconfig
-# if ldconfig is not there, set up LD_LIBRARY_PATH
-if test -e /etc/ld.so.conf -a ! -e /etc/ld.so.cache; then
-	_tmp=$(cat /etc/ld.so.conf)
-	if test "$_tmp"; then
-		export LD_LIBRARY_PATH=${_tmp//[[:space:]]/:}
-	fi
-	unset _tmp
-fi
+
+# /etc/profile sets up $PATH etc.
+. /etc/profile
 
 . /etc/init.d/functions
 
