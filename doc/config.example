@@ -33,3 +33,11 @@
 # defaults to your name from the passwd GECOS field
 #
 # MAINTAINER = "Johnny Walker"
+
+#
+# if you want to use a different source directory, set N_HD_SOURCE here.
+# e.g. check out the SVN to "source/neutrino-hd-svn", then uncomment the
+# following. WARNING: "make update-neutrino" will cease to work, you'll
+# have to do this manually.
+#
+# N_HD_SOURCE = $(BASE_DIR)/source/neutrino-hd-svn
