@@ -3,12 +3,12 @@
 BASE_DIR    = $(shell pwd)
 -include $(BASE_DIR)/config
 
-ifeq ($(PLATFORM), tripledragon)
+ifneq ($(PLATFORM), coolstream)
+PLATFORM    ?= tripledragon
 TARGET      ?= powerpc-405-linux-gnu
 FLAVOUR     ?= neutrino-hd-tripledragon
 BOXARCH      = powerpc
 else
-PLATFORM    ?= coolstream
 TARGET      ?= arm-cx2450x-linux-gnueabi
 FLAVOUR     ?= neutrino-hd
 BOXARCH      = arm

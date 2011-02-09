@@ -7,7 +7,7 @@ in this doc/ directory which can be copied into the top directory.
 
 Defaults of the different options are:
 
-	PLATFORM = coolstream
+	PLATFORM = tripledragon
 	CROSS_DIR =
 	TARGET =
 	BUILD =
@@ -39,3 +39,9 @@ Those three targets, "preqs", "crosstool" and "bootstrap" must complete
 successfully before continuing. If one of them aborts with an error,
 simply continuing is not an option. Read the output (it might give hints
 on what went wrong), fix the problem and run the target again.
+
+Note that the coolstream platform is officially unsupported, if it breaks,
+you get to keep the pieces. Patches to fix it are welcome as long as they
+don't break the supported platforms.
+
+Have a lot of fun...

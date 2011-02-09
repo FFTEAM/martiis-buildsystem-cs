@@ -1,6 +1,6 @@
 # The type of box to build for.
 # either "tripledragon" or "coolstream"
-# default (if empty) is "coolstream"
+# default (if empty) is "tripledragon"
 #PLATFORM=tripledragon
 
 # if you want to use your precompiled toolchain, define those variables:
