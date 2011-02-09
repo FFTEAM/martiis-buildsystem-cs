@@ -358,16 +358,6 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libiconv: $(ARCHIVE)/libiconv-1.13.1.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libiconv-1.13.1.tar.gz
-	pushd $(BUILD_TMP)/libiconv-1.13.1 && \
-		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --prefix= --datarootdir=/.remove && \
-		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-	rm -fr $(TARGETPREFIX)/.remove
-	$(REMOVE)/libiconv-1.13.1
-	touch $@
-
 # this is butt ugly. For some reason, the old libtool in debian lenny 5.0.7
 # does not put "-lz" into LDFLAGS of some subdirs, and I was not able to fix that.
 # Hence the LDFLAGS="$(TARGET_LDFLAGS) -lz" hack... :-(

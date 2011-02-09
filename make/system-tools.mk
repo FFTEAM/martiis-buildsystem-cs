@@ -196,31 +196,6 @@ $(D)/autofs: $(ARCHIVE)/autofs-4.1.4.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/samba3: $(ARCHIVE)/samba-3.3.9.tar.gz $(D)/libiconv | $(TARGETPREFIX)
-	$(UNTAR)/samba-3.3.9.tar.gz
-	cd $(BUILD_TMP)/samba-3.3.9 && \
-		$(PATCH)/samba-3.3.9.diff && \
-		cd source && \
-		export CONFIG_SITE=$(PATCHES)/samba-3.3.9-config.site && \
-		./autogen.sh && \
-		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
-			--prefix=/ --mandir=/.remove \
-			--sysconfdir=/etc/samba \
-			--with-configdir=/etc/samba \
-			--with-privatedir=/etc/samba \
-			--with-modulesdir=/lib/samba \
-			--datadir=/var/samba \
-			--localstatedir=/var/samba \
-			--with-piddir=/tmp \
-			--with-libiconv=/lib \
-			--with-cifsumount --without-krb5 --without-ldap --without-ads --disable-cups --disable-swat \
-			&& \
-		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-	rm -f -r $(TARGETPREFIX)/.remove
-	$(REMOVE)/samba-3.3.9
-	touch $@
-
 $(D)/samba2: $(ARCHIVE)/samba-2.2.12.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/samba-2.2.12.tar.gz
 	rm -rf $(PKGPREFIX)
@@ -324,15 +299,6 @@ $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-0.9.22.tar.gz
 	$(REMOVE)/unfs3-0.9.22 $(PKGPREFIX)
 	touch $@
 
-hotplug: $(TARGETPREFIX)/sbin/hotplug
-$(TARGETPREFIX)/sbin/hotplug: $(SVN_TP_APPS)/hotplug $(SVN_TP_APPS)/hotplug/hotplug.c $(D)/libblkid $(D)/libuuid | $(TARGETPREFIX)
-	mkdir -p $(TARGETPREFIX)/sbin
-	cd $(SVN_TP_APPS)/hotplug && \
-		$(TARGET)-gcc -Wall -Wextra -Wshadow -O2 -g \
-			-I$(TARGETPREFIX)/include -L$(TARGETPREFIX)/lib \
-			-lblkid -luuid \
-			-o $@ hotplug.c
-
 fbshot: $(TARGETPREFIX)/bin/fbshot
 $(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-0.3.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/fbshot-0.3.tar.gz
@@ -345,4 +311,4 @@ system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs
 system-tools-opt: $(D)/samba2 $(D)/xfsprogs $(D)/vsftpd
 system-tools-all: system-tools system-tools-opt
 
-PHONY += hotplug system-tools system-tools-opt system-tools-all
+PHONY += system-tools system-tools-opt system-tools-all

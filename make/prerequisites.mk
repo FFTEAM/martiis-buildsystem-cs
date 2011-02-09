@@ -73,10 +73,6 @@ $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/CROSSENVIROMENT/$(shell basename $@)
 
-$(SVN_TP_APPS)/hotplug:
-	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/applications/$(shell basename $@)
-
 $(SVN_TP_LIBS)/libcs \
 $(SVN_TP_LIBS)/libnxp \
 $(SVN_TP_LIBS)/OpenThreads-svn:
