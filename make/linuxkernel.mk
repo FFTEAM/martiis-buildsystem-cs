@@ -120,6 +120,14 @@ $(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	touch $@
 
+# yes, it's not the kernel. but it's not enough to warrant an extra file
+$(D)/cs-uboot: $(ARCHIVE)/u-boot-2009.03.tar.bz2
+	$(UNTAR)/u-boot-2009.03.tar.bz2
+	cd $(BUILD_TMP)/u-boot-2009.03 && \
+		$(PATCH)/coolstream/u-boot-2009.3-CST.diff && \
+		make coolstream_hdx_config && \
+		$(MAKE)
+	touch $@
 endif
 
 # rule for the autofs4 module - needed by the automounter

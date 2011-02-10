@@ -138,6 +138,9 @@ $(ARCHIVE)/sg3_utils-1.30.tar.bz2:
 $(ARCHIVE)/strace-4.5.20.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.20/strace-4.5.20.tar.bz2
 
+$(ARCHIVE)/u-boot-2009.03.tar.bz2:
+	$(WGET) http://ftp.denx.de/pub/u-boot/u-boot-2009.03.tar.bz2
+
 $(ARCHIVE)/unfs3-0.9.22.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/unfs3/unfs3-0.9.22.tar.gz
 
