@@ -71,14 +71,50 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
 
 else
 
-$(BUILD_TMP)/linux-$(KVERSION):
+$(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch $(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff $(PATCHES)/kernel.config
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
 	cd $(BUILD_TMP)/linux-$(KVERSION) && \
-		$(PATCH)/linux-2.6.26.8-new-make.patch
+		$(PATCH)/linux-2.6.26.8-new-make.patch && \
+		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff
 	cp $(PATCHES)/kernel.config $@/.config
 
+# this would be a way to build custom configs, but it is not nice, so not used yet.
+# CS_K_Y = CONFIG_HID_SUPPORT
+# CS_K_M = CONFIG_HID
+# CS_K_N = CONFIG_HID_DEBUG
+# CS_K_N += CONFIG_HIDRAW
+# CS_K_M += CONFIG_USB_HID
+# CS_K_N += CONFIG_USB_HIDINPUT_POWERBOOK
+# CS_K_N += CONFIG_HID_FF
+# CS_K_N += CONFIG_USB_HIDDEV
+# CS_K_N += CONFIG_USB_KBD
+# CS_K_N += CONFIG_USB_MOUSE
+# CS_K_Y += CONFIG_USB_EZUSB
+# CS_K_Y += CONFIG_USB_SERIAL_GENERIC
+# CS_K_M += CONFIG_USB_SERIAL_BELKIN
+# CS_K_M += CONFIG_USB_SERIAL_CP2101
+# CS_K_M += CONFIG_USB_SERIAL_KEYSPAN_PDA
+# CS_K_M += CONFIG_USB_SERIAL_MCT_U232
+# CS_K_M += CONFIG_AUTOFS4_FS
+# CS_K_M += CONFIG_ISO9660_FS
+# CS_K_Y += CONFIG_JOLIET
+# CS_K_N += CONFIG_ZISOFS
+# CS_K_M += CONFIG_UDF_FS
+# CS_K_Y += CONFIG_UDF_NLS
+# CS_K_M += CONFIG_NFSD
+# CS_K_Y += CONFIG_NFSD_V3
+# CS_K_N += CONFIG_NFSD_V3_ACL
+# CS_K_N += CONFIG_NFSD_V4
+# CS_K_M += CONFIG_EXPORTFS
+# 		for i in $(CS_K_Y); do sed -i "/^\(# \)*$$i[= ]/d" .config; done && \
+# 		for i in $(CS_K_Y); do echo "$$i=y" >> .config; done && \
+# 		for i in $(CS_K_M); do sed -i "/^\(# \)*$$i[= ]/d" .config; done && \
+# 		for i in $(CS_K_M); do echo "$$i=m" >> .config; done && \
+# 		for i in $(CS_K_N); do sed -i "/^\(# \)*$$i[= ]/d" .config; done && \
+# 		for i in $(CS_K_N); do echo "# $$i is not set" >> .config; done && \
+
 $(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
-	pushd $(BUILD_TMP)/linux-$(KVERSION) && \
+	cd $(BUILD_TMP)/linux-$(KVERSION) && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- oldconfig && \
 		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
