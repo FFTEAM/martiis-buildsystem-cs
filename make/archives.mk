@@ -10,19 +10,19 @@ $(ARCHIVE)/DirectFB-1.4.3.tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-1.4.3.tar.gz
 
 $(ARCHIVE)/libmad-0.15.1b.tar.gz:
-	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/0.15.1b/libmad-0.15.1b.tar.gz?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/0.15.1b/libmad-0.15.1b.tar.gz
 
 $(ARCHIVE)/libiconv-1.13.1.tar.gz:
 	$(WGET) http://ftp.gnu.org/gnu/libiconv/libiconv-1.13.1.tar.gz
 
 $(ARCHIVE)/libid3tag-0.15.1b.tar.gz:
-	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/0.15.1b/libid3tag-0.15.1b.tar.gz?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/0.15.1b/libid3tag-0.15.1b.tar.gz
 
 $(ARCHIVE)/libjpeg-turbo-1.0.1.tar.gz:
 	$(WGET) http://sourceforge.net/projects/libjpeg-turbo/files/1.0.1/libjpeg-turbo-1.0.1.tar.gz
 
 $(ARCHIVE)/libungif-4.1.4.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-4.1.4/libungif-4.1.4.tar.bz2?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-4.1.4/libungif-4.1.4.tar.bz2
 
 $(ARCHIVE)/libupnp-1.6.10.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ 1.6.10/libupnp-1.6.10.tar.bz2
@@ -52,13 +52,13 @@ $(ARCHIVE)/freetype-2.1.4.tar.bz2:
 	$(WGET) http://heanet.dl.sourceforge.net/sourceforge/freetype/freetype-2.1.4.tar.bz2
 
 $(ARCHIVE)/freetype-2.3.9.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.9/freetype-2.3.9.tar.bz2?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.9/freetype-2.3.9.tar.bz2
 
 $(ARCHIVE)/freetype-2.3.11.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.11/freetype-2.3.11.tar.bz2?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.11/freetype-2.3.11.tar.bz2
 
 $(ARCHIVE)/freetype-2.3.12.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.12/freetype-2.3.12.tar.bz2?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.12/freetype-2.3.12.tar.bz2
 
 $(ARCHIVE)/glib-2.8.6.tar.bz2:
 	$(WGET) http://ftp.se.debian.org/pub/gnome/sources/glib/2.8/glib-2.8.6.tar.bz2
@@ -67,7 +67,7 @@ $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz
 
 $(ARCHIVE)/boost_1_42_0.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/boost/boost/1.42.0/boost_1_42_0.tar.bz2?use_mirror=switch
+	$(WGET) http://downloads.sourceforge.net/project/boost/boost/1.42.0/boost_1_42_0.tar.bz2
 
 $(ARCHIVE)/ffmpeg-0.6.tar.bz2:
 	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-0.6.tar.bz2
