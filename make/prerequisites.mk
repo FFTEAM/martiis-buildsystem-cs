@@ -48,6 +48,12 @@ $(SOURCE_DIR)/neutrino-hd-td:
 	cd $(SOURCE_DIR) && \
 		git clone git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
 
+
+$(PLUGIN_DIR):
+	mkdir -p $(SOURCE_DIR)
+	cd $(SOURCE_DIR) && \
+		git clone git://gitorious.org/neutrino-hd/neutrino-hd-plugins.git
+
 check-repo:
 	@git --git-dir=$(SOURCE_DIR)/neutrino-hd/.git config remote.origin.url | \
 		grep -q "neutrino-hd-experimental.git$$" || \

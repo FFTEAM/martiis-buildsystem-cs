@@ -82,6 +82,7 @@ include make/linuxkernel.mk
 include make/archives.mk
 include make/extras.mk
 include make/packages.mk
+include make/plugins.mk
 
 update-self:
 	git pull

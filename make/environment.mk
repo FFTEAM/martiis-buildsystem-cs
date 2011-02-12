@@ -34,6 +34,7 @@ TARGETPREFIX = $(BASE_DIR)/root
 PKGPREFIX    = $(BUILD_TMP)/pkg
 FROOTFS      = $(BASE_DIR)/root-flash
 SOURCE_DIR   = $(BASE_DIR)/source
+PLUGIN_DIR   = $(SOURCE_DIR)/neutrino-hd-plugins
 MAKE_DIR     = $(BASE_DIR)/make
 CONTROL_DIR  = $(BASE_DIR)/pkgs/control
 PACKAGE_DIR  = $(BASE_DIR)/pkgs/opkg
