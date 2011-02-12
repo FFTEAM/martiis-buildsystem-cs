@@ -1,14 +1,16 @@
 #Makefile to build system libs, potentially needed by neutrino and enigma
 
-$(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/zlib-1.2.5.tar.bz2
-	cd $(BUILD_TMP)/zlib-1.2.5 && \
+include make/versions.mk
+
+$(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/zlib-$(ZLIB-VER).tar.bz2
+	cd $(BUILD_TMP)/zlib-$(ZLIB-VER) && \
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared && \
 		$(MAKE) && \
 		ln -sf /bin/true ldconfig && \
-		PATH=$(BUILD_TMP)/zlib-1.2.5:$(PATH) make install prefix=$(TARGETPREFIX)
+		PATH=$(BUILD_TMP)/zlib-$(ZLIB-VER):$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
-	$(REMOVE)/zlib-1.2.5 $(PKGPREFIX)
+	$(REMOVE)/zlib-$(ZLIB-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libz.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libz
@@ -16,9 +18,9 @@ $(D)/zlib: $(ARCHIVE)/zlib-1.2.5.tar.bz2 | $(TARGETPREFIX)
 	touch $@
 
 $(D)/libblkid: $(D)/libuuid
-$(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/util-linux-ng-2.18.tar.bz2
-	cd $(BUILD_TMP)/util-linux-ng-2.18 && \
+$(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2
+	cd $(BUILD_TMP)/util-linux-ng-$(UTIL_LINUX_NG-VER) && \
 		$(CONFIGURE) --prefix= \
 			--disable-libmount \
 			--disable-static \
@@ -29,7 +31,7 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-2.18.tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/uuid.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/blkid.pc
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/util-linux-ng-2.18
+	$(REMOVE)/util-linux-ng-$(UTIL_LINUX_NG-VER)
 	rm -fr $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libblkid.so.{1,1.1.0} $(PKGPREFIX)/lib
@@ -46,11 +48,11 @@ endif
 ifeq ($(BOXARCH), powerpc)
 MAD_FPM = ppc
 endif
-$(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libmad-0.15.1b.tar.gz
-	pushd $(BUILD_TMP)/libmad-0.15.1b && \
+$(D)/libmad: $(ARCHIVE)/libmad-$(MAD-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libmad-$(MAD-VER).tar.gz
+	pushd $(BUILD_TMP)/libmad-$(MAD-VER) && \
 		patch -p1 < $(PATCHES)/libmad.diff && \
-		patch -p1 < $(PATCHES)/libmad-0.15.1b-arm-buildfix.diff && \
+		patch -p1 < $(PATCHES)/libmad-$(MAD-VER)-arm-buildfix.diff && \
 		touch NEWS AUTHORS ChangeLog && \
 		autoreconf -fi && \
 		$(CONFIGURE) --prefix= --enable-shared=yes --enable-speed --enable-fpm=$(MAD_FPM) --enable-sso && \
@@ -58,47 +60,47 @@ $(D)/libmad: $(ARCHIVE)/libmad-0.15.1b.tar.gz | $(TARGETPREFIX)
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" mad.pc > $(PKG_CONFIG_PATH)/libmad.pc
 	$(REWRITE_LIBTOOL)/libmad.la
-	$(REMOVE)/libmad-0.15.1b $(PKGPREFIX)
+	$(REMOVE)/libmad-$(MAD-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libmad.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libmad
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-0.15.1b.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libid3tag-0.15.1b.tar.gz
-	pushd $(BUILD_TMP)/libid3tag-0.15.1b && \
+$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libid3tag-$(ID3TAG-VER).tar.gz
+	pushd $(BUILD_TMP)/libid3tag-$(ID3TAG-VER) && \
 		patch -p1 < $(PATCHES)/libid3tag.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes && \
 		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" id3tag.pc > $(PKG_CONFIG_PATH)/libid3tag.pc
 	$(REWRITE_LIBTOOL)/libid3tag.la
-	$(REMOVE)/libid3tag-0.15.1b $(PKGPREFIX)
+	$(REMOVE)/libid3tag-$(ID3TAG-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libid3tag.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libid3tag
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libungif: $(ARCHIVE)/libungif-4.1.4.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libungif-4.1.4.tar.bz2
-	pushd $(BUILD_TMP)/libungif-4.1.4 && \
+$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libungif-$(UNGIF-VER).tar.bz2
+	pushd $(BUILD_TMP)/libungif-$(UNGIF-VER) && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove && \
 		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libungif.la
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/libungif-4.1.4 $(PKGPREFIX)
+	$(REMOVE)/libungif-$(UNGIF-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libungif.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libungif
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
-	$(UNTAR)/curl-7.20.0.tar.bz2
-	pushd $(BUILD_TMP)/curl-7.20.0 && \
+$(D)/libcurl: $(ARCHIVE)/curl-$(CURL-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+	$(UNTAR)/curl-$(CURL-VER).tar.bz2
+	pushd $(BUILD_TMP)/curl-$(CURL-VER) && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
 			--disable-manual --disable-file --disable-rtsp --disable-dict \
 			--disable-imap --disable-pop3 --disable-smtp --without-ssl \
@@ -119,25 +121,25 @@ $(D)/libcurl: $(ARCHIVE)/curl-7.20.0.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/curl-7.20.0 $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
+	$(REMOVE)/curl-$(CURL-VER) $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
 	touch $@
 
-$(D)/libpng: $(ARCHIVE)/libpng-1.2.44.tar.bz2 $(D)/zlib | $(TARGETPREFIX)
-	$(UNTAR)/libpng-1.2.44.tar.bz2
-	pushd $(BUILD_TMP)/libpng-1.2.44 && \
+$(D)/libpng: $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+	$(UNTAR)/libpng-$(PNG-VER).tar.bz2
+	pushd $(BUILD_TMP)/libpng-$(PNG-VER) && \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman && \
 		ECHO=echo $(MAKE) all && \
 		make install
-	$(REMOVE)/libpng-1.2.44 $(BUILD_TMP)/tmpman $(PKGPREFIX)
+	$(REMOVE)/libpng-$(PNG-VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libpng12
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/freetype-2.3.12.tar.bz2
-	pushd $(BUILD_TMP)/freetype-2.3.12 && \
+$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/freetype-$(FREETYPE-VER).tar.bz2
+	pushd $(BUILD_TMP)/freetype-$(FREETYPE-VER) && \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) && \
 		$(MAKE) all && \
@@ -147,16 +149,16 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-2.3.12.tar.bz2 | $(TARGETPREFIX)
 	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
-	$(REMOVE)/freetype-2.3.12 $(PKGPREFIX)
+	$(REMOVE)/freetype-$(FREETYPE-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libfreetype.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libfreetype
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-1.0.1.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libjpeg-turbo-1.0.1.tar.gz
-	cd $(BUILD_TMP)/libjpeg-turbo-1.0.1 && \
+$(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz
+	cd $(BUILD_TMP)/libjpeg-turbo-$(JPEG_TURBO-VER) && \
 		export CC=$(TARGET)-gcc && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared \
 			--mandir=/.remove --bindir=/.remove && \
@@ -164,25 +166,25 @@ $(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-1.0.1.tar.gz | $(TARGETPREFIX)
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libjpeg.la
 	rm -f $(TARGETPREFIX)/lib/libturbojpeg* $(TARGETPREFIX)/include/turbojpeg.h
-	$(REMOVE)/libjpeg-turbo-1.0.1 $(TARGETPREFIX)/.remove $(PKGPREFIX)
+	$(REMOVE)/libjpeg-turbo-$(JPEG_TURBO-VER) $(TARGETPREFIX)/.remove $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libjpeg.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libjpeg
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libboost: $(ARCHIVE)/boost_1_42_0.tar.bz2 | $(TARGETPREFIX)
+$(D)/libboost: $(ARCHIVE)/boost_$(BOOST-VER).tar.bz2 | $(TARGETPREFIX)
 	pushd $(BUILD_TMP) && \
-		tar xf $(ARCHIVE)/boost_1_42_0.tar.bz2 boost_1_42_0/boost && \
+		tar xf $(ARCHIVE)/boost_$(BOOST-VER).tar.bz2 boost_$(BOOST-VER)/boost && \
 		rm -rf $(TARGETPREFIX)/include/boost &&\
-		mv boost_1_42_0/boost $(TARGETPREFIX)/include/boost && \
-		rmdir boost_1_42_0
+		mv boost_$(BOOST-VER)/boost $(TARGETPREFIX)/include/boost && \
+		rmdir boost_$(BOOST-VER)
 	touch $@
 
 # openssl seems to have problem with parallel builds, so use "make" instead of "$(MAKE)"
-$(D)/openssl: $(ARCHIVE)/openssl-0.9.8q.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/openssl-0.9.8q.tar.gz
-	cd $(BUILD_TMP)/openssl-0.9.8q && \
+$(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz
+	cd $(BUILD_TMP)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER) && \
 		sed -i 's/#define DATE.*/#define DATE \\"($(PLATFORM))\\""; \\/' crypto/Makefile && \
 		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove && \
@@ -193,11 +195,11 @@ $(D)/openssl: $(ARCHIVE)/openssl-0.9.8q.tar.gz | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcrypto.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libssl.pc
 	rm -r $(TARGETPREFIX)/.remove $(TARGETPREFIX)/bin/openssl $(TARGETPREFIX)/bin/c_rehash
-	$(REMOVE)/openssl-0.9.8q
+	$(REMOVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER)
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/lib{crypto,ssl}.so.0.9.8 $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/lib{crypto,ssl}.so.$(OPENSSL-VER) $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/openssl-libs
 	rm -rf $(PKGPREFIX)
 	touch $@
@@ -218,9 +220,9 @@ FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decode
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
 endif
-$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/ffmpeg-0.6.tar.bz2
-	cd $(BUILD_TMP)/ffmpeg-0.6 && \
+$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/ffmpeg-$(FFMPEG-VER).tar.bz2
+	cd $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER) && \
 		$(PATCH)/ffmpeg-dvbsubs.diff && \
 		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff && \
 		$(PATCH)/ffmpeg-0.6-remove-buildtime.diff && \
@@ -245,14 +247,14 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-0.6.tar.bz2 | $(TARGETPREFIX)
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/share/ffmpeg
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	cp $(BUILD_TMP)/ffmpeg-0.6/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
+	cp $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER)/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/.remove
 	$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
-	$(REMOVE)/ffmpeg-0.6 $(PKGPREFIX)
+	$(REMOVE)/ffmpeg-$(FFMPEG-VER) $(PKGPREFIX)
 	touch $@
 
 # maybe put this into archive.mk?
@@ -292,16 +294,16 @@ $(D)/ffmpeg-snapshot: $(BUILD_TMP)/ffmpeg | $(TARGETPREFIX)
 	# $(REMOVE)/ffmpeg
 	touch $@
 
-$(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libogg-1.1.4.tar.gz
-	pushd $(BUILD_TMP)/libogg-1.1.4 && \
+$(D)/libogg: $(ARCHIVE)/libogg-$(OGG-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libogg-$(OGG-VER).tar.gz
+	pushd $(BUILD_TMP)/libogg-$(OGG-VER) && \
 		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff && \
 		$(CONFIGURE) --prefix= --enable-shared && \
 		$(MAKE) && \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
 	$(REWRITE_LIBTOOL)/libogg.la
-	$(REMOVE)/libogg-1.1.4 $(PKGPREFIX)
+	$(REMOVE)/libogg-$(OGG-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libogg.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libogg
@@ -309,9 +311,9 @@ $(D)/libogg: $(ARCHIVE)/libogg-1.1.4.tar.gz | $(TARGETPREFIX)
 	touch $@
 
 # for some reason, libvorbis does not work with "--prefix=/"
-$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libvorbis-1.2.3.tar.bz2
-	pushd $(BUILD_TMP)/libvorbis-1.2.3 && \
+$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libvorbis-$(VORBIS-VER).tar.bz2
+	pushd $(BUILD_TMP)/libvorbis-$(VORBIS-VER) && \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff && \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-smaller-chunksize.diff && \
 		$(CONFIGURE) --enable-shared --prefix=$(TARGETPREFIX) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" && \
@@ -320,7 +322,7 @@ $(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-1.2.3.tar.bz2 | $(TARGETPREFIX)
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbis.pc
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisenc.pc
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisfile.pc
-	$(REMOVE)/libvorbis-1.2.3 $(PKGPREFIX)
+	$(REMOVE)/libvorbis-$(VORBIS-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbis.so.* $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisfile.so.* $(PKGPREFIX)/lib
@@ -339,9 +341,9 @@ ncurses-prereq:
 		false; \
 	fi
 
-$(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
-	$(UNTAR)/ncurses-5.6.tar.gz && \
-	pushd $(BUILD_TMP)/ncurses-5.6 && \
+$(D)/libncurses: $(ARCHIVE)/ncurses-$(NCURSES-VER).tar.gz | ncurses-prereq $(TARGETPREFIX)
+	$(UNTAR)/ncurses-$(NCURSES-VER).tar.gz && \
+	pushd $(BUILD_TMP)/ncurses-$(NCURSES-VER) && \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
 			--prefix= --with-terminfo-dirs=/usr/share/terminfo \
 			--disable-big-core --without-debug --without-progs --without-ada --with-shared \
@@ -350,7 +352,7 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
 		$(MAKE) libs HOSTCC=gcc HOSTLDFLAGS="$(TARGET_LDFLAGS)" \
 			HOSTCCFLAGS="$(TARGET_CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include" && \
 		make install.libs DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/ncurses-5.6 $(PKGPREFIX)
+	$(REMOVE)/ncurses-$(NCURSES-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	# deliberately ignore libforms and libpanel - not yet needed
 	cp -a $(TARGETPREFIX)/lib/libncurses.so.* $(PKGPREFIX)/lib
@@ -361,10 +363,10 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-5.6.tar.gz | ncurses-prereq $(TARGETPREFIX)
 # this is butt ugly. For some reason, the old libtool in debian lenny 5.0.7
 # does not put "-lz" into LDFLAGS of some subdirs, and I was not able to fix that.
 # Hence the LDFLAGS="$(TARGET_LDFLAGS) -lz" hack... :-(
-$(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
+$(D)/directfb: $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/DirectFB-1.4.3.tar.gz
-	cd $(BUILD_TMP)/DirectFB-1.4.3 && \
+	$(UNTAR)/DirectFB-$(DIRECTFB-VER).tar.gz
+	cd $(BUILD_TMP)/DirectFB-$(DIRECTFB-VER) && \
 		gzip -dc $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff | patch -p2 && \
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff && \
 		sed -i 's/"-DBUILDTIME=.*/"-DBUILDTIME=\\"($(PLATFORM))\\""/' src/core/Makefile.am && \
@@ -398,7 +400,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-1.4.3.tar.gz $(D)/zlib $(D)/freetype $(D)/lib
 	mv $(BUILD_TMP)/dfb-tmp/opt $(PKGPREFIX)
 	rmdir $(BUILD_TMP)/dfb-tmp
 	$(OPKG_SH) $(CONTROL_DIR)/cs-directfb/directfb-tools
-	$(REMOVE)/DirectFB-1.4.3 $(PKGPREFIX)
+	$(REMOVE)/DirectFB-$(DIRECTFB-VER) $(PKGPREFIX)
 	touch $@
 
 # the strange find | sed hack is needed for old cmake versions which
@@ -424,9 +426,9 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
-	$(UNTAR)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
-	pushd $(BUILD_TMP)/libvorbisidec-1.0.2+svn16259 && \
+$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz
+	$(UNTAR)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz
+	pushd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC-VER) && \
 		patch -p1 < $(PATCHES)/tremor.diff && \
 		./autogen.sh && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) && \
@@ -434,7 +436,7 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
 		perl -pi -e "s,^prefix=.*$$,prefix=$(TARGETPREFIX)," vorbisidec.pc && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		install -m644 vorbisidec.pc $(TARGETPREFIX)/lib/pkgconfig
-	$(REMOVE)/libvorbisidec-1.0.2+svn16259 $(PKGPREFIX)
+	$(REMOVE)/libvorbisidec-$(VORBISIDEC-VER) $(PKGPREFIX)
 	$(REWRITE_LIBTOOL)/libvorbisidec.la
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisidec.so.1* $(PKGPREFIX)/lib
@@ -448,27 +450,27 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_1.0.2+svn16259.orig.tar.gz
 #############################################################################################
 #############################################################################################
 
-$(D)/libpcap: $(ARCHIVE)/libpcap-1.0.0.tar.gz
-	$(UNTAR)/libpcap-1.0.0.tar.gz
-	pushd $(BUILD_TMP)/libpcap-1.0.0 && \
+$(D)/libpcap: $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz
+	$(UNTAR)/libpcap-$(PCAP-VER).tar.gz
+	pushd $(BUILD_TMP)/libpcap-$(PCAP-VER) && \
 		echo "ac_cv_linux_vers=2" >> config.cache && \
 		$(CONFIGURE) --with-pcap=linux --prefix= --cache-file=config.cache && \
 		make all && \
 		make install DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/libpcap-1.0.0
+	$(REMOVE)/libpcap-$(PCAP-VER)
 	touch $@
 
 # builds only static lib, needed e.g. by unfsd
-$(D)/libflex: $(ARCHIVE)/flex-2.5.35.tar.gz
-	$(UNTAR)/flex-2.5.35.tar.gz
-	cd $(BUILD_TMP)/flex-2.5.35 && \
+$(D)/libflex: $(ARCHIVE)/flex-$(FLEX-VER).tar.gz
+	$(UNTAR)/flex-$(FLEX-VER).tar.gz
+	cd $(BUILD_TMP)/flex-$(FLEX-VER) && \
 		echo "ac_cv_func_malloc_0_nonnull=yes" > config.cache && \
 		echo "ac_cv_func_realloc_0_nonnull=yes" >> config.cache && \
 		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
-	$(REMOVE)/flex-2.5.35
+	$(REMOVE)/flex-$(FLEX-VER)
 	touch $@
 
 PHONY += ncurses-prereq
