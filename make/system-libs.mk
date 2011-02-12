@@ -1,4 +1,4 @@
-#Makefile to build system libs, potentially needed by neutrino and enigma
+# Makefile to build system libs, potentially needed by neutrino and enigma
 
 $(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/zlib-$(ZLIB-VER).tar.bz2
@@ -65,16 +65,16 @@ $(D)/libmad: $(ARCHIVE)/libmad-$(MAD-VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG-VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libid3tag-$(ID3TAG-VER).tar.gz
-	pushd $(BUILD_TMP)/libid3tag-$(ID3TAG-VER) && \
+$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz
+	pushd $(BUILD_TMP)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER) && \
 		patch -p1 < $(PATCHES)/libid3tag.diff && \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes && \
 		$(MAKE) all && \
 		make install DESTDIR=$(TARGETPREFIX) && \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" id3tag.pc > $(PKG_CONFIG_PATH)/libid3tag.pc
 	$(REWRITE_LIBTOOL)/libid3tag.la
-	$(REMOVE)/libid3tag-$(ID3TAG-VER) $(PKGPREFIX)
+	$(REMOVE)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libid3tag.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libid3tag
@@ -402,7 +402,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz $(D)/zlib $(D)/freetyp
 	touch $@
 
 # the strange find | sed hack is needed for old cmake versions which
-# don't obey CMAKE_INSTALL_PREFIX (e.g debian lenny 5.0.7's cmake 2.6)
+# don't obey CMAKE_INSTALL_PREFIX (e.g. debian lenny 5.0.7's cmake 2.6)
 $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 	opkg-chksvn.sh $(CONTROL_DIR)/libOpenThreads $(SVN_TP_LIBS)/OpenThreads-svn
 	tar -C $(SVN_TP_LIBS) -cp OpenThreads-svn --exclude=.svn | tar -C $(BUILD_TMP) -x

@@ -1,7 +1,9 @@
-# makefile for tarball download
+# Makefile for tarball downloads
+#
+# take a look in versions.mk for version numbers
 
-$(ARCHIVE)/autofs-4.1.4.tar.bz2:
-	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-4.1.4.tar.bz2
+$(ARCHIVE)/autofs-$(AUTOFS-VER).tar.bz2:
+	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-$(AUTOFS-VER).tar.bz2
 
 $(ARCHIVE)/crosstool-0.43.tar.gz:
 	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
@@ -15,8 +17,8 @@ $(ARCHIVE)/libmad-$(MAD-VER).tar.gz:
 $(ARCHIVE)/libiconv-$(ICONV-VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/gnu/libiconv/libiconv-$(ICONV-VER).tar.gz
 
-$(ARCHIVE)/libid3tag-$(ID3TAG-VER).tar.gz:
-	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/$(ID3TAG-VER)/libid3tag-$(ID3TAG-VER).tar.gz
+$(ARCHIVE)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/$(ID3TAG-VER)$(ID3TAG-SUBVER)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz
 
 $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz:
 	$(WGET) http://sourceforge.net/projects/libjpeg-turbo/files/$(JPEG_TURBO-VER)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz
@@ -24,8 +26,8 @@ $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz:
 $(ARCHIVE)/libungif-$(UNGIF-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-$(UNGIF-VER)/libungif-$(UNGIF-VER).tar.bz2
 
-$(ARCHIVE)/libupnp-1.6.10.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ 1.6.10/libupnp-1.6.10.tar.bz2
+$(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP-VER)/libupnp-$(LIBUPNP-VER).tar.bz2
 
 $(ARCHIVE)/curl-$(CURL-VER).tar.bz2:
 	$(WGET) http://curl.haxx.se/download/curl-$(CURL-VER).tar.bz2
@@ -33,14 +35,14 @@ $(ARCHIVE)/curl-$(CURL-VER).tar.bz2:
 $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/libpng12/$(PNG-VER)/libpng-$(PNG-VER).tar.bz2
 
-$(ARCHIVE)/dropbear-0.52.tar.bz2:
-	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-0.52.tar.bz2
+$(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
+	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2
 
-$(ARCHIVE)/e2fsprogs-1.41.12.tar.gz:
-	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-1.41.12.tar.gz
+$(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
+	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-$(E2FSPROGS-VER).tar.gz
 
-$(ARCHIVE)/fbshot-0.3.tar.gz:
-	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-0.3.tar.gz
+$(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz:
+	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-$(FBSHOT-VER).tar.gz
 
 $(ARCHIVE)/gdb-7.1.tar.bz2:
 	$(WGET) http://ftp.gnu.org/gnu/gdb/gdb-7.1.tar.bz2
@@ -60,8 +62,8 @@ $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/$(FREETYPE-VER)/freetype-$(FREETYPE-VER).tar.bz2
 
-$(ARCHIVE)/glib-2.8.6.tar.bz2:
-	$(WGET) http://ftp.se.debian.org/pub/gnome/sources/glib/2.8/glib-2.8.6.tar.bz2
+$(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
+	$(WGET) http://ftp.se.debian.org/pub/gnome/sources/glib/2.8/glib-$(GLIB-VER).tar.bz2
 
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz
@@ -87,53 +89,53 @@ $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz:
 $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz:
 	$(WGET) ftp://ftp.wh8.tu-dresden.de/pub/linux/distributions/gentoo/distfiles/libpcap-$(PCAP-VER).tar.gz
 
-$(ARCHIVE)/links-2.3pre1.tar.bz2:
-	$(WGET) http://links.twibright.com/download/links-2.3pre1.tar.bz2
+$(ARCHIVE)/links-$(LINKS-VER).tar.bz2:
+	$(WGET) http://links.twibright.com/download/links-$(LINKS-VER).tar.bz2
 
-$(ARCHIVE)/mc-4.6.2.tar.gz:
-	$(WGET) http://midnight-commander.org/downloads/mc-4.6.2.tar.gz
+$(ARCHIVE)/mc-$(MC-VER).tar.gz:
+	$(WGET) http://midnight-commander.org/downloads/mc-$(MC-VER).tar.gz
 
-$(ARCHIVE)/nbench-byte-2.2.3.tar.gz:
-	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-2.2.3.tar.gz
+$(ARCHIVE)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz:
+	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-$(NBENCH_BYTE-VER).tar.gz
 
-$(ARCHIVE)/ntfs-3g-2011.1.15.tgz:
-	$(WGET) http://tuxera.com/opensource/ntfs-3g-2011.1.15.tgz
+$(ARCHIVE)/ntfs-3g-$(NTFS_3G-VER).tgz:
+	$(WGET) http://tuxera.com/opensource/ntfs-3g-$(NTFS_3G-VER).tgz
 
 $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz:
 	$(WGET) http://www.openssl.org/source/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz
 
-$(ARCHIVE)/rsync-3.0.7.tar.gz:
-	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-3.0.7.tar.gz
+$(ARCHIVE)/rsync-$(RSYNC-VER).tar.gz:
+	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-$(RSYNC-VER).tar.gz
 
-$(ARCHIVE)/portmap-6.0.tgz:
-	$(WGET) http://neil.brown.name/portmap/portmap-6.0.tgz
+$(ARCHIVE)/portmap-$(PORTMAP-VER).tgz:
+	$(WGET) http://neil.brown.name/portmap/portmap-$(PORTMAP-VER).tgz
 
-$(ARCHIVE)/procps-3.2.8.tar.gz:
-	$(WGET) http://procps.sourceforge.net/procps-3.2.8.tar.gz
+$(ARCHIVE)/procps-$(PROCPS-VER).tar.gz:
+	$(WGET) http://procps.sourceforge.net/procps-$(PROCPS-VER).tar.gz
 
-$(ARCHIVE)/busybox-1.15.2.tar.bz2:
-	$(WGET) http://busybox.net/downloads/busybox-1.15.2.tar.bz2
+$(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2:
+	$(WGET) http://busybox.net/downloads/busybox-$(BUSYBOX-VER).tar.bz2
 
 $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2
 
-$(ARCHIVE)/opkg-0.1.8.tar.gz:
-	$(WGET) http://opkg.googlecode.com/files/opkg-0.1.8.tar.gz
+$(ARCHIVE)/opkg-$(OPKG-VER).tar.gz:
+	$(WGET) http://opkg.googlecode.com/files/opkg-$(OPKG-VER).tar.gz
 
-$(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz:
-	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-4.6.3.tar.gz
+$(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz:
+	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-$(QT-VER).tar.gz
 
 $(ARCHIVE)/samba-2.0.10.tar.gz:
 	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.0.10.tar.gz
 
-$(ARCHIVE)/samba-2.2.12.tar.gz:
-	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.2.12.tar.gz
+$(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz:
+	$(WGET) http://samba.org/samba/ftp/old-versions/samba-$(SAMBA2-VER).tar.gz
 
 $(ARCHIVE)/samba-3.3.9.tar.gz:
 	$(WGET) http://download.samba.org/samba/ftp/old-versions/samba-3.3.9.tar.gz
 
-$(ARCHIVE)/sg3_utils-1.30.tar.bz2:
-	$(WGET) http://sg.danny.cz/sg/p/sg3_utils-1.30.tar.bz2
+$(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2:
+	$(WGET) http://sg.danny.cz/sg/p/sg3_utils-$(SG3_UTILS-VER).tar.bz2
 
 $(ARCHIVE)/strace-4.5.20.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.20/strace-4.5.20.tar.bz2
@@ -141,17 +143,17 @@ $(ARCHIVE)/strace-4.5.20.tar.bz2:
 $(ARCHIVE)/u-boot-2009.03.tar.bz2:
 	$(WGET) http://ftp.denx.de/pub/u-boot/u-boot-2009.03.tar.bz2
 
-$(ARCHIVE)/unfs3-0.9.22.tar.gz:
-	$(WGET) http://downloads.sourceforge.net/unfs3/unfs3-0.9.22.tar.gz
+$(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/unfs3/unfs3-$(UNFS3-VER).tar.gz
 
 $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2:
 	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v$(UTIL_LINUX_NG-VER)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2
 
-$(ARCHIVE)/vsftpd-2.2.2.tar.gz:
-	$(WGET) ftp://vsftpd.beasts.org/users/cevans/vsftpd-2.2.2.tar.gz
+$(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz:
+	$(WGET) ftp://vsftpd.beasts.org/users/cevans/vsftpd-$(VSFTPD-VER).tar.gz
 
-$(ARCHIVE)/xfsprogs-3.1.3.tar.gz:
-	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-3.1.3.tar.gz
+$(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
+	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
 
 $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/$(ZLIB-VER)/zlib-$(ZLIB-VER).tar.bz2
