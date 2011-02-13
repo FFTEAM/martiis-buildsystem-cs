@@ -1,7 +1,5 @@
 #Makefile to build system libs, potentially needed by neutrino and enigma
 
-include make/versions.mk
-
 $(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/zlib-$(ZLIB-VER).tar.bz2
 	cd $(BUILD_TMP)/zlib-$(ZLIB-VER) && \

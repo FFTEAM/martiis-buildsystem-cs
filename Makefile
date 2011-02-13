@@ -70,6 +70,9 @@ endif
 	@echo "make all-clean           - additionally remove the crosscompiler"
 	@echo "                           you usually don't want to do that."
 
+# define package versions first...
+include make/versions.mk
+
 include make/prerequisites.mk
 include make/bootstrap.mk
 include make/system-libs.mk
