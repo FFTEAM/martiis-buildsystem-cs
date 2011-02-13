@@ -1,0 +1,10 @@
+Package: tuxcom
+Version: 0.17-1
+Description: Neutrino-HD Tuxbox Commander Plugin
+Section: extras
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gitorious.org/neutrino-hd/neutrino-hd-plugins
+Source:
+Depends: libcurl.so.4 libfreetype.so.6 libz.so.1
