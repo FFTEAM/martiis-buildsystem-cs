@@ -137,7 +137,14 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz $(D)/libuuid | $(TARGETPREFIX)
+$(TARGETPREFIX)/lib/libuuid.so.1:
+	@echo
+	@echo "to build libuuid.so.1, you have to build either the 'e2fsprogs'"
+	@echo "or the 'libuuid' target. Using 'e2fsprogs' is recommended."
+	@echo
+	@false
+
+$(D)/xfsprogs: $(ARCHIVE)/xfsprogs-3.1.3.tar.gz | $(TARGETPREFIX) $(TARGETPREFIX)/lib/libuuid.so.1
 	$(UNTAR)/xfsprogs-3.1.3.tar.gz
 	cd $(BUILD_TMP)/xfsprogs-3.1.3 && \
 		$(BUILDENV) root_libdir=/opt/xfsprogs/lib root_sbindir=/opt/xfsprogs/sbin \
