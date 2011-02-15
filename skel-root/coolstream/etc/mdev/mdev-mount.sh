@@ -77,6 +77,17 @@ remove_symlinks() {
 
 case "$ACTION" in
 	add|"")
+		if [ ${#MDEV} = 3 ]; then # sda, sdb, sdc => whole drive
+			PARTS=$(sed -n "/ ${MDEV}[0-9]$/{s/ *[0-9]* *[0-9]* * [0-9]* //;p}" /proc/partitions)
+			if [ -n "$PARTS" ]; then
+				$LOG "drive has partitions $PARTS, not trying to mount $MDEV"
+				exit 0
+			fi
+		fi
+		if grep -q "/dev/$MDEV " /proc/mounts; then
+			$LOG "/dev/$MDEV already mounted - not mounting again"
+			exit 0
+		fi
 		$LOG "mounting /dev/$MDEV to $MOUNTPOINT"
 		NTFSMOUNT=$(which ntfs-3g)
 		RET2=$?
