@@ -122,12 +122,17 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-1.41.12.tar.gz | $(TARGETPREFIX)
 			--enable-symlink-install \
 			--disable-nls && \
 		$(MAKE) && \
-		$(MAKE) install DESTDIR=$(PKGPREFIX)
+		$(MAKE) install DESTDIR=$(PKGPREFIX) && \
+		$(MAKE) -C lib/uuid  install DESTDIR=$(PKGPREFIX) && \
+		$(MAKE) -C lib/blkid install DESTDIR=$(PKGPREFIX) && \
+		:
 	$(REMOVE)/e2fsprogs-1.41.12 $(PKGPREFIX)/.remove
 	cp -a --remove-destination $(PKGPREFIX)/* $(TARGETPREFIX)/
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/uuid.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/blkid.pc
 	cd $(PKGPREFIX) && rm sbin/badblocks sbin/dumpe2fs sbin/blkid sbin/logsave \
 		sbin/e2undo sbin/filefrag sbin/e2freefrag bin/chattr bin/lsattr bin/uuidgen \
-		lib/*.so
+		lib/*.so && rm -r lib/pkgconfig include && rm -f lib/*.a
 	$(OPKG_SH) $(CONTROL_DIR)/e2fsprogs
 	rm -rf $(PKGPREFIX)
 	touch $@
