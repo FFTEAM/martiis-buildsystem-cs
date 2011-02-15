@@ -1,0 +1,27 @@
+#!/bin/sh
+#
+# rescan for failed SATA drives.
+# this makes my FreeAgent XTreme 640GB drive, which is always
+# not detected during boot, appear.
+#
+
+rescan() {
+	# this is ugly...
+	sleep 20
+	for i in /sys/class/scsi_host/*; do
+		for j in $i/device/target*; do
+			case $j in
+			*\*) # not found
+				echo rescanning $i
+				echo - - - > $i/scan
+				;;
+			esac
+		done
+	done
+}
+
+case $1 in
+	start)	rescan & # background, to not stop booting
+		;;
+esac
+true # never fail
