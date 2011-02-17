@@ -116,3 +116,35 @@ UNFS3-VER=0.9.22
 
 # fbshot;  a small program that allowes you to take screenshots from the framebuffer
 FBSHOT-VER=0.3
+
+#########################
+# extras; make/extras.mk
+########################
+
+# links; a text WWW browser, similar to Lynx
+LINKS-VER=2.3pre1
+
+# qt-everythere-opensource-src; the Qt4 package contains several C++ libraries with both GUI and non-GUI components
+QT-VER=4.6.3
+
+# nbench; a benchmark program that will measure the performance
+NBENCH_BYTE-VER=2.2.3
+
+# libupnp; a portable open source UPnP development kit
+LIBUPNP-VER=1.6.10
+
+# dropbear; a relatively small SSH 2 server and client
+DROPBEAR-VER=0.52
+
+# opkg; a lightweight package management system based on Ipkg
+OPKG-VER=0.1.8
+
+# glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
+GLIB-VER=2.8.6
+
+# mc; the famous midnight commander
+MC-VER=4.6.2
+
+# sg3_utils; a package of utilities for accessing devices that use SCSI command sets
+SG3_UTILS-VER=1.30
+

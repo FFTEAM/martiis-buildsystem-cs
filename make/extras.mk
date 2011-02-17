@@ -1,9 +1,9 @@
-#Makefile to build Extras
+# Makefile to build Extras
 
-$(D)/links: $(ARCHIVE)/links-2.3pre1.tar.bz2 $(D)/directfb | $(TARGETPREFIX)
+$(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/links-2.3pre1.tar.bz2
-	cd $(BUILD_TMP)/links-2.3pre1 && \
+	$(UNTAR)/links-$(LINKS-VER).tar.bz2
+	cd $(BUILD_TMP)/links-$(LINKS-VER) && \
 		$(PATCH)/links-2.3pre1.diff && \
 		export CC=$(TARGET)-gcc && \
 		export SYSROOT=$(TARGETPREFIX) && \
@@ -33,18 +33,18 @@ $(D)/links: $(ARCHIVE)/links-2.3pre1.tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	cp -a $(SCRIPTS)/bookmarks.html $(SCRIPTS)/tables.tar.gz $(PKGPREFIX)/var/tuxbox/config/links
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(OPKG_SH) $(CONTROL_DIR)/links
-	$(REMOVE)/links-2.3pre1 $(BUILD_TMP)/.remove $(PKGPREFIX)
+	$(REMOVE)/links-$(LINKS-VER) $(BUILD_TMP)/.remove $(PKGPREFIX)
 	touch $@
 
-QT_BUILD = $(BUILD_TMP)/qt-everywhere-opensource-src-4.6.3
+QT_BUILD = $(BUILD_TMP)/qt-everywhere-opensource-src-$(QT-VER)
 QT_CONF = $(QT_BUILD)/mkspecs/qws/linux-cx2450x-g++/
-$(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(TARGETPREFIX)
-	$(UNTAR)/qt-everywhere-opensource-src-4.6.3.tar.gz
-	-mkdir $(QT_CONF)
+$(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz $(D)/directfb | $(TARGETPREFIX)
+	$(UNTAR)/qt-everywhere-opensource-src-$(QT-VER).tar.gz
+	mkdir $(QT_CONF)
 	echo "include(../../common/g++.conf)"		 > $(QT_CONF)/qmake.conf
 	echo "include(../../common/linux.conf)"		>> $(QT_CONF)/qmake.conf
 	echo "include(../../common/qws.conf)"		>> $(QT_CONF)/qmake.conf
-	echo "# modifications to g++.conf"		>> $(QT_CONF)/qmake.conf
+	echo "# modifications to g++.conf"			>> $(QT_CONF)/qmake.conf
 	echo "QMAKE_CC         = $(TARGET)-gcc"		>> $(QT_CONF)/qmake.conf
 	echo "QMAKE_CXX        = $(TARGET)-g++"		>> $(QT_CONF)/qmake.conf
 	echo "QMAKE_LINK       = $(TARGET)-g++"		>> $(QT_CONF)/qmake.conf
@@ -53,13 +53,13 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 	echo "QMAKE_AR         = $(TARGET)-ar cqs"	>> $(QT_CONF)/qmake.conf
 	echo "QMAKE_OBJCOPY    = $(TARGET)-objcopy"	>> $(QT_CONF)/qmake.conf
 	echo "QMAKE_STRIP      = $(TARGET)-strip"	>> $(QT_CONF)/qmake.conf
-	echo "# for directfb"				>> $(QT_CONF)/qmake.conf
-	echo "QT_CFLAGS_DIRECTFB = -I$(TARGETPREFIX)/include/directfb -D_REENTRANT"	>> $(QT_CONF)/qmake.conf
+	echo "# for directfb"						>> $(QT_CONF)/qmake.conf
+	echo "QT_CFLAGS_DIRECTFB = -I$(TARGETPREFIX)/include/directfb -D_REENTRANT"		>> $(QT_CONF)/qmake.conf
 	echo "QT_LIBS_DIRECTFB   = -L$(TARGETPREFIX)/lib/ -ldirect -ldirectfb -lfusion"	>> $(QT_CONF)/qmake.conf
-	echo "QT_DEFINES_DIRECTFB = QT_NO_DIRECTFB_PREALLOCATED"			>> $(QT_CONF)/qmake.conf
-	echo ""						>> $(QT_CONF)/qmake.conf
-	echo "load(qt_config)"				>> $(QT_CONF)/qmake.conf
-	echo '#include "../../linux-g++/qplatformdefs.h"' > $(QT_CONF)/qplatformdefs.h
+	echo "QT_DEFINES_DIRECTFB = QT_NO_DIRECTFB_PREALLOCATED"						>> $(QT_CONF)/qmake.conf
+	echo ""												>> $(QT_CONF)/qmake.conf
+	echo "load(qt_config)"								>> $(QT_CONF)/qmake.conf
+	echo '#include "../../linux-g++/qplatformdefs.h"'	> $(QT_CONF)/qplatformdefs.h
 	cd $(QT_BUILD) && \
 		sed -i 's/OPT_CONFIRM_LICENSE=no/OPT_CONFIRM_LICENSE=yes/' configure && \
 		./configure \
@@ -133,11 +133,12 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-4.6.3.tar.gz $(D)/directfb | $(
 		$(MAKE) INSTALL_ROOT=$(TARGETPREFIX) install
 	mv $(TARGETPREFIX)/opt/qt/bin/* $(HOSTPREFIX)/bin/
 	install -m 0755 -D $(SCRIPTS)/browser.sh $(TARGETPREFIX)/bin/browser.sh
+	$(REMOVE)/links-$(QT-VER) $(BUILD_TMP)/.remove $(PKGPREFIX)
 	touch $@
 
-$(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/nbench-byte-2.2.3.tar.gz
-	cd $(BUILD_TMP)/nbench-byte-2.2.3 && \
+$(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz
+	cd $(BUILD_TMP)/nbench-byte-$(NBENCH_BYTE-VER) && \
 		$(PATCH)/nbench-byte-2.2.3-crossfix.diff && \
 		printf "#!/bin/sh\necho 4\n" > pointer && chmod 0755 pointer && \
 		$(BUILDENV) make CC=$(TARGET)-gcc && \
@@ -145,12 +146,12 @@ $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-2.2.3.tar.gz | $(TARGETPREFIX)
 		printf '#!/bin/sh\ncd /opt/nbench-byte\n./nbench $$@\n' > nbench-run.sh && \
 		chmod 0755 nbench-run.sh && \
 		cp -a nbench nbench-run.sh *DAT $(TARGETPREFIX)/opt/nbench-byte
-	$(REMOVE)/nbench-byte-2.2.3
+	$(REMOVE)/nbench-byte-$(NBENCH_BYTE-VER)
 	touch $@
 
-$(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libupnp-1.6.10.tar.bz2
-	cd $(BUILD_TMP)/libupnp-1.6.10 && \
+$(D)/libupnp: $(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libupnp-$(LIBUPNP-VER).tar.bz2
+	cd $(BUILD_TMP)/libupnp-$(LIBUPNP-VER) && \
 		$(CONFIGURE) --prefix=/opt/pkg && \
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
@@ -163,7 +164,7 @@ $(D)/libupnp: $(ARCHIVE)/libupnp-1.6.10.tar.bz2 | $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/pkgconfig lib/*a lib/*.so
 	$(OPKG_SH) $(CONTROL_DIR)/libupnp
-	$(REMOVE)/libupnp-1.6.10 $(PKGPREFIX)
+	$(REMOVE)/libupnp-$(LIBUPNP-VER) $(PKGPREFIX)
 	touch $@
 
 $(ARCHIVE)/libdlna-hg.tar.bz2: | find-hg
@@ -219,9 +220,9 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 	$(REMOVE)/ushare-hg $(PKGPREFIX)
 	touch $@
 
-$(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/dropbear-0.52.tar.bz2
-	cd $(BUILD_TMP)/dropbear-0.52 && \
+$(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/dropbear-$(DROPBEAR-VER).tar.bz2
+	cd $(BUILD_TMP)/dropbear-$(DROPBEAR-VER) && \
 		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
 		$(PATCH)/dropbear-0.52-fix-scp-progressbar-build.diff && \
 		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
@@ -234,12 +235,12 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-0.52.tar.bz2 | $(TARGETPREFIX)
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(OPKG_SH) $(CONTROL_DIR)/dropbear
-	$(REMOVE)/dropbear-0.52 $(PKGPREFIX)
+	$(REMOVE)/dropbear-$(DROPBEAR-VER) $(PKGPREFIX)
 	touch $@
 
-$(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/opkg-0.1.8.tar.gz
-	cd $(BUILD_TMP)/opkg-0.1.8 && \
+$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/opkg-$(OPKG-VER).tar.gz
+	cd $(BUILD_TMP)/opkg-$(OPKG-VER) && \
 		$(PATCH)/opkg-0.1.8-dont-segfault.diff && \
 		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache && \
 		$(CONFIGURE) \
@@ -267,7 +268,7 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	install -d -m 0755 $(PKGPREFIX)/etc/opkg
 	echo "# example config file, copy to opkg.conf and edit" > $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	echo "src server http://server/dist/$(PLATFORM)" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
-	$(REMOVE)/opkg-0.1.8 $(PKGPREFIX)/.remove
+	$(REMOVE)/opkg-$(OPKG-VER) $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
 	rm -rf $(PKGPREFIX)/lib $(PKGPREFIX)/include
@@ -276,9 +277,9 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-0.1.8.tar.gz | $(TARGETPREFIX)
 	touch $@
 
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
-$(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/glib-2.8.6.tar.bz2
-	cd $(BUILD_TMP)/glib-2.8.6 && \
+$(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
+	cd $(BUILD_TMP)/glib-$(GLIB-VER) && \
 		$(PATCH)/glib-2.13.4-gcc-4.2-fix.diff && \
 		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache && \
 		echo "glib_cv_stack_grows=no" >> config.cache && \
@@ -304,12 +305,12 @@ $(D)/libglib: $(ARCHIVE)/glib-2.8.6.tar.bz2 | $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
 		rm -r include lib/*.so lib/*.la share
 	$(OPKG_SH) $(CONTROL_DIR)/libglib
-	$(REMOVE)/glib-2.8.6 $(PKGPREFIX)
+	$(REMOVE)/glib-$(GLIB-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX)
-	$(UNTAR)/mc-4.6.2.tar.gz
-	cd $(BUILD_TMP)/mc-4.6.2 && \
+$(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX)
+	$(UNTAR)/mc-$(MC-VER).tar.gz
+	cd $(BUILD_TMP)/mc-$(MC-VER) && \
 		$(PATCH)/mc-4.6.2.diff && \
 		./autogen.sh && \
 		$(BUILDENV) \
@@ -330,13 +331,13 @@ $(D)/mc: $(ARCHIVE)/mc-4.6.2.tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFI
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/share/mc/mc.h*.* # mc.hint.*, mc.hlp.*
 	$(OPKG_SH) $(CONTROL_DIR)/mc
-	$(REMOVE)/mc-4.6.2 $(PKGPREFIX)
+	$(REMOVE)/mc-$(MC-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/sg3-utils: $(ARCHIVE)/sg3_utils-1.30.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/sg3_utils-1.30.tar.bz2
+$(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/sg3_utils-$(SG3_UTILS-VER).tar.bz2
 	rm -rf $(PKGPREFIX)
-	cd $(BUILD_TMP)/sg3_utils-1.30 && \
+	cd $(BUILD_TMP)/sg3_utils-$(SG3_UTILS-VER) && \
 		$(CONFIGURE) --prefix= --mandir=/.remove && \
 		$(MAKE) && \
 		make install DESTDIR=$(PKGPREFIX)
@@ -350,5 +351,5 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-1.30.tar.bz2 | $(TARGETPREFIX)
 	cp -a $(TARGETPREFIX)/lib/libsgutils2.so.2* $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/bin/sg_start          $(PKGPREFIX)/bin
 	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/base
-	$(REMOVE)/sg3_utils-1.30 $(PKGPREFIX)
+	$(REMOVE)/sg3_utils-$(SG3_UTILS-VER) $(PKGPREFIX)
 	touch $@
