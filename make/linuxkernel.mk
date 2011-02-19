@@ -113,20 +113,30 @@ $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch $(PATCH
 # 		for i in $(CS_K_N); do sed -i "/^\(# \)*$$i[= ]/d" .config; done && \
 # 		for i in $(CS_K_N); do echo "# $$i is not set" >> .config; done && \
 
-$(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION)
+$(HOSTPREFIX)/bin/mkimage: cs-uboot
+
+$(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION) | $(HOSTPREFIX)/bin/mkimage
 	cd $(BUILD_TMP)/linux-$(KVERSION) && \
-		make ARCH=arm CROSS_COMPILE=$(TARGET)- oldconfig && \
+		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig && \
 		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
-	touch $@
+	cd $(BUILD_TMP) && \
+		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
+			-n "Coolstream HDx Kernel (zImage)" -d linux-2.6.26.8/arch/arm/boot/zImage zImage.img
+	cd $(BUILD_TMP) && \
+		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
+			-n "Coolstream HDx Kernel" -d linux-2.6.26.8/arch/arm/boot/Image Image.img
+	: touch $@
 
 # yes, it's not the kernel. but it's not enough to warrant an extra file
-$(D)/cs-uboot: $(ARCHIVE)/u-boot-2009.03.tar.bz2
+$(D)/cs-uboot: $(ARCHIVE)/u-boot-2009.03.tar.bz2 $(PATCHES)/coolstream/u-boot-2009.3-CST.diff
+	$(REMOVE)/u-boot-2009.03
 	$(UNTAR)/u-boot-2009.03.tar.bz2
 	cd $(BUILD_TMP)/u-boot-2009.03 && \
 		$(PATCH)/coolstream/u-boot-2009.3-CST.diff && \
 		make coolstream_hdx_config && \
 		$(MAKE)
+	cp -a $(BUILD_TMP)/u-boot-2009.03/tools/mkimage $(HOSTPREFIX)/bin
 	touch $@
 endif
 
