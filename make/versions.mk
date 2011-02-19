@@ -90,7 +90,7 @@ RSYNC-VER=3.0.7
 PROCPS-VER=3.2.8
 
 # busybox; combines tiny versions of many common UNIX utilities into a single binary
-BUSYBOX-VER=1.15.2
+BUSYBOX-VER=1.18.3
 
 # e2fsprogs; filesystem utilities for use with the ext[x] filesystem
 E2FSPROGS-VER=1.41.12

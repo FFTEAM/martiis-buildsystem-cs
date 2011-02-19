@@ -1,5 +1,5 @@
 Package: busybox
-Version: 1.15.2-1
+Version: @VER@-1
 Description: The Swiss Army Knife of Embedded Linux
 Section: base
 Priority: standard

@@ -60,10 +60,9 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz | $(TARGETPR
 
 $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	cd $(BUILD_TMP)/busybox-$(BUSYBOX-VER) && \
-		$(PATCH)/busybox-1.15.2-make-ftpd-more-tolerant.diff && \
-		$(PATCH)/busybox-1.15.2-new-make.diff && \
-		cp $(PATCHES)/busybox-hd1.config .config && \
+		cp $(PATCHES)/busybox-$(BUSYBOX-VER).config .config && \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config && \
 		grep -q DBB_BT=AUTOCONF_TIMESTAMP Makefile.flags && \
 		sed -i 's#AUTOCONF_TIMESTAMP#"\\"$(PLATFORM)\\""#' Makefile.flags && \
@@ -75,6 +74,7 @@ $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 	# "auto-provides/conflicts". let's hope opkg can deal with this...
 	printf "Provides:" >> $(BUILD_TMP)/bb-control/control
 	for i in `find $(PKGPREFIX)/ ! -type d ! -name busybox`; do printf " `basename $$i`," >> $(BUILD_TMP)/bb-control/control; done
+	sed -i "s/@VER@/$(BUSYBOX-VER)/" $(BUILD_TMP)/bb-control/control
 	sed -i 's/,$$//' $(BUILD_TMP)/bb-control/control
 	sed -i 's/\(^Provides:\)\(.*$$\)/\1\2\nConflicts:\2/' $(BUILD_TMP)/bb-control/control
 	echo >> $(BUILD_TMP)/bb-control/control
