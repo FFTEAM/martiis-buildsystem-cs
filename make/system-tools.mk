@@ -144,7 +144,7 @@ $(TARGETPREFIX)/lib/libuuid.so.1:
 	@echo
 	@false
 
-$(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz $(D)/libuuid | $(TARGETPREFIX)
+$(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz | $(TARGETPREFIX) $(TARGETPREFIX)/lib/libuuid.so.1
 	$(UNTAR)/xfsprogs-$(XFSPROGS-VER).tar.gz
 	cd $(BUILD_TMP)/xfsprogs-$(XFSPROGS-VER) && \
 		$(BUILDENV) root_libdir=/opt/xfsprogs/lib root_sbindir=/opt/xfsprogs/sbin \
