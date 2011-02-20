@@ -97,6 +97,11 @@ find-%:
 toolcheck: $(TOOLCHECK)
 	@echo "All required tools seem to be installed."
 	@echo
+	@if test "$(subst /bin/,,$(shell readlink /bin/sh))" != bash; then \
+		echo "WARNING: /bin/sh is not linked to bash."; \
+		echo "         This configuration might work, but is not supported."; \
+		echo; \
+	fi
 
 neutrino-hd-source: $(N_HD_SOURCE)
 cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib

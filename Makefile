@@ -1,4 +1,7 @@
 #master makefile
+
+SHELL = /bin/bash
+
 include make/environment.mk
 
 ############################################################################
