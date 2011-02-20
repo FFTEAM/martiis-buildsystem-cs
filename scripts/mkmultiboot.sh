@@ -48,7 +48,10 @@ dd bs=126k conv=sync if=bootlogo.bmp.gz of=build_tmp/splash.img
 
 # create the u-boot autoscript
 rm -f build_tmp/script.scr
-cat > build_tmp/script.scr << EOF
+# reset the psychedelic u-boot colors early
+printf "setenv resetattr \033[0m\n" > build_tmp/script.scr
+cat >> build_tmp/script.scr << EOF
+printenv resetattr
 usb start
 fatload usb 0:1 0x08000000 zimage.img
 setenv bootargs console=ttyRI0 mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) mem=384M panic=5 root=/dev/sda2 rootfstype=ext3 rootdelay=6 rw
