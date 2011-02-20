@@ -2,7 +2,7 @@
 
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg
 
-N_CFLAGS  = -Wall -W -Wshadow -g -O2
+N_CFLAGS  = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing
 N_CFLAGS += -I$(TARGETPREFIX)/include
 N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 ifneq ($(PLATFORM), tripledragon)
@@ -14,7 +14,6 @@ else
 N_CFLAGS += -I$(TARGETPREFIX)/include/hardware
 # TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
 N_CFLAGS += -D_FILE_OFFSET_BITS=64
-N_CONFIG_OPTS = --with-tremor
 endif
 
 # if you really want slow libvorbis, leave N_CONFIG_OPTS empty and use
