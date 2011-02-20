@@ -71,11 +71,16 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
 
 else
 
-$(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch $(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff $(PATCHES)/kernel.config
+$(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
+			$(PATCHES)/0001-ehci-cx2450x-fix-initialization-sequence.patch \
+			$(PATCHES)/0002-make-kernel_halt-shut-off-the-board-if-possible.patch \
+			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff $(PATCHES)/kernel.config
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
 	cd $(BUILD_TMP)/linux-$(KVERSION) && \
 		$(PATCH)/linux-2.6.26.8-new-make.patch && \
-		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff
+		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff && \
+		$(PATCH)/0001-ehci-cx2450x-fix-initialization-sequence.patch && \
+		$(PATCH)/0002-make-kernel_halt-shut-off-the-board-if-possible.patch
 	cp $(PATCHES)/kernel.config $@/.config
 
 # this would be a way to build custom configs, but it is not nice, so not used yet.

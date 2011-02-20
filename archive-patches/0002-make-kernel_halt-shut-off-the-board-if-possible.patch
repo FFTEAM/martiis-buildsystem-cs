@@ -1,0 +1,79 @@
+From 743b2609a170afe2c046fbb1b60402b96e53d398 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sun, 20 Feb 2011 13:54:49 +0100
+Subject: [PATCH 2/2] make kernel_halt shut off the board if possible
+
+Add an ugly hack, that shuts off the board via the frontprocessor
+driver if possible. Nothing to be proud of, but it does the job.
+---
+ kernel/sys.c |   42 ++++++++++++++++++++++++++++++++++++++++++
+ 1 files changed, 42 insertions(+), 0 deletions(-)
+
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 14e9728..5e31713 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -39,6 +39,8 @@
+ #include <linux/kprobes.h>
+ #include <linux/user_namespace.h>
+ 
++#include <linux/delay.h>
++
+ #include <asm/uaccess.h>
+ #include <asm/io.h>
+ #include <asm/unistd.h>
+@@ -333,11 +335,51 @@ static void kernel_shutdown_prepare(enum system_states state)
+  *
+  *	Shutdown everything and perform a clean system halt.
+  */
++
++/* actually power off the board if possible */
++typedef struct {
++	unsigned char brightness;
++	unsigned char flags;
++	unsigned char current_hour;
++	unsigned char current_minute;
++	unsigned char timer_minutes_hi;
++	unsigned char timer_minutes_lo;
++} standby_data_t;
++#define FP_STANDBY _IOW(0xDE, 8, standby_data_t *)
++
+ void kernel_halt(void)
+ {
++	struct file* filp = NULL;
++	standby_data_t s;
++	mm_segment_t oldfs;
++	int ret;
++
+ 	kernel_shutdown_prepare(SYSTEM_HALT);
+ 	sysdev_shutdown();
+ 	printk(KERN_EMERG "System halted.\n");
++
++	/* This is one of the uglier hacks. It would not be necessary if the frontpanel driver
++	   would be implemented correctly, but let's not hope for that */
++	memset(&s, 0, sizeof(s));
++	oldfs = get_fs();
++	set_fs(get_ds());
++	filp = filp_open("/dev/display", O_RDONLY, 0);
++	if (!IS_ERR(filp)) {
++		printk(KERN_EMERG "FP device opened.\n");
++		ret = filp->f_op->ioctl(filp->f_dentry->d_inode, filp, FP_STANDBY, (unsigned long)&s);
++		printk(KERN_EMERG "after ioctl: %d\n", ret);
++		while (! ret) {
++			/* the funny thing is that we actually reach this point, probably due to the
++			   time it takes for the frontprocessor to turn off the power... */
++			printk(KERN_EMERG ".\n");
++			msleep(100);
++		}
++	} else
++		printk(KERN_EMERG "FP device error.\n");
++
++	/* the FP ioctl has failed, probably on old hardware */
++	set_fs(oldfs);
++
+ 	machine_halt();
+ }
+ 
+-- 
+1.7.3.4
+
