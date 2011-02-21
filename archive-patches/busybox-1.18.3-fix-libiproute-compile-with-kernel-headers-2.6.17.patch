@@ -1,0 +1,34 @@
+From 3b04d9fe178be32045b1d269d60b3fc4886e7aaf Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife+dev@b1-systems.com>
+Date: Mon, 21 Feb 2011 17:29:59 +0100
+Subject: [PATCH] fix libiproute compile with kernel headers < 2.6.17
+
+Signed-off-by: Stefan Seyfried <seife+dev@b1-systems.com>
+---
+ networking/libiproute/ipaddress.c |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/networking/libiproute/ipaddress.c b/networking/libiproute/ipaddress.c
+index 397a8ee..e4f9070 100644
+--- a/networking/libiproute/ipaddress.c
++++ b/networking/libiproute/ipaddress.c
+@@ -162,6 +162,8 @@ static NOINLINE int print_linkinfo(const struct nlmsghdr *n)
+ 		printf("master %s ", ll_idx_n2a(*(int*)RTA_DATA(tb[IFLA_MASTER]), b1));
+ 	}
+ #endif
++/* IFLA_OPERSTATE came with the same commit as IFF_DORMANT */
++#ifdef IFF_DORMANT
+ 	if (tb[IFLA_OPERSTATE]) {
+ 		static const char operstate_labels[] ALIGN1 =
+ 			"UNKNOWN\0""NOTPRESENT\0""DOWN\0""LOWERLAYERDOWN\0"
+@@ -169,6 +171,7 @@ static NOINLINE int print_linkinfo(const struct nlmsghdr *n)
+ 		printf("state %s ", nth_string(operstate_labels,
+ 					*(uint8_t *)RTA_DATA(tb[IFLA_OPERSTATE])));
+ 	}
++#endif
+ 	if (G_filter.showqueue)
+ 		print_queuelen((char*)RTA_DATA(tb[IFLA_IFNAME]));
+ 
+-- 
+1.7.3.4
+

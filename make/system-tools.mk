@@ -62,6 +62,7 @@ $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	cd $(BUILD_TMP)/busybox-$(BUSYBOX-VER) && \
+		$(PATCH)/busybox-1.18.3-fix-libiproute-compile-with-kernel-headers-2.6.17.patch && \
 		cp $(PATCHES)/busybox-$(BUSYBOX-VER).config .config && \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config && \
 		grep -q DBB_BT=AUTOCONF_TIMESTAMP Makefile.flags && \
