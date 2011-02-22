@@ -40,5 +40,9 @@ alias dir='ls -lA'
 alias ..='cd ..'
 alias ldd='/lib/ld-*.so --list'
 
+# aliases for old farts who can't remember new names :)
+alias fcp='flashcp -v'
+alias eraseall=flash_eraseall
+
 # Add your own modifications to profile.local!
 test -e /etc/profile.local && . /etc/profile.local
