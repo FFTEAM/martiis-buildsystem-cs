@@ -104,11 +104,11 @@ update-neutrino:
 # not useful on tripledragon, because that SVN never changes
 update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
 	cd $(SOURCE_DIR)/svn/COOLSTREAM && $(SVN) up
-	cd $(SVN_TP_LIBS) && $(SVN) up *
-	if [ -d $(SVN_TP_APPS) ]; then \
-		cd $(SVN_TP_APPS) && $(SVN) up *; \
-	else true; fi
-	cd $(SOURCE_DIR)/svn/THIRDPARTY/lib && $(SVN) up *
+	for i in $(SOURCE_DIR)/svn/THIRDPARTY/*; do \
+		if [ -d $$i ]; then \
+			(cd $$i && $(SVN) up *); \
+		else true; fi \
+	done
 	cd $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream && $(SVN) up
 
 update-svn-target:

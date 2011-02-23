@@ -89,6 +89,10 @@ $(SOURCE_DIR)/svn/THIRDPARTY/lib:
 	mkdir -p $@
 	cd $@ && $(SVNCO)/THIRDPARTY/lib/firmware
 
+$(SOURCE_DIR)/svn/THIRDPARTY/kernel:
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/kernel
+
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \
 		type -p $$TOOL >/dev/null || \

@@ -72,16 +72,11 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
 else
 
 $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
-			$(PATCHES)/0001-ehci-cx2450x-fix-initialization-sequence.patch \
-			$(PATCHES)/0002-make-kernel_halt-shut-off-the-board-if-possible.patch \
-			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff $(PATCHES)/kernel.config
+			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
-	cd $(BUILD_TMP)/linux-$(KVERSION) && \
+	cd $@ && \
 		$(PATCH)/linux-2.6.26.8-new-make.patch && \
-		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff && \
-		$(PATCH)/0001-ehci-cx2450x-fix-initialization-sequence.patch && \
-		$(PATCH)/0002-make-kernel_halt-shut-off-the-board-if-possible.patch
-	cp $(PATCHES)/kernel.config $@/.config
+		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff
 
 # this would be a way to build custom configs, but it is not nice, so not used yet.
 # CS_K_Y = CONFIG_HID_SUPPORT
@@ -120,17 +115,47 @@ $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 
 $(HOSTPREFIX)/bin/mkimage: cs-uboot
 
-$(D)/cskernel: $(BUILD_TMP)/linux-$(KVERSION) | $(HOSTPREFIX)/bin/mkimage
-	cd $(BUILD_TMP)/linux-$(KVERSION) && \
-		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig && \
-		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- && \
-		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+K_SRCDIR ?= $(SOURCE_DIR)/kernel
+K_OBJ = $(BUILD_TMP)/kobj
+
+$(K_SRCDIR):
+	@echo
+	@echo "you need to create "$(subst $(BASE_DIR)/,"",$(K_SRCDIR))" first."
+	@echo "there are several ways to do this:"
+	@echo "* 'make kernel-svn'   downloads the kernel from the Coolstream SVN"
+	@echo "                      and creates a symlink"
+	@echo "* 'make kernel-patch' extracts a tarball and patches it with the"
+	@echo "                      patches from archive-patches"
+	@echo
+	@false
+
+kernel-svn: $(SOURCE_DIR)/svn/THIRDPARTY/kernel
+	rm -f $(SOURCE_DIR)/linux
+	ln -s svn/THIRDPARTY/kernel/linux-2.6.26.8-cnxt $(SOURCE_DIR)/linux
+
+kernel-patch: $(BUILD_TMP)/linux-$(KVERSION)
+	rm -f $(SOURCE_DIR)/linux
+	ln -s $(BUILD_TMP)/linux-$(KVERSION) $(SOURCE_DIR)/linux
+
+$(K_OBJ)/.config: $(PATCHES)/kernel.config
+	mkdir -p $(K_OBJ)
+	cp $(PATCHES)/kernel.config $@
+
+$(D)/cskernel: $(K_SRCDIR) $(K_OBJ)/.config | $(HOSTPREFIX)/bin/mkimage
+	# we need this to build out of tree - kbuild complains otherwise
+	rm -f $(SOURCE_DIR)/linux/.config
+	cd $(SOURCE_DIR)/linux && \
+		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig O=$(K_OBJ)/ && \
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/ && \
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/ && \
+		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules \
+			modules_install O=$(K_OBJ)/
 	cd $(BUILD_TMP) && \
 		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
-			-n "Coolstream HDx Kernel (zImage)" -d linux-2.6.26.8/arch/arm/boot/zImage zImage.img
+			-n "Coolstream HDx Kernel (zImage)" -d $(K_OBJ)/arch/arm/boot/zImage zImage.img
 	cd $(BUILD_TMP) && \
 		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
-			-n "Coolstream HDx Kernel" -d linux-2.6.26.8/arch/arm/boot/Image Image.img
+			-n "Coolstream HDx Kernel" -d $(K_OBJ)/arch/arm/boot/Image Image.img
 	: touch $@
 
 # yes, it's not the kernel. but it's not enough to warrant an extra file
