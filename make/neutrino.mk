@@ -83,8 +83,4 @@ neutrino-clean:
 	-rm $(N_OBJDIR)/config.status
 	-rm $(D)/neutrino
 
-neutrino-system: $(D)/busybox $(D)/procps $(D)/rsync $(D)/gdb $(D)/strace
-
-neutrino-system-seife: neutrino-system $(D)/autofs
-
 PHONY += neutrino-clean neutrino-system neutrino-system-seife

@@ -74,5 +74,8 @@ rootfs:
 	find $(BOX)/lib -path $(BOX)/lib/modules -prune -o -type f -print0 | xargs -0 $(TARGET)-strip || true
 	du -sh $(BOX)
 
+# don't use. use packages instead.
+# "make system-pkgs" should build enough to get a TV picture
+neutrino-system: $(D)/busybox $(D)/procps $(D)/rsync $(D)/gdb $(D)/strace
 
 PHONY += hotplug
