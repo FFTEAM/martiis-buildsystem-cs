@@ -115,7 +115,7 @@ $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 
 $(HOSTPREFIX)/bin/mkimage: cs-uboot
 
-K_SRCDIR ?= $(SOURCE_DIR)/kernel
+K_SRCDIR ?= $(SOURCE_DIR)/linux
 K_OBJ = $(BUILD_TMP)/kobj
 
 $(K_SRCDIR):
