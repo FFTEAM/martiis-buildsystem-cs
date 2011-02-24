@@ -51,27 +51,28 @@ endif
 
 help:
 	@echo "a few helpful make targets:"
-	@echo "* make preqs             - downloads necessary stuff"
-	@echo "* make crosstool         - build cross toolchain"
-	@echo "* make bootstrap         - prepares for building"
-	@echo "* make neutrino          - builds neutrino"
-	@echo "* make neutrino-system   - should build enough to have a bootable system"
-	@echo "* make devel-tools       - build gdb and strace for the target"
+	@echo "* make preqs               - downloads necessary stuff"
+	@echo "* make crosstool           - build cross toolchain"
+	@echo "* make bootstrap           - prepares for building"
+	@echo "* make neutrino            - builds neutrino"
+	@echo "* make minimal-system-pkgs - build enough to have a bootable system, consult"
+	@echo "                             doc/README.opkg-bootstrap how to continue from there"
+	@echo "* make devel-tools         - build gdb and strace for the target"
 	@echo ""
 	@echo "later, you might find those useful:"
-	@echo "* make update-self       - update the build system"
-	@echo "* make update-neutrino   - update the neutrino source"
+	@echo "* make update-self         - update the build system"
+	@echo "* make update-neutrino     - update the neutrino source"
 ifeq ($(PLATFORM), coolstream)
-	@echo "* make update-svn        - update the coolstream svn parts (mainly drivers)"
-	@echo "* make update-svn-target - copy updated svn parts into \$$TARGETPREFIX"
+	@echo "* make update-svn          - update the coolstream svn parts (mainly drivers)"
+	@echo "* make update-svn-target   - copy updated svn parts into \$$TARGETPREFIX"
 endif
 	@echo ""
 	@echo "cleantargets:"
-	@echo "make clean               - clean neutrino build dir"
-	@echo "make rebuild-clean       - additionally remove \$$TARGETPREFIX, but keep the toolchain"
-	@echo "                           after that you need to restart with 'bootstrap'"
-	@echo "make all-clean           - additionally remove the crosscompiler"
-	@echo "                           you usually don't want to do that."
+	@echo "make clean                 - clean neutrino build dir"
+	@echo "make rebuild-clean         - additionally remove \$$TARGETPREFIX, but keep the toolchain"
+	@echo "                             after that you need to restart with 'bootstrap'"
+	@echo "make all-clean             - additionally remove the crosscompiler"
+	@echo "                             you usually don't want to do that."
 
 # define package versions first...
 include make/versions.mk
