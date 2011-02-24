@@ -142,8 +142,11 @@ $(K_OBJ)/.config: $(PATCHES)/kernel.config
 	cp $(PATCHES)/kernel.config $@
 
 $(D)/cskernel: $(K_SRCDIR) $(K_OBJ)/.config | $(HOSTPREFIX)/bin/mkimage
+ifeq ($(K_SRCDIR), $(SOURCE_DIR)/linux)
 	# we need this to build out of tree - kbuild complains otherwise
+	# whoever sets K_SRCDIR to something else should better know what he's doing anyway
 	rm -f $(SOURCE_DIR)/linux/.config
+endif
 	cd $(SOURCE_DIR)/linux && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig O=$(K_OBJ)/ && \
 		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/ && \
