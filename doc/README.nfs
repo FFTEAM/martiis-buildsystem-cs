@@ -5,7 +5,7 @@ You can use a NFS export from your PC to test and playing around with the
 filesystem even without flashing. To use the NFS boot you can use the flashed
 kernel inside the box or use a kernel from an USB stick or from an TFTP server.
 
-Note: If you will use a NFS import of the filesystems, be sure that the 
+Note: If you will use a NFS import of the filesystems, be sure that the
       starting kernel is the correct kernel for the used modules!
 
 Note: You will also need a DHCP Server with static IP support!
@@ -18,7 +18,7 @@ NFS Server setup:
   After a 'make minimal-system-pkgs && make neutrino' you will find the directory
   $GIT-DIRECTORY/root. This can be used to export it to the Settopbox, so remeber the
   directory in the next step.
-  
+
 2. Setting up the NFS export
   These step you have to done with root right!
   Place a line to your /etc/exports like this:
@@ -37,29 +37,29 @@ Booting into the NFS Filesystem:
 2. Connect your box to the net and connect the box also to your terminal program,
    start your terminal programm.
 
-If you don't use a modified uboot settings with a seperated kernel on a USB stick
+If you don't use a modified U-Boot settings with a seperated kernel on a USB stick
 (you will use the kernel inside the flash):
-3. Start the box stop the automatic boot. You will see the prompt from the 
-   bootloader uboot.
-   
+3. Start the box stop the automatic boot. You will see the prompt from the
+   bootloader U-Boot.
+
 	HD1>
-  
+
   Now you have to change the "bootargs", this can be done without flashing these changes.
   To do this we use the command "setenv". This is simple. We set up the new temporaly variable
   "bootargs" with the path to the NFS Server  It is going like this:
-  
-	setnev ipaddr 192.168.xxx.xxx
+
+	setenv ipaddr 192.168.xxx.xxx
 	setenv bootargs console=ttyRI0 mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) ip=on root=/dev/nfs rw nfsroot=192.168.xxx.xxx:/$GIT-DIRECTORY/root,rsize=2048,wsize=2048 mem=384M
 
   Some little explanation to this lines:
   The first line ist set up the IP of the box!
 	ipaddr 192.168.xxx.xxx -> specify the IP of your box
   The second line especialy set up the NIC of the box an the root of the filesystem to the NFS Server
-	console=ttyRI0 -> the used output console of uboot
+	console=ttyRI0 -> the used output console of the Linux kernel
 	mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) -> the geometry of the flash
 	ip=on -> initialize the NIC with IP above
 	root=/dev/nfs rw -> the root of the filesystem for the kernel is an nfs filesystem and it is read/write
 	nfsroot=... -> the URI of the NFS Server and the path to the exported filesystem
-	mem=384MB -> the used RAM
+	mem=384MB -> the used RAM, don't increase this, the "missing" 128 MB are needed by the chipset
 
 4. Start the kernel inside the flash with the comand "boot"
