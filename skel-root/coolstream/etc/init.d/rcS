@@ -7,12 +7,16 @@ export TERM=linux
 # reset colors, to not hurt my eyes...
 echo -e "\033[0m"
 
-# for next boot ;)
-[ -e /dev/console ] || mknod -m 644 /dev/console c 5 1
+# for next boot ;) This is the device that will be on the root FS
+if ! [ -e /dev/console ]; then
+	mknod -m 644 /dev/console c 5 1
+	echo "If you are missing useful output on the console, reboot the box now." > /dev/console
+fi
 mount -t proc proc /proc
 mount -t tmpfs dev /dev
 # make sure that important devices are there before mdev startup
 # otherwise a redirection in a mdev script might create them...
+# those are on the freshly mounted tmpfs, not duplicating the above one
 mknod -m 644 /dev/console	c 5 1
 mknod -m 666 /dev/null		c 1 3
 mount -t sysfs sys /sys
