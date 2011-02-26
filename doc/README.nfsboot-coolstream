@@ -9,8 +9,9 @@ Note: If you will use a NFS import of the filesystems, be sure that the
       starting kernel is the correct kernel for the used modules!
 
 Note: You will also need a DHCP Server with static IP support!
-      A serial line connection is also needed!
-      Additionally you will need a TFTP Server, if you want to boot a kernel from your PC.
+      A serial line connection is also mostly needed!
+      Additionally you will need a TFTP Server, if you want to boot a kernel from your 
+      or any PC.
 
 NFS Server setup:
 
@@ -30,36 +31,143 @@ NFS Server setup:
         is working with UID 0 (root). To boot correctly the box has to set up some few devices.
         So remeber, only user root can set up file devices!
 
-Booting into the NFS Filesystem:
+++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Booting into the NFS Filesystem with the kernel  +
++             -> from <- the flash                 +
+++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 1. Be sure that your DHCP Server is started and setted up.
 
 2. Connect your box to the net and connect the box also to your terminal program,
    start your terminal programm.
 
-If you don't use a modified U-Boot settings with a seperated kernel on a USB stick
-(you will use the kernel inside the flash):
-3. Start the box stop the automatic boot. You will see the prompt from the
-   bootloader U-Boot.
+3. Start the box stop the automatic boot by pressing any key while U-Boot is starting.
+   You will see the prompt from the bootloader U-Boot.
 
-	HD1>
+      ┌──────────────────────────────────────────────────────────────────────────────┐
+      │ U-Boot 2009.03-svn1773 (Nov 02 2010 - 15:25:47)     Coolstream HDx           │
+      ├──────────────────────────────────────────────────────────────────────────────┤
+...
+      ├──────────────────────────────────────────────────────────────────────────────┤
+      │ Network configuration                                                        │
+      │ MAC: Conexant VMAC rev. 07       address: 00-C5-5C-XX-XX-XX                  │
+      │ PHY: IC Plus IP101               address: 09                                 │
+      └──────────────────────────────────────────────────────────────────────────────┘
+      Hit any key to stop autoboot:  0
+      HDx> 
 
-  Now you have to change the "bootargs", this can be done without flashing these changes.
-  To do this we use the command "setenv". This is simple. We set up the new temporaly variable
-  "bootargs" with the path to the NFS Server  It is going like this:
+4. Now you have to change the "bootargs", this can be done without flashing these changes.
+   To do this we use the command "setenv". This is simple. We set up the new temporaly variable
+   "bootargs" with the path to the NFS Server. It is going like this:
 
-	setenv ipaddr 192.168.xxx.xxx
-	setenv bootargs console=ttyRI0 mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) ip=on root=/dev/nfs rw nfsroot=192.168.xxx.xxx:/$GIT-DIRECTORY/root,rsize=2048,wsize=2048 mem=384M
+      HDx> setenv ipaddr 192.168.xxx.xxx
+      HDx> setenv bootargs console=ttyRI0 mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) ip=on root=/dev/nfs rw nfsroot=192.168.xxx.xxx:/$GIT-DIRECTORY/root,rsize=2048,wsize=2048 mem=384M
 
-  Some little explanation to this lines:
-  The first line ist set up the IP of the box!
-	ipaddr 192.168.xxx.xxx -> specify the IP of your box
-  The second line especialy set up the NIC of the box an the root of the filesystem to the NFS Server
-	console=ttyRI0 -> the used output console of the Linux kernel
-	mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) -> the geometry of the flash
-	ip=on -> initialize the NIC with IP above
-	root=/dev/nfs rw -> the root of the filesystem for the kernel is an nfs filesystem and it is read/write
-	nfsroot=... -> the URI of the NFS Server and the path to the exported filesystem
-	mem=384MB -> the used RAM, don't increase this, the "missing" 128 MB are needed by the chipset
+   Some little explanation to this lines:
+   The first line is setting up the IP of the box!
+      ipaddr 192.168.xxx.xxx -> specify the IP of your box
+   The second line especialy set up the NIC of the box an the root of the filesystem to the NFS Server
+      console=ttyRI0 -> the used output console of the Linux kernel
+      mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) -> the geometry of the flash
+      ip=on -> initialize the NIC with IP above
+      root=/dev/nfs rw -> the root of the filesystem for the kernel is an nfs filesystem and it is read/write
+      nfsroot=... -> the URI of the NFS Server and the path to the exported filesystem
+      mem=384MB -> the used RAM, don't increase this, the "missing" 128 MB are needed by the chipset
 
-4. Start the kernel inside the flash with the comand "boot"
+5. Start the kernel inside the flash with the comand "boot"
+
+      HDx> boot
+
+
+
+++++++++++++++++++++++++++++++++++++++++++++++++++++
++ Booting into the NFS Filesystem with the kernel  +
++             -> from <- the network               +
+++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+To use the TFTP function in U-Boot you have to set up a TFTP server of course. This 
+setup depends on you distribution!
+You can use a uncompressed or a compressed kernel for TFTP upload to your coolstream,
+U-Boot can handle both types.
+The naming of the image for the uncompressed kernel is "uImage" and for the compressed
+kernel "zImage" per default. You can use other names, but you have change the settings
+in U-Boot too.
+
+Here is descriped how to use an uncompressed kernel (uImage). If you want to use a compressed
+kernel file then you have to change the variable "bootfile" in U-Boot. Use "printenv"
+to see that is set up as enviroment and "setenv bootfile {your_name}" if you want to change.
+
+Let's start.
+
+1. Be sure that your DHCP Server is started and setted up.
+
+2. Be sure your TFTP server is correctly installed, setted up and running.
+
+3. Connect your box to the net and connect the box also to your terminal program,
+   start your terminal programm.
+
+      ┌──────────────────────────────────────────────────────────────────────────────┐
+      │ U-Boot 2009.03-svn1773 (Nov 02 2010 - 15:25:47)     Coolstream HDx           │
+      ├──────────────────────────────────────────────────────────────────────────────┤
+...
+      ├──────────────────────────────────────────────────────────────────────────────┤
+      │ Network configuration                                                        │
+      │ MAC: Conexant VMAC rev. 07       address: 00-C5-5C-XX-XX-XX                  │
+      │ PHY: IC Plus IP101               address: 09                                 │
+      └──────────────────────────────────────────────────────────────────────────────┘
+      Hit any key to stop autoboot:  0
+      HDx> 
+
+4. For TFTP boot the box need to know it's own IP and the IP of the TFTP Server.
+   We can change this by using the command setenv.
+
+   O.K. Change the IP of the box.
+      HDx> setenv ipaddr 192.168.xxx.xxx
+
+   And now setting the IP of the TFTP Server.
+      HDx> setenv serverip 192.168.xxx.xxx
+
+   !!! This must be different IPs !!!
+
+   Hint: These settings are volatile! If you would like to set it staticly,
+         run the command "saveenv" after setting the variables with "setenv".
+         Iy you do this, of course the whole step above with "setenv ..."
+         is not needed at next boot!
+
+4. Now you have to change the "bootargs", this can be done without flashing these changes.
+   To do this we use the command "setenv". This is simple. We set up the new temporaly variable
+   "bootargs" with the path to the NFS Server. It is going like this:
+
+      HDx> setenv bootargs console=ttyRI0 mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) ip=on root=/dev/nfs rw nfsroot=192.168.xxx.xxx:/$GIT-DIRECTORY/root,rsize=2048,wsize=2048 mem=384M
+
+   Some little explanation to this lines:
+   The first line is setting up the IP of the box!
+      ipaddr 192.168.xxx.xxx -> specify the IP of your box
+   The second line especialy set up the NIC of the box an the root of the filesystem to the NFS Server
+      console=ttyRI0 -> the used output console of the Linux kernel
+      mtdparts=cx2450xflash:384k(U-Boot)ro,128k(Splash),4096k(kernel),28160k(systemFS) -> the geometry of the flash
+      ip=on -> initialize the NIC with IP above
+      root=/dev/nfs rw -> the root of the filesystem for the kernel is an nfs filesystem and it is read/write
+      nfsroot=... -> the URI of the NFS Server and the path to the exported filesystem
+      mem=384MB -> the used RAM, don't increase this, the "missing" 128 MB are needed by the chipset
+
+5. Now we are able to get the kernel from the net. We starting the TFTP request with "tftpboot".
+   You will see the network tranfer and the address there the kernel is loaded to.
+
+      HDx> tftpboot
+      TFTP from server 192.168.xxx.xxx; our IP address is 192.168.xxx.xxx
+      Filename 'uImage'.
+      Load address: 0xe000000       <---------- notice this address, it's needed in the next step
+      Loading: #################################################################
+               #################################################################
+               #################################################################
+               #################################################################
+               #####################
+      done
+      T Bytes transferred = 4111112 (3ebb08 hex)
+      HDx> 
+
+5. Start the kernel inside the RAM with the comand "bootm 0xe000000".
+   This started the kernel from address 0xe000000, there it is loaded by the tftpboot command.
+
+      HDx> bootm 0xe000000
