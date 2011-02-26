@@ -25,27 +25,35 @@ parted build_tmp/usb.img mklabel msdos
 parted -a none build_tmp/usb.img mkpart primary fat16 0 15
 parted -a none build_tmp/usb.img mkpart primary ext2 15 $SIZE
 
+mkdir -p build_tmp/usbstick/p1 build_tmp/usbstick/p2
+sudo bash << EOF
 # map the image so that we can mount see the partitions in the image
-sudo kpartx -v -a -p -usbstick- build_tmp/usb.img
+kpartx -v -a -p -usbstick- build_tmp/usb.img
 
 # create the filesystems
-sudo mkdosfs   -n KERNEL  /dev/mapper/*-usbstick-1
-sudo mkfs.ext3 -L root-fs /dev/mapper/*-usbstick-2
+mkdosfs   -n KERNEL  /dev/mapper/*-usbstick-1
+mkfs.ext3 -L root-fs /dev/mapper/*-usbstick-2
 
 # mount the partitions
-mkdir -p build_tmp/usbstick/p1 build_tmp/usbstick/p2
-sudo mount /dev/mapper/*-usbstick-1 build_tmp/usbstick/p1
-sudo mount /dev/mapper/*-usbstick-2 build_tmp/usbstick/p2
+mount /dev/mapper/*-usbstick-1 build_tmp/usbstick/p1
+mount /dev/mapper/*-usbstick-2 build_tmp/usbstick/p2
 
 # copy kernel...
-sudo cp build_tmp/*Image.img build_tmp/usbstick/p1
+cp build_tmp/*Image.img build_tmp/usbstick/p1
 # ...and rootfs
-sudo cp -a build_tmp/install/.  build_tmp/usbstick/p2
+cp -a build_tmp/install/.  build_tmp/usbstick/p2
 # create /dev/console for first boot
-sudo mknod -m 644 build_tmp/usbstick/p2/dev/console c 5 1
+# sudo mknod -m 644 build_tmp/usbstick/p2/dev/console c 5 1
 
 # unmount everything
-sudo umount build_tmp/usbstick/p*
+umount build_tmp/usbstick/p*
 
 # unbind the loop devices
-sudo kpartx -v -d -p -usbstick- build_tmp/usb.img
+kpartx -v -d -p -usbstick- build_tmp/usb.img
+EOF
+
+echo
+echo "the usb boot image is now in build_tmp/usb.img"
+echo
+ls -l build_tmp/usb.img
+echo
