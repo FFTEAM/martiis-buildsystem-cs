@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 #
 # adopted from openWRT's ipkg-make-index.sh
 set -e
