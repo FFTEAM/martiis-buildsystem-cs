@@ -30,7 +30,7 @@
 
 if ! test -e bootlogo.bmp.gz; then
 	echo "no bootlogo.bmp.gz"
-	echo "if you really want no bootlogo, do 'touch bootlogo.bmp.gz'"
+	echo "if you really want no bootlogo, do 'echo > bootlogo.bmp.gz'"
 	echo "you can extract the bootlogo on your box with:"
 	echo
 	echo "zcat /dev/mtd1 | gzip -9 > /tmp/bootlogo.bmp.gz"
@@ -44,7 +44,7 @@ fi
 
 rm -f build_tmp/splash.img build_tmp/script.img
 # conv=sync pads the output to ibs size
-dd bs=126k conv=sync if=bootlogo.bmp.gz of=build_tmp/splash.img
+dd bs=126k conv=sync if=bootlogo.bmp.gz of=build_tmp/splash.img count=1
 
 # create the u-boot autoscript
 rm -f build_tmp/script.scr
