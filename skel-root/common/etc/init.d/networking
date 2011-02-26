@@ -11,6 +11,7 @@ case "$1" in
 		ifup -a
 	else
 		echo -n "Starting ifplugd... "
+		test $(ip a show dev lo|wc -l) -lt 4 && ifup lo
 		ifplugd -F
 	fi
 	echo "done."
