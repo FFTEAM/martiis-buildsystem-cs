@@ -1,0 +1,55 @@
+From 0423cec67c3557bb8b004dd5088c2414523eea36 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sat, 26 Feb 2011 13:28:10 +0100
+Subject: [PATCH] hack init's console
+
+Always use /dev/console for init, and create it if it does not exist.
+Ugly hack, but saves us from even uglier hacks in the kernel.
+---
+ init/init.c |   15 +++++++++++++--
+ 1 files changed, 13 insertions(+), 2 deletions(-)
+
+diff --git a/init/init.c b/init/init.c
+index 586e34a..5291525 100644
+--- a/init/init.c
++++ b/init/init.c
+@@ -261,6 +261,10 @@ static void message(int where, const char *fmt, ...)
+ 	}
+ }
+ 
++#ifdef VT_OPENQRY
++/* don't want that "vt102" stuff... */
++#undef VT_OPENQRY
++#endif
+ static void console_init(void)
+ {
+ #ifdef VT_OPENQRY
+@@ -268,16 +272,23 @@ static void console_init(void)
+ #endif
+ 	char *s;
+ 
++# if 0
+ 	s = getenv("CONSOLE");
+ 	if (!s)
+ 		s = getenv("console");
++#endif
++	s = "/dev/console";
++	mknod(s, (S_IFCHR | 0600), 0x0501);
++
+ 	if (s) {
++		close(STDIN_FILENO);
++		/* we'll get STDIN_FILENO from open... */
+ 		int fd = open(s, O_RDWR | O_NONBLOCK | O_NOCTTY);
+ 		if (fd >= 0) {
+-			dup2(fd, STDIN_FILENO);
+ 			dup2(fd, STDOUT_FILENO);
+-			xmove_fd(fd, STDERR_FILENO);
++			dup2(fd, STDERR_FILENO);
+ 		}
++		ndelay_off(STDIN_FILENO);
+ 		dbg_message(L_LOG, "console='%s'", s);
+ 	} else {
+ 		/* Make sure fd 0,1,2 are not closed
+-- 
+1.7.3.4
+
