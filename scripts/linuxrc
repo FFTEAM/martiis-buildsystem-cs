@@ -12,6 +12,13 @@
 # the usb stick should have an "/oldroot" directory, so you
 # can unmount the jffs2 "old" root later.
 #
+#########################################################################
+# THIS IS DEPRECATED, use the autoscr hack from mkmultiboot.sh instead! #
+#                                                                       #
+# It does not work correctly with hotplug, mdev etc.                    #
+# Don't report any bugs, they will be ignored.                          #
+#########################################################################
+
 e="/bin/echo linuxrc:"
 
 $e "***** linuxrc ******"
