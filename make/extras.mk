@@ -308,7 +308,7 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/glib-$(GLIB-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX)
+$(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX) find-autopoint
 	$(UNTAR)/mc-$(MC-VER).tar.gz
 	cd $(BUILD_TMP)/mc-$(MC-VER) && \
 		$(PATCH)/mc-4.6.2.diff && \
