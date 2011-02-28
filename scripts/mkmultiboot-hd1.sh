@@ -8,9 +8,9 @@
 #
 # create a U-Boot autoscript that can boot from USB
 # the USB stick needs 2 partitions:
-# * sda1: ext3 with the target partition
-# * sda2: fat with the kernel zimage.img
+# * sda1: fat with the kernel zimage.img
 #   tested working: mkdosfs version 3.0.10 with no further options
+# * sda2: ext3 with the target partition
 #
 # The USB stick should be known working with the coolstream U-Boot.
 #
