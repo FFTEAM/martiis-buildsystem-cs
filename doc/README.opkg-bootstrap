@@ -17,7 +17,7 @@ from it.
 Build packages for a more complete system:
 * make system-pkgs
 
-Now copy pkgs/opkg onto a Server, adjust /etc/opkg.conf on the box.
+Now copy pkgs/opkg onto a Server, adjust /etc/opkg/opkg.conf on the box.
 Then, on the box:
   opkg-cl update
   opkg-cl install neutrino-hd
