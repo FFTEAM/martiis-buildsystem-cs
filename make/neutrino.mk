@@ -69,6 +69,9 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 		DEP=`echo $$DEP` && \
 		DEP="$${DEP// /, }" && \
 		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-hd-control/control
+ifeq ($(PLATFORM), coolstream)
+	sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134)/' $(BUILD_TMP)/neutrino-hd-control/control
+endif
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
