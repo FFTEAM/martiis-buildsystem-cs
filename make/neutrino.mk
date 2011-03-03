@@ -65,14 +65,10 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 	install -D -m 0755 skel-root/common/etc/init.d/start_neutrino $(PKGPREFIX)/etc/init.d/start_neutrino
 	make $(PKGPREFIX)/.version
 	cp -a $(CONTROL_DIR)/neutrino-hd $(BUILD_TMP)/neutrino-hd-control
-ifeq ($(PLATFORM), tripledragon)
-	# ugly: tripledragon neutrino has different requirements...
-	sed -i 's/libOpenThreads.so.12.*/directfb, td-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
-endif
-ifneq ($(findstring --with-tremor, $(N_CONFIG_OPTS)),)
-	# replace libvorbis/libogg with libvorbisidec...
-	sed -i 's/libvorbisf.*ogg.so.0,/libvorbisidec.so.1,/' $(BUILD_TMP)/neutrino-hd-control/control
-endif
+	DEP=`$(TARGET)-objdump -p $(PKGPREFIX)/bin/neutrino | awk '/NEEDED/{print $$2}' | sort` && \
+		DEP=`echo $$DEP` && \
+		DEP="$${DEP// /, }" && \
+		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-hd-control/control
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
