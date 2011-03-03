@@ -8,4 +8,4 @@ Architecture: @ARCH@
 Homepage: http://www.gnu.org/software/libc/
 Source:
 Depends:
-Provides: libc.so.6
+Provides: @PROV@
