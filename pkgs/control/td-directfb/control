@@ -7,4 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage
 Source:
-Depends:
+Provides: libdirect-0.9.so.24, libdirectfb-0.9.so.24, libfusion-0.9.so.24
+Depends: td-drivers
