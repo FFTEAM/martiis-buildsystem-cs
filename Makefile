@@ -150,6 +150,8 @@ everything: $(shell sed -n 's/^\$$.D.\/\(.*\):.*/\1/p' make/*.mk)
 # put them into $(BASE_DIR)/local since that is ignored in .gitignore
 -include ./Makefile.local
 
+# debug target, if you need that, you know it. If you don't know if you need
+# that, you don't need it.
 .print-phony:
 	@echo $(PHONY)
 
