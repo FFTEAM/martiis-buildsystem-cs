@@ -255,43 +255,6 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/ffmpeg-$(FFMPEG-VER) $(PKGPREFIX)
 	touch $@
 
-# maybe put this into archive.mk?
-$(BUILD_TMP)/ffmpeg:
-	svn checkout -r 22733 svn://svn.ffmpeg.org/ffmpeg/trunk $(BUILD_TMP)/ffmpeg
-	svn up -r 30474 $(BUILD_TMP)/ffmpeg/libswscale/
-	cd $(BUILD_TMP)/ffmpeg && $(PATCH)/ffmpeg-dvbsubs.diff
-
-$(D)/ffmpeg-snapshot: $(BUILD_TMP)/ffmpeg | $(TARGETPREFIX)
-	pushd $(BUILD_TMP)/ffmpeg && \
-		CFLAGS=-march=armv6 \
-		./configure \
-			--enable-parsers --disable-decoders --disable-encoders --enable-demuxers \
-			--disable-muxers --disable-ffplay --disable-ffmpeg --disable-ffserver \
-			--enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video \
-			--enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio \
-			--enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 \
-			--enable-decoder=dvbsub --enable-decoder=iff_byterun1 --enable-demuxer=mpegps \
-			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
-			--disable-protocols --enable-protocol=file --enable-bsfs \
-			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
-			--disable-network --disable-swscale --disable-ffprobe \
-			--disable-static --enable-shared \
-			--enable-cross-compile \
-			--cross-prefix=$(TARGET)- \
-			--enable-armv6 --arch=arm --target-os=linux \
-			--enable-debug --enable-stripping \
-			--prefix=/ && \
-		$(MAKE) && \
-		make install DESTDIR=$(TARGETPREFIX) && \
-		./version.sh . $(TARGETPREFIX)/lib/ffmpeg-version.h
-	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
-	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
-	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
-	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
-	# don't check out everything every time...
-	# $(REMOVE)/ffmpeg
-	touch $@
-
 $(D)/libogg: $(ARCHIVE)/libogg-$(OGG-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libogg-$(OGG-VER).tar.gz
 	pushd $(BUILD_TMP)/libogg-$(OGG-VER) && \
