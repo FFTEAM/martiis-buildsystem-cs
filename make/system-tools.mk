@@ -354,15 +354,17 @@ $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
 			--build=$(BUILD) \
 			--host=$(TARGET) \
 			--target=$(TARGET) \
-			--prefix=$(TARGETPREFIX) \
+			--prefix= \
 			--disable-doxygen-docs \
 			--disable-xml-docs \
 			--enable-abstract-sockets \
 			--with-x=no \
 			--with-xml=no \
-		&& $(MAKE) install
+			--mandir=/.remove \
+		&& $(MAKE) install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/dbus-1.pc
-	$(REMOVE)/dbus-$(DBUS-VER) $(PKGPREFIX)
+	$(REWRITE_LIBTOOL)/libdbus-1.la
+	$(REMOVE)/dbus-$(DBUS-VER) $(TARGETPREFIX)/.remove
 	touch $@
 	$(ECHO_BUILD_DONE)
 
