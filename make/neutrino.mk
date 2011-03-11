@@ -4,7 +4,6 @@ NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffm
 
 N_CFLAGS  = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing
 N_CFLAGS += -I$(TARGETPREFIX)/include
-N_CFLAGS += -I$(TARGETPREFIX)/include/freetype2
 ifneq ($(PLATFORM), tripledragon)
 # coolstream
 N_CFLAGS += -DUSE_NEVIS_GXA
