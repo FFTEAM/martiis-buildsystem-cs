@@ -324,7 +324,6 @@ $(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz | $(TARGETPRE
 
 # !!! this is experimental and not working now !!!
 $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | $(TARGETPREFIX)
-	$(ECHO_BUILD)
 	$(UNTAR)/systemd-$(SYSTEMD-VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/systemd-$(SYSTEMD-VER) && \
@@ -343,10 +342,8 @@ $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | 
 	  && $(MAKE)
 	$(REMOVE)/systemd-$(SYSTEMD-VER) $(PKGPREFIX)
 	touch $@
-	$(ECHO_BUILD_DONE)
 
 $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
-	$(ECHO_BUILD)
 	$(UNTAR)/dbus-$(DBUS-VER).tar.gz
 	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/dbus-$(DBUS-VER) && \
@@ -366,7 +363,6 @@ $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libdbus-1.la
 	$(REMOVE)/dbus-$(DBUS-VER) $(TARGETPREFIX)/.remove
 	touch $@
-	$(ECHO_BUILD_DONE)
 
 
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs
