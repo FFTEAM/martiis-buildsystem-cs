@@ -441,6 +441,7 @@ $(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT-VER).tar.gz
 		$(MAKE) && \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
+	$(REWRITE_LIBTOOL)/libexpat.la
 	$(REMOVE)/expat-$(EXPAT-VER)
 	touch $@
 
