@@ -434,4 +434,38 @@ $(D)/libflex: $(ARCHIVE)/flex-$(FLEX-VER).tar.gz
 	$(REMOVE)/flex-$(FLEX-VER)
 	touch $@
 
+$(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT-VER).tar.gz
+	$(UNTAR)/expat-$(EXPAT-VER).tar.gz
+	cd $(BUILD_TMP)/expat-$(EXPAT-VER) && \
+		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls && \
+		$(MAKE) && \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX)
+	rm -fr $(TARGETPREFIX)/.remove
+	$(REMOVE)/expat-$(EXPAT-VER)
+	touch $@
+
+
+# !!! libcap != libpcap !!!
+# only the libs will be installed!
+$(D)/libcap: $(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz $(D)/libattr1
+	$(UNTAR)/libcap-$(LIBCAP2-VER).tar.gz
+	pushd $(BUILD_TMP)/libcap-$(LIBCAP2-VER) && \
+	  patch -p1 < $(PATCHES)/libcap-$(LIBCAP2-VER).patch &&\
+	  CROSS_BASE=$(CROSS_BASE) TARGET=$(TARGET) TARGETPREFIX=$(TARGETPREFIX)\
+	  $(MAKE) &&\
+	  $(MAKE) -C libcap INCDIR=$(TARGETPREFIX)/include LIBDIR=$(TARGETPREFIX)/lib  install
+	$(REMOVE)/libcap-$(LIBCAP2-VER)
+	touch $@
+
+$(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz
+	$(UNTAR)/attr-$(ATTR-VER).src.tar.gz
+	pushd $(BUILD_TMP)/attr-$(ATTR-VER) && \
+	  $(CONFIGURE) \
+	  --prefix=$(TARGETPREFIX) \
+	  --enable-gettext=no \
+	  && $(MAKE) install-lib install-dev
+	rm -rf $(TARGETPREFIX)/share $(TARGETPREFIX)/locale $(TARGETPREFIX)/man
+	$(REMOVE)/attr-$(ATTR-VER)
+	touch $@
+
 PHONY += ncurses-prereq

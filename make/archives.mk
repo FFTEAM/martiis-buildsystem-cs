@@ -89,6 +89,9 @@ $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz:
 $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz:
 	$(WGET) ftp://ftp.wh8.tu-dresden.de/pub/linux/distributions/gentoo/distfiles/libpcap-$(PCAP-VER).tar.gz
 
+$(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz:
+	$(WGET) http://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-$(LIBCAP2-VER).tar.gz
+
 $(ARCHIVE)/links-$(LINKS-VER).tar.bz2:
 	$(WGET) http://links.twibright.com/download/links-$(LINKS-VER).tar.bz2
 
@@ -157,3 +160,15 @@ $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
 
 $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/$(ZLIB-VER)/zlib-$(ZLIB-VER).tar.bz2
+
+$(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2:
+	$(WGET) http://www.freedesktop.org/software/systemd/systemd-$(SYSTEMD-VER).tar.bz2
+
+$(ARCHIVE)/dbus-$(DBUS-VER).tar.gz:
+	$(WGET) http://dbus.freedesktop.org/releases/dbus/dbus-$(DBUS-VER).tar.gz
+
+$(ARCHIVE)/expat-$(EXPAT-VER).tar.gz:
+	$(WGET) http://sourceforge.net/projects/expat/files/expat/$(EXPAT-VER)/expat-$(EXPAT-VER).tar.gz
+
+$(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz:
+	$(WGET) http://download.savannah.gnu.org/releases/attr/attr-$(ATTR-VER).src.tar.gz

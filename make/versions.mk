@@ -73,8 +73,17 @@ VORBISIDEC-VER_APPEND=.orig
 # libpcap; system-independent interface for user-level packet capture
 PCAP-VER=1.0.0
 
+# libcap2; setting and proofing POSIX.1e functionality
+LIBCAP2-VER=2.20
+
 # flex; fast lexical analyser generator
 FLEX-VER=2.5.35
+
+# libexpat; XML parser
+EXPAT-VER=2.0.1
+
+# attr; setting up extended attributes
+ATTR-VER=2.4.44
 
 #############################
 # tools; make/system-tools.mk
@@ -116,6 +125,12 @@ UNFS3-VER=0.9.22
 
 # fbshot;  a small program that allowes you to take screenshots from the framebuffer
 FBSHOT-VER=0.3
+
+# systemd; a system and service manager for Linux
+SYSTEMD-VER=19
+
+# dbus; message bus system
+DBUS-VER=1.4.6
 
 #########################
 # extras; make/extras.mk

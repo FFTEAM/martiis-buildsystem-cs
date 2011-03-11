@@ -322,6 +322,51 @@ $(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz | $(TARGETPRE
 		$(TARGET)-gcc $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
 	$(REMOVE)/fbshot-$(FBSHOT-VER)
 
+# !!! this is experimental and not working now !!!
+$(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | $(TARGETPREFIX)
+	$(ECHO_BUILD)
+	$(UNTAR)/systemd-$(SYSTEMD-VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/systemd-$(SYSTEMD-VER) && \
+		autoreconf -f -i -s &&\
+		automake --foreign --include-deps &&\
+	  $(BUILDENV) ./configure \
+		--build=$(BUILD) \
+		--host=$(TARGET) \
+		--target=$(TARGET) \
+		--prefix=$(TARGETPREFIX) \
+		--with-distro=other \
+		--with-syslog-service=/sbin/syslogd \
+		--with-sysvinit-path=/etc/init.d \
+		--with-sysvrcd-path=/etc/init.d \
+		--with-rootdir=$(TARGETPREFIX) \
+	  && $(MAKE)
+	$(REMOVE)/systemd-$(SYSTEMD-VER) $(PKGPREFIX)
+	touch $@
+	$(ECHO_BUILD_DONE)
+
+$(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
+	$(ECHO_BUILD)
+	$(UNTAR)/dbus-$(DBUS-VER).tar.gz
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/dbus-$(DBUS-VER) && \
+		$(BUILDENV) ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix=$(TARGETPREFIX) \
+			--disable-doxygen-docs \
+			--disable-xml-docs \
+			--enable-abstract-sockets \
+			--with-x=no \
+			--with-xml=no \
+		&& $(MAKE) install
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/dbus-1.pc
+	$(REMOVE)/dbus-$(DBUS-VER) $(PKGPREFIX)
+	touch $@
+	$(ECHO_BUILD_DONE)
+
+
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs
 system-tools-opt: $(D)/samba2 $(D)/xfsprogs $(D)/vsftpd
 system-tools-all: system-tools system-tools-opt
