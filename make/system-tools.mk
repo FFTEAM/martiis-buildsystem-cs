@@ -329,17 +329,17 @@ $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | 
 	cd $(BUILD_TMP)/systemd-$(SYSTEMD-VER) && \
 		autoreconf -f -i -s &&\
 		automake --foreign --include-deps &&\
-	  $(BUILDENV) ./configure \
-		--build=$(BUILD) \
-		--host=$(TARGET) \
-		--target=$(TARGET) \
-		--prefix=$(TARGETPREFIX) \
-		--with-distro=other \
-		--with-syslog-service=/sbin/syslogd \
-		--with-sysvinit-path=/etc/init.d \
-		--with-sysvrcd-path=/etc/init.d \
-		--with-rootdir=$(TARGETPREFIX) \
-	  && $(MAKE)
+		$(BUILDENV) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB) -L$(TARGETLIB)" ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix=$(TARGETPREFIX) \
+			--with-distro=other \
+			--with-syslog-service=/sbin/syslogd \
+			--with-sysvinit-path=/etc/init.d \
+			--with-sysvrcd-path=/etc/init.d \
+			--with-rootdir=$(TARGETPREFIX) \
+		&& $(MAKE)
 	$(REMOVE)/systemd-$(SYSTEMD-VER) $(PKGPREFIX)
 	touch $@
 
