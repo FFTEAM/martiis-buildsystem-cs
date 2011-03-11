@@ -461,12 +461,16 @@ $(D)/libcap: $(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz $(D)/libattr1
 $(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz
 	$(UNTAR)/attr-$(ATTR-VER).src.tar.gz
 	pushd $(BUILD_TMP)/attr-$(ATTR-VER) && \
-	  $(CONFIGURE) \
-	  --prefix=$(TARGETPREFIX) \
-	  --enable-gettext=no \
-	  && $(MAKE) install-lib install-dev
-	rm -rf $(TARGETPREFIX)/share $(TARGETPREFIX)/locale $(TARGETPREFIX)/man
-	$(REMOVE)/attr-$(ATTR-VER)
+		$(CONFIGURE) \
+			--prefix= \
+			--enable-gettext=no \
+			--mandir=/.remove \
+			--datadir=/.remove \
+			&& $(MAKE) install-lib install-dev DIST_ROOT=$(TARGETPREFIX)
+	$(REMOVE)/attr-$(ATTR-VER) $(TARGETPREFIX)/.remove
+	rm $(TARGETPREFIX)/lib/libattr.*a $(TARGETPREFIX)/libexec/libattr.so
+	mv $(TARGETPREFIX)/libexec/libattr* $(TARGETPREFIX)/lib/
+	$(REWRITE_LIBTOOL)/libattr.la
 	touch $@
 
 PHONY += ncurses-prereq
