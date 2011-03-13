@@ -90,6 +90,7 @@ include make/archives.mk
 include make/extras.mk
 include make/packages.mk
 include make/plugins.mk
+include make/example.mk
 
 update-self:
 	git pull
