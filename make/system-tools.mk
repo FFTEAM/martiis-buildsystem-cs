@@ -321,6 +321,47 @@ $(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz | $(TARGETPRE
 		$(TARGET)-gcc $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
 	$(REMOVE)/fbshot-$(FBSHOT-VER)
 
+
+# old valgrind for TD with old toolchain (linuxthreads glibc)
+$(D)/valgrind-old: $(ARCHIVE)/valgrind-3.3.1.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/valgrind-3.3.1.tar.bz2
+	cd $(BUILD_TMP)/valgrind-3.3.1 && \
+		export ac_cv_path_GDB=/opt/pkg/bin/gdb && \
+		export AR=$(TARGET)-ar && \
+		$(CONFIGURE) --prefix=/ --enable-only32bit --enable-tls && \
+		make all && \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/valgrind-3.3.1
+	touch $@
+
+ifeq ($(BOXARCH), arm)
+VALGRIND_EXTRA_EXPORT = export ac_cv_host=armv7-unknown-linux-gnueabi
+else
+VALGRIND_EXTRA_EXPORT = :
+endif
+# newer valgrind is probably only usable with external toolchain and newer glibc (posix threads)
+$(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/valgrind-3.6.1.tar.bz2
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/valgrind-3.6.1 && \
+		export ac_cv_path_GDB=/opt/pkg/bin/gdb && \
+		$(VALGRIND_EXTRA_EXPORT) && \
+		export AR=$(TARGET)-ar && \
+		$(CONFIGURE) --prefix=/opt/pkg --enable-only32bit --mandir=/.remove --datadir=/.remove && \
+		make all && \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove
+	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/* $(PKG_CONFIG_PATH)
+	$(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/valgrind.pc
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)/opt/pkg/include $(PKGPREFIX)/opt/pkg/lib/pkconfig
+	rm -rf $(PKGPREFIX)/opt/pkg/lib/valgrind/*.a
+	rm -rf $(PKGPREFIX)/opt/pkg/bin/{cg_*,callgrind_*,ms_print} # perl scripts - we don't have perl
+	$(OPKG_SH) $(CONTROL_DIR)/valgrind
+	$(REMOVE)/valgrind-3.6.1 $(PKGPREFIX)
+	touch $@
+
+
 # !!! this is experimental and not working now !!!
 $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | $(TARGETPREFIX)
 	$(UNTAR)/systemd-$(SYSTEMD-VER).tar.bz2
