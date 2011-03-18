@@ -101,6 +101,7 @@ else
 # TRIPLEDRAGON
 td-modules: $(TARGETPREFIX)/lib/modules/2.6.12
 
+ifneq ($(TD_COMPILER), new)
 $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	@echo ' ============================================================================== '
 	@echo "                       Preparing to Build crosstool"
@@ -124,6 +125,27 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	if [ ! -e $(CROSS_DIR)/$(TARGET)/include/mtd ]; then \
 		cp -a $(BUILD_TMP)/crosstool-0.43/build/$(TARGET)/$(CROSS_BUILD_DIR)/linux-2.6.12/include/mtd $(CROSS_DIR)/$(TARGET)/include/;\
 	fi
+
+else
+#
+# $(TD_COMPILER) == new
+$(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2
+	make $(BUILD_TMP)
+	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
+	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
+	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm
+	cd $(BUILD_TMP)/crosstool-ng-1.10.0 && \
+		cp -a $(PATCHES)/crosstool-ng-tripledragon.config .config && \
+		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2) && \
+		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config && \
+		export TD_BASE_DIR=$(BASE_DIR) && \
+		export TD_BUILD_TMP=$(BUILD_TMP) && \
+		./configure --local &&  make && chmod 0755 ct-ng && \
+		./ct-ng oldconfig && \
+		./ct-ng build
+	$(REMOVE)/crosstool-ng-1.10.0
+
+endif
 
 $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX)
 	@echo ' ============================================================================== '

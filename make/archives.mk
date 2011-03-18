@@ -8,6 +8,9 @@ $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.bz2:
 $(ARCHIVE)/crosstool-0.43.tar.gz:
 	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
 
+$(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2:
+	$(WGET) http://ymorin.is-a-geek.org/download/crosstool-ng/crosstool-ng-1.10.0.tar.bz2
+
 $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB-VER).tar.gz
 
@@ -94,6 +97,9 @@ $(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz:
 
 $(ARCHIVE)/links-$(LINKS-VER).tar.bz2:
 	$(WGET) http://links.twibright.com/download/links-$(LINKS-VER).tar.bz2
+
+$(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2:
+	$(WGET) http://www.kernel.org/pub/tools/crosstool/files/src/linux-libc-headers-2.6.12.0.tar.bz2
 
 $(ARCHIVE)/mc-$(MC-VER).tar.gz:
 	$(WGET) http://midnight-commander.org/downloads/mc-$(MC-VER).tar.gz

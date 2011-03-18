@@ -5,7 +5,13 @@ BASE_DIR    = $(shell pwd)
 
 ifneq ($(PLATFORM), coolstream)
 PLATFORM    ?= tripledragon
+ifneq ($(TD_COMPILER), new)
+TD_COMPILER ?= old
 TARGET      ?= powerpc-405-linux-gnu
+else
+# name it differently to avoid subtleties...
+TARGET      ?= powerpc-405n-linux-gnu
+endif
 FLAVOUR     ?= neutrino-hd-tripledragon
 BOXARCH      = powerpc
 else
@@ -41,11 +47,11 @@ PACKAGE_DIR  = $(BASE_DIR)/pkgs/opkg
 SCRIPTS      = $(BASE_DIR)/scripts/target
 
 CROSS_BASE   = $(BASE_DIR)/cross
-ifeq ($(PLATFORM), tripledragon)
+ifneq ($(PLATFORM)-$(TD_COMPILER), tripledragon-old)
+CROSS_DIR   ?= $(CROSS_BASE)
+else
 # old crosstool compatibility
 CROSS_DIR   ?= $(CROSS_BASE)/$(CROSS_BUILD_DIR)/$(TARGET)
-else
-CROSS_DIR   ?= $(CROSS_BASE)
 endif
 
 BUILD       ?= $(shell /usr/share/libtool/config.guess 2>/dev/null || /usr/share/libtool/config/config.guess)
