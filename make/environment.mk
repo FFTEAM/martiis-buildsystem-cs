@@ -1,6 +1,6 @@
 # set up environment for other makefiles
 
-BASE_DIR    = $(shell pwd)
+BASE_DIR    := $(shell pwd)
 -include $(BASE_DIR)/config
 
 ifneq ($(PLATFORM), coolstream)
@@ -20,7 +20,7 @@ FLAVOUR     ?= neutrino-hd
 BOXARCH      = arm
 endif
 
-WHOAMI       = $(shell id -un)
+WHOAMI      := $(shell id -un)
 MAINTAINER  ?= $(shell getent passwd $(WHOAMI)|awk -F: '{print $$5}')
 
 ## needed for the old Tripledragon crosstool
