@@ -66,7 +66,7 @@ $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/$(FREETYPE-VER)/freetype-$(FREETYPE-VER).tar.bz2
 
 $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
-	$(WGET) http://ftp.se.debian.org/pub/gnome/sources/glib/2.8/glib-$(GLIB-VER).tar.bz2
+	$(WGET) ftp://ftp.gtk.org/pub/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/glib-$(GLIB-VER).tar.bz2
 
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz

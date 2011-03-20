@@ -277,11 +277,11 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG-VER).tar.gz | $(TARGETPREFIX)
 	touch $@
 
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
-$(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
 	cd $(BUILD_TMP)/glib-$(GLIB-VER) && \
-		$(PATCH)/glib-2.13.4-gcc-4.2-fix.diff && \
 		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache && \
+		echo "ac_cv_func_posix_getgrgid_r=ys" >> config.cache && \
 		echo "glib_cv_stack_grows=no" >> config.cache && \
 		echo "glib_cv_uscore=no" >> config.cache && \
 		$(BUILDENV) \

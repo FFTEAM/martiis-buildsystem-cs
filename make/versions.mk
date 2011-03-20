@@ -155,7 +155,10 @@ DROPBEAR-VER=0.52
 OPKG-VER=0.1.8
 
 # glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
-GLIB-VER=2.8.6
+GLIB-MAJOR=2
+GLIB-MINOR=24
+GLIB-MICRO=1
+GLIB-VER=$(GLIB-MAJOR).$(GLIB-MINOR).$(GLIB-MICRO)
 
 # mc; the famous midnight commander
 MC-VER=4.6.2
