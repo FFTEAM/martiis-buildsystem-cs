@@ -1,6 +1,12 @@
 #master makefile
 
 SHELL = /bin/bash
+UID := $(shell id -u)
+ifeq ($(UID), 0)
+warn:
+	@echo "You are running as root. Don't do this, it's dangerous."
+	@echo "Refusing to build. Good bye."
+else
 
 include make/environment.mk
 
@@ -166,3 +172,4 @@ PHONY += update-svn update-svn-target update-neutrino update-self
 # downloads in parallel...), but the sub-targets are still built in
 # parallel, which is useful on multi-processor / multi-core machines
 .NOTPARALLEL:
+endif
