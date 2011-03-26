@@ -1,5 +1,5 @@
 Package: dropbear
-Version: 0.52-1
+Version: 0.53.1-1
 Description: A small SSH 2 server and client
 Section: extras/servers
 Priority: optional

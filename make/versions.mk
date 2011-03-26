@@ -149,7 +149,7 @@ NBENCH_BYTE-VER=2.2.3
 LIBUPNP-VER=1.6.10
 
 # dropbear; a relatively small SSH 2 server and client
-DROPBEAR-VER=0.52
+DROPBEAR-VER=0.53.1
 
 # opkg; a lightweight package management system based on Ipkg
 OPKG-VER=0.1.8

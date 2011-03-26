@@ -224,7 +224,7 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/dropbear-$(DROPBEAR-VER).tar.bz2
 	cd $(BUILD_TMP)/dropbear-$(DROPBEAR-VER) && \
 		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
-		$(PATCH)/dropbear-0.52-fix-scp-progressbar-build.diff && \
+		$(PATCH)/dropbear-0.53-opt-pkg-prefix.diff && \
 		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
 			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg && \
 		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" SCPPROGRESS=1 && \
