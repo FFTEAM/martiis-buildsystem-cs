@@ -15,8 +15,10 @@ N_CFLAGS += -I$(TARGETPREFIX)/include/hardware
 N_CFLAGS += -D_FILE_OFFSET_BITS=64
 endif
 
-# if you really want slow libvorbis, leave N_CONFIG_OPTS empty and use
-# NEUTRINO_DEPS += libvorbis
+# choose between static and dynamic libtremor. As long as nothing else
+# uses libtremor, static usage does not really hurt and is compatible
+# with the "original" image
+#N_CONFIG_OPTS = --with-tremor-static
 N_CONFIG_OPTS = --with-tremor
 NEUTRINO_DEPS += libvorbisidec
 
@@ -54,8 +56,8 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
-	# make $(TARGETPREFIX)/.version
-	touch $@
+	+make $(TARGETPREFIX)/.version
+	: touch $@
 
 neutrino-pkg: $(N_OBJDIR)/config.status
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
