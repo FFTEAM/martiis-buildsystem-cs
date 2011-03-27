@@ -52,6 +52,8 @@ $(TARGETPREFIX)/.version:
 	echo "imagename=HD-Neutrino"		>> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
+PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
+
 $(D)/neutrino: $(N_OBJDIR)/config.status
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
