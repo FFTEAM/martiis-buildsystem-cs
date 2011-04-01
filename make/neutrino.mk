@@ -48,8 +48,9 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 $(PKGPREFIX)/.version \
 $(TARGETPREFIX)/.version:
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
-	echo "creator=`id -un`"			>> $@
+	echo "creator=$(MAINTAINER)"		>> $@
 	echo "imagename=HD-Neutrino"		>> $@
+	echo "builddate=`cd $(N_HD_SOURCE); git describe --always --dirty`" >> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
