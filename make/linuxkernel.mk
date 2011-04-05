@@ -53,6 +53,11 @@ $(D)/tdkernel: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	touch $@
 
+kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
+	cd $(BUILD_TMP)/linux-2.6.12 && \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH) && \
+		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- menuconfig
+
 # try to build a compiler that's similar to the one that built the kernel...
 # this should be only needed if you are using e.g. an external toolchain with gcc4
 kernelgcc: $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
@@ -164,6 +169,13 @@ endif
 		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
 			-n "Coolstream HDx Kernel" -d $(K_OBJ)/arch/arm/boot/Image Image.img
 	: touch $@
+
+kernelmenuconfig: $(K_SRCDIR) $(K_OBJ)/.config
+ifeq ($(K_SRCDIR), $(SOURCE_DIR)/linux)
+	rm -f $(SOURCE_DIR)/linux/.config
+endif
+	cd $(SOURCE_DIR)/linux && \
+		make ARCH=arm CROSS_COMPILE=$(TARGET)- menuconfig O=$(K_OBJ)/
 
 # yes, it's not the kernel. but it's not enough to warrant an extra file
 $(D)/cs-uboot: $(ARCHIVE)/u-boot-2009.03.tar.bz2 $(PATCHES)/coolstream/u-boot-2009.3-CST.diff
