@@ -119,6 +119,9 @@ $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz:
 $(ARCHIVE)/rsync-$(RSYNC-VER).tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-$(RSYNC-VER).tar.gz
 
+$(ARCHIVE)/pkg-config-0.25.tar.gz:
+	$(WGET) http://pkgconfig.freedesktop.org/releases/pkg-config-0.25.tar.gz
+
 $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz:
 	$(WGET) http://neil.brown.name/portmap/portmap-$(PORTMAP-VER).tgz
 
