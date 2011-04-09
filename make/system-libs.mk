@@ -467,7 +467,8 @@ $(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz
 			--enable-gettext=no \
 			--mandir=/.remove \
 			--datadir=/.remove \
-			&& $(MAKE) install-lib install-dev DIST_ROOT=$(TARGETPREFIX)
+			&& $(MAKE) \
+			&& make install-lib install-dev DIST_ROOT=$(TARGETPREFIX)
 	$(REMOVE)/attr-$(ATTR-VER) $(TARGETPREFIX)/.remove
 	rm $(TARGETPREFIX)/lib/libattr.*a $(TARGETPREFIX)/libexec/libattr.so
 	mv $(TARGETPREFIX)/libexec/libattr* $(TARGETPREFIX)/lib/
