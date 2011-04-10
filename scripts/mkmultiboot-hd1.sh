@@ -27,6 +27,11 @@
 # (no typos please ;)
 # After that, if the USB stick is present, it is used for booting,
 # if not, the machine boots from FLASH.
+#
+# if you have a particularly "unwilling" USB-Stick, you can run the
+# script multiple times. This will improve the reliability on the expense
+# of slightly longer boot times if no stick is present:
+# HDx> setenv bootcmd autoscr 0xf047f800\; autoscr 0xf047f800\; bootm 0xf0080000
 
 IN=mtd1-hd1.img
 OUT=build_tmp/kernel-autoscr-mtd1.img
@@ -62,6 +67,7 @@ printf "setenv resetattr \033[0m\n" > build_tmp/script.scr
 cat >> build_tmp/script.scr << EOF
 printenv resetattr
 usb start
+usb reset
 fatload usb 0:1 0x08000000 zimage.img
 setenv bootargs console=ttyRI0 mtdparts=cx2450xflash:512k(U-Boot)ro,4096k(kernel),28160k(systemFS) mem=384M panic=5 root=/dev/sda2 rootfstype=ext3 rootwait rw printk.time=1 \$(kernelparams)
 bootm 0x08000000
