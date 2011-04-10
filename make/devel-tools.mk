@@ -3,7 +3,11 @@
 $(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/strace-4.5.20.tar.bz2
-	pushd $(BUILD_TMP)/strace-4.5.20 && \
+ifeq ($(PLATFORM), tripledragon)
+	cd $(BUILD_TMP)/strace-4.5.20 && \
+		$(PATCH)/strace-add-TD-ioctls.diff
+endif
+	cd $(BUILD_TMP)/strace-4.5.20 && \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGETPREFIX)/include" \
 		CXXFLAGS="$(TARGET_CXXFLAGS)" \
