@@ -16,6 +16,12 @@
 # the size in million bytes, hopefully smaller than the USB stick ;)
 SIZE=500
 
+# hack for people who don't have sbin in $PATH
+if ! echo $PATH | grep -q /sbin; then
+	PATH=/sbin:/usr/sbin:/usr/local/sbin:$PATH
+	export PATH
+fi
+
 # create the empty image (sparse, to save time)
 rm -f build_tmp/usb.img
 dd if=/dev/zero of=build_tmp/usb.img bs=1 count=1 seek=$(($SIZE * 1000000 - 1))
