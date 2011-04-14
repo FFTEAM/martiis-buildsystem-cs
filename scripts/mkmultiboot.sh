@@ -31,7 +31,7 @@
 # if you have a particularly "unwilling" USB-Stick, you can run the
 # script multiple times. This will improve the reliability on the expense
 # of slightly longer boot times if no stick is present:
-# HDx> setenv bootcmd autoscr 0xf047f800\; autoscr 0xf047f800\; bootm 0xf0080000
+# HDx> setenv bootcmd autoscr 0xf007f800\; autoscr 0xf007f800\; bootm 0xf0080000
 
 if ! test -e bootlogo.bmp.gz; then
 	echo "no bootlogo.bmp.gz"
