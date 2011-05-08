@@ -8,4 +8,4 @@ Architecture: @ARCH@
 Homepage: http://coolstreamtech.com/
 Source:
 Provides: libcoolstream.so, libnxp.so
-Depends: cs-drivers (>= 932)
+Depends: cs-drivers (>= 1416)
