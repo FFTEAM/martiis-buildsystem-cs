@@ -84,8 +84,10 @@ $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
 	cd $@ && \
-		$(PATCH)/linux-2.6.26.8-new-make.patch && \
-		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff
+		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff && \
+		for i in $(PATCHES)/cskernel/*; do \
+			echo "applying $$i..." ;patch -p4 -i $$i; \
+		done
 
 # this would be a way to build custom configs, but it is not nice, so not used yet.
 # CS_K_Y = CONFIG_HID_SUPPORT
@@ -135,6 +137,7 @@ $(K_SRCDIR):
 	@echo "                      and creates a symlink"
 	@echo "* 'make kernel-patch' extracts a tarball and patches it with the"
 	@echo "                      patches from archive-patches"
+	@echo "note that kernel-svn is usually safer and more current."
 	@echo
 	@false
 

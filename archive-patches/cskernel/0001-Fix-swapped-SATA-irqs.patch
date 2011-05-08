@@ -1,0 +1,29 @@
+From f7c3645233d9088a94f03c13459667aecf7162b2 Mon Sep 17 00:00:00 2001
+From: nightshad <nightshad@e54a6e83-5905-42d5-8d5c-058d10e6a962>
+Date: Fri, 11 Feb 2011 09:37:08 +0000
+Subject: [PATCH] Fix swapped SATA irqs.
+
+git-svn-id: http://www.coolstreamtech.de/coolstream_public_svn@1147 e54a6e83-5905-42d5-8d5c-058d10e6a962
+---
+ .../include/asm-arm/arch-nevis/irqs.h              |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/include/asm-arm/arch-nevis/irqs.h b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/include/asm-arm/arch-nevis/irqs.h
+index 642d666..5d8ef84 100644
+--- a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/include/asm-arm/arch-nevis/irqs.h
++++ b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/include/asm-arm/arch-nevis/irqs.h
+@@ -44,9 +44,9 @@
+ #define IRQ_EMAC0		24		/* first Media Access Controller */
+ #define IRQ_EMAC1		25		/* second Media Access Controller */
+ #define IRQ_I2C3		27		/* fourth I2C bus */
+-#define IRQ_SATA0		35		/* first SATA controller */
++#define IRQ_SATA1		35		/* second SATA controller */
+ #define IRQ_PCI			37		/* PCI controller */
+-#define IRQ_SATA1		42		/* second SATA controller */
++#define IRQ_SATA0		42		/* first SATA controller */
+ #define IRQ_SC(x)		(  3 + (x))	/* first of the two smardcard interface controllers */
+ #define IRQ_IR(x)		(  9 + (x))	/* first of the two Infrared remote controllers */
+ #define IRQ_TIMER(x)		( 64 + (x))	/* first of the 16 hardware timer starts at IRQ 64 (count 0 to 15) */
+-- 
+1.7.3.4
+

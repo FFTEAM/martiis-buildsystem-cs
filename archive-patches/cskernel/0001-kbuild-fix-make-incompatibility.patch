@@ -1,0 +1,64 @@
+From c69a05347c63a862871260d8210b297e32a05b47 Mon Sep 17 00:00:00 2001
+From: seife <seife@e54a6e83-5905-42d5-8d5c-058d10e6a962>
+Date: Thu, 24 Feb 2011 07:58:42 +0000
+Subject: [PATCH] kbuild: fix make incompatibility
+
+"Paul Smith" <psmith@gnu.org> reported that we would fail
+to build with a new check that may be enabled in an
+upcoming version of make.
+
+The error was:
+
+      Makefile:442: *** mixed implicit and normal rules.  Stop.
+
+The problem is that we did stuff like this:
+
+config %config: ...
+
+The solution was simple - the above was split into two with identical
+prerequisites and commands.
+With only three lines it was not worth to try to avoid the duplication.
+
+Cc: "Paul Smith" <psmith@gnu.org>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+
+[Stefan Seyfried: this is upstream commit 31110ebbec86, Linux 2.6.28]
+
+git-svn-id: http://www.coolstreamtech.de/coolstream_public_svn@1198 e54a6e83-5905-42d5-8d5c-058d10e6a962
+---
+ THIRDPARTY/kernel/linux-2.6.26.8-cnxt/Makefile |   12 ++++++++++--
+ 1 files changed, 10 insertions(+), 2 deletions(-)
+
+diff --git a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/Makefile b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/Makefile
+index 7f13632..307c420 100644
+--- a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/Makefile
++++ b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/Makefile
+@@ -431,7 +431,11 @@ ifeq ($(config-targets),1)
+ include $(srctree)/arch/$(SRCARCH)/Makefile
+ export KBUILD_DEFCONFIG
+ 
+-config %config: scripts_basic outputmakefile FORCE
++config: scripts_basic outputmakefile FORCE
++	$(Q)mkdir -p include/linux include/config
++	$(Q)$(MAKE) $(build)=scripts/kconfig $@
++
++%config: scripts_basic outputmakefile FORCE
+ 	$(Q)mkdir -p include/linux include/config
+ 	$(Q)$(MAKE) $(build)=scripts/kconfig $@
+ 
+@@ -1548,7 +1552,11 @@ endif
+ 	$(Q)$(MAKE) $(build)=$(build-dir) $(target-dir)$(notdir $@)
+ 
+ # Modules
+-/ %/: prepare scripts FORCE
++/: prepare scripts FORCE
++	$(cmd_crmodverdir)
++	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
++	$(build)=$(build-dir)
++%/: prepare scripts FORCE
+ 	$(cmd_crmodverdir)
+ 	$(Q)$(MAKE) KBUILD_MODULES=$(if $(CONFIG_MODULES),1) \
+ 	$(build)=$(build-dir)
+-- 
+1.7.3.4
+
