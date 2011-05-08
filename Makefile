@@ -64,6 +64,7 @@ help:
 	@echo "* make minimal-system-pkgs - build enough to have a bootable system, consult"
 	@echo "                             doc/README.opkg-bootstrap how to continue from there"
 	@echo "* make devel-tools         - build gdb and strace for the target"
+	@echo "* make print-targets       - print out all available targets"
 	@echo ""
 	@echo "later, you might find those useful:"
 	@echo "* make update-self         - update the build system"
@@ -79,6 +80,7 @@ endif
 	@echo "                             after that you need to restart with 'bootstrap'"
 	@echo "make all-clean             - additionally remove the crosscompiler"
 	@echo "                             you usually don't want to do that."
+	@echo
 
 # define package versions first...
 include make/versions.mk
@@ -153,6 +155,11 @@ all:
 # target for testing only. not useful otherwise
 everything: $(shell sed -n 's/^\$$.D.\/\(.*\):.*/\1/p' make/*.mk)
 
+# print all present targets...
+print-targets:
+	@sed -n 's/^\$$.D.\/\(.*\):.*/\1/p; s/^\([a-z].*\):\( \|$$\).*/\1/p;' make/*.mk Makefile | \
+		sort | fmt -65
+
 # for local extensions, e.g. special plugins or similar...
 # put them into $(BASE_DIR)/local since that is ignored in .gitignore
 -include ./Makefile.local
@@ -162,7 +169,7 @@ everything: $(shell sed -n 's/^\$$.D.\/\(.*\):.*/\1/p' make/*.mk)
 .print-phony:
 	@echo $(PHONY)
 
-PHONY += everything
+PHONY += everything print-targets
 PHONY += all printenv .print-phony
 PHONY += update-svn update-svn-target update-neutrino update-self
 .PHONY: $(PHONY)
