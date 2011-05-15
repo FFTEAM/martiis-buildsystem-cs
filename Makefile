@@ -157,7 +157,8 @@ everything: $(shell sed -n 's/^\$$.D.\/\(.*\):.*/\1/p' make/*.mk)
 
 # print all present targets...
 print-targets:
-	@sed -n 's/^\$$.D.\/\(.*\):.*/\1/p; s/^\([a-z].*\):\( \|$$\).*/\1/p;' make/*.mk Makefile | \
+	sed -n 's/^\$$.D.\/\(.*\):.*/\1/p; s/^\([a-z].*\):\( \|$$\).*/\1/p;' \
+		`ls -1 make/*.mk|grep -v make/unmaintained.mk` Makefile | \
 		sort | fmt -65
 
 # for local extensions, e.g. special plugins or similar...
