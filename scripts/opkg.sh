@@ -139,8 +139,16 @@ echo "2.0" > debian-binary
 
 # strip binaries
 if test -z "$DONT_STRIP"; then
-	# || true because failure to strip is not fatal
-	find root/ -type f ! -name '*.ko' -print0| xargs -0 --no-run-if-empty ${STRIP} || true
+	# dont run "file" on usually unstrippable paths / filenames
+	for f in `find root/ -path '*/include' -prune -o -type f \
+		! -name '*.ko' \
+		! -iname '*.png' ! -iname '*.bmp' ! -iname '*.jpg' ! -iname '*.gif' ! -name '*.raw' \
+		! -name '*.theme' ! -name '*.yhtm' ! -name '*.locale' ! -name '*.js' \
+		-exec file {} \; | \
+		sed -n -e 's/^\(.*\):[  ]*ELF.*, not stripped/\1/p'`; do
+		# || true because failure to strip is not fatal
+		${STRIP} $f || true
+	done
 else
 	echo "${ME}: DONT_STRIP is set, not stripping anything"
 fi
