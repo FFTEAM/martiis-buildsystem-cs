@@ -39,7 +39,7 @@ PNG-VER=1.2.44
 FREETYPE-VER=2.3.12
 
 # libjpeg-turbo; a derivative of libjpeg for x86 and x86-64 processors which uses SIMD instructions (MMX, SSE2, etc.) to accelerate baseline JPEG compression and decompression
-JPEG_TURBO-VER=1.0.1
+JPEG_TURBO-VER=1.1.0
 
 # boost; portable C++ source library
 BOOST-MAJOR=1
@@ -105,7 +105,7 @@ BUSYBOX-VER=1.18.4
 E2FSPROGS-VER=1.41.12
 
 # xfsprogs; Utilities for managing the XFS filesystem
-XFSPROGS-VER=3.1.4
+XFSPROGS-VER=3.1.5
 
 # ntfs-3g; file system driver for the NTFS file system, enabling read/write support of NTFS file systems
 NTFS_3G-VER=2011.1.15
