@@ -162,7 +162,6 @@ endif
 	cd $(SOURCE_DIR)/linux && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig O=$(K_OBJ)/ && \
 		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/ && \
-		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/ && \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules \
 			modules_install O=$(K_OBJ)/
 	cd $(BUILD_TMP) && \
