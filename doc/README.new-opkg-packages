@@ -1,0 +1,61 @@
+Creating your own opkg packages!
+================================
+
+You may want to build your own opkg package. So you have to done
+the following steps.
+
+Let's say you will create a package called 'shiny-pkg'
+
+1. Create first a 'control' file in pkgs/control/shiny-pkg .
+Put the following content inside:
+
+  Package: shiny-pkg
+  Version: 0.0.1-stable
+  Description: A there usefull piece of software!
+  Section: extras/addon
+  Priority: optional
+  Maintainer: @MAINT@
+  Architecture: @ARCH@
+  Homepage: http://there-to-find.com/
+  Source: 
+  Depends: libxy(>= 28.2)
+
+2. Build a target which put all the stuff into the directory there
+   software has to be.
+The minimal target looks like this:
+
+shiny-pkg:
+	rm rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/bin
+	  <copy your stuff to $(PKGPREFIX)/bin
+	  <do more of needed things>
+	$(OPKG_SH) $(CONTROL_DIR)/shiny-pkg
+
+---------------------------------------------------------------------------
+| Please remind, you will have take a look into doc/README.packages also! |
+| There is a deeper explanation how to build such a target!               |
+---------------------------------------------------------------------------
+
+3. Call your builded target!
+
+  make shiny-pkg
+
+4. Update the package index!
+
+  make pkg-index
+
+That's all!
+
+
+Optional needed things?
+=======================
+Your package may have to run (startsop) script at install. In this case you 
+have to place a file 'postinst' and/or a file 'prerm' in pkgs/control/shiny-pkg.
+
+Or you ship a configfile in your package. Create a file 'conffile' an place it
+also to pkgs/control/shiny-pkg.
+
+For examples how to use this files take a look at other files from other packages.
+
+
+So, this is really all. ;)
