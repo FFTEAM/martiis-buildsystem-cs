@@ -8,7 +8,7 @@ rebuild-clean: clean
 	-rm $(DEPDIR)/*
 
 all-clean: rebuild-clean
-	-rm -r $(CROSS_BASE)
-	-rm -r $(HOSTPREFIX)
+	-rm -rf $(CROSS_BASE)
+	-rm -rf $(HOSTPREFIX)
 
 PHONY += clean rebuild-clean all-clean
