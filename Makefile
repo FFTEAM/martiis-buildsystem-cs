@@ -104,12 +104,6 @@ update-self:
 	git pull
 
 ifneq ($(PLATFORM), tripledragon)
-# TODO: maybe the more sophisticated mechanism used on TD would
-#       be useful here, too? tell me what you think!
-update-neutrino:
-	make check-repo
-	cd $(N_HD_SOURCE) && git pull
-
 # only updates important(?) stuff, no crosstool etc.
 # not useful on tripledragon, because that SVN never changes
 update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
@@ -129,7 +123,9 @@ N_HD_SOURCE_S = $(subst $(BASE_DIR)/,"",$(N_HD_SOURCE))
 
 update-svn:
 	@echo "update-svn is not useful on $(PLATFORM)"
+endif
 
+ifeq ("$(FLAVOUR)", "neutrino-hd-tripledragon")
 update-neutrino:
 	-cd $(N_HD_SOURCE) && { git branch "before-update-$(NOW)"; git stash save "before update $(NOW)" ; git pull; }
 	@echo ""
@@ -146,6 +142,11 @@ update-neutrino:
 
 update-neutrino-hard:
 	cd $(N_HD_SOURCE) && git reset --hard origin/master
+
+else
+update-neutrino:
+	make check-repo
+	cd $(N_HD_SOURCE) && git pull
 endif
 
 
