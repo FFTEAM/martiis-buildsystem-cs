@@ -1,0 +1,30 @@
+From 2ecb2606dd1ab654a3816238e739188036446046 Mon Sep 17 00:00:00 2001
+From: nightshad <nightshad@e54a6e83-5905-42d5-8d5c-058d10e6a962>
+Date: Wed, 18 May 2011 12:41:51 +0000
+Subject: [PATCH] Add sysrq over serial support in case someone needs to
+ debug a bit deeper under the hood ;)
+
+git-svn-id: http://www.coolstreamtech.de/coolstream_public_svn@1482 e54a6e83-5905-42d5-8d5c-058d10e6a962
+---
+ .../drivers/serial/cx2450x_uart.c                  |    5 +++++
+ 1 files changed, 5 insertions(+), 0 deletions(-)
+
+diff --git a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/drivers/serial/cx2450x_uart.c b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/drivers/serial/cx2450x_uart.c
+index 35b1903..ee28ab9 100644
+--- a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/drivers/serial/cx2450x_uart.c
++++ b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/drivers/serial/cx2450x_uart.c
+@@ -22,6 +22,11 @@
+  */
+ 
+ #include <linux/autoconf.h>
++
++#if defined(CONFIG_SERIAL_CX2450X_CONSOLE) && defined(CONFIG_MAGIC_SYSRQ)
++#define SUPPORT_SYSRQ
++#endif
++
+ #include <linux/module.h>
+ #include <linux/tty.h>
+ #include <linux/ioport.h>
+-- 
+1.7.3.4
+
