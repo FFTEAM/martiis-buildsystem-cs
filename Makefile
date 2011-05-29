@@ -107,13 +107,15 @@ ifneq ($(PLATFORM), tripledragon)
 # only updates important(?) stuff, no crosstool etc.
 # not useful on tripledragon, because that SVN never changes
 update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
-	cd $(SOURCE_DIR)/svn/COOLSTREAM && $(SVN) up
-	for i in $(SOURCE_DIR)/svn/THIRDPARTY/*; do \
+	for i in $(SOURCE_DIR)/svn/COOLSTREAM \
+		$(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream \
+		$(SOURCE_DIR)/svn/THIRDPARTY/*; \
+	do \
 		if [ -d $$i ]; then \
+			echo "updating $$i..."; \
 			(cd $$i && $(SVN) up *); \
 		else true; fi \
 	done
-	cd $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream && $(SVN) up
 
 update-svn-target:
 	make cs-modules includes-and-libs
