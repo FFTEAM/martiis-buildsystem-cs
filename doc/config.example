@@ -27,6 +27,7 @@
 # set the flavour of neutrino you want to build
 # "neutrino-hd":              use git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git
 # "neutrino-hd-tripledragon": use git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git
+# "neutrino-hd-SVN"           use the "official" coolstream SVN. Use at your own risk.
 # empty: choose one of the above depending on PLATFORM
 #FLAVOUR=neutrino-hd-tripledragon
 
@@ -42,8 +43,8 @@
 
 #
 # if you want to use a different source directory, set N_HD_SOURCE here.
-# e.g. check out the SVN to "source/neutrino-hd-svn", then uncomment the
+# e.g. check out some test branch to source/nhd-test, then uncomment the
 # following. WARNING: "make update-neutrino" will cease to work, you'll
 # have to do this manually.
 #
-# N_HD_SOURCE = $(BASE_DIR)/source/neutrino-hd-svn
+# N_HD_SOURCE = $(BASE_DIR)/source/nhd-test

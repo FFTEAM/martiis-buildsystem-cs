@@ -29,7 +29,8 @@ N_LDFLAGS =
 N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
 
 # finally we can build outside of the source directory
-N_OBJDIR = $(BUILD_TMP)/neutrino-hd
+N_OBJDIR = $(BUILD_TMP)/$(FLAVOUR)
+#endif
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(N_HD_SOURCE)
 

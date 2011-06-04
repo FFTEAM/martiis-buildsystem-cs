@@ -147,8 +147,12 @@ update-neutrino-hard:
 
 else
 update-neutrino:
+ifeq ("$(FLAVOUR)", "neutrino-hd-SVN")
+	cd $(N_HD_SOURCE) && $(SVN) update
+else
 	make check-repo
 	cd $(N_HD_SOURCE) && git pull
+endif
 endif
 
 
