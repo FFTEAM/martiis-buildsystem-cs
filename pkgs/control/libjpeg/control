@@ -1,5 +1,5 @@
 Package: libjpeg-turbo
-Version: 1.0.1-1
+Version: @VER@-1
 Description: JPEG processing library
 Section: base/libraries
 Priority: standard

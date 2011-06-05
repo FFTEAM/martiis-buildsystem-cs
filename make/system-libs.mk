@@ -167,7 +167,7 @@ $(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz | $(TARGETPREFIX
 	$(REMOVE)/libjpeg-turbo-$(JPEG_TURBO-VER) $(TARGETPREFIX)/.remove $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libjpeg.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libjpeg
+	PKG_VER=$(JPEG_TURBO-VER) $(OPKG_SH) $(CONTROL_DIR)/libjpeg
 	rm -rf $(PKGPREFIX)
 	touch $@
 
