@@ -23,6 +23,9 @@ UNGIF-VER=4.1.4
 # libiconv; converting encodings
 ICONV-VER=1.13.1
 
+# iperf: network performance measurement
+IPERF-VER=2.0.5
+
 # zlib; compression an decompressin library
 ZLIB-VER=1.2.5
 

@@ -68,6 +68,9 @@ $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2:
 $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
 	$(WGET) ftp://ftp.gtk.org/pub/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/glib-$(GLIB-VER).tar.bz2
 
+$(ARCHIVE)/iperf-$(IPERF-VER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/project/iperf/iperf-$(IPERF-VER).tar.gz
+
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz
 

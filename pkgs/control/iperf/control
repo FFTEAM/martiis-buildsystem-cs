@@ -1,0 +1,10 @@
+Package: iperf
+Version: @VER@-1
+Description: A modern alternative for measuring maximum TCP and UDP bandwidth performance
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceforge.net/projects/iperf/
+Source:
+Depends: libc.so.6

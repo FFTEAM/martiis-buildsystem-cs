@@ -361,6 +361,23 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/valgrind-3.6.1 $(PKGPREFIX)
 	touch $@
 
+$(D)/iperf: $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/iperf-$(IPERF-VER).tar.gz
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/iperf-$(IPERF-VER) && \
+		ac_cv_func_malloc_0_nonnull=yes \
+		$(BUILDENV) ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix=/opt/pkg \
+			--mandir=/.remove \
+		&& $(MAKE) install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove
+	install -D -m 0755 $(PKGPREFIX)/opt/pkg/bin/iperf $(TARGETPREFIX)/opt/pkg/bin/iperf
+	PKG_VER=$(IPERF-VER) $(OPKG_SH) $(CONTROL_DIR)/iperf
+	$(REMOVE)/iperf-$(IPERF-VER) $(PKGPREFIX)
+	touch $@
 
 # !!! this is experimental and not working now !!!
 $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | $(TARGETPREFIX)
