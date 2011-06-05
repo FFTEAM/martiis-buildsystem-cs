@@ -21,7 +21,7 @@ MAD-VER=0.15.1b
 UNGIF-VER=4.1.4
 
 # libiconv; converting encodings
-IVONV-VER=1.13.1
+ICONV-VER=1.13.1
 
 # zlib; compression an decompressin library
 ZLIB-VER=1.2.5
