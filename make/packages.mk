@@ -17,7 +17,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		   lib/libcidn* lib/*.so_orig lib/*.py && \
 		find lib -name '*.so' -type l -print0 | xargs -0 --no-run-if-empty rm -v
 	touch $(PKGPREFIX)/etc/ld.so.conf
-	$(REMOVE)/control
+	$(REMOVE)/glibc-control
 	cp -a $(CONTROL_DIR)/glibc $(BUILD_TMP)/glibc-control
 	VER=`cd $(PKGPREFIX)/lib; echo ld-*.so` && VER=$${VER#ld-} && VER=$${VER%.so} && \
 		sed -i "s/@VER@/$$VER/" $(BUILD_TMP)/glibc-control/control
