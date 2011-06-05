@@ -77,11 +77,10 @@ $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 	# "auto-provides/conflicts". let's hope opkg can deal with this...
 	printf "Provides:" >> $(BUILD_TMP)/bb-control/control
 	for i in `find $(PKGPREFIX)/ ! -type d ! -name busybox`; do printf " `basename $$i`," >> $(BUILD_TMP)/bb-control/control; done
-	sed -i "s/@VER@/$(BUSYBOX-VER)/" $(BUILD_TMP)/bb-control/control
 	sed -i 's/,$$//' $(BUILD_TMP)/bb-control/control
 	sed -i 's/\(^Provides:\)\(.*$$\)/\1\2\nConflicts:\2/' $(BUILD_TMP)/bb-control/control
 	echo >> $(BUILD_TMP)/bb-control/control
-	$(OPKG_SH) $(BUILD_TMP)/bb-control
+	PKG_VER=$(BUSYBOX-VER) $(OPKG_SH) $(BUILD_TMP)/bb-control
 	$(REMOVE)/busybox-$(BUSYBOX-VER) $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	touch $@
 

@@ -19,6 +19,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	touch $(PKGPREFIX)/etc/ld.so.conf
 	$(REMOVE)/glibc-control
 	cp -a $(CONTROL_DIR)/glibc $(BUILD_TMP)/glibc-control
+	# two packages are built, so we are not using the PKG_VER feature of opkg.sh
 	VER=`cd $(PKGPREFIX)/lib; echo ld-*.so` && VER=$${VER#ld-} && VER=$${VER%.so} && \
 		sed -i "s/@VER@/$$VER/" $(BUILD_TMP)/glibc-control/control
 	# lame attempt at "auto-provides" for glibc...

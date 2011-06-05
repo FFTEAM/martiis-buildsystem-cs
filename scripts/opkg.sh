@@ -20,6 +20,7 @@
 #		  version is already present there, compare and skip copying if equal
 # DONT_STRIP	- if this is not empty, don't strip files
 # CMP_IGNORE	- list of files to ignore for package compare (full path)
+# PKG_VER	- package Version. @VER@ in the control file is replaced by this.
 #
 # This is intended to be used in Makefiles, so only ever exit with non-zero
 # if there was an error.
@@ -130,6 +131,15 @@ mkdir root
 # copy all that's needed into the buildroot
 cp -a $SOURCE/. root/.
 cp -a $CONTROL_DIR CONTROL
+
+# update package version in the control file
+if [ -n "$PKG_VER" ]; then
+	if ! grep -q "@VER@" CONTROL/control; then
+		echo "${ME}: WARNING - PKG_VER set but no @VER@ in control file" >&2
+	else
+		sed -i "s/@VER@/$PKG_VER/" CONTROL/control
+	fi
+fi
 
 # extract package name and version from control file...
 eval $(awk -F":[[:space:]*]" \
