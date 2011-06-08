@@ -99,6 +99,7 @@ include make/extras.mk
 include make/packages.mk
 include make/plugins.mk
 include make/example.mk
+include make/flashimage.mk
 
 update-self:
 	git pull
