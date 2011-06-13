@@ -314,13 +314,13 @@ $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz
 	touch $@
 
 fbshot: $(TARGETPREFIX)/bin/fbshot
-$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz | $(TARGETPREFIX)
+$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz $(PATCHES)/fbshot-0.3-32bit_cs_fb.diff $(PATCHES)/fbshot-0.3-32bit_td_fb.diff | $(TARGETPREFIX)
 	$(UNTAR)/fbshot-$(FBSHOT-VER).tar.gz
 	cd $(BUILD_TMP)/fbshot-$(FBSHOT-VER) && \
 		$(PATCH)/fbshot-0.3-32bit_cs_fb.diff && \
-		$(TARGET)-gcc $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
+		$(PATCH)/fbshot-0.3-32bit_td_fb.diff && \
+		$(TARGET)-gcc -DHW_$(PLATFORM) $(TARGET_CFLAGS) $(TARGET_LDFLAGS) fbshot.c -lpng -lz -o $@
 	$(REMOVE)/fbshot-$(FBSHOT-VER)
-
 
 # old valgrind for TD with old toolchain (linuxthreads glibc)
 $(D)/valgrind-old: $(ARCHIVE)/valgrind-3.3.1.tar.bz2 | $(TARGETPREFIX)
