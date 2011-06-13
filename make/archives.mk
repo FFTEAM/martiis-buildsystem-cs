@@ -80,6 +80,9 @@ $(ARCHIVE)/boost_$(BOOST-VER).tar.bz2:
 $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2:
 	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-$(FFMPEG-VER).tar.bz2
 
+$(ARCHIVE)/flac-1.2.1.tar.gz:
+	$(WGET) http://prdownloads.sourceforge.net/sourceforge/flac/flac-1.2.1.tar.gz
+
 $(ARCHIVE)/libogg-$(OGG-VER).tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG-VER).tar.gz
 

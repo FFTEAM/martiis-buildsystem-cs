@@ -122,6 +122,20 @@ $(D)/libcurl: $(ARCHIVE)/curl-$(CURL-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(REMOVE)/curl-$(CURL-VER) $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
 	touch $@
 
+# no Package, since it's only linked statically for now also only install static lib
+$(D)/libFLAC: $(ARCHIVE)/flac-1.2.1.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/flac-1.2.1.tar.gz
+	set -e; cd $(BUILD_TMP)/flac-1.2.1; \
+		$(PATCH)/flac-1.2.1-noencoder.diff; \
+		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
+			--disable-ogg --disable-altivec; \
+		$(MAKE) -C src/libFLAC; \
+		: make -C src/libFLAC  install DESTDIR=$(TARGETPREFIX); \
+		cp -a src/libFLAC/.libs/libFLAC.a $(TARGETPREFIX)/lib/; \
+		make -C include/FLAC install DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/flac-1.2.1
+	touch $@
+
 $(D)/libpng: $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/libpng-$(PNG-VER).tar.bz2
 	pushd $(BUILD_TMP)/libpng-$(PNG-VER) && \
