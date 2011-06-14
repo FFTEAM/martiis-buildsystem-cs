@@ -22,6 +22,10 @@ flashimage:
 	@echo flashimage is not a supported target for $(PLATFORM)
 endif
 
+#
+# mtd-utils build needs zlib-devel and lzo-devel packages
+# installed *on the host*, this is not a cross-build...
+#
 mtd-utils: $(ARCHIVE)/mtd-utils-1.4.4.tar.bz2 | $(HOSTPREFIX)/bin
 	$(UNTAR)/mtd-utils-1.4.4.tar.bz2
 	cd $(BUILD_TMP)/mtd-utils-1.4.4 && \
