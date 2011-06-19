@@ -2,7 +2,7 @@
 [ "$1" -a "$2" ] || exit 1
 # exit on any error
 set -e
-export LANG=C
+export LC_ALL=C
 CONTROL="$1"
 TO_CHECK="$2"
 SVNREV=$(svn info "$2" | grep "^Last Changed Rev:")

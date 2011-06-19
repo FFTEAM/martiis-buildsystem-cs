@@ -49,7 +49,7 @@ endif
 		echo "$(TARGET)-gcc not found in PATH or \$$CROSS_DIR/bin"; \
 		echo "=> please check your setup. Maybe you need to 'make crosstool'."; \
 	fi
-	@if ! LANG=C make -n preqs|grep -q "Nothing to be done"; then \
+	@if ! LC_ALL=C make -n preqs|grep -q "Nothing to be done"; then \
 		echo;echo "Your next target to do is probably 'make preqs'"; fi
 	@if ! test -e $(BASE_DIR)/config; then \
 		echo;echo "If you want to change the configuration, copy 'doc/config.example' to 'config'"; \
