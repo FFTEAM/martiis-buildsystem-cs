@@ -2,17 +2,17 @@
 
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg
 
-N_CFLAGS  = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing
-N_CFLAGS += -I$(TARGETPREFIX)/include
+N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing
+N_CPPFLAGS = -I$(TARGETPREFIX)/include
 ifneq ($(PLATFORM), tripledragon)
 # coolstream
-N_CFLAGS += -DUSE_NEVIS_GXA
+N_CPPFLAGS += -DUSE_NEVIS_GXA
 NEUTRINO_DEPS += openthreads
 else
 # tripledragon
-N_CFLAGS += -I$(TARGETPREFIX)/include/hardware
+N_CPPFLAGS += -I$(TARGETPREFIX)/include/hardware
 # TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
-N_CFLAGS += -D_FILE_OFFSET_BITS=64
+N_CPPFLAGS += -D_FILE_OFFSET_BITS=64
 endif
 
 # choose between static and dynamic libtremor. As long as nothing else
@@ -44,7 +44,8 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 	pushd $(N_OBJDIR) && \
 		export PKG_CONFIG=$(PKG_CONFIG) && \
 		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) && \
-		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
+		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
+		LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-silent-rules --enable-mdev \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
