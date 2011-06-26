@@ -420,6 +420,23 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_A
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+$(D)/fuse: $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/fuse-$(FUSE-VER).tar.gz
+	set -e; cd $(BUILD_TMP)/fuse-$(FUSE-VER); \
+		$(CONFIGURE) --prefix= ; \
+		$(MAKE) all; \
+		make install DESTDIR=$(TARGETPREFIX) ;\
+		make install DESTDIR=$(PKGPREFIX)
+	$(REWRITE_LIBTOOL)/libfuse.la
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/fuse.pc
+	set -e; cd $(PKGPREFIX); \
+		rm -rf dev etc lib/pkgconfig include; \
+		rm lib/*.so lib/*.la lib/*.a
+	PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	$(REMOVE)/fuse-$(FUSE-VER) $(PKGPREFIX)
+	touch $@
+
 #############################################################################################
 #############################################################################################
 ######### not yet needed and not tested #####################################################

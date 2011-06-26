@@ -1,0 +1,12 @@
+Package: fuse
+Version: @VER@-1
+Description: Filesystems in userspace
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://fuse.sourceforge.net/
+Source:
+Depends:
+Provides: libfuse.so.2, libfuse.so.2, libulockmgr.so.1, mount.fuse, fusermount, ulockmgr_server
+
