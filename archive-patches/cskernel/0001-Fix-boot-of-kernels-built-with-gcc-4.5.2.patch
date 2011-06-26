@@ -1,0 +1,69 @@
+From bac54fdc69cd7d88c1478d29c8980f657044f1d1 Mon Sep 17 00:00:00 2001
+From: seife <seife@e54a6e83-5905-42d5-8d5c-058d10e6a962>
+Date: Sun, 26 Jun 2011 16:45:00 +0000
+Subject: [PATCH] Fix boot of kernels built with gcc-4.5.2
+
+This is the minimal backport of from upstream commit (v6 only):
+
+From 32cfb1b16f2b68d2296536811cadfffe26a06c1b Mon Sep 17 00:00:00 2001
+From: Catalin Marinas <catalin.marinas@arm.com>
+Date: Tue, 6 Oct 2009 17:57:09 +0100
+Subject: [PATCH] ARM: 5746/1: Handle possible translation errors in ARMv6/v7
+ coherent_user_range
+
+This is needed because applications using the sys_cacheflush system call
+can pass a memory range which isn't mapped yet even though the
+corresponding vma is valid. The patch also adds unwinding annotations
+for correct backtraces from the coherent_user_range() functions.
+
+Signed-off-by: Catalin Marinas <catalin.marinas@arm.com>
+Signed-off-by: Russell King <rmk+kernel@arm.linux.org.uk>
+---
+ arch/arm/mm/cache-v6.S |   20 ++++++++++++++++++--
+ arch/arm/mm/cache-v7.S |   19 +++++++++++++++++--
+ 2 files changed, 35 insertions(+), 4 deletions(-)
+
+
+git-svn-id: http://www.coolstreamtech.de/coolstream_public_svn@1556 e54a6e83-5905-42d5-8d5c-058d10e6a962
+---
+ .../linux-2.6.26.8-cnxt/arch/arm/mm/cache-v6.S     |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
+
+diff --git a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/arch/arm/mm/cache-v6.S b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/arch/arm/mm/cache-v6.S
+index 8364f6c..e15b77c 100644
+--- a/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/arch/arm/mm/cache-v6.S
++++ b/THIRDPARTY/kernel/linux-2.6.26.8-cnxt/arch/arm/mm/cache-v6.S
+@@ -132,8 +132,10 @@ ENTRY(v6_coherent_user_range)
+ 
+ #ifdef HARVARD_CACHE
+ 	bic	r0, r0, #CACHE_LINE_SIZE - 1
+-1:	mcr	p15, 0, r0, c7, c10, 1		@ clean D line
++1:
++ USER(	mcr	p15, 0, r0, c7, c10, 1	)	@ clean D line
+ 	add	r0, r0, #CACHE_LINE_SIZE
++2:
+ 	cmp	r0, r1
+ 	blo	1b
+ #endif
+@@ -151,6 +153,18 @@ ENTRY(v6_coherent_user_range)
+ 	mov	pc, lr
+ 
+ /*
++ * Fault handling for the cache operation above. If the virtual address in r0
++ * isn't mapped, just try the next page.
++ */
++9001:
++	mov	r0, r0, lsr #12
++	mov	r0, r0, lsl #12
++	add	r0, r0, #4096
++	b	2b
++ENDPROC(v6_coherent_user_range)
++ENDPROC(v6_coherent_kern_range)
++
++/*
+  *	v6_flush_kern_dcache_page(kaddr)
+  *
+  *	Ensure that the data held in the page kaddr is written back
+-- 
+1.7.3.4
+
