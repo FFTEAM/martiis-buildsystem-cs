@@ -1,0 +1,89 @@
+#### How to install a debian chroot onto the HDD of your
+#### coolstream STB
+
+## note that the original coolstream busybox will probably not be
+## "good enough" feature-wise for this to work, but you can do this
+## from an USB stick created with this build system.
+## debootstrap needs "ar", "tr", "sha1sum", "sha256sum" and probably
+## some other not listed applets in busybox
+
+### 8< copy'n'paste from here should work >8 ###
+#!/bin/sh
+## the install starts here
+# this is the place where the HDD is mounted
+HDD_DIR=/media/sdb1
+cd $HDD_DIR
+# we'll install into $HDD_DIR/debian
+mkdir -p debian/dev inst
+# needed tools: debootstrap and pkgdetails
+wget http://ftp.debian.org/debian/pool/main/d/debootstrap/debootstrap_1.0.32.tar.gz
+wget http://ftp.de.debian.org/debian/pool/main/b/base-installer/bootstrap-base_1.119_armel.udeb
+# unpack
+tar -C inst -xzf debootstrap_1.0.32.tar.gz
+ar p bootstrap-base_1.119_armel.udeb data.tar.gz|tar -C inst -xz ./usr/lib/debootstrap
+mv inst/usr/lib/debootstrap/pkgdetails inst/debootstrap
+rm -rf inst/usr
+# create an empty devices.tar.gz to fool debootstrap
+tar -czf inst/debootstrap/devices.tar.gz -C debian dev
+
+# install
+export PATH=/usr/bin:/usr/sbin:/bin:/sbin
+DEBOOTSTRAP_DIR=$HDD_DIR/inst/debootstrap inst/debootstrap/debootstrap \
+	--arch armel --foreign --verbose squeeze $HDD_DIR/debian http://ftp.de.debian.org/debian
+### 8< copy'n'paste ends here >8 ###
+
+## now change into the installed minimal system...
+# set up chroot
+mount /dev debian/dev -obind
+mount /proc/ debian/proc -obind
+
+chroot debian
+
+# finish install
+/debootstrap/debootstrap --second-stage
+
+cat > /etc/apt/sources.list << EOF
+deb	http://ftp.debian.org/debian/	squeeze main contrib non-free
+deb-src	http://ftp.debian.org/debian/	squeeze main contrib non-free
+deb	http://security.debian.org/	squeeze/updates main contrib non-free
+EOF
+
+aptitude update
+##################################################
+## debian squeeze installation is finished here ##
+##################################################
+
+#################################################
+### install packages for building neutrino-hd ###
+#################################################
+#
+# general build infrastructure...
+apt-get install subversion git-core make screen automake gcc g++ libtool
+# devel-packages for neutrino-hd
+apt-get install pkg-config libcurl4-gnutls-dev libfreetype6-dev libid3tag0-dev \
+		libmad0-dev libpng12-dev libavformat-dev
+
+# add a user for building
+useradd -m -s /bin/bash cool
+# so that we can copy over libs and includes
+chown cool /usr/local/lib /usr/local/include
+
+# change user
+su - cool
+
+git clone git://gitorious.org/neutrino-hd/buildsystem-cs.git
+cd buildsystem-cs
+cp doc/config.example config
+echo PLATFORM=coolstream >> config
+mkdir download
+# download neutrino-hd source and svn libs/headers
+make preqs
+# copy headers and libs into root/
+make bootstrap # will fail, don't worry
+cp -a root/include/*	/usr/local/include
+cp -a root/lib/*.so	/usr/local/lib
+cd source/neutrino-hd
+./autogen.sh
+./configure -C
+# does not work yet, as at least the ffmpeg version is not correct
+make
