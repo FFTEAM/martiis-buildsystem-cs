@@ -13,7 +13,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		fi && \
 		(cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/||true) &&  \
 		rm -fv lib/libnss_hesiod* lib/libnss_nis* lib/libnss_compat* \
-		   lib/libmudflap* lib/libnsl* lib/libc.so lib/libpthread.so \
+		   lib/libmudflap* lib/libc.so lib/libpthread.so \
 		   lib/libcidn* lib/*.so_orig lib/*.py && \
 		find lib -name '*.so' -type l -print0 | xargs -0 --no-run-if-empty rm -v
 	touch $(PKGPREFIX)/etc/ld.so.conf
