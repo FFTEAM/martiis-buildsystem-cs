@@ -6,12 +6,15 @@ PIDFILE=/var/run/unfsd.pid
 
 case $1 in
 	start)
-		if test -e /etc/exports; then
+		if ! test -e /etc/exports; then
+			e="/etc/exports does not exist"
+		elif e=`unfsd -T 2>&1`; then
 			pidof portmap > /dev/null || portmap
 			pidof unfsd > /dev/null   || unfsd
-		else
-			echo "not starting unfsd: /etc/exports does not exist"
+			exit $?
 		fi
+		echo "not starting unfsd: $e"
+		exit 1
 		;;
 	stop)	killall -TERM unfsd
 		killall -TERM portmap
