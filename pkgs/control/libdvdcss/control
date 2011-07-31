@@ -1,0 +1,12 @@
+Package: libdvdcss
+Version: @VER@-1
+Description: Access DVDs like a block device without having to bother about the decryption
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.videolan.org/developers/libdvdcss.html
+Source:
+Depends:
+Provides: libdvdcss.so.2
+

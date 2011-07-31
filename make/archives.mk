@@ -20,6 +20,9 @@ $(ARCHIVE)/dvdreadfs.tar:
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 
+$(ARCHIVE)/libdvdcss-1.2.10.tar.bz2:
+	$(WGET) http://download.videolan.org/pub/libdvdcss/1.2.10/libdvdcss-1.2.10.tar.bz2
+
 $(ARCHIVE)/libdvdread-4.1.3.tar.bz2:
 	$(WGET) http://www1.mplayerhq.hu/MPlayer/releases/dvdnav/libdvdread-4.1.3.tar.bz2
 

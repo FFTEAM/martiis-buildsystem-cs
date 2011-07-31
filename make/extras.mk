@@ -33,6 +33,25 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	$(REMOVE)/djmount-0.71 $(PKGPREFIX)
 	touch $@
 
+$(D)/libdvdcss: $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2 | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/libdvdcss-1.2.10.tar.bz2
+	set -e; cd $(BUILD_TMP)/libdvdcss-1.2.10; \
+		$(CONFIGURE) \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix= \
+			; \
+		$(MAKE) ; \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libdvdcss.pc
+	$(REWRITE_LIBTOOL)/libdvdcss.la
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libdvdcss.so.* $(PKGPREFIX)/lib
+	PKG_VER=1.2.10 $(OPKG_SH) $(CONTROL_DIR)/libdvdcss
+	$(REMOVE)/libdvdcss-1.2.10 $(PKGPREFIX)
+	touch $@
+
 $(D)/libdvdread: $(ARCHIVE)/libdvdread-4.1.3.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/libdvdread-4.1.3.tar.bz2
