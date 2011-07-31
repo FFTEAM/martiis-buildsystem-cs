@@ -1,0 +1,12 @@
+Package: djmount
+Version: @VER@-1
+Description: FUSE filesystem which presents UPNP servers as directories
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceforge.net/projects/djmount
+Source:
+Depends: libfuse.so.2
+Provides:
+

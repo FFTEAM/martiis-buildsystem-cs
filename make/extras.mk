@@ -1,5 +1,24 @@
 # Makefile to build Extras
 
+$(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/djmount-0.71.tar.gz
+	set -e; cd $(BUILD_TMP)/djmount-0.71; \
+		$(CONFIGURE) -C \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix=/opt/pkg \
+			; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+	install -D -m 755 $(SCRIPTS)/djmount.init $(PKGPREFIX)/opt/pkg/etc/init.d/djmount
+	ln -sf djmount $(PKGPREFIX)/opt/pkg/etc/init.d/S80djmount
+	ln -sf djmount $(PKGPREFIX)/opt/pkg/etc/init.d/K20djmount
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	PKG_VER=0.71 $(OPKG_SH) $(CONTROL_DIR)/djmount
+	$(REMOVE)/djmount-0.71 $(PKGPREFIX)
+	touch $@
+
 $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2
