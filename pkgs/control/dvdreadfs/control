@@ -1,0 +1,12 @@
+Package: dvdreadfs-seife
+Version: @VER@-1
+Description: FUSE filesystem which presents DVD titles as single file
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage:
+Source:
+Depends: libfuse.so.2, libdvdread.so.4
+Provides:
+

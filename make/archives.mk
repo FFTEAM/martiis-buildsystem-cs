@@ -14,6 +14,9 @@ $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2:
 $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB-VER).tar.gz
 
+$(ARCHIVE)/dvdreadfs.tar:
+	$(WGET) http://www.daemoninc.com/dvdreadfs/dvdreadfs.tar
+
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 

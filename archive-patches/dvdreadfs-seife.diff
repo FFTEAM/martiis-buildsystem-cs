@@ -1,0 +1,108 @@
+diff --git a/dvdreadfs.c b/dvdreadfs.c
+index 8c8b457..4f279b2 100644
+--- a/dvdreadfs.c
++++ b/dvdreadfs.c
+@@ -76,7 +76,17 @@ static inline int get_title_domain
+     while (*fname == '/')
+ 	++fname;
+ 
+-    if (strncmp(fname, "VTS_", 4) == 0) {
++    if (strncmp(fname, "TITLE", 5) == 0) {
++	if (!isdigit(fname[5]) || !isdigit(fname[6]))
++	    return 0;
++	*title = atoi(fname + 5);
++	if (strcmp(fname + 7, ".VOB") != 0)
++	    return 0;
++	*domain = DVD_READ_TITLE_VOBS;
++	*partnum = 1;
++	return 1;
++    }
++    else if (strncmp(fname, "VTS_", 4) == 0) {
+ 	if (!isdigit(fname[4]) || !isdigit(fname[5]))
+ 	    return 0;
+ 
+@@ -87,10 +97,12 @@ static inline int get_title_domain
+ 	if (fname[7] == '0') {
+ 	    vob_is_menu = 1;
+ 	}
+-	else if (fname[7] >= '1' && fname[7] <= '9') {
++#if 0
++	else if (fname[7] == '1' && fname[7] <= '9') {
+ 	    *domain = DVD_READ_TITLE_VOBS;
+ 	    *partnum = fname[7] - '0';
+ 	}
++#endif
+ 	else {
+ 	    return 0;
+ 	}
+@@ -251,11 +263,13 @@ static int fs_getattr(const char *name, struct stat *stbuf)
+ 	stbuf->st_mode = 0100444;
+ 	stbuf->st_nlink = 1;
+ 	stbuf->st_size = xfi.fi->len;
++#if 0
+ 	if (xfi.partnum) {
+ 		stbuf->st_size -= PART_TO_OFFSET(xfi.partnum, part_size);
+ 		if (stbuf->st_size > part_size)
+ 			stbuf->st_size = part_size;
+ 	}
++#endif
+     } else {
+ 	while (*name == '/')
+ 	    ++name;
+@@ -319,12 +333,9 @@ static int fs_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
+ 		strcpy(name, "VIDEO_TS.VOB");
+ 	    }
+ 	    if (domain == DVD_READ_TITLE_VOBS) {
+-		int partnum;
+-		for (partnum = 1; partnum < 10; ++partnum) {
+-		    name[7] = partnum + '0';
+-		    if (!add_to_dir(buf, filler, name))
++		sprintf(name, "TITLE%02d.VOB", title);
++		if (!add_to_dir(buf, filler, name))
+ 			break;
+-		}
+ 	    } else {
+ 		switch(domain) {
+ 		case DVD_READ_INFO_BACKUP_FILE:
+@@ -358,7 +369,7 @@ static int fs_open(const char *name, struct fuse_file_info *fi)
+ 	return res;
+ 
+     if (find_file(&mi, name, xfi)) {
+-	fi->fh = xfi;
++	fi->fh = (uint64_t)xfi;
+ 
+ 	xfi->cache = NULL;
+ 	xfi->cache_len = 0;
+@@ -390,7 +401,7 @@ static int fs_read(const char *path, char *buf, size_t count, off_t offset,
+                       struct fuse_file_info *fi)
+ {
+     int res;
+-    struct ext_file_info *xfi = fi->fh;
++    struct ext_file_info *xfi = (struct ext_file_info *)fi->fh;
+ 
+     if (!xfi || !xfi->fi->fd)
+ 	return -ENOENT;
+@@ -460,14 +471,14 @@ static int fs_read(const char *path, char *buf, size_t count, off_t offset,
+ 
+ static int fs_release(const char *path, struct fuse_file_info *fi) {
+     if (fi->fh) {
+-	struct ext_file_info *xfi = fi->fh;
++	struct ext_file_info *xfi = (struct ext_file_info *)fi->fh;
+ 
+ 	if (xfi->cache != NULL) {
+ 	    free(xfi->cache);
+ 	    xfi->cache = NULL;
+ 	}
+ 	free(xfi);
+-	fi->fh = NULL;
++	fi->fh = 0;
+ 
+ 	/* Release this file's reference to the dvd */
+ 	dec_refcnt(&mi);
+@@ -498,5 +509,5 @@ int main(int argc, char *argv[])
+ 	argv++;
+ 	argc--;
+     }
+-    return fuse_main(argc, argv, &fs_oper);
++    return fuse_main(argc, argv, &fs_oper, NULL);
+ }

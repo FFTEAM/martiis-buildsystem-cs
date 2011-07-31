@@ -1,5 +1,19 @@
 # Makefile to build Extras
 
+$(D)/dvdreadfs: $(ARCHIVE)/dvdreadfs.tar fuse libdvdread | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(BUILD_TMP)/dvdreadfs $(PKGPREFIX)/bin
+	tar -C $(BUILD_TMP)/dvdreadfs -xf $(ARCHIVE)/dvdreadfs.tar
+	cd $(BUILD_TMP)/dvdreadfs && $(PATCH)/dvdreadfs-seife.diff
+	$(TARGET)-gcc \
+		$(TARGET_CFLAGS) -DFUSE_USE_VERSION=26 -D_FILE_OFFSET_BITS=64 -DFORCE_SINGLE_THREAD=1 \
+		$(TARGET_LDFLAGS) -lfuse -ldvdread \
+		-o $(PKGPREFIX)/bin/dvdreadfs $(BUILD_TMP)/dvdreadfs/dvdreadfs.c
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	PKG_VER=0.0 $(OPKG_SH) $(CONTROL_DIR)/dvdreadfs
+	$(REMOVE)/dvdreadfs $(PKGPREFIX)
+	touch $@
+
 $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/djmount-0.71.tar.gz
