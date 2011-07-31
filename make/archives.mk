@@ -17,6 +17,9 @@ $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz:
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 
+$(ARCHIVE)/libdvdread-4.1.3.tar.bz2:
+	$(WGET) http://www1.mplayerhq.hu/MPlayer/releases/dvdnav/libdvdread-4.1.3.tar.bz2
+
 $(ARCHIVE)/libmad-$(MAD-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/$(MAD-VER)/libmad-$(MAD-VER).tar.gz
 

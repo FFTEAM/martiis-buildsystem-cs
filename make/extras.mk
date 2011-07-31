@@ -19,6 +19,25 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	$(REMOVE)/djmount-0.71 $(PKGPREFIX)
 	touch $@
 
+$(D)/libdvdread: $(ARCHIVE)/libdvdread-4.1.3.tar.bz2 | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/libdvdread-4.1.3.tar.bz2
+	set -e; cd $(BUILD_TMP)/libdvdread-4.1.3; \
+		$(CONFIGURE) \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix= \
+			; \
+		$(MAKE) ; \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/dvdread.pc
+	$(REWRITE_LIBTOOL)/libdvdread.la
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libdvdread.so.* $(PKGPREFIX)/lib
+	PKG_VER=4.1.3 $(OPKG_SH) $(CONTROL_DIR)/libdvdread
+	$(REMOVE)/libdvdread-4.1.3 $(PKGPREFIX)
+	touch $@
+
 $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2

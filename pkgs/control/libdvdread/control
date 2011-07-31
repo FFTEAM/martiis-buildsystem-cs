@@ -1,0 +1,12 @@
+Package: libdvdread
+Version: @VER@-1
+Description: Library for reading DVD video disks
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.mplayerhq.hu/
+Source:
+Depends:
+Provides: libdvdread.so.4
+
