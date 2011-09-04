@@ -51,6 +51,24 @@ cs-drivers-pkg:
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
+cs-beta-drivers-pkg:
+	# we have two directories packed, the newer one determines the package version
+	rm -rf $(BUILD_TMP)/tmp-ctrl
+	cp -a $(CONTROL_DIR)/cs-beta-drivers $(BUILD_TMP)/tmp-ctrl
+	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
+		$(SOURCE_DIR)/svn/COOLSTREAM/beta-2.6.26.8-nevis $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/COOLSTREAM/beta-2.6.26.8-nevis || \
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
+	mkdir    $(PKGPREFIX)/lib/firmware
+	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/beta-2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
+	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
+	mkdir -p $(PKGPREFIX)/etc/init.d
+	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
+	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
+
 cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-libs $(BUILD_TMP)/tmp-ctrl
