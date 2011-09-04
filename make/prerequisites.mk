@@ -34,11 +34,11 @@ download:
 
 $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
-	@echo "                  Cloning neutrino-hd-experimental git repo"
+	@echo "                  Cloning neutrino-hd git repo"
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git neutrino-hd
+		git clone git://gitorious.org/neutrino-hd/neutrino-hd.git neutrino-hd
 
 $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
@@ -53,20 +53,6 @@ $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
 		git clone git://gitorious.org/neutrino-hd/neutrino-hd-plugins.git
-
-check-repo:
-	@git --git-dir=$(SOURCE_DIR)/neutrino-hd/.git config remote.origin.url | \
-		grep -q "neutrino-hd-experimental.git$$" || \
-	{ echo "=====================================================================";	\
-	  echo "* ************ deprecated neutrino-hd repo / branch *************** *";	\
-	  echo "* switch your git repo in source/neutrino-hd to branch 'master' of";	\
-	  echo "* git://gitorious.org/neutrino-hd/neutrino-hd-experimental.git";	\
-	  echo "* if you don't know how to do that, it's probably easiest to remove";	\
-	  echo "* $(SOURCE_DIR)/neutrino-hd";						\
-	  echo "* and then call 'make preqs' again.";					\
-	  echo "=====================================================================";	\
-	  echo "continuing in 20 seconds..."; echo "";					\
-	  sleep 20; }
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
 	mkdir -p $(shell dirname $@)
