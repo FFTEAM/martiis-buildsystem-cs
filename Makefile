@@ -109,8 +109,14 @@ ifneq ($(PLATFORM), tripledragon)
 # not useful on tripledragon, because that SVN never changes
 update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
 	for i in $(SOURCE_DIR)/svn/COOLSTREAM \
-		$(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream \
-		$(SOURCE_DIR)/svn/THIRDPARTY/*; \
+		$(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream; \
+	do \
+		if [ -d $$i ]; then \
+			echo "updating $$i..."; \
+			(cd $$i && $(SVN) up); \
+		else true; fi \
+	done
+	for i in $(SOURCE_DIR)/svn/THIRDPARTY/*; \
 	do \
 		if [ -d $$i ]; then \
 			echo "updating $$i..."; \
