@@ -4,16 +4,15 @@ SERVICE="$1"
 ACTION="$2"
 
 usage() {
-	echo "usage: service <name> <start|stop>"
+	echo "usage: service <name> <action>"
 	echo "       start or stop a given service (init script)"
+	echo "       action depends on the init script, usually"
+	echo "       at least 'start' and 'stop' is supported."
 	echo
 	exit 1
 }
 
-case "$ACTION" in
-	start|stop) ;;
-	*) usage;;
-esac
+test -z "$ACTION" && usage;
 
 for i in /opt/*/etc/init.d/$SERVICE /etc/init.d/$SERVICE; do
 	if [ -x "$i" ]; then
@@ -24,4 +23,9 @@ for i in /opt/*/etc/init.d/$SERVICE /etc/init.d/$SERVICE; do
 done
 
 echo "$SERVICE not found in /etc/init.d/ and /opt/*/etc/init.d/"
+SERVICES=$(for i in /opt/*/etc/init.d/[^SK]* /etc/init.d/[^SK]*; do
+		echo ${i##*/};
+	done | sort -u | grep -v '^\(functions\|rcK\|rcS\|start\|start_neutrino\)$')
+echo "available services:"
+echo $SERVICES | xargs -n 1 echo "	"
 exit 1
