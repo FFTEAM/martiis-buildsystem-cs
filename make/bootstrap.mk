@@ -10,7 +10,7 @@ PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
 else
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
-PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so
+PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
 PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
 endif
 
@@ -52,8 +52,8 @@ $(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
 $(TARGETPREFIX)/lib/libnxp.so: $(SVN_TP_LIBS)/libnxp/libnxp.so | $(TARGETPREFIX)
 	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $@
 
-$(TARGETPREFIX)/lib/libcoolstream.so: $(SVN_TP_LIBS)/libcs/libcoolstream.so | $(TARGETPREFIX)
-	cp -a $(SVN_TP_LIBS)/libcs/libcoolstream.so $@
+$(TARGETPREFIX)/lib/libcoolstream%.so: $(SVN_TP_LIBS)/libcs/libcoolstream%.so | $(TARGETPREFIX)
+	cp -a $(SVN_TP_LIBS)/libcs/$(shell basename $@) $@
 
 $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	mkdir -p $@

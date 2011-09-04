@@ -51,16 +51,19 @@ cs-drivers-pkg:
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
-cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so
+cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-libs $(BUILD_TMP)/tmp-ctrl
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
-		$(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so
+		$(SVN_TP_LIBS)/libnxp/libnxp.so \
+		$(SVN_TP_LIBS)/libcs/libcoolstream.so \
+		$(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libnxp/libnxp.so || \
-	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream.so
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream.so || \
+	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(PKGPREFIX)/lib
+	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream*.so $(PKGPREFIX)/lib
 	$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
