@@ -81,7 +81,11 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 		DEP="$${DEP// /, }" && \
 		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-hd-control/control
 ifeq ($(PLATFORM), coolstream)
-	sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134)/' $(BUILD_TMP)/neutrino-hd-control/control
+	if grep -q libcoolstream-mt.so $(BUILD_TMP)/neutrino-hd-control/control; then \
+		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1608), cs-beta-drivers/' $(BUILD_TMP)/neutrino-hd-control/control; \
+	else \
+		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134), cs-drivers/' $(BUILD_TMP)/neutrino-hd-control/control; \
+	fi
 endif
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
