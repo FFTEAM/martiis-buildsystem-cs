@@ -7,15 +7,22 @@ for i in tuxtxt zapit links; do
 done
 [ -e /share/fonts/neutrino.ttf ] || ln -s md_khmurabi_10.ttf /share/fonts/neutrino.ttf
 
+MESSAGE=:
+type -p drivertool > /dev/null && MESSAGE="drivertool VFD_SET_TEXT"
+
 touch /tmp/norestart
 until neutrino; do
-	echo "Neutrino exited with exit code $?"
+	RET=$?
+	echo "Neutrino exited with exit code $RET"
+	$MESSAGE "neutrino:$RET"
 	while [ -e /tmp/norestart ]; do # for debugging: stop the restart loop
 		sleep 1;
 	done
 done
 
+$MESSAGE "start_n ends"
 if [ -e /tmp/.reboot ]; then # gets created by neutrino
+	$MESSAGE "rebooting..."
 	reboot
 #else
 #	halt
