@@ -93,7 +93,7 @@ ATTR-VER=2.4.44
 #############################
 
 # vsftpd; a small, tiny and "v"ery "s"ecure "ftp" deamon
-VSFTPD-VER=2.2.2
+VSFTPD-VER=2.3.4
 
 # rsync; fast and extraordinarily versatile file copying tool
 RSYNC-VER=3.0.7

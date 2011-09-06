@@ -195,7 +195,7 @@ $(ARCHIVE)/valgrind-3.6.1.tar.bz2:
 	$(WGET) http://valgrind.org/downloads/valgrind-3.6.1.tar.bz2
 
 $(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz:
-	$(WGET) ftp://vsftpd.beasts.org/users/cevans/vsftpd-$(VSFTPD-VER).tar.gz
+	$(WGET) https://security.appspot.com/downloads/vsftpd-$(VSFTPD-VER).tar.gz
 
 $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
 	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
