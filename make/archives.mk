@@ -48,7 +48,7 @@ $(ARCHIVE)/curl-$(CURL-VER).tar.bz2:
 	$(WGET) http://curl.haxx.se/download/curl-$(CURL-VER).tar.bz2
 
 $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libpng/libpng12/$(PNG-VER)/libpng-$(PNG-VER).tar.bz2
+	$(WGET) http://downloads.sourceforge.net/libpng/libpng-$(PNG-VER).tar.bz2
 
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2
