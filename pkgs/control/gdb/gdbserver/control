@@ -1,10 +1,10 @@
 Package: gdbserver
-Version: 7.1-1
+Version: @VER@-1
 Description: The GNU Debugger, gdbserver for remote debugging
 Section: base
 Priority: optional
 Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://www.gnu.org/software/gdb/
-Source:
+Source: ftp://sourceware.org/pub/gdb/releases/
 Depends: libc.so.6

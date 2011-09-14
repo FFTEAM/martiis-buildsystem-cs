@@ -24,10 +24,10 @@ endif
 
 #  NOTE:
 #  gdb built for target or local-PC
-$(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 libncurses zlib | $(TARGETPREFIX)
+$(D)/gdb: $(ARCHIVE)/gdb-$(GDB-VER).tar.bz2 libncurses zlib | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/gdb-7.1.tar.bz2
-	pushd $(BUILD_TMP)/gdb-7.1 && \
+	$(UNTAR)/gdb-$(GDB-VER).tar.bz2
+	pushd $(BUILD_TMP)/gdb-$(GDB-VER) && \
 		$(PATCH)/gdb-7.1-remove-builddate.diff && \
 		$(BUILDENV) \
 		./configure \
@@ -44,26 +44,26 @@ $(D)/gdb: $(ARCHIVE)/gdb-7.1.tar.bz2 libncurses zlib | $(TARGETPREFIX)
 	rm -rf $(BUILD_TMP)/gdb-tmp
 	mkdir $(BUILD_TMP)/gdb-tmp
 	mv $(PKGPREFIX)/opt/pkg/bin/gdbserver $(BUILD_TMP)/gdb-tmp
-	$(OPKG_SH) $(CONTROL_DIR)/gdb/gdb
+	PKG_VER=$(GDB-VER) $(OPKG_SH) $(CONTROL_DIR)/gdb/gdb
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/bin
 	mv $(BUILD_TMP)/gdb-tmp/gdbserver $(PKGPREFIX)/bin
-	$(OPKG_SH) $(CONTROL_DIR)/gdb/gdbserver
-	$(REMOVE)/gdb-7.1 $(PKGPREFIX) $(BUILD_TMP)/gdb-tmp $(BUILD_TMP)/.remove
+	PKG_VER=$(GDB-VER) $(OPKG_SH) $(CONTROL_DIR)/gdb/gdbserver
+	$(REMOVE)/gdb-$(GDB-VER) $(PKGPREFIX) $(BUILD_TMP)/gdb-tmp $(BUILD_TMP)/.remove
 	touch $@
 
 #  NOTE:
 #  gdb-remote built for local-PC or target
-$(D)/gdb-remote: $(ARCHIVE)/gdb-7.1.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/gdb-7.1.tar.bz2
-	pushd $(BUILD_TMP)/gdb-7.1 && \
+$(D)/gdb-remote: $(ARCHIVE)/gdb-$(GDB-VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/gdb-$(GDB-VER).tar.bz2
+	pushd $(BUILD_TMP)/gdb-$(GDB-VER) && \
 		./configure \
 			--nfp --disable-werror \
 			--prefix=$(HOSTPREFIX) \
 			--build=$(BUILD) --host=$(BUILD) --target=$(TARGET) && \
 		$(MAKE) all-gdb && \
 		make install-gdb && \
-	$(REMOVE)/gdb-7.1
+	$(REMOVE)/gdb-$(GDB-VER)
 	touch $@
 
 devel-tools: $(D)/strace $(D)/gdb

@@ -59,8 +59,8 @@ $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
 $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz:
 	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-$(FBSHOT-VER).tar.gz
 
-$(ARCHIVE)/gdb-7.1.tar.bz2:
-	$(WGET) http://ftp.gnu.org/gnu/gdb/gdb-7.1.tar.bz2
+$(ARCHIVE)/gdb-$(GDB-VER).tar.bz2:
+	$(WGET) ftp://sourceware.org/pub/gdb/releases/gdb-$(GDB-VER).tar.bz2
 
 $(ARCHIVE)/flex-$(FLEX-VER).tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/flex/flex-$(FLEX-VER).tar.gz

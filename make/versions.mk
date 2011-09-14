@@ -171,3 +171,10 @@ SG3_UTILS-VER=1.30
 
 # FUSE, filesystems in userspace
 FUSE-VER=2.8.5
+
+##################################
+# devel-tools; make/devel-tools.mk
+##################################
+
+# gdb; the GNU debugger
+GDB-VER=7.3
