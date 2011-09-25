@@ -83,10 +83,13 @@ else
 $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
-	cd $@ && \
-		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff && \
+	set -e; cd $@ ; \
+		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff ; \
 		for i in $(PATCHES)/cskernel/*; do \
 			echo "applying $$i..." ;patch -p4 -i $$i; \
+		done ; \
+		for i in $(PATCHES)/cskernel-extra/*; do \
+			echo "applying $$i..." ;patch -p1 -i $$i; \
 		done
 
 # this would be a way to build custom configs, but it is not nice, so not used yet.
