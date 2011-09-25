@@ -95,6 +95,17 @@ usb-driver-pkg: cskernel
 	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(CONTROL_DIR)/usb-drivers
 	rm -rf $(PKGPREFIX)
 
+addon-drivers-pkg: cskernel
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
+	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
+		cp -a $(SOURCE_MODULE)/kernel/* ./; \
+		rm -fr drivers/usb fs/autofs4 # is in usb-driver-pkg and autofs
+	depmod -n -ae -E $(K_OBJ)/Module.symvers -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
+		| grep WARNING; test $$? != 0 # invert return code
+	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(CONTROL_DIR)/addon-drivers
+	rm -rf $(PKGPREFIX)
+
 PHONY += cs-drivers-pkg cs-libs-pkg
 SYSTEM_PKGS += cs-libs-pkg cs-drivers-pkg
 else

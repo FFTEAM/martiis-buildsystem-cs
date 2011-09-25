@@ -1,0 +1,10 @@
+Package: addon-drivers
+Version: @VER@-1
+Description: Drivers for additional stuff (WLAN, filesystems, ...)
+Section: base/drivers
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://kernel.org/
+Source:
+Depends: depmod
