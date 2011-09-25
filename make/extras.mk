@@ -71,6 +71,17 @@ $(D)/libdvdread: $(ARCHIVE)/libdvdread-4.1.3.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/libdvdread-4.1.3 $(PKGPREFIX)
 	touch $@
 
+# this rule is ugly, but will do for now
+arduino-serlcd: | $(TARGETPREFIX)
+	set -e; if [ -d $(BUILD_TMP)/arduino-serlcd ]; \
+		then cd $(BUILD_TMP)/arduino-serlcd; git pull; \
+		else cd $(BUILD_TMP); git clone git://gitorious.org/seife/arduino-serlcd.git; \
+		fi
+	set -e; cd $(BUILD_TMP)/arduino-serlcd; \
+		make CC=$(TARGET)-gcc; \
+		cp arduino_serlcd_test $(TARGETPREFIX)/bin
+
+
 $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2
