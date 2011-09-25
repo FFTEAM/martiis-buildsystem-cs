@@ -1,19 +1,31 @@
 #!/bin/sh
+
 im()
 {
 	modname=$1
-	# only "options" parameter is supported in modprobe.conf
-	# if you want more, you should probably use real modprobe
-	params=$(sed -n "/^options $modname/{
-				s/^options $modname\s\(.*\)\$/\1/;
-				p
-			}" /etc/modprobe.conf 2>/dev/null)
+	modsane=${1//-/_}
+	params=$(eval echo \$OPT_${modsane})
 	shift
-	/sbin/insmod /lib/modules/2.6.26.8-nevis/${modname}.ko ${params:-$@}
+	file=/lib/modules/${KVER}/${modname}.ko
+	# the CS modules are in /lib/modules/$KVER/*,
+	# own built modules are in /lib/modules/$KVER/kernel/... subdirectories
+	if test -e $file; then
+		/sbin/insmod $file ${params:-$@}
+	else
+		/sbin/modprobe $modname $@
+	fi
 }
 
 case $1 in
 start)
+	read dummy dummy KVER dummy < /proc/version
+	# set all "option foo ..." as OPT_foo="..." variables
+	eval $(sed -n "/^options\s/{
+		s/^options\s\(\S\+\)\s\(.*\)\$/OPT_\1=\"\2\"/;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		p }" /etc/modprobe.conf)
 	im cs_frontpanel
 	im cifs
 	im fuse
