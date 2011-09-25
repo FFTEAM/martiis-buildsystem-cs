@@ -11,7 +11,7 @@ $(D)/vsftpd: $(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz | $(TARGETPREFIX)
 	install -D -m 644 $(SCRIPTS)/vsftpd.conf $(PKGPREFIX)/opt/pkg/etc/vsftpd.conf
 	install -D -m 755 $(SCRIPTS)/vsftpd.init $(PKGPREFIX)/opt/pkg/etc/init.d/vsftpd
 	# it is important that vsftpd is started *before* inetd to override busybox ftpd...
-	ln -sf vsftpd $(PKGPREFIX)/opt/pkg/etc/init.d/S80vsftpd
+	ln -sf vsftpd $(PKGPREFIX)/opt/pkg/etc/init.d/S53vsftpd
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/
 	$(OPKG_SH) $(CONTROL_DIR)/vsftpd
 	$(REMOVE)/vsftpd-$(VSFTPD-VER) $(PKGPREFIX)
