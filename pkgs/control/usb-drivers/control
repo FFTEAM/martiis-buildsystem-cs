@@ -1,0 +1,10 @@
+Package: usb-drivers
+Version: @VER@-1
+Description: Drivers for USB devices (usbserial, usblp, ...)
+Section: base/drivers
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://kernel.org/
+Source:
+Depends: depmod

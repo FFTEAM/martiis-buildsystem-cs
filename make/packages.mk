@@ -85,6 +85,16 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
+usb-driver-pkg: cskernel
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/drivers/usb
+	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/drivers/usb; \
+		cp -a $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)/kernel/drivers/usb/* .
+	depmod -n -ae -E $(K_OBJ)/Module.symvers -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
+		| grep WARNING; test $$? != 0 # invert return code
+	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(CONTROL_DIR)/usb-drivers
+	rm -rf $(PKGPREFIX)
+
 PHONY += cs-drivers-pkg cs-libs-pkg
 SYSTEM_PKGS += cs-libs-pkg cs-drivers-pkg
 else
