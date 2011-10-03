@@ -2,7 +2,7 @@
 
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg
 
-N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing
+N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
 ifneq ($(PLATFORM), tripledragon)
 # coolstream
