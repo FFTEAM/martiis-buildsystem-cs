@@ -107,12 +107,16 @@ CONFIGURE = \
 	$(BUILDENV) \
 	./configure $(CONFIGURE_OPTS)
 
+CSSVN_URL = http://www.coolstreamtech.de/coolstream_public_svn
+TDSVN_URL = http://www.no-access.de/tdsvn
+CSSVN_CMD = svn --username coolstream --password coolstream --no-auth-cache
+TDSVN_CMD = svn --username dragon --password dragon --no-auth-cache
 ifeq ($(PLATFORM), tripledragon)
-SVN   ?= svn --username dragon --password dragon --no-auth-cache
-SVNCO ?= $(SVN) export http://www.no-access.de/tdsvn
+SVN   ?= $(TDSVN_CMD)
+SVNCO ?= $(SVN) export $(TDSVN_URL)
 else
-SVN   ?= svn --username coolstream --password coolstream --no-auth-cache
-SVNCO ?= $(SVN) co http://www.coolstreamtech.de/coolstream_public_svn
+SVN   ?= $(CSSVN_CMD)
+SVNCO ?= $(SVN) co $(CSSVN_URL)
 endif
 
 # shortcuts

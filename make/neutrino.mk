@@ -1,13 +1,13 @@
 #Makefile to build NEUTRINO
 
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg
+NEUTRINO_DEPS += openthreads
 
 N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
 ifneq ($(PLATFORM), tripledragon)
 # coolstream
 N_CPPFLAGS += -DUSE_NEVIS_GXA
-NEUTRINO_DEPS += openthreads
 else
 # tripledragon
 N_CPPFLAGS += -I$(TARGETPREFIX)/include/hardware

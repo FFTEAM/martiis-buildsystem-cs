@@ -66,10 +66,14 @@ $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	cd $(shell dirname $@) && $(SVNCO)/CROSSENVIROMENT/$(shell basename $@)
 
 $(SVN_TP_LIBS)/libcs \
-$(SVN_TP_LIBS)/libnxp \
-$(SVN_TP_LIBS)/OpenThreads-svn:
+$(SVN_TP_LIBS)/libnxp:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/libraries/$(shell basename $@)
+
+$(SVN_TP_LIBS)/OpenThreads-svn:
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && \
+		$(CSSVN_CMD) co $(CSSVN_URL)/THIRDPARTY/libraries/$(shell basename $@)
 
 $(SOURCE_DIR)/svn/THIRDPARTY/lib:
 	mkdir -p $@
