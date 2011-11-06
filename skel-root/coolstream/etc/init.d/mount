@@ -8,6 +8,27 @@ start)
 		echo "Enable Swap space..."
 		/sbin/swapon -a
 	fi
+	if [ -e /dev/root ]; then # does not exist on NFS boot...
+		case "$(readlink /dev/root)" in
+			sd*)
+				if test -e /forcefsck; then
+					echo "forcing fsck..."
+					rm /forcefsck
+					mount / -o ro,remount
+				fi
+				if touch /.fsck 2>/dev/null ; then
+					rm /.fsck
+					echo "root FS is mounted rw, skipping filesystem check"
+				else
+					echo "running 'fsck /dev/root'"
+					fsck.ext3 -p -C0 /dev/root
+					echo "remounting root FS rw..."
+				fi
+				mount / -o rw,remount,noatime,nodiratime
+				;;
+			*)	;;	# do nothing on internal FLASH
+		esac
+	fi
 	exit 0
 	;;
 stop)
