@@ -143,7 +143,7 @@ fi
 
 # extract package name and version from control file...
 eval $(awk -F":[[:space:]*]" \
-	'/^Package:/{print "PACKAGE=\""$2"\""};
+	'/^Package:/{print "NAME=\""$2"\""};
 	 /^Version:/{print "VERSION=\""$2"\""}' CONTROL/control)
 echo "2.0" > debian-binary
 
@@ -180,7 +180,6 @@ if test -e CONTROL/conffiles; then
 fi
 
 # the package name, needed for detection of already built old version...
-NAME=$(awk '/^Package:/ {print $2}' CONTROL/control)
 VERS=${VERSION%-*}  # strip off build revision
 BREV=${VERSION##*-} # strip off package version
 
@@ -241,7 +240,7 @@ echo "${ME}: control contents:"
 tar -cvzf control.tar.gz --owner=0 --group=0 -C CONTROL .
 
 # create the package...
-PKG=${PACKAGE}-${VERSION}.opk
+PKG=${NAME}-${VERSION}.opk
 ar -r ${SOURCE}/${PKG} ./debian-binary ./data.tar.gz ./control.tar.gz
 
 for i in $(ls ${PACKAGE_DIR}/${NAME}-${VERS}-*.opk 2>/dev/null); do
