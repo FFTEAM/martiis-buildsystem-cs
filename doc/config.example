@@ -27,7 +27,6 @@
 # set the flavour of neutrino you want to build
 # "neutrino-hd":              use master branch of git://gitorious.org/neutrino-hd/neutrino-hd.git
 # "neutrino-hd-tripledragon": use git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git
-# "neutrino-hd-SVN"           use the "official" coolstream SVN. Use at your own risk.
 # empty: choose one of the above depending on PLATFORM
 #FLAVOUR=neutrino-hd-tripledragon
 

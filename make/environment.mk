@@ -68,11 +68,7 @@ VPATH = $(D)
 ifeq ("$(FLAVOUR)", "neutrino-hd-tripledragon")
 N_HD_SOURCE ?= $(SOURCE_DIR)/neutrino-hd-td
 else
-ifeq ("$(FLAVOUR)", "neutrino-hd-SVN")
-N_HD_SOURCE ?= $(SOURCE_DIR)/svn/THIRDPARTY/applications/neutrino-beta
-else
 N_HD_SOURCE ?= $(SOURCE_DIR)/neutrino-hd
-endif
 endif
 
 PATH := $(HOSTPREFIX)/bin:$(CROSS_DIR)/bin:$(PATH)
