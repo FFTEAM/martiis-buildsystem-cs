@@ -437,21 +437,27 @@ $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/fuse-$(FUSE-VER) $(PKGPREFIX)
 	touch $@
 
+# build only static lib - just needed by tcpdump
+$(D)/libpcap: $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/libpcap-$(PCAP-VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libpcap-$(PCAP-VER); \
+		echo "ac_cv_linux_vers=2" >> config.cache; \
+		$(CONFIGURE) --with-pcap=linux --prefix= --mandir=/.remove -C; \
+		$(MAKE) all ; \
+		make install DESTDIR=$(TARGETPREFIX); \
+		: make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(TARGETPREFIX)/.remove $(PKGPREFIX)/.remove \
+		$(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/lib/*.a
+	rm -rf $(TARGETPREFIX)/lib/libpcap.s*
+	$(REMOVE)/libpcap-$(PCAP-VER)
+	touch $@
+
 #############################################################################################
 #############################################################################################
 ######### not yet needed and not tested #####################################################
 #############################################################################################
 #############################################################################################
-
-$(D)/libpcap: $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz
-	$(UNTAR)/libpcap-$(PCAP-VER).tar.gz
-	pushd $(BUILD_TMP)/libpcap-$(PCAP-VER) && \
-		echo "ac_cv_linux_vers=2" >> config.cache && \
-		$(CONFIGURE) --with-pcap=linux --prefix= --cache-file=config.cache && \
-		make all && \
-		make install DESTDIR=$(TARGETPREFIX)
-	$(REMOVE)/libpcap-$(PCAP-VER)
-	touch $@
 
 # builds only static lib, needed e.g. by unfsd
 $(D)/libflex: $(ARCHIVE)/flex-$(FLEX-VER).tar.gz

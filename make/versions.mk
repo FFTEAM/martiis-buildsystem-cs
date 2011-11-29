@@ -74,7 +74,7 @@ VORBISIDEC-VER=1.0.2+svn16259
 VORBISIDEC-VER_APPEND=.orig
 
 # libpcap; system-independent interface for user-level packet capture
-PCAP-VER=1.0.0
+PCAP-VER=1.2.0
 
 # libcap2; setting and proofing POSIX.1e functionality
 LIBCAP2-VER=2.20
@@ -128,6 +128,9 @@ UNFS3-VER=0.9.22
 
 # fbshot;  a small program that allowes you to take screenshots from the framebuffer
 FBSHOT-VER=0.3
+
+# tcpdump. if you don't know it, you don't need it.
+TCPDUMP-VER=4.2.0
 
 # systemd; a system and service manager for Linux
 SYSTEMD-VER=19

@@ -1,0 +1,10 @@
+Package: tcpdump
+Version: @VER@-1
+Description: A powerful command-line packet analyzer
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.tcpdump.org/
+Source:
+Depends: libc.so.6

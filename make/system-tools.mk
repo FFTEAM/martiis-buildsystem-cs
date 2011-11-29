@@ -379,6 +379,20 @@ $(D)/iperf: $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/iperf-$(IPERF-VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/tcpdump: $(D)/libpcap $(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/tcpdump-$(TCPDUMP-VER).tar.gz
+	set -e; cd $(BUILD_TMP)/tcpdump-$(TCPDUMP-VER); \
+		$(PATCH)/tcpdump-noipv6.diff; \
+		cp -a $(PATCHES)/ppi.h .; \
+		echo "ac_cv_linux_vers=2" >> config.cache ; \
+		$(CONFIGURE) --prefix= --disable-ipv6 --disable-smb --without-crypto -C --mandir=/.remove; \
+		$(MAKE) all; \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(PKGPREFIX)/sbin/tcpdump.*
+	PKG_VER=$(TCPDUMP-VER) $(OPKG_SH) $(CONTROL_DIR)/tcpdump
+	$(REMOVE)/tcpdump-$(TCPDUMP-VER) $(PKGPREFIX)
+	touch $@
+
 # !!! this is experimental and not working now !!!
 $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | $(TARGETPREFIX)
 	$(UNTAR)/systemd-$(SYSTEMD-VER).tar.bz2

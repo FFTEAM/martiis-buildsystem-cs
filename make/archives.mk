@@ -114,7 +114,7 @@ $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz:
 	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz
 
 $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz:
-	$(WGET) ftp://ftp.wh8.tu-dresden.de/pub/linux/distributions/gentoo/distfiles/libpcap-$(PCAP-VER).tar.gz
+	$(WGET) http://www.tcpdump.org/release/libpcap-$(PCAP-VER).tar.gz
 
 $(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz:
 	$(WGET) http://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-$(LIBCAP2-VER).tar.gz
@@ -178,6 +178,9 @@ $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2:
 
 $(ARCHIVE)/strace-4.5.20.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.20/strace-4.5.20.tar.bz2
+
+$(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz:
+	$(WGET) http://www.tcpdump.org/release/tcpdump-$(TCPDUMP-VER).tar.gz
 
 $(ARCHIVE)/u-boot-2009.03.tar.bz2:
 	$(WGET) http://ftp.denx.de/pub/u-boot/u-boot-2009.03.tar.bz2

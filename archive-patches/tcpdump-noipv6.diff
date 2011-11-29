@@ -1,0 +1,31 @@
+diff --git a/print-babel.c b/print-babel.c
+index a8108fc..341e2b3 100644
+--- a/print-babel.c
++++ b/print-babel.c
+@@ -117,8 +117,12 @@ format_prefix(const u_char *prefix, unsigned char plen)
+     static char buf[50];
+     if(plen >= 96 && memcmp(prefix, v4prefix, 12) == 0)
+         snprintf(buf, 50, "%s/%u", ipaddr_string(prefix + 12), plen - 96);
++#ifdef INET6
+     else
+         snprintf(buf, 50, "%s/%u", ip6addr_string(prefix), plen);
++#else
++        sprintf(buf, "ipv6 not supported");
++#endif
+     buf[49] = '\0';
+     return buf;
+ }
+@@ -128,8 +132,13 @@ format_address(const u_char *prefix)
+ {
+     if(memcmp(prefix, v4prefix, 12) == 0)
+         return ipaddr_string(prefix + 12);
++#ifdef INET6
++    else
+     else
+         return ip6addr_string(prefix);
++#else
++        return "ipv6 not supported";
++#endif
+ }
+ 
+ static int
