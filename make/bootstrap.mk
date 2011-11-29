@@ -82,7 +82,20 @@ includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 ifneq ($(PLATFORM), tripledragon)
 cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
 
-$(CROSS_DIR)/bin/$(TARGET)-gcc: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs $(ARCHIVE)/linux-2.6.26.8.tar.bz2 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2
+$(CROSS_DIR)/bin/$(TARGET)-gcc:
+	@echo
+	@echo "====================================================="
+	@echo "old crosstool is hard to maintain and likely to break"
+	@echo " consider using 'make crosstool-new' which also gets"
+	@echo "  you a shiny new(er) gcc 4.5.2 and eglibc 2.12 ;-)"
+	@echo "====================================================="
+	@echo
+	@echo "sleeping for 10 seconds before continuing..."
+	@echo
+	@sleep 10
+	$(MAKE) crosstool-old
+
+crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs $(ARCHIVE)/linux-2.6.26.8.tar.bz2 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2
 	make $(BUILD_TMP)
 	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
 	cd $(BUILD_TMP)/crosstool-ng-1.3.2 && \
