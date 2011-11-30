@@ -20,6 +20,12 @@ FLAVOUR     ?= neutrino-hd
 BOXARCH      = arm
 endif
 
+ifneq ($(GIT_PROTOCOL), http)
+GITORIOUS ?= git://gitorious.org
+else
+GITORIOUS ?= https://git.gitorious.org
+endif
+
 WHOAMI      := $(shell id -un)
 MAINTAINER  ?= $(shell getent passwd $(WHOAMI)|awk -F: '{print $$5}')
 

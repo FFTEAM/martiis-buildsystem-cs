@@ -47,3 +47,9 @@
 # have to do this manually.
 #
 # N_HD_SOURCE = $(BASE_DIR)/source/nhd-test
+
+#
+# if you cannot check out via the git:// protocol (e.g. behind a http
+# proxy...) but need to use http, then uncomment this
+#
+# GIT_PROTOCOL = http

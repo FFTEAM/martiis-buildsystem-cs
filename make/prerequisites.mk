@@ -38,7 +38,7 @@ $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone git://gitorious.org/neutrino-hd/neutrino-hd.git neutrino-hd
+		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd.git neutrino-hd
 
 $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
@@ -46,13 +46,13 @@ $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
+		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
 
 
 $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone git://gitorious.org/neutrino-hd/neutrino-hd-plugins.git
+		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-plugins.git
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
 	mkdir -p $(shell dirname $@)
