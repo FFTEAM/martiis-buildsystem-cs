@@ -98,36 +98,44 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc:
 crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs $(ARCHIVE)/linux-2.6.26.8.tar.bz2 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2
 	make $(BUILD_TMP)
 	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
-	cd $(BUILD_TMP)/crosstool-ng-1.3.2 && \
-		$(PATCH)/crosstool-132-bash4.diff && \
-		mkdir -p patches/linux/2.6.26.8 && \
-		cp $(PATCHES)/linux-2.6.26.8-rename-getline.patch patches/linux/2.6.26.8 && \
-		cp $(PATCHES)/linux-2.6.26.8-new-make.patch       patches/linux/2.6.26.8 && \
-		cp $(PATCHES)/eglibc-2_8-new-make.patch           patches/eglibc/2_8/    && \
-		cp -a $(PATCHES)/crosstool-ng-1.3.2-newconfig .config && \
+	set -e; cd $(BUILD_TMP)/crosstool-ng-1.3.2; \
+		test "$(GIT_PROTOCOL)" = http && \
+			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
+				scripts/build/libc/eglibc.sh || \
+			true; \
+		$(PATCH)/crosstool-132-bash4.diff; \
+		mkdir -p patches/linux/2.6.26.8; \
+		cp $(PATCHES)/linux-2.6.26.8-rename-getline.patch patches/linux/2.6.26.8; \
+		cp $(PATCHES)/linux-2.6.26.8-new-make.patch       patches/linux/2.6.26.8; \
+		cp $(PATCHES)/eglibc-2_8-new-make.patch           patches/eglibc/2_8/; \
+		cp -a $(PATCHES)/crosstool-ng-1.3.2-newconfig .config; \
 		sed -i -e 's#^CT_LOCAL_TARBALLS_DIR=.*#CT_LOCAL_TARBALLS_DIR="$(BASE_DIR)/download"#' \
-		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config && \
-		./configure --local &&  make && chmod 0755 ct-ng && \
-		./ct-ng oldconfig && ./ct-ng build.2
+		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config; \
+		./configure --local; make; chmod 0755 ct-ng; \
+		./ct-ng oldconfig; ./ct-ng build.2
 
 crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.tar.bz2
 	make $(BUILD_TMP)
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
-	cd $(BUILD_TMP)/crosstool-ng-1.10.0 && \
-		mkdir -p targets/src/ && \
-		tar -C targets/src/ -xf $(ARCHIVE)/linux-2.6.26.8.tar.bz2 && \
+	set -e; cd $(BUILD_TMP)/crosstool-ng-1.10.0 \
+		test "$(GIT_PROTOCOL)" = http && \
+			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
+				scripts/build/libc/eglibc.sh || \
+			true; \
+		mkdir -p targets/src/; \
+		tar -C targets/src/ -xf $(ARCHIVE)/linux-2.6.26.8.tar.bz2; \
 		(cd targets/src/linux-2.6.26.8 && \
 			patch -p1 -i $(PATCHES)/linux-2.6.26.8-new-make.patch && \
-			patch -p1 -i $(PATCHES)/linux-2.6.26.8-rename-getline.patch) && \
-		ln -sf linux-2.6.26.8 targets/src/linux-custom && \
-		touch targets/src/.linux-custom.extracted && \
-		cp -a $(PATCHES)/crosstool-ng-coolstreamnew.config .config && \
-		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2) && \
-		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config && \
-		export TD_BASE_DIR=$(BASE_DIR) && \
-		export TD_BUILD_TMP=$(BUILD_TMP) && \
-		./configure --local &&  make && chmod 0755 ct-ng && \
-		./ct-ng oldconfig && \
+			patch -p1 -i $(PATCHES)/linux-2.6.26.8-rename-getline.patch); \
+		ln -sf linux-2.6.26.8 targets/src/linux-custom; \
+		touch targets/src/.linux-custom.extracted; \
+		cp -a $(PATCHES)/crosstool-ng-coolstreamnew.config .config; \
+		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
+		export TD_BASE_DIR=$(BASE_DIR); \
+		export TD_BUILD_TMP=$(BUILD_TMP); \
+		./configure --local; make; chmod 0755 ct-ng; \
+		./ct-ng oldconfig; \
 		./ct-ng build
 	ln -sf sys-root/lib $(CROSS_BASE)/$(TARGET)/
 	$(REMOVE)/crosstool-ng-1.10.0
@@ -169,14 +177,18 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
 	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
 	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm
-	cd $(BUILD_TMP)/crosstool-ng-1.10.0 && \
-		cp -a $(PATCHES)/crosstool-ng-tripledragon.config .config && \
-		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2) && \
-		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config && \
-		export TD_BASE_DIR=$(BASE_DIR) && \
-		export TD_BUILD_TMP=$(BUILD_TMP) && \
-		./configure --local &&  make && chmod 0755 ct-ng && \
-		./ct-ng oldconfig && \
+	set -e; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
+		test "$(GIT_PROTOCOL)" = http && \
+			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
+				scripts/build/libc/eglibc.sh || \
+			true; \
+		cp -a $(PATCHES)/crosstool-ng-tripledragon.config .config; \
+		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
+		export TD_BASE_DIR=$(BASE_DIR); \
+		export TD_BUILD_TMP=$(BUILD_TMP); \
+		./configure --local; make; chmod 0755 ct-ng; \
+		./ct-ng oldconfig; \
 		./ct-ng build
 	$(REMOVE)/crosstool-ng-1.10.0
 

@@ -52,4 +52,6 @@
 # if you cannot check out via the git:// protocol (e.g. behind a http
 # proxy...) but need to use http, then uncomment this
 #
+# this also affects the use of svn:// or http:// for the crosstool builds
+#
 # GIT_PROTOCOL = http
