@@ -98,7 +98,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc:
 crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs $(ARCHIVE)/linux-2.6.26.8.tar.bz2 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2
 	make $(BUILD_TMP)
 	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
-	set -e; cd $(BUILD_TMP)/crosstool-ng-1.3.2; \
+	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.3.2; \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
 				scripts/build/libc/eglibc.sh || \
@@ -117,7 +117,7 @@ crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_D
 crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.tar.bz2
 	make $(BUILD_TMP)
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
-	set -e; cd $(BUILD_TMP)/crosstool-ng-1.10.0 \
+	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0 \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
 				scripts/build/libc/eglibc.sh || \
