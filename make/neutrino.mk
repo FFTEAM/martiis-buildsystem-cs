@@ -56,7 +56,7 @@ $(TARGETPREFIX)/.version:
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
 	echo "creator=$(MAINTAINER)"		>> $@
 	echo "imagename=HD-Neutrino"		>> $@
-	echo "builddate=`cd $(N_HD_SOURCE); git describe --always --dirty`" >> $@
+	A=$(FLAVOUR); B=$${A#neutrino-hd}; echo "builddate=`cd $(N_HD_SOURCE); git describe --always --dirty` $${B:1}" >> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
 
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
