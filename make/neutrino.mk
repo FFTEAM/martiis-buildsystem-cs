@@ -70,6 +70,7 @@ $(D)/neutrino: $(N_OBJDIR)/config.status
 
 neutrino-pkg: $(N_OBJDIR)/config.status
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
+	$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
