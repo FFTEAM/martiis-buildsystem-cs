@@ -343,12 +343,15 @@ endif
 $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/valgrind-3.6.1.tar.bz2
 	rm -rf $(PKGPREFIX)
-	cd $(BUILD_TMP)/valgrind-3.6.1 && \
-		export ac_cv_path_GDB=/opt/pkg/bin/gdb && \
-		$(VALGRIND_EXTRA_EXPORT) && \
-		export AR=$(TARGET)-ar && \
-		$(CONFIGURE) --prefix=/opt/pkg --enable-only32bit --mandir=/.remove --datadir=/.remove && \
-		make all && \
+	set -e; cd $(BUILD_TMP)/valgrind-3.6.1; \
+		rm -f uname; \
+		printf "#!/bin/sh\necho 2.6.26.8\n" > uname; chmod 0755 uname; \
+		export PATH=.:$$PATH; \
+		export ac_cv_path_GDB=/opt/pkg/bin/gdb; \
+		$(VALGRIND_EXTRA_EXPORT); \
+		export AR=$(TARGET)-ar; \
+		$(CONFIGURE) --prefix=/opt/pkg --enable-only32bit --mandir=/.remove --datadir=/.remove; \
+		make all; \
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove
 	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/* $(PKG_CONFIG_PATH)
