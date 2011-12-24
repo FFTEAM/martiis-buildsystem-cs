@@ -7,13 +7,13 @@ ifeq ($(PLATFORM), tripledragon)
 	cd $(BUILD_TMP)/strace-4.5.20 && \
 		$(PATCH)/strace-add-TD-ioctls.diff
 endif
-	cd $(BUILD_TMP)/strace-4.5.20 && \
+	set -e; cd $(BUILD_TMP)/strace-4.5.20; \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGETPREFIX)/include" \
 		CXXFLAGS="$(TARGET_CXXFLAGS)" \
 		LDFLAGS="$(TARGET_LDFLAGS)" \
-		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove && \
-		$(MAKE) all && \
+		./configure --prefix= --build=$(BUILD) --host=$(TARGET) --mandir=$(BUILD_TMP)/.remove; \
+		$(MAKE) all; \
 		make install prefix=$(PKGPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm $(PKGPREFIX)/bin/strace-graph
@@ -27,16 +27,16 @@ endif
 $(D)/gdb: $(ARCHIVE)/gdb-$(GDB-VER).tar.bz2 libncurses zlib | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/gdb-$(GDB-VER).tar.bz2
-	pushd $(BUILD_TMP)/gdb-$(GDB-VER) && \
-		$(PATCH)/gdb-7.1-remove-builddate.diff && \
+	set -e; cd $(BUILD_TMP)/gdb-$(GDB-VER); \
+		$(PATCH)/gdb-7.1-remove-builddate.diff; \
 		$(BUILDENV) \
 		./configure \
 			--nfp --disable-werror \
 			--prefix=/opt/pkg \
 			--mandir=$(BUILD_TMP)/.remove \
 			--infodir=$(BUILD_TMP)/.remove \
-			--build=$(BUILD) --host=$(TARGET) && \
-		$(MAKE) all-gdb && \
+			--build=$(BUILD) --host=$(TARGET); \
+		$(MAKE) all-gdb; \
 		make install-gdb prefix=$(PKGPREFIX)/opt/pkg
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -fr $(PKGPREFIX)/opt/pkg/share
@@ -56,13 +56,13 @@ $(D)/gdb: $(ARCHIVE)/gdb-$(GDB-VER).tar.bz2 libncurses zlib | $(TARGETPREFIX)
 #  gdb-remote built for local-PC or target
 $(D)/gdb-remote: $(ARCHIVE)/gdb-$(GDB-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/gdb-$(GDB-VER).tar.bz2
-	pushd $(BUILD_TMP)/gdb-$(GDB-VER) && \
+	set -e; cd $(BUILD_TMP)/gdb-$(GDB-VER); \
 		./configure \
 			--nfp --disable-werror \
 			--prefix=$(HOSTPREFIX) \
-			--build=$(BUILD) --host=$(BUILD) --target=$(TARGET) && \
-		$(MAKE) all-gdb && \
-		make install-gdb && \
+			--build=$(BUILD) --host=$(BUILD) --target=$(TARGET); \
+		$(MAKE) all-gdb; \
+		make install-gdb; \
 	$(REMOVE)/gdb-$(GDB-VER)
 	touch $@
 

@@ -119,10 +119,10 @@ arduino-serlcd: | $(TARGETPREFIX)
 $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2
-	cd $(BUILD_TMP)/links-$(LINKS-VER) && \
-		$(PATCH)/links-2.3pre1.diff && \
-		export CC=$(TARGET)-gcc && \
-		export SYSROOT=$(TARGETPREFIX) && \
+	set -e; cd $(BUILD_TMP)/links-$(LINKS-VER); \
+		$(PATCH)/links-2.3pre1.diff; \
+		export CC=$(TARGET)-gcc; \
+		export SYSROOT=$(TARGETPREFIX); \
 		$(CONFIGURE) \
 			--host=$(TARGET) \
 			--build=$(BUILD) \
@@ -132,8 +132,8 @@ $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX
 			--without-x \
 			--without-libtiff \
 			--enable-graphics \
-			--enable-javascript && \
-		$(MAKE) && \
+			--enable-javascript; \
+		$(MAKE); \
 		DESTDIR=$(PKGPREFIX) make install prefix=$(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/tuxbox/plugins $(PKGPREFIX)/var/tuxbox/config/links
 	mv $(PKGPREFIX)/bin/links $(PKGPREFIX)/lib/tuxbox/plugins/links.so
@@ -176,8 +176,8 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz $(D)/directfb 
 	echo ""												>> $(QT_CONF)/qmake.conf
 	echo "load(qt_config)"								>> $(QT_CONF)/qmake.conf
 	echo '#include "../../linux-g++/qplatformdefs.h"'	> $(QT_CONF)/qplatformdefs.h
-	cd $(QT_BUILD) && \
-		sed -i 's/OPT_CONFIRM_LICENSE=no/OPT_CONFIRM_LICENSE=yes/' configure && \
+	set -e; cd $(QT_BUILD); \
+		sed -i 's/OPT_CONFIRM_LICENSE=no/OPT_CONFIRM_LICENSE=yes/' configure; \
 		./configure \
 			-embedded arm \
 			-silent \
@@ -244,8 +244,8 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz $(D)/directfb 
 			-qt-mouse-pc \
 			-qt-gfx-linuxfb \
 			-plugin-gfx-directfb \
-			-no-glib && \
-		$(MAKE) && \
+			-no-glib; \
+		$(MAKE); \
 		$(MAKE) INSTALL_ROOT=$(TARGETPREFIX) install
 	mv $(TARGETPREFIX)/opt/qt/bin/* $(HOSTPREFIX)/bin/
 	install -m 0755 -D $(SCRIPTS)/browser.sh $(TARGETPREFIX)/bin/browser.sh
@@ -254,22 +254,22 @@ $(D)/qt: $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz $(D)/directfb 
 
 $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz
-	cd $(BUILD_TMP)/nbench-byte-$(NBENCH_BYTE-VER) && \
-		$(PATCH)/nbench-byte-2.2.3-crossfix.diff && \
-		printf "#!/bin/sh\necho 4\n" > pointer && chmod 0755 pointer && \
-		$(BUILDENV) make CC=$(TARGET)-gcc && \
-		mkdir -p $(TARGETPREFIX)/opt/nbench-byte && \
-		printf '#!/bin/sh\ncd /opt/nbench-byte\n./nbench $$@\n' > nbench-run.sh && \
-		chmod 0755 nbench-run.sh && \
+	set -e; cd $(BUILD_TMP)/nbench-byte-$(NBENCH_BYTE-VER); \
+		$(PATCH)/nbench-byte-2.2.3-crossfix.diff; \
+		printf "#!/bin/sh\necho 4\n" > pointer; chmod 0755 pointer; \
+		$(BUILDENV) make CC=$(TARGET)-gcc; \
+		mkdir -p $(TARGETPREFIX)/opt/nbench-byte; \
+		printf '#!/bin/sh\ncd /opt/nbench-byte\n./nbench $$@\n' > nbench-run.sh; \
+		chmod 0755 nbench-run.sh; \
 		cp -a nbench nbench-run.sh *DAT $(TARGETPREFIX)/opt/nbench-byte
 	$(REMOVE)/nbench-byte-$(NBENCH_BYTE-VER)
 	touch $@
 
 $(D)/libupnp: $(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/libupnp-$(LIBUPNP-VER).tar.bz2
-	cd $(BUILD_TMP)/libupnp-$(LIBUPNP-VER) && \
-		$(CONFIGURE) --prefix=/opt/pkg && \
-		$(MAKE) && \
+	set -e; cd $(BUILD_TMP)/libupnp-$(LIBUPNP-VER); \
+		$(CONFIGURE) --prefix=/opt/pkg; \
+		$(MAKE); \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
 	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/libupnp.pc $(PKG_CONFIG_PATH)/
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
@@ -277,27 +277,27 @@ $(D)/libupnp: $(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL_OPT)/libixml.la
 	$(REWRITE_LIBTOOL_OPT)/libthreadutil.la
 	$(REWRITE_LIBTOOL_OPT)/libupnp.la
-	cd $(PKGPREFIX)/opt/pkg && \
+	cd $(PKGPREFIX)/opt/pkg; \
 		rm -r include lib/pkgconfig lib/*a lib/*.so
 	$(OPKG_SH) $(CONTROL_DIR)/libupnp
 	$(REMOVE)/libupnp-$(LIBUPNP-VER) $(PKGPREFIX)
 	touch $@
 
 $(ARCHIVE)/libdlna-hg.tar.bz2: | find-hg
-	cd $(BUILD_TMP) && \
-		hg clone http://hg.geexbox.org/libdlna libdlna-hg && \
+	est -e; cd $(BUILD_TMP); \
+		hg clone http://hg.geexbox.org/libdlna libdlna-hg; \
 		tar cvpjf $@ --exclude='*/.hg' libdlna-hg
 	$(REMOVE)/libdlna-hg
 
 $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETPREFIX)
 	$(UNTAR)/libdlna-hg.tar.bz2
-	cd $(BUILD_TMP)/libdlna-hg && \
-		$(PATCH)/libdlna-fix-build.diff && \
+	set -e; cd $(BUILD_TMP)/libdlna-hg; \
+		$(PATCH)/libdlna-fix-build.diff; \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
-			--disable-sqlite --prefix=/opt/pkg && \
-		touch src/TAGS src/tags && \
-		$(MAKE) && \
+			--disable-sqlite --prefix=/opt/pkg; \
+		touch src/TAGS src/tags; \
+		$(MAKE); \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
 	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/libdlna.pc $(PKG_CONFIG_PATH)/
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
@@ -310,22 +310,22 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 	touch $@
 
 $(ARCHIVE)/ushare-hg.tar.bz2: | find-hg
-	cd $(BUILD_TMP) && \
-		hg clone http://hg.geexbox.org/ushare ushare-hg && \
+	set -e; cd $(BUILD_TMP); \
+		hg clone http://hg.geexbox.org/ushare ushare-hg; \
 		tar cvpjf $@ --exclude='*/.hg' ushare-hg
 	$(REMOVE)/ushare-hg
 
 $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 	$(UNTAR)/ushare-hg.tar.bz2
-	cd $(BUILD_TMP)/ushare-hg && \
-		$(PATCH)/ushare-fix-build.diff && \
+	set -e; cd $(BUILD_TMP)/ushare-hg; \
+		$(PATCH)/ushare-fix-build.diff; \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
 			--with-libdlna-dir=$(TARGETPREFIX)/opt/pkg/include \
-			--prefix=/opt/pkg && \
-		echo "mandir=/.remove" >> config.mak && \
-		test -e src/config.h || ln -s ../config.h src/ && \
-		$(MAKE) && \
+			--prefix=/opt/pkg; \
+		echo "mandir=/.remove" >> config.mak; \
+		test -e src/config.h || ln -s ../config.h src/; \
+		$(MAKE); \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 $(SCRIPTS)/ushare.init $(PKGPREFIX)/opt/pkg/etc/init.d/ushare
 	ln -s ushare $(PKGPREFIX)/opt/pkg/etc/init.d/S99ushare # start late, so that drives are mounted
@@ -338,12 +338,12 @@ $(D)/ushare: $(ARCHIVE)/ushare-hg.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
 
 $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/dropbear-$(DROPBEAR-VER).tar.bz2
-	cd $(BUILD_TMP)/dropbear-$(DROPBEAR-VER) && \
-		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff && \
-		$(PATCH)/dropbear-0.53-opt-pkg-prefix.diff && \
+	set -e; cd $(BUILD_TMP)/dropbear-$(DROPBEAR-VER); \
+		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff; \
+		$(PATCH)/dropbear-0.53-opt-pkg-prefix.diff; \
 		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
-			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg && \
-		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" SCPPROGRESS=1 && \
+			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg; \
+		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" SCPPROGRESS=1; \
 		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 $(SCRIPTS)/dropbear.init $(PKGPREFIX)/opt/pkg/etc/init.d/dropbear
 	install -d -m 0755 $(PKGPREFIX)/opt/pkg/etc/dropbear
@@ -356,9 +356,9 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 
 $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/opkg-$(OPKG-VER).tar.gz
-	cd $(BUILD_TMP)/opkg-$(OPKG-VER) && \
-		$(PATCH)/opkg-0.1.8-dont-segfault.diff && \
-		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache && \
+	set -e; cd $(BUILD_TMP)/opkg-$(OPKG-VER); \
+		$(PATCH)/opkg-0.1.8-dont-segfault.diff; \
+		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache; \
 		$(CONFIGURE) \
 		--prefix= \
 		--build=$(BUILD) \
@@ -368,17 +368,17 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG-VER).tar.gz | $(TARGETPREFIX)
 		--disable-shared \
 		--config-cache \
 		--with-opkglibdir=/var/lib \
-		--mandir=$(BUILD_TMP)/.remove && \
-		$(MAKE) all exec_prefix= && \
-		make install prefix=$(PKGPREFIX) && \
-		make distclean && \
+		--mandir=$(BUILD_TMP)/.remove; \
+		$(MAKE) all exec_prefix=; \
+		make install prefix=$(PKGPREFIX); \
+		make distclean; \
 		./configure \
 		--prefix= \
 		--disable-curl \
 		--disable-gpg \
 		--disable-shared \
-		--with-opkglibdir=/var/lib && \
-		$(MAKE) all && \
+		--with-opkglibdir=/var/lib; \
+		$(MAKE) all; \
 		cp -a src/opkg-cl $(HOSTPREFIX)/bin
 	install -d -m 0755 $(PKGPREFIX)/var/lib/opkg
 	install -d -m 0755 $(PKGPREFIX)/etc/opkg
@@ -395,11 +395,11 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG-VER).tar.gz | $(TARGETPREFIX)
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
 $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
-	cd $(BUILD_TMP)/glib-$(GLIB-VER) && \
-		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache && \
-		echo "ac_cv_func_posix_getgrgid_r=ys" >> config.cache && \
-		echo "glib_cv_stack_grows=no" >> config.cache && \
-		echo "glib_cv_uscore=no" >> config.cache && \
+	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
+		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache; \
+		echo "ac_cv_func_posix_getgrgid_r=ys" >> config.cache; \
+		echo "glib_cv_stack_grows=no" >> config.cache; \
+		echo "glib_cv_uscore=no" >> config.cache; \
 		$(BUILDENV) \
 		./configure \
 			--cache-file=config.cache \
@@ -407,12 +407,12 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 			--host=$(TARGET) \
 			--with-html-dir=/.remove \
 			--mandir=/.remove \
-			--prefix=/opt/pkg &&\
-		$(MAKE) all && \
+			--prefix=/opt/pkg;\
+		$(MAKE) all; \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove
-	cd $(PKGPREFIX)/opt/pkg/lib/pkgconfig && for i in *; do \
-		mv $$i $(PKG_CONFIG_PATH) && $(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/$$i; done
+	set -e; cd $(PKGPREFIX)/opt/pkg/lib/pkgconfig; for i in *; do \
+		mv $$i $(PKG_CONFIG_PATH); $(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/$$i; done
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/bin/glib-mkenums # no perl available on the box
 	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig
@@ -426,9 +426,9 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 
 $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX) find-autopoint
 	$(UNTAR)/mc-$(MC-VER).tar.gz
-	cd $(BUILD_TMP)/mc-$(MC-VER) && \
-		$(PATCH)/mc-4.6.2.diff && \
-		./autogen.sh && \
+	set -e; cd $(BUILD_TMP)/mc-$(MC-VER); \
+		$(PATCH)/mc-4.6.2.diff; \
+		./autogen.sh; \
 		$(BUILDENV) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CONFIG_SHELL=/bin/bash \
@@ -439,9 +439,9 @@ $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETP
 			--without-gpm-mouse \
 			--with-screen=ncurses \
 			--mandir=/.remove \
-			--without-x && \
-			$(CC) -o src/man2hlp src/man2hlp.c && \
-			$(BUILDENV) $(MAKE) all && \
+			--without-x; \
+			$(CC) -o src/man2hlp src/man2hlp.c; \
+			$(BUILDENV) $(MAKE) all; \
 			make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
@@ -453,9 +453,9 @@ $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETP
 $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/sg3_utils-$(SG3_UTILS-VER).tar.bz2
 	rm -rf $(PKGPREFIX)
-	cd $(BUILD_TMP)/sg3_utils-$(SG3_UTILS-VER) && \
-		$(CONFIGURE) --prefix= --mandir=/.remove && \
-		$(MAKE) && \
+	set -e; cd $(BUILD_TMP)/sg3_utils-$(SG3_UTILS-VER); \
+		$(CONFIGURE) --prefix= --mandir=/.remove; \
+		$(MAKE); \
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)

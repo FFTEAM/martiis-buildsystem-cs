@@ -30,32 +30,32 @@ K_GCC_PATH = $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
 
 $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
-	cd $(BUILD_TMP)/linux-2.6.12 && \
-		tar xvpf $(TD_SVN)/ARMAS/linux-enviroment/kernel/td_patchset_2.6.12.tar.bz2 && \
-		patch -p1 < kdiff_00_all.diff && \
-		patch -p1 < $(PATCHES)/kernel-fix-td-build.diff && \
-		mkdir -p include/stb/ && \
-		cp $(TARGETPREFIX)/include/hardware/os/os-generic.h include/stb -av && \
-		cp $(TARGETPREFIX)/include/hardware/os/registerio.h include/stb -av && \
-		cp $(TARGETPREFIX)/include/hardware/os/pversion.h include/stb -av && \
-		cp $(TARGETPREFIX)/include/hardware/os/os-types.h include/stb -av && \
+	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
+		tar xvpf $(TD_SVN)/ARMAS/linux-enviroment/kernel/td_patchset_2.6.12.tar.bz2; \
+		patch -p1 < kdiff_00_all.diff; \
+		patch -p1 < $(PATCHES)/kernel-fix-td-build.diff; \
+		mkdir -p include/stb/; \
+		cp $(TARGETPREFIX)/include/hardware/os/os-generic.h include/stb -av; \
+		cp $(TARGETPREFIX)/include/hardware/os/registerio.h include/stb -av; \
+		cp $(TARGETPREFIX)/include/hardware/os/pversion.h include/stb -av; \
+		cp $(TARGETPREFIX)/include/hardware/os/os-types.h include/stb -av; \
 		cp $(PATCHES)/kernel.config-td .config
 
 ifeq ($(TD_COMPILER), new)
 TDK_DEPS = kernelgcc
 endif
 $(D)/tdkernel: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
-	cd $(BUILD_TMP)/linux-2.6.12 && \
-		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH) && \
-		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig && \
-		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- && \
+	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
+		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig; \
+		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu-; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	touch $@
 
 kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
-	cd $(BUILD_TMP)/linux-2.6.12 && \
-		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH) && \
+	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- menuconfig
 
 # try to build a compiler that's similar to the one that built the kernel...
@@ -69,13 +69,13 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
 	cp $(PATCHES)/glibc-2.3.3-allow-gcc-4.0-configure.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
 	cp $(PATCHES)/glibc-2.3.6-new_make.patch                $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
-	cd $(BUILD_TMP)/crosstool-0.43 && \
-		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff && \
-		export TARBALLS_DIR=$(ARCHIVE) && \
-		export RESULT_TOP=$(CROSS_BASE) && \
-		export GCC_LANGUAGES="c" && \
-		export PARALLELMFLAGS="-j 3" && \
-		export QUIET_EXTRACTIONS=y && \
+	set -e; cd $(BUILD_TMP)/crosstool-0.43; \
+		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
+		export TARBALLS_DIR=$(ARCHIVE); \
+		export RESULT_TOP=$(CROSS_BASE); \
+		export GCC_LANGUAGES="c"; \
+		export PARALLELMFLAGS="-j 3"; \
+		export QUIET_EXTRACTIONS=y; \
 		eval `cat powerpc-405.dat gcc-3.4.1-glibc-2.3.2.dat` LINUX_DIR=linux-2.6.12 sh all.sh --notest
 	$(REMOVE)/crosstool-0.43
 else
@@ -162,9 +162,9 @@ ifeq ($(K_SRCDIR), $(SOURCE_DIR)/linux)
 	# whoever sets K_SRCDIR to something else should better know what he's doing anyway
 	rm -f $(SOURCE_DIR)/linux/.config
 endif
-	cd $(SOURCE_DIR)/linux && \
-		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig O=$(K_OBJ)/ && \
-		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/ && \
+	set -e; cd $(SOURCE_DIR)/linux; \
+		make ARCH=arm CROSS_COMPILE=$(TARGET)- silentoldconfig O=$(K_OBJ)/; \
+		$(MAKE) ARCH=arm CROSS_COMPILE=$(TARGET)- O=$(K_OBJ)/; \
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules \
 			modules_install O=$(K_OBJ)/
 	cd $(BUILD_TMP) && \
@@ -186,9 +186,9 @@ endif
 $(D)/cs-uboot: $(ARCHIVE)/u-boot-2009.03.tar.bz2 $(PATCHES)/coolstream/u-boot-2009.3-CST.diff
 	$(REMOVE)/u-boot-2009.03
 	$(UNTAR)/u-boot-2009.03.tar.bz2
-	cd $(BUILD_TMP)/u-boot-2009.03 && \
-		$(PATCH)/coolstream/u-boot-2009.3-CST.diff && \
-		make coolstream_hdx_config && \
+	set -e; cd $(BUILD_TMP)/u-boot-2009.03; \
+		$(PATCH)/coolstream/u-boot-2009.3-CST.diff; \
+		make coolstream_hdx_config; \
 		$(MAKE)
 	cp -a $(BUILD_TMP)/u-boot-2009.03/tools/mkimage $(HOSTPREFIX)/bin
 	touch $@

@@ -28,8 +28,8 @@ endif
 #
 mtd-utils: $(ARCHIVE)/mtd-utils-1.4.4.tar.bz2 | $(HOSTPREFIX)/bin
 	$(UNTAR)/mtd-utils-1.4.4.tar.bz2
-	cd $(BUILD_TMP)/mtd-utils-1.4.4 && \
-		$(MAKE) `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1 && \
+	set -e; cd $(BUILD_TMP)/mtd-utils-1.4.4; \
+		$(MAKE) `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1; \
 		cp -a mkfs.jffs2 sumtool $(HOSTPREFIX)/bin
 	rm -rf $(BUILD_TMP)/mtd-utils-1.4.4
 

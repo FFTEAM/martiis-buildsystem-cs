@@ -4,17 +4,17 @@ SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
 glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
-	cd $(PKGPREFIX) && \
-		mkdir lib sbin etc && \
+	set -e; cd $(PKGPREFIX); \
+		mkdir lib sbin etc; \
 		if test -e $(CROSS_DIR)/$(TARGET)/sys-root/lib; then \
 			cp -a $(CROSS_DIR)/$(TARGET)/sys-root/lib/*.so* lib/; \
 		else \
 			cp -a $(CROSS_DIR)/$(TARGET)/lib/*.so* lib/; \
-		fi && \
-		(cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/||true) &&  \
+		fi; \
+		(cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/||true);  \
 		rm -fv lib/libnss_hesiod* lib/libnss_nis* lib/libnss_compat* \
 		   lib/libmudflap* lib/libc.so lib/libpthread.so \
-		   lib/libcidn* lib/*.so_orig lib/*.py && \
+		   lib/libcidn* lib/*.so_orig lib/*.py; \
 		find lib -name '*.so' -type l -print0 | xargs -0 --no-run-if-empty rm -v
 	touch $(PKGPREFIX)/etc/ld.so.conf
 	$(REMOVE)/glibc-control
