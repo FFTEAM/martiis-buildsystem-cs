@@ -1,0 +1,12 @@
+Package: cdparanoia
+Version: @VER@-1
+Description: Compact Disc Digital Audio (CDDA) Extraction Tool
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.xiph.org/paranoia/index.html
+Source:
+Depends:
+Provides: libcdda_interface.so.0, libcdda_paranoia.so.0, cdparanoia
+

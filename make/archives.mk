@@ -8,6 +8,9 @@ $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.bz2:
 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2:
 	$(WGET) http://www.dbox2world.net/download/binutils-2.19.50.0.1.tar.bz2
 
+$(ARCHIVE)/cdparanoia-III-10.2.src.tgz:
+	$(WGET) http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-10.2.src.tgz
+
 $(ARCHIVE)/crosstool-0.43.tar.gz:
 	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
 

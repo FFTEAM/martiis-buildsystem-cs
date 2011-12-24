@@ -1,5 +1,26 @@
 # Makefile to build Extras
 
+$(D)/cdparanoia: $(ARCHIVE)/cdparanoia-III-10.2.src.tgz | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/cdparanoia-III-10.2.src.tgz
+	set -e; cd $(BUILD_TMP)/cdparanoia-III-10.2; \
+		$(CONFIGURE) \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix= \
+			--exec-prefix=$(PKGPREFIX) \
+			--includedir=$(TARGETPREFIX)/include \
+			--mandir=$(BUILD_TMP)/.remove \
+			; \
+		# parallel make yields different binaries for every build, so disable it \
+		$(MAKE) -j 1 ; \
+		make install
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm $(PKGPREFIX)/lib/*.a $(PKGPREFIX)/lib/*.so
+	PKG_VER=10.2 $(OPKG_SH) $(CONTROL_DIR)/cdparanoia
+	$(REMOVE)/cdparanoia-III-10.2 $(BUILD_TMP)/.remove $(PKGPREFIX)
+	touch $@
+
 $(D)/dvdreadfs: $(ARCHIVE)/dvdreadfs.tar fuse libdvdread | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(BUILD_TMP)/dvdreadfs $(PKGPREFIX)/bin
