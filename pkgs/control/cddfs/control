@@ -1,0 +1,12 @@
+Package: cddfs
+Version: @VER@-1
+Description: FUSE filesystem which presents audio CDs as WAV files
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://castet.matthieu.free.fr/cddfs/
+Source:
+Depends: libfuse.so.2, libcdda_paranoia.so.0, libcdda_interface.so.0
+Provides:
+

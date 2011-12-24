@@ -21,6 +21,19 @@ $(D)/cdparanoia: $(ARCHIVE)/cdparanoia-III-10.2.src.tgz | $(TARGETPREFIX)
 	$(REMOVE)/cdparanoia-III-10.2 $(BUILD_TMP)/.remove $(PKGPREFIX)
 	touch $@
 
+$(D)/cddfs: $(ARCHIVE)/cddfs-0.2.tar.gz fuse cdparanoia | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/cddfs-0.2.tar.gz
+	mkdir $(PKGPREFIX) $(PKGPREFIX)/bin
+	$(TARGET)-gcc \
+		$(TARGET_CFLAGS) -g -Wall -D_FILE_OFFSET_BITS=64 -D_REENTRANT -DFUSE_USE_VERSION=22 \
+		$(TARGET_LDFLAGS) -lpthread -lfuse -lcdda_paranoia -lcdda_interface \
+		-fsigned-char \
+		-o $(PKGPREFIX)/bin/cddfs $(BUILD_TMP)/cddfs-0.2/cddfs.c
+	PKG_VER=0.2 $(OPKG_SH) $(CONTROL_DIR)/cddfs
+	$(REMOVE)/cddfs-0.2 $(PKGPREFIX)
+	touch $@
+
 $(D)/dvdreadfs: $(ARCHIVE)/dvdreadfs.tar fuse libdvdread | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(BUILD_TMP)/dvdreadfs $(PKGPREFIX)/bin
