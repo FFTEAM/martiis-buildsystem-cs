@@ -161,6 +161,7 @@ install-pkgs: prepare-pkginstall
 
 # minimal-system-pkgs allows booting, not much else
 minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginstall
+	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		aaa_base busybox opkg procps
 	rm -f $(BUILD_TMP)/min-root-$(PLATFORM).tar.gz
@@ -182,7 +183,8 @@ minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginsta
 
 # system-pkgs installs actually enough to get a TV picture
 system-pkgs: $(SYSTEM_PKGS)
-	make pkg-index
+	+make pkg-index
+	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		neutrino-hd
 
