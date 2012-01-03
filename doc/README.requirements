@@ -11,14 +11,6 @@ zypper install --no-recommends \
 	automake libtool \
 	ncurses-devel pkg-config
 
-if you have problems with the crosstool build, especially with TD_COMPILER=new,
-make sure you also have installed at least:
-
-	gmp-devel
-	mpc-devel
-	mpfr-devel
-	libelf-devel
-
 For Debian based systems use these packages:
 
 apt-get install --yes \
