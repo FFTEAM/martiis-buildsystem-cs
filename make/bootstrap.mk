@@ -131,6 +131,8 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.
 		touch targets/src/.linux-custom.extracted; \
 		cp -a $(PATCHES)/crosstool-ng-coolstreamnew.config .config; \
 		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
+		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
 		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
 		export TD_BASE_DIR=$(BASE_DIR); \
 		export TD_BUILD_TMP=$(BUILD_TMP); \
@@ -184,6 +186,8 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 			true; \
 		cp -a $(PATCHES)/crosstool-ng-tripledragon.config .config; \
 		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
+		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
 		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
 		export TD_BASE_DIR=$(BASE_DIR); \
 		export TD_BUILD_TMP=$(BUILD_TMP); \
