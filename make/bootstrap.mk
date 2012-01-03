@@ -155,14 +155,14 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
 	cp $(PATCHES)/glibc-2.3.6-allow-binutils-2.20+.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
 	cp $(PATCHES)/glibc-2.3.6-new_make.patch             $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
-	pushd $(BUILD_TMP)/crosstool-0.43 && \
-		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff && \
-		export TARBALLS_DIR=$(ARCHIVE) && \
-		export RESULT_TOP=$(CROSS_BASE) && \
-		export GCC_LANGUAGES="c,c++" && \
-		export PARALLELMFLAGS="-s -j 3" && \
-		export QUIET_EXTRACTIONS=y && \
-		eval `cat powerpc-405.dat $(CROSS_BUILD_VER).dat` LINUX_DIR=linux-2.6.12 bash all.sh --notest && \
+	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-0.43; \
+		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
+		export TARBALLS_DIR=$(ARCHIVE); \
+		export RESULT_TOP=$(CROSS_BASE); \
+		export GCC_LANGUAGES="c,c++"; \
+		export PARALLELMFLAGS="-s -j 3"; \
+		export QUIET_EXTRACTIONS=y; \
+		eval `cat powerpc-405.dat $(CROSS_BUILD_VER).dat` LINUX_DIR=linux-2.6.12 bash all.sh --notest; \
 		echo done
 	# crosstool should do that, but it doesnt
 	if [ ! -e $(CROSS_DIR)/$(TARGET)/include/mtd ]; then \
@@ -177,7 +177,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
 	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
 	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm
-	set -e; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
+	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
 				scripts/build/libc/eglibc.sh || \

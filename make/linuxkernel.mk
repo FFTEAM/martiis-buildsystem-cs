@@ -69,7 +69,7 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
 	cp $(PATCHES)/glibc-2.3.3-allow-gcc-4.0-configure.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
 	cp $(PATCHES)/glibc-2.3.6-new_make.patch                $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
-	set -e; cd $(BUILD_TMP)/crosstool-0.43; \
+	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-0.43; \
 		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
 		export TARBALLS_DIR=$(ARCHIVE); \
 		export RESULT_TOP=$(CROSS_BASE); \
