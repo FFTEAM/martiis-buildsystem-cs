@@ -1,0 +1,142 @@
+From 8254798199332966e2ab647380c990193af7e854 Mon Sep 17 00:00:00 2001
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 9 Sep 2005 13:10:38 -0700
+Subject: [PATCH 17/18] [PATCH] FUSE: add fsync operation for directories
+
+This patch adds a new FSYNCDIR request, which is sent when fsync is called
+on directories.  This operation is available in libfuse 2.3-pre1 or
+greater.
+
+Signed-off-by: Miklos Szeredi <miklos@szeredi.hu>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+---
+ fs/fuse/dir.c        |    7 +++++++
+ fs/fuse/file.c       |   17 +++++++++++++----
+ fs/fuse/fuse_i.h     |    9 +++++++++
+ include/linux/fuse.h |    3 ++-
+ 4 files changed, 31 insertions(+), 5 deletions(-)
+
+diff --git a/fs/fuse/dir.c b/fs/fuse/dir.c
+index 9b43fd4..73792d6 100644
+--- a/fs/fuse/dir.c
++++ b/fs/fuse/dir.c
+@@ -617,6 +617,12 @@ static int fuse_dir_release(struct inode *inode, struct file *file)
+ 	return fuse_release_common(inode, file, 1);
+ }
+ 
++static int fuse_dir_fsync(struct file *file, struct dentry *de, int datasync)
++{
++	/* nfsd can call this with no file */
++	return file ? fuse_fsync_common(file, de, datasync, 1) : 0;
++}
++
+ static unsigned iattr_to_fattr(struct iattr *iattr, struct fuse_attr *fattr)
+ {
+ 	unsigned ivalid = iattr->ia_valid;
+@@ -934,6 +940,7 @@ static struct file_operations fuse_dir_operations = {
+ 	.readdir	= fuse_readdir,
+ 	.open		= fuse_dir_open,
+ 	.release	= fuse_dir_release,
++	.fsync		= fuse_dir_fsync,
+ };
+ 
+ static struct inode_operations fuse_common_inode_operations = {
+diff --git a/fs/fuse/file.c b/fs/fuse/file.c
+index 6dcae74..e225f8c 100644
+--- a/fs/fuse/file.c
++++ b/fs/fuse/file.c
+@@ -156,7 +156,8 @@ static int fuse_flush(struct file *file)
+ 	return err;
+ }
+ 
+-static int fuse_fsync(struct file *file, struct dentry *de, int datasync)
++int fuse_fsync_common(struct file *file, struct dentry *de, int datasync,
++		      int isdir)
+ {
+ 	struct inode *inode = de->d_inode;
+ 	struct fuse_conn *fc = get_fuse_conn(inode);
+@@ -165,7 +166,7 @@ static int fuse_fsync(struct file *file, struct dentry *de, int datasync)
+ 	struct fuse_fsync_in inarg;
+ 	int err;
+ 
+-	if (fc->no_fsync)
++	if ((!isdir && fc->no_fsync) || (isdir && fc->no_fsyncdir))
+ 		return 0;
+ 
+ 	req = fuse_get_request(fc);
+@@ -175,7 +176,7 @@ static int fuse_fsync(struct file *file, struct dentry *de, int datasync)
+ 	memset(&inarg, 0, sizeof(inarg));
+ 	inarg.fh = ff->fh;
+ 	inarg.fsync_flags = datasync ? 1 : 0;
+-	req->in.h.opcode = FUSE_FSYNC;
++	req->in.h.opcode = isdir ? FUSE_FSYNCDIR : FUSE_FSYNC;
+ 	req->in.h.nodeid = get_node_id(inode);
+ 	req->inode = inode;
+ 	req->file = file;
+@@ -186,12 +187,20 @@ static int fuse_fsync(struct file *file, struct dentry *de, int datasync)
+ 	err = req->out.h.error;
+ 	fuse_put_request(fc, req);
+ 	if (err == -ENOSYS) {
+-		fc->no_fsync = 1;
++		if (isdir)
++			fc->no_fsyncdir = 1;
++		else
++			fc->no_fsync = 1;
+ 		err = 0;
+ 	}
+ 	return err;
+ }
+ 
++static int fuse_fsync(struct file *file, struct dentry *de, int datasync)
++{
++	return fuse_fsync_common(file, de, datasync, 0);
++}
++
+ size_t fuse_send_read_common(struct fuse_req *req, struct file *file,
+ 			     struct inode *inode, loff_t pos, size_t count,
+ 			     int isdir)
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 8484960..d764728 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -248,6 +248,9 @@ struct fuse_conn {
+ 	/** Is fsync not implemented by fs? */
+ 	unsigned no_fsync : 1;
+ 
++	/** Is fsyncdir not implemented by fs? */
++	unsigned no_fsyncdir : 1;
++
+ 	/** Is flush not implemented by fs? */
+ 	unsigned no_flush : 1;
+ 
+@@ -340,6 +343,12 @@ int fuse_open_common(struct inode *inode, struct file *file, int isdir);
+ int fuse_release_common(struct inode *inode, struct file *file, int isdir);
+ 
+ /**
++ * Send FSYNC or FSYNCDIR request
++ */
++int fuse_fsync_common(struct file *file, struct dentry *de, int datasync,
++		      int isdir);
++
++/**
+  * Initialise file operations on a regular file
+  */
+ void fuse_init_file_inode(struct inode *inode);
+diff --git a/include/linux/fuse.h b/include/linux/fuse.h
+index c65124a..acbeb96 100644
+--- a/include/linux/fuse.h
++++ b/include/linux/fuse.h
+@@ -99,7 +99,8 @@ enum fuse_opcode {
+ 	FUSE_INIT          = 26,
+ 	FUSE_OPENDIR       = 27,
+ 	FUSE_READDIR       = 28,
+-	FUSE_RELEASEDIR    = 29
++	FUSE_RELEASEDIR    = 29,
++	FUSE_FSYNCDIR      = 30
+ };
+ 
+ /* Conservative buffer size for the client */
+-- 
+1.7.8
+

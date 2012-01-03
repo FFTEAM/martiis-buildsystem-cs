@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.12
-# Sat Oct  3 21:02:37 2009
+# Tue Jan  3 11:32:30 2012
 #
 CONFIG_MMU=y
 CONFIG_GENERIC_HARDIRQS=y
@@ -885,6 +885,7 @@ CONFIG_XFS_FS=y
 CONFIG_DNOTIFY=y
 # CONFIG_AUTOFS_FS is not set
 CONFIG_AUTOFS4_FS=m
+CONFIG_FUSE_FS=m
 
 #
 # CD-ROM/DVD Filesystems

@@ -1,0 +1,75 @@
+From 04578f174f43d29b569500f01ba772afa4016330 Mon Sep 17 00:00:00 2001
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Fri, 9 Sep 2005 13:10:22 -0700
+Subject: [PATCH 01/18] [PATCH] FUSE - MAINTAINERS, Kconfig and Makefile
+ changes
+
+This patch adds FUSE filesystem to MAINTAINERS, fs/Kconfig and
+fs/Makefile.
+
+Signed-off-by: Miklos Szeredi <miklos@szeredi.hu>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+---
+ MAINTAINERS |    7 +++++++
+ fs/Kconfig  |   13 +++++++++++++
+ fs/Makefile |    1 +
+ 3 files changed, 21 insertions(+), 0 deletions(-)
+
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9c9a86d..f038dca 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -931,6 +931,13 @@ L:	linux-tape@vger.kernel.org
+ W:	http://sourceforge.net/projects/ftape
+ S:	Orphan
+ 
++FUSE: FILESYSTEM IN USERSPACE
++P:	Miklos Szeredi
++M:	miklos@szeredi.hu
++L:	fuse-devel@lists.sourceforge.net
++W:	http://fuse.sourceforge.net/
++S:	Maintained
++
+ FUTURE DOMAIN TMC-16x0 SCSI DRIVER (16-bit)
+ P:	Rik Faith
+ M:	faith@cs.unc.edu
+diff --git a/fs/Kconfig b/fs/Kconfig
+index 443aed4..068ccea 100644
+--- a/fs/Kconfig
++++ b/fs/Kconfig
+@@ -462,6 +462,19 @@ config AUTOFS4_FS
+ 	  local network, you probably do not need an automounter, and can say
+ 	  N here.
+ 
++config FUSE_FS
++	tristate "Filesystem in Userspace support"
++	help
++	  With FUSE it is possible to implement a fully functional filesystem
++	  in a userspace program.
++
++	  There's also companion library: libfuse.  This library along with
++	  utilities is available from the FUSE homepage:
++	  <http://fuse.sourceforge.net/>
++
++	  If you want to develop a userspace FS, or if you want to use
++	  a filesystem based on FUSE, answer Y or M.
++
+ menu "CD-ROM/DVD Filesystems"
+ 
+ config ISO9660_FS
+diff --git a/fs/Makefile b/fs/Makefile
+index d646502..1972da1 100644
+--- a/fs/Makefile
++++ b/fs/Makefile
+@@ -89,6 +89,7 @@ obj-$(CONFIG_QNX4FS_FS)		+= qnx4/
+ obj-$(CONFIG_AUTOFS_FS)		+= autofs/
+ obj-$(CONFIG_AUTOFS4_FS)	+= autofs4/
+ obj-$(CONFIG_ADFS_FS)		+= adfs/
++obj-$(CONFIG_FUSE_FS)		+= fuse/
+ obj-$(CONFIG_UDF_FS)		+= udf/
+ obj-$(CONFIG_RELAYFS_FS)	+= relayfs/
+ obj-$(CONFIG_SUN_OPENPROMFS)	+= openpromfs/
+-- 
+1.7.8
+

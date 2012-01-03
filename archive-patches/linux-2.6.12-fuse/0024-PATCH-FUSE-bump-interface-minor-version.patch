@@ -1,0 +1,32 @@
+From 5b62073d502a88fedc5c369f8a004bda7c9d1999 Mon Sep 17 00:00:00 2001
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Mon, 7 Nov 2005 00:59:49 -0800
+Subject: [PATCH 1/4] [PATCH] FUSE: bump interface minor version
+
+Though the following changes are all backward compatible (from the kernel's as
+well as the library's POV) change the minor version, so interested
+applications can detect new features.
+
+Signed-off-by: Miklos Szeredi <miklos@szeredi.hu>
+Signed-off-by: Andrew Morton <akpm@osdl.org>
+Signed-off-by: Linus Torvalds <torvalds@osdl.org>
+---
+ include/linux/fuse.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/include/linux/fuse.h b/include/linux/fuse.h
+index f98854c..6e91c9a 100644
+--- a/include/linux/fuse.h
++++ b/include/linux/fuse.h
+@@ -14,7 +14,7 @@
+ #define FUSE_KERNEL_VERSION 7
+ 
+ /** Minor version number of this interface */
+-#define FUSE_KERNEL_MINOR_VERSION 2
++#define FUSE_KERNEL_MINOR_VERSION 3
+ 
+ /** The node ID of the root inode */
+ #define FUSE_ROOT_ID 1
+-- 
+1.7.8
+
