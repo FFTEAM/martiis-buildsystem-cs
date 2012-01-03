@@ -48,7 +48,7 @@ $(D)/tdkernel: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig; \
-		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu-; \
+		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- modules; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	touch $@
