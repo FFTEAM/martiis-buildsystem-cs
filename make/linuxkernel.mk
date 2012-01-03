@@ -63,7 +63,7 @@ kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 kernelgcc: $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 
 # powerpc-405-linux-gnu-gcc is the "marker file" for crosstool
-$(K_GCC_PATH)/powerpc-405-linux-gnu-gcc:
+$(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
 		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
