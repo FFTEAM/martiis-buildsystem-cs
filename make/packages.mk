@@ -128,6 +128,20 @@ td-directfb-pkg:
 	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/td-directfb
 	rm -rf $(PKGPREFIX)
 
+addon-drivers-pkg: tdkernel
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
+	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
+		cp -a $(SOURCE_MODULE)/kernel/* ./; \
+		rm -fr drivers/usb/host drivers/usb/storage fs/autofs4 # is in td-module-pkg and autofs
+	depmod -n -ae -F $(BUILD_TMP)/linux-2.6.12/System.map -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
+		| grep WARNING; test $$? != 0 # invert return code
+	mkdir $(BUILD_TMP)/addon-drivers
+	# don't use postinst and postrm since the td drivers modules.dep is "special"...
+	cp -a $(CONTROL_DIR)/addon-drivers/control $(BUILD_TMP)/addon-drivers
+	DONT_STRIP=1 PKG_VER=$(KVERSION_FULL) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
+
 PHONY += td-module-pkg td-directfb-pkg
 SYSTEM_PKGS += td-module-pkg td-directfb-pkg
 endif
