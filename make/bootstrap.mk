@@ -17,6 +17,12 @@ endif
 bootstrap: $(BOOTSTRAP)
 
 targetprefix:
+	@PATH=$(PATH):$(CROSS_DIR)/bin && \
+	if ! type -p $(TARGET)-gcc >/dev/null 2>&1; then \
+		echo;echo "$(TARGET)-gcc not found in PATH or \$$CROSS_DIR/bin"; \
+		echo "=> please check your setup. Maybe you need to 'make crosstool'."; echo; \
+		false; \
+	fi
 	mkdir -p $(TARGETPREFIX)
 	mkdir -p $(TARGETPREFIX)/bin
 	mkdir -p $(TARGETPREFIX)/include
@@ -64,7 +70,7 @@ $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
 
 $(PKGPREFIX)/lib/modules/2.6.12 \
-$(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX)
+$(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	mkdir $(subst /2.6.12,,$@) # fail if no bootstrap has been done
 	cp -a "$(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/2.6.12" $(subst 2.6.12,,$@)
 	find $@ -name .svn -type d -print0 | xargs --no-run-if-empty -0 rm -rf
@@ -75,6 +81,13 @@ $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
 	else \
 		cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib; \
 	fi
+
+$(TD_SVN)/ARMAS:
+	@echo
+	@echo "Tripledragon SVN is not yet checked out?"
+	@echo "Run 'make preqs' to fix that..."
+	@echo
+	@false
 
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
@@ -198,7 +211,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 
 endif
 
-$(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX)
+$(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	@echo ' ============================================================================== '
 	@echo "    Preparing to copy crosstool and supporting files to required directories"
 	@echo ' ============================================================================== '
@@ -207,16 +220,16 @@ $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX)
 	cp -a $(PATCHES)/xp_osd_user.h			$(TARGETPREFIX)/include/hardware/xp/
 
 $(PKGPREFIX)/stb/lib/directfb-0.9.24 \
-$(TARGETPREFIX)/stb/lib/directfb-0.9.24: $(TARGETPREFIX)
+$(TARGETPREFIX)/stb/lib/directfb-0.9.24: $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/filesystem-skeleton stb/lib/directfb-0.9.24 | \
 		tar -vxC $(subst /stb/lib/directfb-0.9.24,,$@)
 	ln -sf ../../lib/libjpeg.so.62 $(subst /directfb-0.9.24,,$@)/libjpeg.so.62
 
-$(TARGETPREFIX)/include/directfb: $(TARGETPREFIX)
+$(TARGETPREFIX)/include/directfb: $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/cross-enivroment-build/stb include/directfb | \
 		tar -vxC $(TARGETPREFIX)/
 
-directfb-includes-and-libs: preqs-directfb-td $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREFIX)/include/directfb
+directfb-includes-and-libs: preqs-directfb-td $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREFIX)/include/directfb $(TD_SVN)/ARMAS
 	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/directfb.pc $(PKG_CONFIG_PATH)/
 	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/direct.pc   $(PKG_CONFIG_PATH)/
 	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/fusion.pc   $(PKG_CONFIG_PATH)/
