@@ -1,0 +1,11 @@
+Package: td-dvb-wrapper
+Version: @VER@-1
+Description: Kernel driver that presents the TD tuner as a DVB frontend
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gitorious.org/seife
+Source:
+Depends: td-drivers
+Provides: td-dvb-frontend.ko

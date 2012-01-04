@@ -42,6 +42,20 @@ $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 		cp $(TARGETPREFIX)/include/hardware/os/os-types.h include/stb -av; \
 		cp $(PATCHES)/kernel.config-td .config
 
+$(SOURCE_DIR)/td-dvb-wrapper:
+	git clone $(GITORIOUS)/seife/td-dvb-wrapper $@
+
+td-dvb-wrapper: $(SOURCE_DIR)/td-dvb-wrapper |$(BUILD_TMP)/linux-2.6.12
+	PATH=$(K_GCC_PATH):$(PATH) make find-powerpc-405-linux-gnu-gcc
+	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
+		make ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- M=$(SOURCE_DIR)/td-dvb-wrapper ;\
+		make ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- M=$(SOURCE_DIR)/td-dvb-wrapper \
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+
+$(TARGET_MODULE)/extra/td-dvb-frontend.ko: td-dvb-wrapper
+	install -m 644 -D $(SOURCE_MODULE)/extra/td-dvb-frontend.ko $@
+
 ifeq ($(TD_COMPILER), new)
 TDK_DEPS = kernelgcc
 endif

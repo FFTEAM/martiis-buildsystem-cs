@@ -1,0 +1,8 @@
+#!/bin/sh
+case $1 in
+start)
+	# old td-drivers had loadmodules as S98... which is very late...
+	grep -q tdtuner /proc/modules || /etc/init.d/loadmodules start
+	/sbin/modprobe td-dvb-frontend
+	;;
+esac
