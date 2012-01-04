@@ -149,6 +149,8 @@ addon-drivers-pkg: tdkernel
 	mkdir $(BUILD_TMP)/addon-drivers
 	# don't use postinst and postrm since the td drivers modules.dep is "special"...
 	cp -a $(CONTROL_DIR)/addon-drivers/control $(BUILD_TMP)/addon-drivers
+	PROV=$$(echo $$(cd $(PKGPREFIX)/lib/modules; find . -name '*.ko' | sed 's#^.*/##')); \
+		sed -i "s#^Depends:.*#Provides: $${PROV// /, }#" $(BUILD_TMP)/addon-drivers/control
 	DONT_STRIP=1 PKG_VER=$(KVERSION_FULL) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 
