@@ -1,3 +1,3 @@
 #!/bin/sh
 
-modprobe td-dvb-wrapper
+modprobe td-dvb-frontend
