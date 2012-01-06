@@ -65,7 +65,20 @@ $(D)/tdkernel: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- modules; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+	$(MAKE) fuse-driver
 	touch $@
+
+# 2.7.5 is the last version which has a kernel module packaged...
+fuse-driver: $(ARCHIVE)/fuse-2.7.5.tar.gz
+	$(UNTAR)/fuse-2.7.5.tar.gz
+	set -e; cd $(BUILD_TMP)/fuse-2.7.5/; \
+		$(PATCH)/fuse-kernel-add-devfs.diff ; \
+		cd kernel; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
+		./configure --with-kernel=$(BUILD_TMP)/linux-2.6.12 --enable-kernel-module; \
+		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			DESTDIR=$(TARGETPREFIX)/mymodules install
+	$(REMOVE)/fuse-2.7.5
 
 kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \

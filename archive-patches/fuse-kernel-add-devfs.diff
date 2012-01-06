@@ -1,0 +1,46 @@
+diff --git a/kernel/Makefile.in b/kernel/Makefile.in
+index e26c700..3320a96 100644
+--- a/kernel/Makefile.in
++++ b/kernel/Makefile.in
+@@ -25,11 +25,9 @@ all-y: all-spec
+ install-y: all
+ 	$(mkdir_p) $(DESTDIR)$(fusemoduledir)
+ 	$(INSTALL) -m 644 $(fusemodule) $(DESTDIR)$(fusemoduledir)/$(fusemodule)
+-	-/sbin/depmod -a
+ 
+ uninstall-y:
+ 	rm -f $(DESTDIR)$(fusemoduledir)/$(fusemodule)
+-	-/sbin/depmod -a
+ 
+ clean:
+ 	-rm -f $(fusemodule) *.o .*.cmd *.mod.c *.ko *.s */*.o
+diff --git a/kernel/inode.c b/kernel/inode.c
+index b826dfe..e66bbdc 100644
+--- a/kernel/inode.c
++++ b/kernel/inode.c
+@@ -18,6 +18,9 @@
+ #include <linux/statfs.h>
+ #include <linux/random.h>
+ #include <linux/sched.h>
++#include <linux/major.h>
++#include <linux/devfs_fs_kernel.h>
++
+ 
+ MODULE_AUTHOR("Miklos Szeredi <miklos@szeredi.hu>");
+ MODULE_DESCRIPTION("Filesystem in Userspace");
+@@ -1119,6 +1122,7 @@ static int __init fuse_init(void)
+ 	if (res)
+ 		goto err_sysfs_cleanup;
+ 
++	devfs_mk_cdev(MKDEV(MISC_MAJOR, FUSE_MINOR), S_IFCHR | S_IRUGO | S_IWUGO, "fuse");
+ 	return 0;
+ 
+  err_sysfs_cleanup:
+@@ -1135,6 +1139,7 @@ static void __exit fuse_exit(void)
+ {
+ 	printk(KERN_DEBUG "fuse exit\n");
+ 
++	devfs_remove("fuse");
+ 	fuse_ctl_cleanup();
+ 	fuse_sysfs_cleanup();
+ 	fuse_fs_cleanup();
