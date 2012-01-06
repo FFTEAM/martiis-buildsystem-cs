@@ -1,6 +1,0 @@
-These are the broken out FUSE patches from linux-2.6 git,
-as they went into the kernel after 2.6.12. I stopped picking
-patches when they no longer compiled without problems or the
-built module did no longer load.
-
-Use at your own risk. Have a lot of fun...

@@ -35,7 +35,6 @@ $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 		patch -p1 < kdiff_00_all.diff; \
 		patch -p1 < $(PATCHES)/kernel-fix-td-build.diff; \
 		mkdir -p include/stb/; \
-		for i in $(PATCHES)/linux-2.6.12-fuse/0*.patch; do patch -p1 -i $$i; done; \
 		cp $(TARGETPREFIX)/include/hardware/os/os-generic.h include/stb -av; \
 		cp $(TARGETPREFIX)/include/hardware/os/registerio.h include/stb -av; \
 		cp $(TARGETPREFIX)/include/hardware/os/pversion.h include/stb -av; \
