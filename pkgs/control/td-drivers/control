@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage
 Source:
-Depends:
+Depends: depmod
