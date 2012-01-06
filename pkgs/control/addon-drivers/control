@@ -8,3 +8,4 @@ Architecture: @ARCH@
 Homepage: http://kernel.org/
 Source:
 Depends: depmod
+Provides: @MODULE_PROV@

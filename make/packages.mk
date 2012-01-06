@@ -95,16 +95,18 @@ usb-driver-pkg: cskernel
 	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(CONTROL_DIR)/usb-drivers
 	rm -rf $(PKGPREFIX)
 
-addon-drivers-pkg: cskernel
-	rm -rf $(PKGPREFIX)
+addon-drivers-pkg: cskernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
 	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
 		cp -a $(SOURCE_MODULE)/kernel/* ./; \
 		rm -fr drivers/usb fs/autofs4 # is in usb-driver-pkg and autofs
 	depmod -n -ae -E $(K_OBJ)/Module.symvers -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
 		| grep WARNING; test $$? != 0 # invert return code
-	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(CONTROL_DIR)/addon-drivers
-	rm -rf $(PKGPREFIX)
+	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)
+	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/addon-drivers/control
+	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
 
 PHONY += cs-drivers-pkg cs-libs-pkg
 SYSTEM_PKGS += cs-libs-pkg cs-drivers-pkg
@@ -138,7 +140,7 @@ td-dvb-wrapper-pkg: $(TARGET_MODULE)/extra/td-dvb-frontend.ko
 	DONT_STRIP=1 PKG_VER=1 $(OPKG_SH) $(CONTROL_DIR)/td-dvb-wrapper
 	rm -rf $(PKGPREFIX)
 
-addon-drivers-pkg: tdkernel
+addon-drivers-pkg: tdkernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
 	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
@@ -146,11 +148,8 @@ addon-drivers-pkg: tdkernel
 		rm -fr drivers/usb/host drivers/usb/storage fs/autofs4 # is in td-module-pkg and autofs
 	depmod -n -ae -F $(BUILD_TMP)/linux-2.6.12/System.map -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
 		| grep WARNING; test $$? != 0 # invert return code
-	mkdir $(BUILD_TMP)/addon-drivers
-	# don't use postinst and postrm since the td drivers modules.dep is "special"...
-	cp -a $(CONTROL_DIR)/addon-drivers/control $(BUILD_TMP)/addon-drivers
-	PROV=$$(echo $$(cd $(PKGPREFIX)/lib/modules; find . -name '*.ko' | sed 's#^.*/##')); \
-		sed -i "s#^Depends:.*#Provides: $${PROV// /, }#" $(BUILD_TMP)/addon-drivers/control
+	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)
+	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/addon-drivers/control
 	DONT_STRIP=1 PKG_VER=$(KVERSION_FULL) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 
