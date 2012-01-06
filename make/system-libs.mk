@@ -433,6 +433,9 @@ $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz | $(TARGETPREFIX)
 	set -e; cd $(PKGPREFIX); \
 		rm -rf dev etc lib/pkgconfig include; \
 		rm lib/*.so lib/*.la lib/*.a
+	install -m 755 -D $(SCRIPTS)/load-fuse.init \
+		$(PKGPREFIX)/etc/init.d/load-fuse
+	ln -s load-fuse $(PKGPREFIX)/etc/init.d/S56load-fuse
 	PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
 	$(REMOVE)/fuse-$(FUSE-VER) $(PKGPREFIX)
 	touch $@

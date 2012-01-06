@@ -28,7 +28,6 @@ start)
 		p }" /etc/modprobe.conf)
 	im cs_frontpanel
 	im cifs
-	im fuse
 	im usbserial
 	im ftdi_sio
 	im cnxt_i2c
