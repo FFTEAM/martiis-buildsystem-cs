@@ -1,5 +1,5 @@
 Package: valgrind
-Version: 3.6.1-1
+Version: @VER@-1
 Description: A programming tool for memory debugging, memory leak detection, and profiling.
 Section: base
 Priority: optional

@@ -344,6 +344,13 @@ endif
 $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/valgrind-3.6.1.tar.bz2
 	rm -rf $(PKGPREFIX)
+ifeq ($(BOXARCH), powerpc)
+	set -e; cd $(BUILD_TMP)/valgrind-3.6.1; \
+		for i in $(shell cd $(PATCHES)/valgrind; echo *); do \
+			echo "apply patch $$i"; $(PATCH)/valgrind/$${i}; \
+		done; \
+		autoreconf
+endif
 	set -e; cd $(BUILD_TMP)/valgrind-3.6.1; \
 		rm -f uname; \
 		printf "#!/bin/sh\necho 2.6.26.8\n" > uname; chmod 0755 uname; \
@@ -352,7 +359,7 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
 		$(VALGRIND_EXTRA_EXPORT); \
 		export AR=$(TARGET)-ar; \
 		$(CONFIGURE) --prefix=/opt/pkg --enable-only32bit --mandir=/.remove --datadir=/.remove; \
-		make all; \
+		$(MAKE) all; \
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove
 	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/* $(PKG_CONFIG_PATH)
@@ -361,7 +368,7 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)/opt/pkg/include $(PKGPREFIX)/opt/pkg/lib/pkconfig
 	rm -rf $(PKGPREFIX)/opt/pkg/lib/valgrind/*.a
 	rm -rf $(PKGPREFIX)/opt/pkg/bin/{cg_*,callgrind_*,ms_print} # perl scripts - we don't have perl
-	$(OPKG_SH) $(CONTROL_DIR)/valgrind
+	PKG_VER=3.6.1 $(OPKG_SH) $(CONTROL_DIR)/valgrind
 	$(REMOVE)/valgrind-3.6.1 $(PKGPREFIX)
 	touch $@
 

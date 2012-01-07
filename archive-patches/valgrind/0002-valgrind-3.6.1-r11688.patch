@@ -1,0 +1,214 @@
+From 6580bdfe7fee4c0c1f394acf924231c174d8fc3c Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sat, 7 Jan 2012 20:26:33 +0100
+Subject: [PATCH 2/4] valgrind-3.6.1-r11688
+
+---
+ coregrind/m_debuginfo/readdwarf3.c |    2 +-
+ coregrind/m_libcsetjmp.c           |  107 +++++++++++++++++++++++++++++++++++-
+ coregrind/m_machine.c              |    2 +-
+ coregrind/pub_core_threadstate.h   |    2 +-
+ include/pub_tool_libcsetjmp.h      |   13 ++++-
+ memcheck/mc_leakcheck.c            |    2 +-
+ 6 files changed, 122 insertions(+), 6 deletions(-)
+
+diff --git a/coregrind/m_debuginfo/readdwarf3.c b/coregrind/m_debuginfo/readdwarf3.c
+index 918c425..3fe43db 100644
+--- a/coregrind/m_debuginfo/readdwarf3.c
++++ b/coregrind/m_debuginfo/readdwarf3.c
+@@ -3955,7 +3955,7 @@ void new_dwarf3_reader_wrk (
+ 
+ static Bool               d3rd_jmpbuf_valid  = False;
+ static HChar*             d3rd_jmpbuf_reason = NULL;
+-static VG_MINIMAL_JMP_BUF d3rd_jmpbuf;
++static VG_MINIMAL_JMP_BUF(d3rd_jmpbuf);
+ 
+ static __attribute__((noreturn)) void barf ( HChar* reason ) {
+    vg_assert(d3rd_jmpbuf_valid);
+diff --git a/coregrind/m_libcsetjmp.c b/coregrind/m_libcsetjmp.c
+index 8d1c2c2..ae0b620 100644
+--- a/coregrind/m_libcsetjmp.c
++++ b/coregrind/m_libcsetjmp.c
+@@ -36,7 +36,112 @@
+ 
+ /* See include/pub_tool_libcsetjmp.h for background and rationale. */
+ 
+-/* No alternative implementations at present. */
++/* The only alternative implementations are for ppc{32,64}-linux.  See
++   #259977. */
++
++#if defined(VGP_ppc32_linux)
++
++__asm__(
++".text"  "\n"
++""  "\n"
++".global VG_MINIMAL_SETJMP"  "\n"  // r3 = jmp_buf
++"VG_MINIMAL_SETJMP:"  "\n"
++"        stw     0, 0(3)"  "\n"
++"        stw     1, 4(3)"  "\n"
++"        stw     2, 8(3)"  "\n"
++"        stw     3, 12(3)"  "\n"
++"        stw     4, 16(3)"  "\n"
++"        stw     5, 20(3)"  "\n"
++"        stw     6, 24(3)"  "\n"
++"        stw     7, 28(3)"  "\n"
++"        stw     8, 32(3)"  "\n"
++"        stw     9, 36(3)"  "\n"
++"        stw     10, 40(3)"  "\n"
++"        stw     11, 44(3)"  "\n"
++"        stw     12, 48(3)"  "\n"
++"        stw     13, 52(3)"  "\n"
++"        stw     14, 56(3)"  "\n"
++"        stw     15, 60(3)"  "\n"
++"        stw     16, 64(3)"  "\n"
++"        stw     17, 68(3)"  "\n"
++"        stw     18, 72(3)"  "\n"
++"        stw     19, 76(3)"  "\n"
++"        stw     20, 80(3)"  "\n"
++"        stw     21, 84(3)"  "\n"
++"        stw     22, 88(3)"  "\n"
++"        stw     23, 92(3)"  "\n"
++"        stw     24, 96(3)"  "\n"
++"        stw     25, 100(3)"  "\n"
++"        stw     26, 104(3)"  "\n"
++"        stw     27, 108(3)"  "\n"
++"        stw     28, 112(3)"  "\n"
++"        stw     29, 116(3)"  "\n"
++"        stw     30, 120(3)"  "\n"
++"        stw     31, 124(3)"  "\n"
++         // must use a caller-save register here as scratch, hence r4
++"        mflr    4"  "\n"
++"        stw     4, 128(3)"  "\n"
++"        mfcr    4"  "\n"
++"        stw     4, 132(3)"  "\n"
++"        li      3, 0"  "\n"
++"        blr"  "\n"
++""  "\n"
++
++
++".global VG_MINIMAL_LONGJMP"  "\n"
++"VG_MINIMAL_LONGJMP:"  "\n"    // r3 = jmp_buf
++         // do r4 = 1
++         // and park it in the restore slot for r3 (the ret reg)
++"        li      4, 1"  "\n"
++"        stw     4, 12(3)"  "\n"
++         // restore everything except r3
++         // then r3 last of all
++         // then blr
++"        lwz     0, 128(3)"  "\n"
++"        mtlr    0"  "\n"
++"        lwz     0, 132(3)"  "\n"
++"        mtcr    0"  "\n"
++"        lwz     0, 0(3)"  "\n"
++"        lwz     1, 4(3)"  "\n"
++"        lwz     2, 8(3)"  "\n"
++         // r3 is done at the end
++"        lwz     4, 16(3)"  "\n"
++"        lwz     5, 20(3)"  "\n"
++"        lwz     6, 24(3)"  "\n"
++"        lwz     7, 28(3)"  "\n"
++"        lwz     8, 32(3)"  "\n"
++"        lwz     9, 36(3)"  "\n"
++"        lwz     10, 40(3)"  "\n"
++"        lwz     11, 44(3)"  "\n"
++"        lwz     12, 48(3)"  "\n"
++"        lwz     13, 52(3)"  "\n"
++"        lwz     14, 56(3)"  "\n"
++"        lwz     15, 60(3)"  "\n"
++"        lwz     16, 64(3)"  "\n"
++"        lwz     17, 68(3)"  "\n"
++"        lwz     18, 72(3)"  "\n"
++"        lwz     19, 76(3)"  "\n"
++"        lwz     20, 80(3)"  "\n"
++"        lwz     21, 84(3)"  "\n"
++"        lwz     22, 88(3)"  "\n"
++"        lwz     23, 92(3)"  "\n"
++"        lwz     24, 96(3)"  "\n"
++"        lwz     25, 100(3)"  "\n"
++"        lwz     26, 104(3)"  "\n"
++"        lwz     27, 108(3)"  "\n"
++"        lwz     28, 112(3)"  "\n"
++"        lwz     29, 116(3)"  "\n"
++"        lwz     30, 120(3)"  "\n"
++"        lwz     31, 124(3)"  "\n"
++"        lwz     3, 12(3)"  "\n"
++"        blr"  "\n"
++""  "\n"
++
++
++".previous"  "\n"
++);
++
++#endif /* VGP_ppc32_linux */
+ 
+ 
+ /*--------------------------------------------------------------------*/
+diff --git a/coregrind/m_machine.c b/coregrind/m_machine.c
+index 424c9bd..23cd87d 100644
+--- a/coregrind/m_machine.c
++++ b/coregrind/m_machine.c
+@@ -389,7 +389,7 @@ Int VG_(machine_arm_archlevel) = 4;
+    testing, so we need a VG_MINIMAL_JMP_BUF. */
+ #if defined(VGA_ppc32) || defined(VGA_ppc64) || defined(VGA_arm)
+ #include "pub_tool_libcsetjmp.h"
+-static VG_MINIMAL_JMP_BUF env_unsup_insn;
++static VG_MINIMAL_JMP_BUF(env_unsup_insn);
+ static void handler_unsup_insn ( Int x ) {
+    VG_MINIMAL_LONGJMP(env_unsup_insn);
+ }
+diff --git a/coregrind/pub_core_threadstate.h b/coregrind/pub_core_threadstate.h
+index 199c69d..53212ea 100644
+--- a/coregrind/pub_core_threadstate.h
++++ b/coregrind/pub_core_threadstate.h
+@@ -354,7 +354,7 @@ typedef struct {
+ 
+    /* Per-thread jmp_buf to resume scheduler after a signal */
+    Bool               sched_jmpbuf_valid;
+-   VG_MINIMAL_JMP_BUF sched_jmpbuf;
++   VG_MINIMAL_JMP_BUF(sched_jmpbuf);
+ }
+ ThreadState;
+ 
+diff --git a/include/pub_tool_libcsetjmp.h b/include/pub_tool_libcsetjmp.h
+index faf8d37..4a17f7a 100644
+--- a/include/pub_tool_libcsetjmp.h
++++ b/include/pub_tool_libcsetjmp.h
+@@ -64,10 +64,21 @@
+    second function (eg, VG_(minimal_setjmp)) doesn't seem to work for
+    whatever reason -- returns via a VG_(minimal_longjmp) go wrong.
+ */
+-#define VG_MINIMAL_JMP_BUF        jmp_buf
++
++#if defined(VGP_ppc32_linux)
++
++#define VG_MINIMAL_JMP_BUF(_name)        UInt _name [32+1+1]
++Int  VG_MINIMAL_SETJMP(VG_MINIMAL_JMP_BUF(_env));
++void VG_MINIMAL_LONGJMP(VG_MINIMAL_JMP_BUF(_env));
++
++#else
++
++/* The default implementation. */
++#define VG_MINIMAL_JMP_BUF(_name) jmp_buf _name
+ #define VG_MINIMAL_SETJMP(_env)   __builtin_setjmp((_env))
+ #define VG_MINIMAL_LONGJMP(_env)  __builtin_longjmp((_env),1)
+ 
++#endif
+ 
+ #endif   // __PUB_TOOL_LIBCSETJMP_H
+ 
+diff --git a/memcheck/mc_leakcheck.c b/memcheck/mc_leakcheck.c
+index bdf0fc6..2da1cb9 100644
+--- a/memcheck/mc_leakcheck.c
++++ b/memcheck/mc_leakcheck.c
+@@ -635,7 +635,7 @@ lc_push_if_a_chunk_ptr(Addr ptr, Int clique, Bool is_prior_definite)
+ }
+ 
+ 
+-static VG_MINIMAL_JMP_BUF memscan_jmpbuf;
++static VG_MINIMAL_JMP_BUF(memscan_jmpbuf);
+ 
+ static
+ void scan_all_valid_memory_catcher ( Int sigNo, Addr addr )
+-- 
+1.7.8
+

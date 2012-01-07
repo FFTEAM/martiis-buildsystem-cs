@@ -1,0 +1,912 @@
+From ccd3a4591225e173c8bea349a9091c052092c5c0 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sat, 7 Jan 2012 20:24:44 +0100
+Subject: [PATCH 1/4] valgrind-3.6.1-r11687
+
+---
+ coregrind/Makefile.am                        |    2 +
+ coregrind/m_coredump/coredump-elf.c          |    1 +
+ coregrind/m_debugger.c                       |    1 +
+ coregrind/m_debuginfo/debuginfo.c            |    1 +
+ coregrind/m_debuginfo/readdwarf3.c           |   15 ++---
+ coregrind/m_errormgr.c                       |    1 +
+ coregrind/m_execontext.c                     |    1 +
+ coregrind/m_initimg/initimg-linux.c          |    1 +
+ coregrind/m_initimg/initimg-pathscan.c       |    1 -
+ coregrind/m_libcassert.c                     |    1 +
+ coregrind/m_libcsetjmp.c                     |   44 +++++++++++++++
+ coregrind/m_machine.c                        |   37 +++++++------
+ coregrind/m_main.c                           |    1 +
+ coregrind/m_mallocfree.c                     |    1 +
+ coregrind/m_scheduler/scheduler.c            |    3 +-
+ coregrind/m_sigframe/sigframe-amd64-linux.c  |    1 +
+ coregrind/m_sigframe/sigframe-arm-linux.c    |    1 +
+ coregrind/m_sigframe/sigframe-ppc32-linux.c  |    1 +
+ coregrind/m_sigframe/sigframe-ppc64-linux.c  |    1 +
+ coregrind/m_sigframe/sigframe-x86-linux.c    |    1 +
+ coregrind/m_signals.c                        |    3 +-
+ coregrind/m_stacktrace.c                     |    1 +
+ coregrind/m_syswrap/syswrap-amd64-linux.c    |    1 +
+ coregrind/m_syswrap/syswrap-arm-linux.c      |    1 +
+ coregrind/m_syswrap/syswrap-generic.c        |    1 +
+ coregrind/m_syswrap/syswrap-linux-variants.c |    1 +
+ coregrind/m_syswrap/syswrap-linux.c          |    1 +
+ coregrind/m_syswrap/syswrap-main.c           |    3 +-
+ coregrind/m_syswrap/syswrap-ppc32-linux.c    |    1 +
+ coregrind/m_syswrap/syswrap-ppc64-linux.c    |    1 +
+ coregrind/m_syswrap/syswrap-x86-linux.c      |    1 +
+ coregrind/m_threadstate.c                    |    1 +
+ coregrind/m_translate.c                      |    1 +
+ coregrind/pub_core_basics.h                  |    3 -
+ coregrind/pub_core_libcsetjmp.h              |   49 +++++++++++++++++
+ coregrind/pub_core_threadstate.h             |    4 +-
+ include/Makefile.am                          |    1 +
+ include/pub_tool_libcsetjmp.h                |   76 ++++++++++++++++++++++++++
+ memcheck/mc_leakcheck.c                      |    9 ++--
+ 39 files changed, 235 insertions(+), 40 deletions(-)
+ create mode 100644 coregrind/m_libcsetjmp.c
+ create mode 100644 coregrind/pub_core_libcsetjmp.h
+ create mode 100644 include/pub_tool_libcsetjmp.h
+
+diff --git a/coregrind/Makefile.am b/coregrind/Makefile.am
+index d9d1bca..33ffae2 100644
+--- a/coregrind/Makefile.am
++++ b/coregrind/Makefile.am
+@@ -154,6 +154,7 @@ noinst_HEADERS = \
+ 	pub_core_libcfile.h	\
+ 	pub_core_libcprint.h	\
+ 	pub_core_libcproc.h	\
++	pub_core_libcsetjmp.h	\
+ 	pub_core_libcsignal.h	\
+ 	pub_core_mach.h		\
+ 	pub_core_machine.h	\
+@@ -239,6 +240,7 @@ COREGRIND_SOURCES_COMMON = \
+ 	m_libcfile.c \
+ 	m_libcprint.c \
+ 	m_libcproc.c \
++	m_libcsetjmp.c \
+ 	m_libcsignal.c \
+ 	m_machine.c \
+ 	m_main.c \
+diff --git a/coregrind/m_coredump/coredump-elf.c b/coregrind/m_coredump/coredump-elf.c
+index c47562e..e2e4ae9 100644
+--- a/coregrind/m_coredump/coredump-elf.c
++++ b/coregrind/m_coredump/coredump-elf.c
+@@ -42,6 +42,7 @@
+ #include "pub_core_libcproc.h"    // VG_(geteuid), VG_(getegid)
+ #include "pub_core_libcassert.h"  // VG_(exit), vg_assert
+ #include "pub_core_mallocfree.h"  // VG_(malloc), VG_(free)
++#include "pub_core_libcsetjmp.h"  // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_xarray.h"
+ #include "pub_core_clientstate.h"
+diff --git a/coregrind/m_debugger.c b/coregrind/m_debugger.c
+index eaf80d1..0f42ced 100644
+--- a/coregrind/m_debugger.c
++++ b/coregrind/m_debugger.c
+@@ -30,6 +30,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"
+ #include "pub_core_threadstate.h"
+ #include "pub_core_xarray.h"
+ #include "pub_core_clientstate.h"
+diff --git a/coregrind/m_debuginfo/debuginfo.c b/coregrind/m_debuginfo/debuginfo.c
+index 303c001..9268504 100644
+--- a/coregrind/m_debuginfo/debuginfo.c
++++ b/coregrind/m_debuginfo/debuginfo.c
+@@ -31,6 +31,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h" // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_debuginfo.h"  /* self */
+ #include "pub_core_demangle.h"
+diff --git a/coregrind/m_debuginfo/readdwarf3.c b/coregrind/m_debuginfo/readdwarf3.c
+index 4d75afb..918c425 100644
+--- a/coregrind/m_debuginfo/readdwarf3.c
++++ b/coregrind/m_debuginfo/readdwarf3.c
+@@ -139,6 +139,7 @@
+ #include "pub_core_libcbase.h"
+ #include "pub_core_libcassert.h"
+ #include "pub_core_libcprint.h"
++#include "pub_core_libcsetjmp.h"   // setjmp facilities
+ #include "pub_core_options.h"
+ #include "pub_core_tooliface.h"    /* VG_(needs) */
+ #include "pub_core_xarray.h"
+@@ -3952,18 +3953,14 @@ void new_dwarf3_reader_wrk (
+ /*---                                                      ---*/
+ /*------------------------------------------------------------*/
+ 
+-/* --- !!! --- EXTERNAL HEADERS start --- !!! --- */
+-#include <setjmp.h>   /* For jmp_buf */
+-/* --- !!! --- EXTERNAL HEADERS end --- !!! --- */
+-
+-static Bool    d3rd_jmpbuf_valid  = False;
+-static HChar*  d3rd_jmpbuf_reason = NULL;
+-static jmp_buf d3rd_jmpbuf;
++static Bool               d3rd_jmpbuf_valid  = False;
++static HChar*             d3rd_jmpbuf_reason = NULL;
++static VG_MINIMAL_JMP_BUF d3rd_jmpbuf;
+ 
+ static __attribute__((noreturn)) void barf ( HChar* reason ) {
+    vg_assert(d3rd_jmpbuf_valid);
+    d3rd_jmpbuf_reason = reason;
+-   __builtin_longjmp(&d3rd_jmpbuf, 1);
++   VG_MINIMAL_LONGJMP(d3rd_jmpbuf);
+    /*NOTREACHED*/
+    vg_assert(0);
+ }
+@@ -3991,7 +3988,7 @@ ML_(new_dwarf3_reader) (
+    vg_assert(d3rd_jmpbuf_reason == NULL);
+ 
+    d3rd_jmpbuf_valid = True;
+-   jumped = __builtin_setjmp(&d3rd_jmpbuf);
++   jumped = VG_MINIMAL_SETJMP(d3rd_jmpbuf);
+    if (jumped == 0) {
+       /* try this ... */
+       new_dwarf3_reader_wrk( di, barf,
+diff --git a/coregrind/m_errormgr.c b/coregrind/m_errormgr.c
+index d043747..bb3247a 100644
+--- a/coregrind/m_errormgr.c
++++ b/coregrind/m_errormgr.c
+@@ -30,6 +30,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"
+ #include "pub_core_threadstate.h"      // For VG_N_THREADS
+ #include "pub_core_debugger.h"
+ #include "pub_core_debuginfo.h"
+diff --git a/coregrind/m_execontext.c b/coregrind/m_execontext.c
+index fcb45d7..80574fe 100644
+--- a/coregrind/m_execontext.c
++++ b/coregrind/m_execontext.c
+@@ -37,6 +37,7 @@
+ #include "pub_core_stacktrace.h"
+ #include "pub_core_machine.h"       // VG_(get_IP)
+ #include "pub_core_vki.h"           // To keep pub_core_threadstate.h happy
++#include "pub_core_libcsetjmp.h"    // Ditto
+ #include "pub_core_threadstate.h"   // VG_(is_valid_tid)
+ #include "pub_core_execontext.h"    // self
+ 
+diff --git a/coregrind/m_initimg/initimg-linux.c b/coregrind/m_initimg/initimg-linux.c
+index ad7dedd..048ffca 100644
+--- a/coregrind/m_initimg/initimg-linux.c
++++ b/coregrind/m_initimg/initimg-linux.c
+@@ -48,6 +48,7 @@
+ #include "pub_core_options.h"
+ #include "pub_core_syscall.h"
+ #include "pub_core_tooliface.h"       /* VG_TRACK */
++#include "pub_core_libcsetjmp.h"      // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"     /* ThreadArchState */
+ #include "priv_initimg_pathscan.h"
+ #include "pub_core_initimg.h"         /* self */
+diff --git a/coregrind/m_initimg/initimg-pathscan.c b/coregrind/m_initimg/initimg-pathscan.c
+index df47316..cca5817 100644
+--- a/coregrind/m_initimg/initimg-pathscan.c
++++ b/coregrind/m_initimg/initimg-pathscan.c
+@@ -44,7 +44,6 @@
+ #include "pub_core_ume.h"
+ #include "pub_core_options.h"
+ #include "pub_core_tooliface.h"       /* VG_TRACK */
+-#include "pub_core_threadstate.h"     /* ThreadArchState */
+ #include "pub_core_initimg.h"         /* self */
+ 
+ #include "priv_initimg_pathscan.h"
+diff --git a/coregrind/m_libcassert.c b/coregrind/m_libcassert.c
+index 731864f..16dd0b7 100644
+--- a/coregrind/m_libcassert.c
++++ b/coregrind/m_libcassert.c
+@@ -31,6 +31,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_libcbase.h"
+ #include "pub_core_libcassert.h"
+diff --git a/coregrind/m_libcsetjmp.c b/coregrind/m_libcsetjmp.c
+new file mode 100644
+index 0000000..8d1c2c2
+--- /dev/null
++++ b/coregrind/m_libcsetjmp.c
+@@ -0,0 +1,44 @@
++
++/*--------------------------------------------------------------------*/
++/*--- A minimal setjmp/longjmp implementation.      m_libcsetjmp.c ---*/
++/*--------------------------------------------------------------------*/
++ 
++/*
++   This file is part of Valgrind, a dynamic binary instrumentation
++   framework.
++
++   Copyright (C) 2010-2010 Mozilla Inc
++
++   This program is free software; you can redistribute it and/or
++   modify it under the terms of the GNU General Public License as
++   published by the Free Software Foundation; either version 2 of the
++   License, or (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful, but
++   WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307, USA.
++
++   The GNU General Public License is contained in the file COPYING.
++*/
++
++/* Contributed by Julian Seward <jseward@acm.org> */
++
++
++#include "pub_core_basics.h"
++#include "pub_core_libcsetjmp.h"    /* self */
++
++
++/* See include/pub_tool_libcsetjmp.h for background and rationale. */
++
++/* No alternative implementations at present. */
++
++
++/*--------------------------------------------------------------------*/
++/*--- end                                                          ---*/
++/*--------------------------------------------------------------------*/
+diff --git a/coregrind/m_machine.c b/coregrind/m_machine.c
+index 8dc3e17..424c9bd 100644
+--- a/coregrind/m_machine.c
++++ b/coregrind/m_machine.c
+@@ -30,6 +30,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"   // setjmp facilities
+ #include "pub_core_threadstate.h"
+ #include "pub_core_libcassert.h"
+ #include "pub_core_libcbase.h"
+@@ -385,11 +386,13 @@ Int VG_(machine_arm_archlevel) = 4;
+ 
+ 
+ /* For hwcaps detection on ppc32/64 and arm we'll need to do SIGILL
+-   testing, so we need a jmp_buf. */
++   testing, so we need a VG_MINIMAL_JMP_BUF. */
+ #if defined(VGA_ppc32) || defined(VGA_ppc64) || defined(VGA_arm)
+-#include <setjmp.h> // For jmp_buf
+-static jmp_buf env_unsup_insn;
+-static void handler_unsup_insn ( Int x ) { __builtin_longjmp(env_unsup_insn,1); }
++#include "pub_tool_libcsetjmp.h"
++static VG_MINIMAL_JMP_BUF env_unsup_insn;
++static void handler_unsup_insn ( Int x ) {
++   VG_MINIMAL_LONGJMP(env_unsup_insn);
++}
+ #endif
+ 
+ 
+@@ -429,7 +432,7 @@ static void find_ppc_dcbz_sz(VexArchInfo *arch_info)
+    vg_assert(dcbz_szB == 32 || dcbz_szB == 64 || dcbz_szB == 128);
+ 
+    /* dcbzl clears 128B on G5/PPC970, and usually 32B on other platforms */
+-   if (__builtin_setjmp(env_unsup_insn)) {
++   if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+       dcbzl_szB = 0; /* indicates unsupported */
+    }
+    else {
+@@ -659,7 +662,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* standard FP insns */
+      have_F = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_F = False;
+      } else {
+         __asm__ __volatile__(".long 0xFC000090"); /*fmr 0,0 */
+@@ -667,7 +670,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* Altivec insns */
+      have_V = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_V = False;
+      } else {
+         /* Unfortunately some older assemblers don't speak Altivec (or
+@@ -680,7 +683,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* General-Purpose optional (fsqrt, fsqrts) */
+      have_FX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_FX = False;
+      } else {
+         __asm__ __volatile__(".long 0xFC00002C"); /*fsqrt 0,0 */
+@@ -688,7 +691,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* Graphics optional (stfiwx, fres, frsqrte, fsel) */
+      have_GX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_GX = False;
+      } else {
+         __asm__ __volatile__(".long 0xFC000034"); /* frsqrte 0,0 */
+@@ -778,7 +781,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* standard FP insns */
+      have_F = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_F = False;
+      } else {
+         __asm__ __volatile__("fmr 0,0");
+@@ -786,7 +789,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* Altivec insns */
+      have_V = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_V = False;
+      } else {
+         __asm__ __volatile__(".long 0x10000484"); /*vor 0,0,0*/
+@@ -794,7 +797,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* General-Purpose optional (fsqrt, fsqrts) */
+      have_FX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_FX = False;
+      } else {
+         __asm__ __volatile__(".long 0xFC00002C"); /*fsqrt 0,0*/
+@@ -802,7 +805,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* Graphics optional (stfiwx, fres, frsqrte, fsel) */
+      have_GX = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_GX = False;
+      } else {
+         __asm__ __volatile__(".long 0xFC000034"); /*frsqrte 0,0*/
+@@ -884,7 +887,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* VFP insns */
+      have_VFP = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_VFP = False;
+      } else {
+         __asm__ __volatile__(".word 0xEEB02B42"); /* VMOV.F64 d2, d2 */
+@@ -896,7 +899,7 @@ Bool VG_(machine_get_hwcaps)( void )
+ 
+      /* NEON insns */
+      have_NEON = True;
+-     if (__builtin_setjmp(env_unsup_insn)) {
++     if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+         have_NEON = False;
+      } else {
+         __asm__ __volatile__(".word 0xF2244154"); /* VMOV q2, q2 */
+@@ -906,7 +909,7 @@ Bool VG_(machine_get_hwcaps)( void )
+      archlevel = 5; /* v5 will be base level */
+      if (archlevel < 7) {
+         archlevel = 7;
+-        if (__builtin_setjmp(env_unsup_insn)) {
++        if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+            archlevel = 5;
+         } else {
+            __asm__ __volatile__(".word 0xF45FF000"); /* PLI [PC,#-0] */
+@@ -914,7 +917,7 @@ Bool VG_(machine_get_hwcaps)( void )
+      }
+      if (archlevel < 6) {
+         archlevel = 6;
+-        if (__builtin_setjmp(env_unsup_insn)) {
++        if (VG_MINIMAL_SETJMP(env_unsup_insn)) {
+            archlevel = 5;
+         } else {
+            __asm__ __volatile__(".word 0xE6822012"); /* PKHBT r2, r2, r2 */
+diff --git a/coregrind/m_main.c b/coregrind/m_main.c
+index e5871c4..1580b4a 100644
+--- a/coregrind/m_main.c
++++ b/coregrind/m_main.c
+@@ -31,6 +31,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_xarray.h"
+ #include "pub_core_clientstate.h"
+diff --git a/coregrind/m_mallocfree.c b/coregrind/m_mallocfree.c
+index dabc39a..fe42e7e 100644
+--- a/coregrind/m_mallocfree.c
++++ b/coregrind/m_mallocfree.c
+@@ -38,6 +38,7 @@
+ #include "pub_core_libcprint.h"
+ #include "pub_core_mallocfree.h"
+ #include "pub_core_options.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"   // For VG_INVALID_THREADID
+ #include "pub_core_tooliface.h"
+ #include "valgrind.h"
+diff --git a/coregrind/m_scheduler/scheduler.c b/coregrind/m_scheduler/scheduler.c
+index f8f2950..7e614f6 100644
+--- a/coregrind/m_scheduler/scheduler.c
++++ b/coregrind/m_scheduler/scheduler.c
+@@ -61,6 +61,7 @@
+ #include "pub_core_debuglog.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"    // __NR_sched_yield
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_clreq.h"         // for VG_USERREQ__*
+@@ -581,7 +582,7 @@ void VG_(scheduler_init_phase2) ( ThreadId tid_main,
+    do {									\
+       ThreadState * volatile _qq_tst = VG_(get_ThreadState)(tid);	\
+ 									\
+-      (jumped) = __builtin_setjmp(_qq_tst->sched_jmpbuf);               \
++      (jumped) = VG_MINIMAL_SETJMP(_qq_tst->sched_jmpbuf);              \
+       if ((jumped) == 0) {						\
+ 	 vg_assert(!_qq_tst->sched_jmpbuf_valid);			\
+ 	 _qq_tst->sched_jmpbuf_valid = True;				\
+diff --git a/coregrind/m_sigframe/sigframe-amd64-linux.c b/coregrind/m_sigframe/sigframe-amd64-linux.c
+index b234e3a..710a34b 100644
+--- a/coregrind/m_sigframe/sigframe-amd64-linux.c
++++ b/coregrind/m_sigframe/sigframe-amd64-linux.c
+@@ -33,6 +33,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_sigframe/sigframe-arm-linux.c b/coregrind/m_sigframe/sigframe-arm-linux.c
+index 01c1c05..4767700 100644
+--- a/coregrind/m_sigframe/sigframe-arm-linux.c
++++ b/coregrind/m_sigframe/sigframe-arm-linux.c
+@@ -38,6 +38,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_sigframe/sigframe-ppc32-linux.c b/coregrind/m_sigframe/sigframe-ppc32-linux.c
+index 9710b37..f19f71f 100644
+--- a/coregrind/m_sigframe/sigframe-ppc32-linux.c
++++ b/coregrind/m_sigframe/sigframe-ppc32-linux.c
+@@ -36,6 +36,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_sigframe/sigframe-ppc64-linux.c b/coregrind/m_sigframe/sigframe-ppc64-linux.c
+index 0328378..1380496 100644
+--- a/coregrind/m_sigframe/sigframe-ppc64-linux.c
++++ b/coregrind/m_sigframe/sigframe-ppc64-linux.c
+@@ -36,6 +36,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_sigframe/sigframe-x86-linux.c b/coregrind/m_sigframe/sigframe-x86-linux.c
+index 6b61055..079fc71 100644
+--- a/coregrind/m_sigframe/sigframe-x86-linux.c
++++ b/coregrind/m_sigframe/sigframe-x86-linux.c
+@@ -33,6 +33,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h" /* find_segment */
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_signals.c b/coregrind/m_signals.c
+index a3b7690..470c288 100644
+--- a/coregrind/m_signals.c
++++ b/coregrind/m_signals.c
+@@ -197,6 +197,7 @@
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
+ #include "pub_core_debuglog.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_xarray.h"
+ #include "pub_core_clientstate.h"
+@@ -1753,7 +1754,7 @@ static void resume_scheduler(ThreadId tid)
+    if (tst->sched_jmpbuf_valid) {
+       /* Can't continue; must longjmp back to the scheduler and thus
+          enter the sighandler immediately. */
+-      __builtin_longjmp(tst->sched_jmpbuf, True);
++      VG_MINIMAL_LONGJMP(tst->sched_jmpbuf);
+    }
+ }
+ 
+diff --git a/coregrind/m_stacktrace.c b/coregrind/m_stacktrace.c
+index 489f6d7..ab492aa 100644
+--- a/coregrind/m_stacktrace.c
++++ b/coregrind/m_stacktrace.c
+@@ -30,6 +30,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_debuginfo.h"     // XXX: circular dependency
+ #include "pub_core_aspacemgr.h"     // For VG_(is_addressable)()
+diff --git a/coregrind/m_syswrap/syswrap-amd64-linux.c b/coregrind/m_syswrap/syswrap-amd64-linux.c
+index ecb3d00..ece1a73 100644
+--- a/coregrind/m_syswrap/syswrap-amd64-linux.c
++++ b/coregrind/m_syswrap/syswrap-amd64-linux.c
+@@ -33,6 +33,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuglog.h"
+diff --git a/coregrind/m_syswrap/syswrap-arm-linux.c b/coregrind/m_syswrap/syswrap-arm-linux.c
+index fb12728..f35e9df 100644
+--- a/coregrind/m_syswrap/syswrap-arm-linux.c
++++ b/coregrind/m_syswrap/syswrap-arm-linux.c
+@@ -35,6 +35,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuglog.h"
+diff --git a/coregrind/m_syswrap/syswrap-generic.c b/coregrind/m_syswrap/syswrap-generic.c
+index 623cc82..8777ebc 100644
+--- a/coregrind/m_syswrap/syswrap-generic.c
++++ b/coregrind/m_syswrap/syswrap-generic.c
+@@ -34,6 +34,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_debuginfo.h"     // VG_(di_notify_*)
+ #include "pub_core_aspacemgr.h"
+diff --git a/coregrind/m_syswrap/syswrap-linux-variants.c b/coregrind/m_syswrap/syswrap-linux-variants.c
+index 27463ed..dc433ec 100644
+--- a/coregrind/m_syswrap/syswrap-linux-variants.c
++++ b/coregrind/m_syswrap/syswrap-linux-variants.c
+@@ -48,6 +48,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuginfo.h"    // VG_(di_notify_*)
+diff --git a/coregrind/m_syswrap/syswrap-linux.c b/coregrind/m_syswrap/syswrap-linux.c
+index b0e5ca3..6b838ff 100644
+--- a/coregrind/m_syswrap/syswrap-linux.c
++++ b/coregrind/m_syswrap/syswrap-linux.c
+@@ -33,6 +33,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuginfo.h"    // VG_(di_notify_*)
+diff --git a/coregrind/m_syswrap/syswrap-main.c b/coregrind/m_syswrap/syswrap-main.c
+index 21f0f88..80698d9 100644
+--- a/coregrind/m_syswrap/syswrap-main.c
++++ b/coregrind/m_syswrap/syswrap-main.c
+@@ -34,6 +34,7 @@
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_libcbase.h"
+ #include "pub_core_libcassert.h"
+@@ -2195,7 +2196,7 @@ void ML_(wqthread_continue_NORETURN)(ThreadId tid)
+    sci->status.what = SsIdle;
+ 
+    vg_assert(tst->sched_jmpbuf_valid);
+-   __builtin_longjmp(tst->sched_jmpbuf, True);
++   VG_MINIMAL_LONGJMP(tst->sched_jmpbuf, True);
+ 
+    /* NOTREACHED */
+    vg_assert(0);
+diff --git a/coregrind/m_syswrap/syswrap-ppc32-linux.c b/coregrind/m_syswrap/syswrap-ppc32-linux.c
+index 984c7bc..abe6639 100644
+--- a/coregrind/m_syswrap/syswrap-ppc32-linux.c
++++ b/coregrind/m_syswrap/syswrap-ppc32-linux.c
+@@ -33,6 +33,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuglog.h"
+diff --git a/coregrind/m_syswrap/syswrap-ppc64-linux.c b/coregrind/m_syswrap/syswrap-ppc64-linux.c
+index 1b064bd..0f5638b 100644
+--- a/coregrind/m_syswrap/syswrap-ppc64-linux.c
++++ b/coregrind/m_syswrap/syswrap-ppc64-linux.c
+@@ -33,6 +33,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuglog.h"
+diff --git a/coregrind/m_syswrap/syswrap-x86-linux.c b/coregrind/m_syswrap/syswrap-x86-linux.c
+index c0a8b2b..4b52656 100644
+--- a/coregrind/m_syswrap/syswrap-x86-linux.c
++++ b/coregrind/m_syswrap/syswrap-x86-linux.c
+@@ -38,6 +38,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_debuglog.h"
+diff --git a/coregrind/m_threadstate.c b/coregrind/m_threadstate.c
+index d047110..c45ce21 100644
+--- a/coregrind/m_threadstate.c
++++ b/coregrind/m_threadstate.c
+@@ -30,6 +30,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_libcassert.h"
+ 
+diff --git a/coregrind/m_translate.c b/coregrind/m_translate.c
+index 41a2e71..5769cb8 100644
+--- a/coregrind/m_translate.c
++++ b/coregrind/m_translate.c
+@@ -53,6 +53,7 @@
+ #include "pub_core_dispatch.h" // VG_(run_innerloop__dispatch_{un}profiled)
+                                // VG_(run_a_noredir_translation__return_point)
+ 
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"  // VexGuestArchState
+ #include "pub_core_trampoline.h"   // VG_(ppctoc_magic_redirect_return_stub)
+ 
+diff --git a/coregrind/pub_core_basics.h b/coregrind/pub_core_basics.h
+index 35aba2f..170aa75 100644
+--- a/coregrind/pub_core_basics.h
++++ b/coregrind/pub_core_basics.h
+@@ -62,9 +62,6 @@
+ #  error Unknown arch
+ #endif
+ 
+-// For jmp_buf
+-#include <setjmp.h>
+-
+ 
+ /* ---------------------------------------------------------------------
+    A struct to hold starting values for stack unwinding.
+diff --git a/coregrind/pub_core_libcsetjmp.h b/coregrind/pub_core_libcsetjmp.h
+new file mode 100644
+index 0000000..215eacc
+--- /dev/null
++++ b/coregrind/pub_core_libcsetjmp.h
+@@ -0,0 +1,49 @@
++
++/*--------------------------------------------------------------------*/
++/*--- A minimal setjmp/longjmp facility.     pub_core_libcsetjmp.h ---*/
++/*--------------------------------------------------------------------*/
++
++/*
++   This file is part of Valgrind, a dynamic binary instrumentation
++   framework.
++
++   Copyright (C) 2010-2010 Mozilla Inc
++
++   This program is free software; you can redistribute it and/or
++   modify it under the terms of the GNU General Public License as
++   published by the Free Software Foundation; either version 2 of the
++   License, or (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful, but
++   WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307, USA.
++
++   The GNU General Public License is contained in the file COPYING.
++*/
++
++/* Contributed by Julian Seward <jseward@acm.org> */
++
++#ifndef __PUB_CORE_LIBCSETJMP_H
++#define __PUB_CORE_LIBCSETJMP_H
++
++//--------------------------------------------------------------------
++// PURPOSE: Provides a minimal setjmp/longjmp facility, that saves/
++// restores integer registers, but not necessarily anything more.
++//--------------------------------------------------------------------
++
++// No core-only exports; everything in this module is visible to both
++// the core and tools.
++
++#include "pub_tool_libcsetjmp.h"
++
++#endif   // __PUB_CORE_LIBCSETJMP_H
++
++/*--------------------------------------------------------------------*/
++/*--- end                                    pub_core_libcsetjmp.h ---*/
++/*--------------------------------------------------------------------*/
+diff --git a/coregrind/pub_core_threadstate.h b/coregrind/pub_core_threadstate.h
+index 3e63da1..199c69d 100644
+--- a/coregrind/pub_core_threadstate.h
++++ b/coregrind/pub_core_threadstate.h
+@@ -353,8 +353,8 @@ typedef struct {
+    ThreadOSstate os_state;
+ 
+    /* Per-thread jmp_buf to resume scheduler after a signal */
+-   Bool    sched_jmpbuf_valid;
+-   jmp_buf sched_jmpbuf;
++   Bool               sched_jmpbuf_valid;
++   VG_MINIMAL_JMP_BUF sched_jmpbuf;
+ }
+ ThreadState;
+ 
+diff --git a/include/Makefile.am b/include/Makefile.am
+index 33d0857..7be5c72 100644
+--- a/include/Makefile.am
++++ b/include/Makefile.am
+@@ -18,6 +18,7 @@ nobase_pkginclude_HEADERS = \
+ 	pub_tool_libcfile.h 		\
+ 	pub_tool_libcprint.h 		\
+ 	pub_tool_libcproc.h 		\
++	pub_tool_libcsetjmp.h 		\
+ 	pub_tool_libcsignal.h 		\
+ 	pub_tool_machine.h 		\
+ 	pub_tool_mallocfree.h 		\
+diff --git a/include/pub_tool_libcsetjmp.h b/include/pub_tool_libcsetjmp.h
+new file mode 100644
+index 0000000..faf8d37
+--- /dev/null
++++ b/include/pub_tool_libcsetjmp.h
+@@ -0,0 +1,76 @@
++
++/*--------------------------------------------------------------------*/
++/*--- A minimal setjmp/longjmp facility.     pub_tool_libcsetjmp.h ---*/
++/*--------------------------------------------------------------------*/
++
++/*
++   This file is part of Valgrind, a dynamic binary instrumentation
++   framework.
++
++   Copyright (C) 2010-2010 Mozilla Inc
++
++   This program is free software; you can redistribute it and/or
++   modify it under the terms of the GNU General Public License as
++   published by the Free Software Foundation; either version 2 of the
++   License, or (at your option) any later version.
++
++   This program is distributed in the hope that it will be useful, but
++   WITHOUT ANY WARRANTY; without even the implied warranty of
++   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
++   General Public License for more details.
++
++   You should have received a copy of the GNU General Public License
++   along with this program; if not, write to the Free Software
++   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
++   02111-1307, USA.
++
++   The GNU General Public License is contained in the file COPYING.
++*/
++
++/* Contributed by Julian Seward <jseward@acm.org> */
++
++#ifndef __PUB_TOOL_LIBCSETJMP_H
++#define __PUB_TOOL_LIBCSETJMP_H
++
++//--------------------------------------------------------------------
++// PURPOSE: Provides a minimal setjmp/longjmp facility, that saves/
++// restores integer registers, but not necessarily anything more.
++//--------------------------------------------------------------------
++
++
++/* This provides an extremely minimal setjmp/longjmp facility, in
++   which only the host's integer registers are saved/restored.  Or at
++   least, that is the minimal guaranteed functionality.
++
++   Until Apr 2011 we used __builtin_setjmp and __builtin_longjmp, but
++   it appears that that is not always correctly implemented.  See
++   https://bugs.kde.org/show_bug.cgi?id=259977.  So this module wraps
++   those functions up and facilitates replacing them with our own
++   implementations where necessary.
++*/
++
++/* --- !!! --- EXTERNAL HEADERS start --- !!! --- */
++#include <setjmp.h>
++/* --- !!! --- EXTERNAL HEADERS end --- !!! --- */
++
++
++/* Don't use jmp_buf, __builtin_setjmp or __builtin_longjmp directly.
++   They don't always work reliably.  Instead use these macros, which
++   provide the opportunity to supply alternative implementations as
++   necessary.
++
++   Note that the abstraction is done with macros (ick) rather than
++   functions and typedefs, since wrapping __builtin_setjmp up in a
++   second function (eg, VG_(minimal_setjmp)) doesn't seem to work for
++   whatever reason -- returns via a VG_(minimal_longjmp) go wrong.
++*/
++#define VG_MINIMAL_JMP_BUF        jmp_buf
++#define VG_MINIMAL_SETJMP(_env)   __builtin_setjmp((_env))
++#define VG_MINIMAL_LONGJMP(_env)  __builtin_longjmp((_env),1)
++
++
++#endif   // __PUB_TOOL_LIBCSETJMP_H
++
++/*--------------------------------------------------------------------*/
++/*--- end                                    pub_tool_libcsetjmp.h ---*/
++/*--------------------------------------------------------------------*/
+diff --git a/memcheck/mc_leakcheck.c b/memcheck/mc_leakcheck.c
+index 13b8de3..bdf0fc6 100644
+--- a/memcheck/mc_leakcheck.c
++++ b/memcheck/mc_leakcheck.c
+@@ -43,12 +43,11 @@
+ #include "pub_tool_options.h"
+ #include "pub_tool_oset.h"
+ #include "pub_tool_signals.h"
++#include "pub_tool_libcsetjmp.h"    // setjmp facilities
+ #include "pub_tool_tooliface.h"     // Needed for mc_include.h
+ 
+ #include "mc_include.h"
+ 
+-#include <setjmp.h>                 // For jmp_buf
+-
+ /*------------------------------------------------------------*/
+ /*--- An overview of leak checking.                        ---*/
+ /*------------------------------------------------------------*/
+@@ -636,7 +635,7 @@ lc_push_if_a_chunk_ptr(Addr ptr, Int clique, Bool is_prior_definite)
+ }
+ 
+ 
+-static jmp_buf memscan_jmpbuf;
++static VG_MINIMAL_JMP_BUF memscan_jmpbuf;
+ 
+ static
+ void scan_all_valid_memory_catcher ( Int sigNo, Addr addr )
+@@ -644,7 +643,7 @@ void scan_all_valid_memory_catcher ( Int sigNo, Addr addr )
+    if (0)
+       VG_(printf)("OUCH! sig=%d addr=%#lx\n", sigNo, addr);
+    if (sigNo == VKI_SIGSEGV || sigNo == VKI_SIGBUS)
+-      __builtin_longjmp(memscan_jmpbuf, 1);
++      VG_MINIMAL_LONGJMP(memscan_jmpbuf);
+ }
+ 
+ // Scan a block of memory between [start, start+len).  This range may
+@@ -686,7 +685,7 @@ lc_scan_memory(Addr start, SizeT len, Bool is_prior_definite, Int clique)
+          }
+       }
+ 
+-      if (__builtin_setjmp(memscan_jmpbuf) == 0) {
++      if (VG_MINIMAL_SETJMP(memscan_jmpbuf) == 0) {
+          if ( MC_(is_valid_aligned_word)(ptr) ) {
+             lc_scanned_szB += sizeof(Addr);
+             addr = *(Addr *)ptr;
+-- 
+1.7.8
+

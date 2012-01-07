@@ -1,0 +1,116 @@
+From 9d0b14ab2265d0806faed1e5a365be11bb31cc00 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sat, 7 Jan 2012 20:27:13 +0100
+Subject: [PATCH 4/4] valgrind-3.6.1-r11690
+
+---
+ coregrind/m_coredump/coredump-macho.c        |    1 +
+ coregrind/m_initimg/initimg-darwin.c         |    1 +
+ coregrind/m_sigframe/sigframe-amd64-darwin.c |    1 +
+ coregrind/m_sigframe/sigframe-x86-darwin.c   |    1 +
+ coregrind/m_syswrap/syswrap-amd64-darwin.c   |    1 +
+ coregrind/m_syswrap/syswrap-darwin.c         |    1 +
+ coregrind/m_syswrap/syswrap-main.c           |    2 +-
+ coregrind/m_syswrap/syswrap-x86-darwin.c     |    1 +
+ 8 files changed, 8 insertions(+), 1 deletions(-)
+
+diff --git a/coregrind/m_coredump/coredump-macho.c b/coregrind/m_coredump/coredump-macho.c
+index 5f74a86..499beba 100644
+--- a/coregrind/m_coredump/coredump-macho.c
++++ b/coregrind/m_coredump/coredump-macho.c
+@@ -33,6 +33,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_coredump.h"
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ 
+ void VG_(make_coredump)(ThreadId tid, const vki_siginfo_t *si, UInt max_size)
+diff --git a/coregrind/m_initimg/initimg-darwin.c b/coregrind/m_initimg/initimg-darwin.c
+index d11ae3a..a1132bb 100644
+--- a/coregrind/m_initimg/initimg-darwin.c
++++ b/coregrind/m_initimg/initimg-darwin.c
+@@ -47,6 +47,7 @@
+ #include "pub_core_ume.h"
+ #include "pub_core_options.h"
+ #include "pub_core_tooliface.h"       /* VG_TRACK */
++#include "pub_core_libcsetjmp.h"      // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"     /* ThreadArchState */
+ #include "priv_initimg_pathscan.h"
+ #include "pub_core_initimg.h"         /* self */
+diff --git a/coregrind/m_sigframe/sigframe-amd64-darwin.c b/coregrind/m_sigframe/sigframe-amd64-darwin.c
+index 273dea5..ed09134 100644
+--- a/coregrind/m_sigframe/sigframe-amd64-darwin.c
++++ b/coregrind/m_sigframe/sigframe-amd64-darwin.c
+@@ -34,6 +34,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_sigframe/sigframe-x86-darwin.c b/coregrind/m_sigframe/sigframe-x86-darwin.c
+index 383a8d3..47348e2 100644
+--- a/coregrind/m_sigframe/sigframe-x86-darwin.c
++++ b/coregrind/m_sigframe/sigframe-x86-darwin.c
+@@ -34,6 +34,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"    // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_libcbase.h"
+diff --git a/coregrind/m_syswrap/syswrap-amd64-darwin.c b/coregrind/m_syswrap/syswrap-amd64-darwin.c
+index 1057bb1..03bad5e 100644
+--- a/coregrind/m_syswrap/syswrap-amd64-darwin.c
++++ b/coregrind/m_syswrap/syswrap-amd64-darwin.c
+@@ -32,6 +32,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_xarray.h"
+diff --git a/coregrind/m_syswrap/syswrap-darwin.c b/coregrind/m_syswrap/syswrap-darwin.c
+index 76ad867..0d81f49 100644
+--- a/coregrind/m_syswrap/syswrap-darwin.c
++++ b/coregrind/m_syswrap/syswrap-darwin.c
+@@ -33,6 +33,7 @@
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
+ #include "pub_core_vkiscnums.h"
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_xarray.h"
+diff --git a/coregrind/m_syswrap/syswrap-main.c b/coregrind/m_syswrap/syswrap-main.c
+index 80698d9..9103f63 100644
+--- a/coregrind/m_syswrap/syswrap-main.c
++++ b/coregrind/m_syswrap/syswrap-main.c
+@@ -2196,7 +2196,7 @@ void ML_(wqthread_continue_NORETURN)(ThreadId tid)
+    sci->status.what = SsIdle;
+ 
+    vg_assert(tst->sched_jmpbuf_valid);
+-   VG_MINIMAL_LONGJMP(tst->sched_jmpbuf, True);
++   VG_MINIMAL_LONGJMP(tst->sched_jmpbuf);
+ 
+    /* NOTREACHED */
+    vg_assert(0);
+diff --git a/coregrind/m_syswrap/syswrap-x86-darwin.c b/coregrind/m_syswrap/syswrap-x86-darwin.c
+index 1e2e1d8..108a8af 100644
+--- a/coregrind/m_syswrap/syswrap-x86-darwin.c
++++ b/coregrind/m_syswrap/syswrap-x86-darwin.c
+@@ -32,6 +32,7 @@
+ 
+ #include "pub_core_basics.h"
+ #include "pub_core_vki.h"
++#include "pub_core_libcsetjmp.h"   // to keep _threadstate.h happy
+ #include "pub_core_threadstate.h"
+ #include "pub_core_aspacemgr.h"
+ #include "pub_core_xarray.h"
+-- 
+1.7.8
+
