@@ -48,3 +48,5 @@ ldconfig
 . /etc/init.d/functions
 
 run_initscripts start
+
+test -e /etc/init.d/rcS.local && . /etc/init.d/rcS.local
