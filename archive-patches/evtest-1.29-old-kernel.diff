@@ -1,5 +1,9 @@
+This is not meant to be "correct" or anything, just to make
+evtest compile with both 2.6.12 and 2.6.26.8 kernel headers.
+Use at your own risk! :-)
+
 diff --git a/evtest.c b/evtest.c
-index 74230ea..d9c8174 100644
+index 74230ea..c117f76 100644
 --- a/evtest.c
 +++ b/evtest.c
 @@ -90,7 +90,9 @@ static const struct query_mode {
@@ -42,7 +46,7 @@ index 74230ea..d9c8174 100644
  	NAME_ELEMENT(KEY_FN_D),			NAME_ELEMENT(KEY_FN_E),
  	NAME_ELEMENT(KEY_FN_F),			NAME_ELEMENT(KEY_FN_S),
  	NAME_ELEMENT(KEY_FN_B),
-+#ifdef KEY_BRL_DOT1
++#ifdef BTN_TOOL_QUADTAP
  	NAME_ELEMENT(KEY_BRL_DOT1),		NAME_ELEMENT(KEY_BRL_DOT2),
  	NAME_ELEMENT(KEY_BRL_DOT3),		NAME_ELEMENT(KEY_BRL_DOT4),
  	NAME_ELEMENT(KEY_BRL_DOT5),		NAME_ELEMENT(KEY_BRL_DOT6),
@@ -54,7 +58,7 @@ index 74230ea..d9c8174 100644
  
  #ifdef BTN_TRIGGER_HAPPY
  	NAME_ELEMENT(BTN_TRIGGER_HAPPY1),	NAME_ELEMENT(BTN_TRIGGER_HAPPY11),
-@@ -512,6 +520,7 @@ static const char * const syns[3] = {
+@@ -512,16 +520,19 @@ static const char * const syns[3] = {
  #endif
  };
  
@@ -62,7 +66,19 @@ index 74230ea..d9c8174 100644
  static const char * const switches[SW_MAX + 1] = {
  	[0 ... SW_MAX] = NULL,
  	NAME_ELEMENT(SW_LID),
-@@ -534,6 +543,7 @@ static const char * const switches[SW_MAX + 1] = {
+ 	NAME_ELEMENT(SW_TABLET_MODE),
+ 	NAME_ELEMENT(SW_HEADPHONE_INSERT),
+ 	NAME_ELEMENT(SW_RFKILL_ALL),
++#ifdef SW_MICROPHONE_INSERT
+ 	NAME_ELEMENT(SW_MICROPHONE_INSERT),
+ 	NAME_ELEMENT(SW_DOCK),
+ 	NAME_ELEMENT(SW_LINEOUT_INSERT),
+ 	NAME_ELEMENT(SW_JACK_PHYSICAL_INSERT),
++#endif
+ #ifdef SW_VIDEOOUT_INSERT
+ 	NAME_ELEMENT(SW_VIDEOOUT_INSERT),
+ #endif
+@@ -534,6 +545,7 @@ static const char * const switches[SW_MAX + 1] = {
  	NAME_ELEMENT(SW_ROTATE_LOCK),
  #endif
  };
@@ -70,7 +86,7 @@ index 74230ea..d9c8174 100644
  
  static const char * const force[FF_MAX + 1] = {
  	[0 ... FF_MAX] = NULL,
-@@ -558,7 +568,9 @@ static const char * const * const names[EV_MAX + 1] = {
+@@ -558,7 +570,9 @@ static const char * const * const names[EV_MAX + 1] = {
  	[EV_REL] = relatives,			[EV_ABS] = absolutes,
  	[EV_MSC] = misc,			[EV_LED] = leds,
  	[EV_SND] = sounds,			[EV_REP] = repeats,
