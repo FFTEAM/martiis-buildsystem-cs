@@ -29,6 +29,9 @@ $(ARCHIVE)/dvdreadfs.tar:
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 
+$(ARCHIVE)/evtest_1.29.orig.tar.bz2:
+	$(WGET) http://ftp.de.debian.org/debian/pool/main/e/evtest/evtest_1.29.orig.tar.bz2
+
 $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2:
 	$(WGET) http://download.videolan.org/pub/libdvdcss/1.2.10/libdvdcss-1.2.10.tar.bz2
 

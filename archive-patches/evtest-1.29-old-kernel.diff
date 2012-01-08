@@ -1,0 +1,82 @@
+diff --git a/evtest.c b/evtest.c
+index 74230ea..d9c8174 100644
+--- a/evtest.c
++++ b/evtest.c
+@@ -90,7 +90,9 @@ static const struct query_mode {
+ 	{ "EV_KEY", EV_KEY, KEY_MAX, EVIOCGKEY(KEY_MAX) },
+ 	{ "EV_LED", EV_LED, LED_MAX, EVIOCGLED(LED_MAX) },
+ 	{ "EV_SND", EV_SND, SND_MAX, EVIOCGSND(SND_MAX) },
++#ifdef EV_SW
+ 	{ "EV_SW",  EV_SW, SW_MAX, EVIOCGSW(SW_MAX) },
++#endif
+ };
+ 
+ /**
+@@ -159,7 +161,9 @@ static const char * const events[EV_MAX + 1] = {
+ 	NAME_ELEMENT(EV_MSC),			NAME_ELEMENT(EV_LED),
+ 	NAME_ELEMENT(EV_SND),			NAME_ELEMENT(EV_REP),
+ 	NAME_ELEMENT(EV_FF),			NAME_ELEMENT(EV_PWR),
++#ifdef EV_SW
+ 	NAME_ELEMENT(EV_FF_STATUS),		NAME_ELEMENT(EV_SW),
++#endif
+ };
+ 
+ static const char * const keys[KEY_MAX + 1] = {
+@@ -308,6 +312,7 @@ static const char * const keys[KEY_MAX + 1] = {
+ 	NAME_ELEMENT(KEY_TWEN),			NAME_ELEMENT(KEY_DEL_EOL),
+ 	NAME_ELEMENT(KEY_DEL_EOS),		NAME_ELEMENT(KEY_INS_LINE),
+ 	NAME_ELEMENT(KEY_DEL_LINE),
++#ifdef KEY_VIDEOPHONE
+ 	NAME_ELEMENT(KEY_VIDEOPHONE),		NAME_ELEMENT(KEY_GAMES),
+ 	NAME_ELEMENT(KEY_ZOOMIN),		NAME_ELEMENT(KEY_ZOOMOUT),
+ 	NAME_ELEMENT(KEY_ZOOMRESET),		NAME_ELEMENT(KEY_WORDPROCESSOR),
+@@ -320,6 +325,7 @@ static const char * const keys[KEY_MAX + 1] = {
+ 	NAME_ELEMENT(KEY_DOLLAR),		NAME_ELEMENT(KEY_EURO),
+ 	NAME_ELEMENT(KEY_FRAMEBACK),	 	NAME_ELEMENT(KEY_FRAMEFORWARD),
+ 	NAME_ELEMENT(KEY_CONTEXT_MENU),		NAME_ELEMENT(KEY_MEDIA_REPEAT),
++#endif
+ 	NAME_ELEMENT(KEY_DEL_EOL),		NAME_ELEMENT(KEY_DEL_EOS),
+ 	NAME_ELEMENT(KEY_INS_LINE),	 	NAME_ELEMENT(KEY_DEL_LINE),
+ 	NAME_ELEMENT(KEY_FN),			NAME_ELEMENT(KEY_FN_ESC),
+@@ -333,6 +339,7 @@ static const char * const keys[KEY_MAX + 1] = {
+ 	NAME_ELEMENT(KEY_FN_D),			NAME_ELEMENT(KEY_FN_E),
+ 	NAME_ELEMENT(KEY_FN_F),			NAME_ELEMENT(KEY_FN_S),
+ 	NAME_ELEMENT(KEY_FN_B),
++#ifdef KEY_BRL_DOT1
+ 	NAME_ELEMENT(KEY_BRL_DOT1),		NAME_ELEMENT(KEY_BRL_DOT2),
+ 	NAME_ELEMENT(KEY_BRL_DOT3),		NAME_ELEMENT(KEY_BRL_DOT4),
+ 	NAME_ELEMENT(KEY_BRL_DOT5),		NAME_ELEMENT(KEY_BRL_DOT6),
+@@ -401,6 +408,7 @@ static const char * const keys[KEY_MAX + 1] = {
+ 	NAME_ELEMENT(BTN_TOOL_TRIPLETAP), 	NAME_ELEMENT(BTN_TOOL_QUADTAP),
+ 	NAME_ELEMENT(BTN_GEAR_DOWN),
+ 	NAME_ELEMENT(BTN_GEAR_UP),
++#endif
+ 
+ #ifdef BTN_TRIGGER_HAPPY
+ 	NAME_ELEMENT(BTN_TRIGGER_HAPPY1),	NAME_ELEMENT(BTN_TRIGGER_HAPPY11),
+@@ -512,6 +520,7 @@ static const char * const syns[3] = {
+ #endif
+ };
+ 
++#ifdef EV_SW
+ static const char * const switches[SW_MAX + 1] = {
+ 	[0 ... SW_MAX] = NULL,
+ 	NAME_ELEMENT(SW_LID),
+@@ -534,6 +543,7 @@ static const char * const switches[SW_MAX + 1] = {
+ 	NAME_ELEMENT(SW_ROTATE_LOCK),
+ #endif
+ };
++#endif
+ 
+ static const char * const force[FF_MAX + 1] = {
+ 	[0 ... FF_MAX] = NULL,
+@@ -558,7 +568,9 @@ static const char * const * const names[EV_MAX + 1] = {
+ 	[EV_REL] = relatives,			[EV_ABS] = absolutes,
+ 	[EV_MSC] = misc,			[EV_LED] = leds,
+ 	[EV_SND] = sounds,			[EV_REP] = repeats,
++#ifdef EV_SW
+ 	[EV_SW] = switches,
++#endif
+ 	[EV_FF] = force,			[EV_FF_STATUS] = forcestatus,
+ };
+ 

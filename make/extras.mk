@@ -67,6 +67,17 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	$(REMOVE)/djmount-0.71 $(PKGPREFIX)
 	touch $@
 
+$(D)/evtest: $(ARCHIVE)/evtest_1.29.orig.tar.bz2
+	$(UNTAR)/evtest_1.29.orig.tar.bz2
+	set -e; cd $(BUILD_TMP)/evtest-1.29; \
+		$(PATCH)/evtest-1.29-old-kernel.diff; \
+		$(CONFIGURE) --prefix= \
+			; \
+		$(MAKE); \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REMOVE)/evtest-1.29
+	touch $@
+
 $(D)/libdvdcss: $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/libdvdcss-1.2.10.tar.bz2
