@@ -79,7 +79,7 @@ neutrino-pkg: $(N_OBJDIR)/config.status
 	cp -a $(CONTROL_DIR)/neutrino-hd $(BUILD_TMP)/neutrino-hd-control
 ifeq ($(PLATFORM), tripledragon)
 	grep -q /dev/dvb/adapter%d/frontend%d $(PKGPREFIX)/bin/neutrino && \
-		sed -i "s/\(@DEP@\)/td-dvb-frontend.ko, \1/" $(BUILD_TMP)/neutrino-hd-control/control
+		sed -i "s/\(@DEP@\)/td-dvb-frontend.ko, uinput.ko, evdev.ko, \1/" $(BUILD_TMP)/neutrino-hd-control/control
 endif
 	DEP=`$(TARGET)-objdump -p $(PKGPREFIX)/bin/neutrino | awk '/NEEDED/{print $$2}' | sort` && \
 		DEP=`echo $$DEP` && \
