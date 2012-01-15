@@ -23,8 +23,8 @@ N_CONFIG_OPTS = --with-tremor --disable-upnp
 NEUTRINO_DEPS += libvorbisidec
 
 # enable FLAC decoder in neutrino
-#N_CONFIG_OPTS += --enable-flac
-#NEUTRINO_DEPS += libFLAC
+N_CONFIG_OPTS += --enable-flac
+NEUTRINO_DEPS += libFLAC
 
 # the original build script links against openssl, but it is not needed at all.
 # libcurl is picked up by configure anyway, so not needed here.
