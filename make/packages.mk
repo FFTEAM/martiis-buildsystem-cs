@@ -134,9 +134,6 @@ td-dvb-wrapper-pkg: $(TARGET_MODULE)/extra/td-dvb-frontend.ko
 	rm -rf $(PKGPREFIX)
 	install -m 644 -D $(TARGET_MODULE)/extra/td-dvb-frontend.ko \
 		$(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/extra/td-dvb-frontend.ko
-	install -m 755 -D $(SCRIPTS)/load-td-dvb-wrapper.init \
-		$(PKGPREFIX)/etc/init.d/load-td-dvb-wrapper
-	ln -s load-td-dvb-wrapper $(PKGPREFIX)/etc/init.d/S56load-td-dvb-wrapper
 	DONT_STRIP=1 PKG_VER=1 $(OPKG_SH) $(CONTROL_DIR)/td-dvb-wrapper
 	rm -rf $(PKGPREFIX)
 
