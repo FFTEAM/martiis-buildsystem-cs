@@ -21,6 +21,8 @@
 # DONT_STRIP	- if this is not empty, don't strip files
 # CMP_IGNORE	- list of files to ignore for package compare (full path)
 # PKG_VER	- package Version. @VER@ in the control file is replaced by this.
+# PKG_PROV	- packages provides. @PROV@ in the control file
+# PKG_DEP	- package dependencies. @DEP@ in the control file
 #
 # This is intended to be used in Makefiles, so only ever exit with non-zero
 # if there was an error.
@@ -138,6 +140,22 @@ if [ -n "$PKG_VER" ]; then
 		echo "${ME}: WARNING - PKG_VER set but no @VER@ in control file" >&2
 	else
 		sed -i "s/@VER@/$PKG_VER/" CONTROL/control
+	fi
+fi
+# update package provides in the control file
+if [ -n "$PKG_PROV" ]; then
+	if ! grep -q "@PROV@" CONTROL/control; then
+		echo "${ME}: WARNING - PKG_PROV set but no @PROV@ in control file" >&2
+	else
+		sed -i "s/@PROV@/$PKG_PROV/" CONTROL/control
+	fi
+fi
+# update package requires in the control file
+if [ -n "$PKG_DEP" ]; then
+	if ! grep -q "@DEP@" CONTROL/control; then
+		echo "${ME}: WARNING - PKG_DEP set but no @DEP@ in control file" >&2
+	else
+		sed -i "s/@DEP@/$PKG_DEP/" CONTROL/control
 	fi
 fi
 
