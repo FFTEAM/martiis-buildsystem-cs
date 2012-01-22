@@ -196,6 +196,7 @@ minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginsta
 	@echo "$(subst $(BASE_DIR)/,,$(BUILD_TMP))/min-root-$(PLATFORM).tar.gz"
 	@echo "Unpack this onto an empty root fs, which will enable you to install"
 	@echo "further packages via 'opkg-cl' after configuring in /etc/opkg/."
+	@echo
 	@echo "List of installed packages:"
 	@opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install list-installed | \
 		while read a b c; do printf "\t%-15s %s\n" $$a $$c; done
@@ -209,6 +210,11 @@ system-pkgs: $(SYSTEM_PKGS)
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		neutrino-hd
+	@echo
+	@echo "List of installed packages in $(subst $(BASE_DIR)/,,$(BUILD_TMP))/install:"
+	@opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install list-installed | \
+		while read a b c; do printf "\t%-15s %s\n" $$a $$c; done
+	@echo
 
 dist-pkgs: pkg-index
 ifeq ($(PKG_DEST_DIR),)
