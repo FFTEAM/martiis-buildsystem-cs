@@ -92,7 +92,7 @@ endif
 		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-hd-control/control
 ifeq ($(PLATFORM), coolstream)
 	if grep -q libcoolstream-mt.so $(BUILD_TMP)/neutrino-hd-control/control; then \
-		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1608), cs-beta-drivers/' $(BUILD_TMP)/neutrino-hd-control/control; \
+		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1984), cs-drivers (>= 1861)/' $(BUILD_TMP)/neutrino-hd-control/control; \
 	else \
 		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134), cs-drivers/' $(BUILD_TMP)/neutrino-hd-control/control; \
 	fi

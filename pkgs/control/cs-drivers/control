@@ -8,3 +8,4 @@ Architecture: @ARCH@
 Homepage: http://coolstreamtech.com/
 Source:
 Depends: cs-libs (>= 941)
+Conflicts: cs-beta-drivers
