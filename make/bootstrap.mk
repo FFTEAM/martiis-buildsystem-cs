@@ -148,6 +148,7 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.
 		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
 		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
 		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
+		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
 		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
 		export TD_BASE_DIR=$(BASE_DIR); \
 		export TD_BUILD_TMP=$(BUILD_TMP); \
@@ -203,6 +204,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
 		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
 		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
+		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
 		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
 		export TD_BASE_DIR=$(BASE_DIR); \
 		export TD_BUILD_TMP=$(BUILD_TMP); \
