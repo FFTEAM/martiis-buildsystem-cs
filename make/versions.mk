@@ -21,7 +21,7 @@ MAD-VER=0.15.1b
 UNGIF-VER=4.1.4
 
 # libiconv; converting encodings
-ICONV-VER=1.13.1
+ICONV-VER=1.14
 
 # iperf: network performance measurement
 IPERF-VER=2.0.5

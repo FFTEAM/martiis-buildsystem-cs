@@ -1,0 +1,29 @@
+diff --git a/dpflib/Makefile b/dpflib/Makefile
+index 79010b6..7b54c92 100644
+--- a/dpflib/Makefile
++++ b/dpflib/Makefile
+@@ -1,6 +1,6 @@
+ OBJS = dpflib.o rawusb.o
+ 
+-CFLAGS = -Wall -fPIC -I../include -g
++CFLAGS := -Wall -fPIC -I../include -g
+ 
+ ifndef DESTDIR
+ 	DESTDIR = ..
+@@ -9,13 +9,13 @@ endif
+ all: libdpf.a fwload
+ 
+ fwload: fwload.o libdpf.a
+-	$(CC) -o $@ fwload.o -L. -ldpf -lusb
++	$(CC) $(LDFLAGS) -o $@ fwload.o -L. -ldpf -lusb -lusb-1.0 -lpthread -lrt
+ 
+ testusb: testusb.o libdpf.a
+-	$(CC) -o $@ testusb.o -L. -ldpf -lusb
++	$(CC) $(LDFLAGS) -o $@ testusb.o -L. -ldpf -lusb -lusb-1.0 -lpthread -lrt
+ 
+ libdpf.a: $(OBJS)
+-	ar ruv $@ $(OBJS)
++	$(AR) ruv $@ $(OBJS)
+ 
+ clean:
+ 	rm -f fwload libdpf.a *.o

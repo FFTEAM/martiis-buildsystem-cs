@@ -1,0 +1,104 @@
+diff --git a/drivers.m4 b/drivers.m4
+index 754a48b..942e3ec 100644
+--- a/drivers.m4
++++ b/drivers.m4
+@@ -369,7 +369,7 @@ if test "$DPF" = "yes"; then
+    if test "$has_libdpf" = "true"; then
+       GRAPHIC="yes"
+       DRIVERS="$DRIVERS drv_dpf.o"
+-      DRVLIBS="$DRVLIBS -Llibdpf -ldpf -lusb"
++      DRVLIBS="$DRVLIBS $DPF_LDFLAGS -ldpf -lusb"
+       AC_DEFINE(WITH_DPF,1,[DPF driver])
+    else
+       AC_MSG_WARN(libdpf.h not found: DPF driver disabled)
+diff --git a/drv_dpf.c b/drv_dpf.c
+index 39e1708..133f0cd 100644
+--- a/drv_dpf.c
++++ b/drv_dpf.c
+@@ -72,6 +72,8 @@ static int drv_dpf_open(const char *section)
+ {
+     int error;
+     char *dev;
++    int i;
++    DPFValue val;
+ 
+     // Currently, the Port specification is unused.
+ 
+@@ -81,12 +83,24 @@ static int drv_dpf_open(const char *section)
+ 	return -1;
+     }
+ 
+-    error = dpf_open(NULL, &g_h);
++    error = dpf_open(dev, &g_h);
+     if (error < 0) {
+ 	error("dpf: cannot open dpf device %s", dev);
+ 	return -1;
+     }
+ 
++    val.type = TYPE_INTEGER;
++
++    if (cfg_number(section, "Orientation", 0, 0, 3, &i) > 0) {
++               val.value.integer = i;
++               dpf_setproperty(g_h, PROPERTY_ORIENTATION, &val);
++       }
++
++    if (cfg_number(section, "Backlight", 0, 0, 7, &i) > 0) {
++               val.value.integer = i;
++               dpf_setproperty(g_h, PROPERTY_BRIGHTNESS, &val);
++    }
++
+     return 0;
+ }
+ 
+@@ -183,6 +197,16 @@ static int drv_dpf_start2(const char *section)
+ /***            plugins               ***/
+ /****************************************/
+ 
++void dpf_backlight(DPFContext *g_h, int bl_on)
++{
++       DPFValue val;
++
++       val.type = TYPE_INTEGER;
++       val.value.integer = bl_on;
++       printf("Setting brightness...\n");
++       dpf_setproperty(g_h, PROPERTY_BRIGHTNESS, &val);
++}
++
+ static void plugin_backlight(RESULT * result, RESULT * arg1)
+ {
+     int bl_on;
+diff --git a/lcd4linux.c b/lcd4linux.c
+index 842f653..b3485f7 100644
+--- a/lcd4linux.c
++++ b/lcd4linux.c
+@@ -85,7 +85,7 @@ static void usage(void)
+     printf("  -c <key>=<value> overwrite entries from the config-file\n");
+     printf("  -i               enter interactive mode (after display initialisation)\n");
+     printf("  -ii              enter interactive mode (before display initialisation)\n");
+-    printf("  -f <config-file> use configuration from <config-file> instead of /etc/lcd4linux.conf\n");
++    printf("  -f <config-file> use configuration from <config-file> instead of /opt/pkg/etc/lcd4linux.conf\n");
+     printf("  -v               generate info messages\n");
+     printf("  -vv              generate debugging messages\n");
+     printf("  -p <pid-file>    specify a different pid-file location (default is /var/run/lcd4linux.pid)\n");
+@@ -207,7 +207,7 @@ static void daemonize(void)
+ 
+ int main(int argc, char *argv[])
+ {
+-    char *cfg = "/etc/lcd4linux.conf";
++    char *cfg = "/opt/pkg/etc/lcd4linux.conf";
+     char *pidfile = PIDFILE;
+     char *display, *driver, *layout;
+     char section[32];
+diff --git a/plugins.m4 b/plugins.m4
+index 81c55aa..cb04f06 100644
+--- a/plugins.m4
++++ b/plugins.m4
+@@ -539,7 +539,7 @@ if test "$PLUGIN_PYTHON" = "yes"; then
+    if test "$with_python" != "yes"; then
+       AC_MSG_WARN(python support not enabled: python plugin disabled (use --with-python to enable))
+    else
+-      if test -z "$python_path"; then
++      if test -z "$PYTHON_CPPFLAGS"; then
+          AC_MSG_WARN(python headers not found: python plugin disabled)
+       else
+          PLUGINS="$PLUGINS plugin_python.o"

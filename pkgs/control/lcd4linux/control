@@ -1,0 +1,10 @@
+Package: lcd4linux
+Version: @VER@-1
+Description: Display information on an external LC Display
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://lcd4linux.bulix.org/
+Source:
+Depends: libc.so.6

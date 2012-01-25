@@ -480,3 +480,94 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
 	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/base
 	$(REMOVE)/sg3_utils-$(SG3_UTILS-VER) $(PKGPREFIX)
 	touch $@
+
+# the following libs are built static only for now, as they
+# have only one user (lcd4linux) yet => no opkg package yet, either.
+# libiconv libusb libusb-compat libgd2
+$(D)/libiconv: $(ARCHIVE)/libiconv-$(ICONV-VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libiconv-$(ICONV-VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libiconv-$(ICONV-VER); \
+		$(CONFIGURE) --target=$(TARGET) --enable-static --disable-shared \
+			--prefix= --datarootdir=/.remove --bindir=/.remove ; \
+		$(MAKE) ; \
+		make install DESTDIR=$(TARGETPREFIX)
+	rm -rf $(TARGETPREFIX)/.remove
+	rm -rf $(TARGETPREFIX)/lib/preloadable_libiconv.so
+	$(REWRITE_LIBTOOL)/libiconv.la
+	$(REMOVE)/libiconv-$(ICONV-VER)
+	touch $@
+
+$(D)/libusb: $(ARCHIVE)/libusb-1.0.8.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libusb-1.0.8.tar.bz2
+	set -e; cd $(BUILD_TMP)/libusb-1.0.8; \
+		$(CONFIGURE) --prefix= --enable-static --disable-shared ; \
+		$(MAKE) ; \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_LIBTOOL)/libusb-1.0.la
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libusb-1.0.pc
+	$(REMOVE)/libusb-1.0.8
+	touch $@
+
+$(D)/libusb-compat: $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2 $(D)/libusb | $(TARGETPREFIX)
+	$(UNTAR)/libusb-compat-0.1.3.tar.bz2
+	set -e; cd $(BUILD_TMP)/libusb-compat-0.1.3; \
+		$(CONFIGURE) --prefix= --enable-static --disable-shared ; \
+		$(MAKE) ; \
+		make install DESTDIR=$(TARGETPREFIX)
+	rm -f $(TARGETPREFIX)/bin/libusb-config
+	$(REWRITE_LIBTOOL)/libusb.la
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libusb.pc
+	$(REMOVE)/libusb-compat-0.1.3
+	touch $@
+
+$(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(ARCHIVE)/gd-2.0.35.tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/gd-2.0.35.tar.gz
+	set -e; cd $(BUILD_TMP)/gd/2.0.35; \
+		chmod 0755 configure; \
+		: autoreconf -fi; \
+		$(CONFIGURE) --prefix= --enable-static --disable-shared --bindir=/.remove; \
+		$(MAKE); \
+		make install DESTDIR=$(TARGETPREFIX)
+	rm -rf $(TARGETPREFIX)/.remove
+	$(REWRITE_LIBTOOL)/libgd.la
+	$(REMOVE)/gd
+	touch $@
+
+LCD4LINUXREV=1171
+DPFHACK_DIR=makefu-dpfhack_pearl-c66acd3
+$(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf lcd4linux-r$(LCD4LINUXREV); \
+		svn co -r$(LCD4LINUXREV) https://ssl.bulix.org/svn/lcd4linux/trunk lcd4linux-r$(LCD4LINUXREV); \
+		tar cvpzf $@ lcd4linux-r$(LCD4LINUXREV)
+	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV)
+
+# ugly hack to build / link against libdpf, but installing into TARGETPREFIX
+# does not make sense as it is only linked statically anyway.
+$(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz| $(TARGETPREFIX)
+	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
+	$(UNTAR)/lcd4linux-r$(LCD4LINUXREV).tar.gz
+	unzip $(ARCHIVE)/dpfhack_pearl.zip -d $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)
+	ln -s $(DPFHACK_DIR)/dpflib $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/
+	set -e; cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/$(DPFHACK_DIR) ; \
+		$(PATCH)/dpflib-crossbuild.diff; \
+		cp -a include/* dpflib/ ; \
+		cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/dpflib ; \
+		$(BUILDENV) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB) -L$(TARGETLIB)" \
+			make CC=$(TARGET)-gcc; \
+		ln -s . libdpf; ln -s dpf.h libdpf.h; \
+	set -e; cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV); \
+		$(PATCH)/lcd4linux-svn1171-dpf.patch; \
+		$(BUILD_ENV) ./bootstrap; \
+		DPF_LDFLAGS="-L./dpflib" \
+		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -I./dpflib" ./configure $(CONFIGURE_OPTS) \
+			--prefix= \
+			--with-drivers='DPF' \
+			--with-plugins='all,!dbus,!mpris_dbus,!asterisk,!isdn,!pop3,!ppp,!seti,!huawei,!imon,!kvv,!sample,!w1retap,!wireless,!xmms,!gps,!mpd,!mysql,!qnaplog' \
+			--without-ncurses; \
+		$(MAKE) all; \
+		make install DESTDIR=$(PKGPREFIX)/opt/pkg
+	install -D -m 600 $(SCRIPTS)/lcd4linux.conf $(PKGPREFIX)/opt/pkg/etc/lcd4linux.conf
+	PKG_VER=0.10.9999.r$(LCD4LINUXREV) $(OPKG_SH) $(CONTROL_DIR)/lcd4linux
+	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
+	touch $@

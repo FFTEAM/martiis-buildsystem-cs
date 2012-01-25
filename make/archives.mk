@@ -29,6 +29,9 @@ $(ARCHIVE)/dvdreadfs.tar:
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 
+$(ARCHIVE)/dpfhack_pearl.zip:
+	$(WGET) -O $@ https://nodeload.github.com/makefu/dpfhack_pearl/zipball/master
+
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://ftp.de.debian.org/debian/pool/main/e/evtest/evtest_1.29.orig.tar.bz2
 
@@ -56,6 +59,12 @@ $(ARCHIVE)/libungif-$(UNGIF-VER).tar.bz2:
 $(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP-VER)/libupnp-$(LIBUPNP-VER).tar.bz2
 
+$(ARCHIVE)/libusb-1.0.8.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.8/libusb-1.0.8.tar.bz2
+
+$(ARCHIVE)/libusb-compat-0.1.3.tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-0.1.3/libusb-compat-0.1.3.tar.bz2
+
 $(ARCHIVE)/curl-$(CURL-VER).tar.bz2:
 	$(WGET) http://curl.haxx.se/download/curl-$(CURL-VER).tar.bz2
 
@@ -70,6 +79,9 @@ $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
 
 $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz:
 	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-$(FBSHOT-VER).tar.gz
+
+$(ARCHIVE)/gd-2.0.35.tar.gz:
+	$(WGET) http://fossies.org/unix/www/gd-2.0.35.tar.gz
 
 $(ARCHIVE)/gdb-$(GDB-VER).tar.bz2:
 	$(WGET) ftp://sourceware.org/pub/gdb/releases/gdb-$(GDB-VER).tar.bz2
