@@ -4,6 +4,7 @@ BASE_DIR    := $(shell pwd)
 -include $(BASE_DIR)/config
 
 ifneq ($(PLATFORM), coolstream)
+ifneq ($(PLATFORM), spark)
 PLATFORM    ?= tripledragon
 ifneq ($(TD_COMPILER), new)
 TD_COMPILER ?= old
@@ -14,6 +15,11 @@ TARGET      ?= powerpc-405n-linux-gnu
 endif
 FLAVOUR     ?= neutrino-hd-tripledragon
 BOXARCH      = powerpc
+else
+TARGET      ?= sh4-linux
+BOXARCH      = sh4
+FLAVOUR     ?= neutrino-hd-tripledragon
+endif
 else
 TARGET      ?= arm-cx2450x-linux-gnueabi
 FLAVOUR     ?= neutrino-hd

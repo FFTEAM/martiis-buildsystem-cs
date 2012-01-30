@@ -5,9 +5,11 @@ BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/find-requires.sh $(HOSTPREFIX)/bin/find-provides.sh
 
-ifeq ($(PLATFORM), tripledragon)
+ifneq ($(PLATFORM), coolstream)
+ifneq ($(PLATFORM), spark)
 BOOTSTRAP += directfb-includes-and-libs td-modules
 PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
+endif
 else
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
@@ -91,10 +93,12 @@ $(TD_SVN)/ARMAS:
 	@echo
 	@false
 
+ifneq ($(PLATFORM), spark)
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
+endif
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 
-ifneq ($(PLATFORM), tripledragon)
+ifeq ($(PLATFORM), coolstream)
 cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
 
 $(CROSS_DIR)/bin/$(TARGET)-gcc:
@@ -157,9 +161,9 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.
 		./ct-ng build
 	ln -sf sys-root/lib $(CROSS_BASE)/$(TARGET)/
 	$(REMOVE)/crosstool-ng-1.10.0
+endif
 
-else
-# TRIPLEDRAGON
+ifeq ($(PLATFORM), tripledragon)
 td-modules: $(TARGETPREFIX)/lib/modules/2.6.12
 
 ifneq ($(TD_COMPILER), new)
@@ -251,6 +255,41 @@ directfb-includes-and-libs: preqs-directfb-td $(TARGETPREFIX)/stb/lib/directfb-0
 
 # PLATFORM = tripledagon
 endif
+
+ifeq ($(PLATFORM), spark)
+$(STLINUX_DIR): | $(BUILD_TMP)
+	mkdir $@
+
+## stlinux crosstool is pretty lame since we only install the RPMs, but why bother
+## building everything for yourself if they provide a working, tested, supported
+## toolchain etc?
+
+# the mount point for the ISOs
+$(STLINUX_SRC_MNT) $(STLINUX_SH4_MNT):
+	mkdir -p $@
+
+# mount the ISOs. later, we'll just download what's needed on demand, but for
+# now this is less work.
+stlinux-isomount: | $(STLINUX_SRC_MNT) $(STLINUX_SH4_MNT)
+	test -e $(STLINUX_SRC_MNT)/stlinux24-host-filesystem-1.0-7.src.rpm || \
+		sudo mount -oloop,ro $(STLINUX_SRC_ISO) $(STLINUX_SRC_MNT)
+	test -e $(STLINUX_SH4_MNT)/README || \
+		sudo mount -oloop,ro $(STLINUX_SH4_ISO) $(STLINUX_SH4_MNT)
+
+# install the RPMs into CROSS_BASE
+crosstool: $(STLINUX_DIR) $(STLINUX_DIR)/localmacros
+	rpm $(DRPM) --ignorearch --force --nodeps -Uhv --badreloc --noscripts \
+		--relocate $(STM_RELOCATE)/devkit/sh4=$(CROSS_BASE) \
+		$(ST_SH4_RPMS)/stlinux24-cross-sh4-{b,cp,g}*.rpm \
+		$(ST_SH4_RPMS)/stlinux24-sh4-linux-kernel-headers-2.6.32.10_stm24_0201-42.noarch.rpm \
+		$(ST_SH4_RPMS)/stlinux24-sh4-libgcc-4.3.4-66.sh4.rpm \
+		$(ST_SH4_RPMS)/stlinux24-sh4-glibc-2.10.1-7.sh4.rpm \
+		$(ST_SH4_RPMS)/stlinux24-sh4-glibc-dev-2.10.1-7.sh4.rpm \
+		;
+	cd $(CROSS_BASE) && ln -s ../target sh4-linux/sys-root
+
+endif
+
 
 # helper target to create ccache links (make sure to have ccache installed in /usr/bin ;)
 ccache: $(HOSTPREFIX)/bin

@@ -82,6 +82,9 @@ endif
 	@echo "                             you usually don't want to do that."
 	@echo
 
+ifeq ($(BOXARCH), sh4)
+include make/stlinux.mk
+endif
 # define package versions first...
 include make/versions.mk
 
