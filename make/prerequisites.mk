@@ -3,13 +3,14 @@
 TOOLCHECK  = find-git find-svn find-gzip find-bzip2 find-patch find-gawk
 TOOLCHECK += find-makeinfo find-automake find-gcc find-libtool
 TOOLCHECK += find-yacc find-flex find-tic find-pkg-config
+TOOLCHECK += find-cmake
 
 PREQS = download neutrino-hd-source $(D)
 ifeq ($(PLATFORM), tripledragon)
 PREQS += tdsvn preqs-directfb-td
-else
+endif
+ifeq ($(PLATFROM), coolstream)
 PREQS += cs-svn
-TOOLCHECK += find-cmake
 endif
 
 DFB_TD_DEPS  = $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb
