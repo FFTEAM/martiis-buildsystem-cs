@@ -42,9 +42,12 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2 | $(TARGETPR
 
 ifeq ($(BOXARCH), arm)
 MAD_FPM = arm
-endif
+else
 ifeq ($(BOXARCH), powerpc)
 MAD_FPM = ppc
+else
+MAD_FPM = default
+endif
 endif
 $(D)/libmad: $(ARCHIVE)/libmad-$(MAD-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libmad-$(MAD-VER).tar.gz
@@ -227,6 +230,14 @@ FFMPEG_CONFIGURE += --enable-bsfs
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
+FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg --disable-filters
+FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
+FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
+FFMPEG_CONFIGURE += --disable-bsfs
+endif
+## todo: check. this is a plain copy of tripledragon configure...
+ifeq ($(BOXARCH), sh4)
+FFMPEG_CONFIGURE  = --arch=sh4
 FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg --disable-filters
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
