@@ -45,7 +45,7 @@ $(HOSTPREFIX):
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
-$(HOSTPREFIX)/bin/opkg%.sh \
+$(HOSTPREFIX)/bin/opkg%sh \
 $(HOSTPREFIX)/bin/find%.sh: $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
