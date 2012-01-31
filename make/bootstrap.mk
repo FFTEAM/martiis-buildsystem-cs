@@ -7,7 +7,7 @@ BOOTSTRAP += $(HOSTPREFIX)/bin/find-requires.sh $(HOSTPREFIX)/bin/find-provides.
 
 ifneq ($(PLATFORM), coolstream)
 ifneq ($(PLATFORM), spark)
-BOOTSTRAP += directfb-includes-and-libs td-modules
+BOOTSTRAP += directfb-includes-and-libs td-modules $(STL_ARCHIVE)
 PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
 endif
 else
@@ -40,6 +40,9 @@ $(TARGETPREFIX):
 	@false
 
 $(HOSTPREFIX):
+	mkdir $@
+
+$(STL_ARCHIVE):
 	mkdir $@
 
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
@@ -292,6 +295,10 @@ crosstool: $(STLINUX_DIR) $(STLINUX_DIR)/localmacros
 		$(ST_SH4_RPMS)/stlinux24-sh4-libstdc++-4.3.4-66.sh4.rpm \
 		$(ST_SH4_RPMS)/stlinux24-sh4-libstdc++-dev-4.3.4-66.sh4.rpm \
 		;
+	# this puts mkimage etc. into cross/host/bin... not too nice...
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uhv --noscripts \
+		--badreloc --relocate $(STM_RELOCATE)=$(CROSS_BASE) \
+		$(STLINUX_SH4_MNT)/STLinux/host/stlinux24-host-u-boot-tools-1.3.1_stm24-8.i386.rpm
 	set -e; cd $(CROSS_BASE); rm -f sh4-linux/sys-root; ln -s ../target sh4-linux/sys-root
 
 endif

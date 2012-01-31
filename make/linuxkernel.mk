@@ -14,10 +14,15 @@
 ifeq ($(PLATFORM), tripledragon)
 KVERSION_FULL = 2.6.12
 K_DEP = $(D)/tdkernel
-else
+endif
+ifeq ($(PLATFORM), coolstream)
 KVERSION = 2.6.26.8
 KVERSION_FULL = $(KVERSION)-nevis
 K_DEP = $(D)/cskernel
+endif
+ifeq ($(PLATFORM), spark)
+KVERSION = 2.6.32.46
+KVERSION_FULL = $(KVERSION)_stm24$(PATCH_STR)
 endif
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
 TARGET_MODULE = $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)
@@ -105,8 +110,9 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 		export QUIET_EXTRACTIONS=y; \
 		eval `cat powerpc-405.dat gcc-3.4.1-glibc-2.3.2.dat` LINUX_DIR=linux-2.6.12 sh all.sh --notest
 	$(REMOVE)/crosstool-0.43
-else
+endif
 
+ifeq ($(PLATFORM), coolstream)
 $(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
@@ -219,6 +225,40 @@ $(D)/cs-uboot: $(ARCHIVE)/u-boot-2009.03.tar.bz2 $(PATCHES)/coolstream/u-boot-20
 		$(MAKE)
 	cp -a $(BUILD_TMP)/u-boot-2009.03/tools/mkimage $(HOSTPREFIX)/bin
 	touch $@
+endif
+
+ifeq ($(PLATFORM), spark)
+TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
+TDT_PATCHES=$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/Patches
+
+$(BUILD_TMP)/linux-$(KVERSION_FULL): \
+		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
+		$(PATCHES)/linux-2.6.26.8-new-make.patch \
+		$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uhv --noscripts \
+		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
+	tar -C $(BUILD_TMP) -xf $(STLINUX_DIR)/SOURCES/linux-2.6.32.tar.bz2; \
+	set -e; cd $(TMP_KDIR); \
+		bzcat $(STLINUX_DIR)/SOURCES/linux-2.6.32.46.patch.bz2 | patch -p1 ;\
+		bzcat $(STLINUX_DIR)/SOURCES/linux-2.6.32.46_stm24_sh4_0209.patch.bz2 | patch -p1; \
+		for i in $(SPARK_PATCHES_24); do \
+			echo "==> Applying Patch: $$i"; \
+			patch -p1 -i $(TDT_PATCHES)/$$i; \
+		done; \
+		cp $(TDT_PATCHES)/linux-sh4-2.6.32.46-0209_spark.config .config;
+	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
+	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
+	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/linux/version.h
+	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
+
+
+sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL); \
+		export PATH=$(CROSS_BASE)/host/bin:$(PATH); \
+		cp $(TDT_PATCHES)/linux-sh4-2.6.32.46-0209_spark.config .config; \
+		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/integrated_firmware\"#" .config; \
+		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules
+
 endif
 
 # rule for the autofs4 module - needed by the automounter

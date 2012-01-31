@@ -50,3 +50,29 @@ STLINUX_SRC_ISO = $(STLINUX_ISODIR)/STLinux-2.4-source-20111019.iso
 STLINUX_SH4_MNT = $(BUILD_TMP)/iso/sh4
 STLINUX_SRC_MNT = $(BUILD_TMP)/iso/src
 ST_SH4_RPMS = $(STLINUX_SH4_MNT)/STLinux/sh4
+
+# updates / downloads
+STL_ARCHIVE = $(ARCHIVE)/stlinux
+STL_FTP = http://ftp.stlinux.com/pub/stlinux/2.4
+STL_GET = $(WGET)/stlinux
+
+$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm:
+	$(STL_GET) $(STL_FTP)/updates/SRPMS/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
+
+PATCH_STR = _0209
+
+### those patches are taken from the pingulux-git/tdt checkout
+STM24_DVB_PATCH = linux-sh4-linuxdvb_stm24$(PATCH_STR).patch
+COMMONPATCHES_24 = \
+		$(STM24_DVB_PATCH) \
+		linux-sh4-sound_stm24$(PATCH_STR).patch \
+		linux-sh4-time_stm24$(PATCH_STR).patch \
+		linux-sh4-init_mm_stm24$(PATCH_STR).patch \
+		linux-sh4-copro_stm24$(PATCH_STR).patch \
+		bpa2_procfs_stm24$(PATCH_STR).patch
+
+SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
+	linux-sh4-stmmac_stm24$(PATCH_STR).patch \
+	linux-sh4-lmb_stm24$(PATCH_STR).patch \
+	linux-sh4-spark_setup_stm24$(PATCH_STR).patch \
+	linux-sh4-linux_yaffs2_stm24_0209.patch
