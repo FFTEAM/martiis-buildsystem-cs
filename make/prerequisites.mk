@@ -12,6 +12,9 @@ endif
 ifeq ($(PLATFROM), coolstream)
 PREQS += cs-svn
 endif
+ifeq ($(PLATFORM), spark)
+PREQS += $(SOURCE_DIR)/pingulux-git
+endif
 
 DFB_TD_DEPS  = $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb
 DFB_TD_DEPS += $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig
@@ -133,3 +136,6 @@ $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib: | $(TD_SVN)
 
 tdsvn: $(TD_SVN)
 
+$(SOURCE_DIR)/pingulux-git:
+	set -e; cd $(SOURCE_DIR); \
+		git clone $(GITORIOUS)/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
