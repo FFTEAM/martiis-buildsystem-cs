@@ -259,6 +259,36 @@ sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/integrated_firmware\"#" .config; \
 		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules
 
+$(TARGETPREFIX)/include/linux/dvb:
+	mkdir -p $@
+
+$(BUILD_TMP)/driver: $(TARGETPREFIX)/include/linux/dvb
+	cp -a $(SOURCE_DIR)/pingulux-git/tdt/cvs/driver $(BUILD_TMP)
+	set -e; cd $(BUILD_TMP)/driver; \
+		rm -f player2 multicom; \
+		ln -s player2_191 player2; \
+		ln -s multicom-3.2.4_rc3 multicom; \
+		rm -f .config; printf "export CONFIG_PLAYER_191=y\nexport CONFIG_MULTICOM324=y\n" > .config; \
+		cp player2/linux/include/linux/dvb/stm_ioctls.h $(TARGETPREFIX)/include/linux/dvb; \
+		cd include; \
+		rm -f stmfb player2 multicom; \
+		ln -s stmfb-3.1_stm24_0102 stmfb; \
+		ln -s player2_179 player2; \
+		ln -s ../multicom-3.2.4_rc3/include multicom; \
+		cd ../stgfb; \
+		rm -f stmfb; \
+		ln -s stmfb-3.1_stm24_0102 stmfb; \
+		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
+	# disable wireless build
+	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
+
+sparkdriver: $(BUILD_TMP)/driver
+	$(MAKE) -C $(BUILD_TMP)/driver ARCH=sh \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+		SPARK=spark \
+		PLAYER191=player191 \
+		CROSS_COMPILE=$(TARGET)-
+
 endif
 
 # rule for the autofs4 module - needed by the automounter
