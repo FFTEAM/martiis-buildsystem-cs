@@ -228,7 +228,7 @@ $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX) $(TD_SVN)/ARM
 	@echo ' ============================================================================== '
 	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/ hardware | \
 		tar -vxC $(TARGETPREFIX)/include/
-	cp -a $(PATCHES)/xp_osd_user.h			$(TARGETPREFIX)/include/hardware/xp/
+	cp -a $(PATCHES)/tripledragon/xp_osd_user.h $(TARGETPREFIX)/include/hardware/xp/
 
 $(PKGPREFIX)/stb/lib/directfb-0.9.24 \
 $(TARGETPREFIX)/stb/lib/directfb-0.9.24: $(TARGETPREFIX) $(TD_SVN)/ARMAS

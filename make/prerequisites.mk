@@ -7,7 +7,7 @@ TOOLCHECK += find-cmake
 
 PREQS = download neutrino-hd-source $(D)
 ifeq ($(PLATFORM), tripledragon)
-PREQS += tdsvn preqs-directfb-td
+PREQS += tdsvn
 endif
 ifeq ($(PLATFROM), coolstream)
 PREQS += cs-svn
@@ -16,12 +16,7 @@ ifeq ($(PLATFORM), spark)
 PREQS += $(SOURCE_DIR)/pingulux-git
 endif
 
-DFB_TD_DEPS  = $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb
-DFB_TD_DEPS += $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig
-DFB_TD_DEPS += $(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib
-
 preqs: $(PREQS)
-preqs-directfb-td: $(DFB_TD_DEPS)
 
 $(D):
 	mkdir $(D)
@@ -105,34 +100,9 @@ neutrino-hd-source: $(N_HD_SOURCE)
 cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 # TRIPLEDRAGON stuff...
-#
-# instead of checking out everything, just check out the stuff that's really needed.
-$(TD_SVN):
-	mkdir -p $(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/
-	mkdir -p $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/
-	mkdir -p $(TD_SVN)/ARMAS/linux-enviroment/
-	cd $(TD_SVN)/ARMAS/filesystem-skeleton/lib/modules/ && \
-		$(SVNCO)/ARMAS/filesystem-skeleton/lib/modules/2.6.12
-	cd $(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/ && \
-		$(SVNCO)/ARMAS/cross-enivroment-build/stb/include/hardware
-	cd $(TD_SVN)/ARMAS/linux-enviroment/ && \
-		$(SVNCO)/ARMAS/linux-enviroment/drivers && \
-		$(SVNCO)/ARMAS/linux-enviroment/kernel
-
-# BASE_DIR/tdsvn already creates .../stb/include
-$(TD_SVN)/ARMAS/cross-enivroment-build/stb/include/directfb: $(TD_SVN)
-	cd $(shell dirname $@) && \
-		$(SVNCO)/ARMAS/cross-enivroment-build/stb/include/directfb
-
-$(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig: | $(TD_SVN)
-	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && \
-		$(SVNCO)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig
-
-$(TD_SVN)/ARMAS/filesystem-skeleton/stb/lib: | $(TD_SVN)
-	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && \
-		$(SVNCO)/ARMAS/filesystem-skeleton/stb/lib
+$(TD_SVN): find-lzma
+	set -e; cd $(SOURCE_DIR); \
+		lzma -dc $(PATCHES)/tripledragon/tdsvn-essential.tar.lzma | tar xv
 
 tdsvn: $(TD_SVN)
 
