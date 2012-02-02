@@ -5,16 +5,18 @@ BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/find-requires.sh $(HOSTPREFIX)/bin/find-provides.sh
 
-ifneq ($(PLATFORM), coolstream)
-ifneq ($(PLATFORM), spark)
-BOOTSTRAP += directfb-includes-and-libs td-modules $(STL_ARCHIVE)
+ifeq ($(PLATFORM), tripledragon)
+BOOTSTRAP += directfb-includes-and-libs td-modules
 PLAT_INCS  = $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h
 endif
-else
+ifeq ($(PLATFORM), coolstream)
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
 PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
 PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
+endif
+ifeq ($(PLATFORM), spark)
+BOOTSTRAP += $(STL_ARCHIVE)
 endif
 
 bootstrap: $(BOOTSTRAP)
@@ -240,7 +242,7 @@ $(TARGETPREFIX)/include/directfb: $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	tar --exclude='*/.svn' -cC $(TD_SVN)/ARMAS/cross-enivroment-build/stb include/directfb | \
 		tar -vxC $(TARGETPREFIX)/
 
-directfb-includes-and-libs: preqs-directfb-td $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREFIX)/include/directfb $(TD_SVN)/ARMAS
+directfb-includes-and-libs: $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREFIX)/include/directfb $(TD_SVN)/ARMAS
 	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/directfb.pc $(PKG_CONFIG_PATH)/
 	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/direct.pc   $(PKG_CONFIG_PATH)/
 	cp -a $(TD_SVN)/ARMAS/cross-enivroment-build/stb/lib/pkgconfig/fusion.pc   $(PKG_CONFIG_PATH)/
