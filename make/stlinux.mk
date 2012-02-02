@@ -54,10 +54,24 @@ ST_SH4_RPMS = $(STLINUX_SH4_MNT)/STLinux/sh4
 # updates / downloads
 STL_ARCHIVE = $(ARCHIVE)/stlinux
 STL_FTP = http://ftp.stlinux.com/pub/stlinux/2.4
+STL_FTP_UPD_SRC  = $(STL_FTP)/updates/SRPMS
+STL_FTP_UPD_SH4  = $(STL_FTP)/updates/RPMS/sh4
+STL_FTP_UPD_HOST = $(STL_FTP)/updates/RPMS/host
 STL_GET = $(WGET)/stlinux
 
-$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm:
-	$(STL_GET) $(STL_FTP)/updates/SRPMS/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
+## ordering is important here. The /host/ rule must stay before the less
+## specific %.sh4/%.i386/%.noarch rule. No idea if this is portable or
+## even reliable :-(
+$(STL_ARCHIVE)/host/%.rpm:
+	$(STL_GET)/host $(STL_FTP_UPD_HOST)/$(subst $(STL_ARCHIVE)/host/,"",$@)
+
+$(STL_ARCHIVE)/%.src.rpm:
+	$(STL_GET) $(STL_FTP_UPD_SRC)/$(subst $(STL_ARCHIVE)/,"",$@)
+
+$(STL_ARCHIVE)/%.sh4.rpm \
+$(STL_ARCHIVE)/%.i386.rpm \
+$(STL_ARCHIVE)/%.noarch.rpm:
+	$(STL_GET) $(STL_FTP_UPD_SH4)/$(subst $(STL_ARCHIVE)/,"",$@)
 
 PATCH_STR = _0209
 
