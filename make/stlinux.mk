@@ -75,6 +75,15 @@ $(STL_ARCHIVE)/%.noarch.rpm:
 
 PATCH_STR = _0209
 
+## rpm versions of packages on the STM server
+# binutils 2.21.51-* segfault on linking the kernel
+BINUTILS_VER	= 2.20.51.0.7-48
+GCC_VER		= 4.5.3-97
+STMKERNEL_VER	= 2.6.32.46-45
+LIBGCC_VER	= 4.5.3-100
+GLIBC_VER	= 2.10.2-34
+
+
 ### those patches are taken from the pingulux-git/tdt checkout
 STM24_DVB_PATCH = linux-sh4-linuxdvb_stm24$(PATCH_STR).patch
 COMMONPATCHES_24 = \

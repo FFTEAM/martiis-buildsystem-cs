@@ -280,26 +280,30 @@ stlinux-isomount: | $(STLINUX_SRC_MNT) $(STLINUX_SH4_MNT)
 	test -e $(STLINUX_SH4_MNT)/README || \
 		sudo mount -oloop,ro $(STLINUX_SH4_ISO) $(STLINUX_SH4_MNT)
 
-# install the RPMs into CROSS_BASE
-crosstool: $(STLINUX_DIR) $(STLINUX_DIR)/localmacros
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uhv --noscripts \
+crosstool-rpminstall: \
+$(STL_ARCHIVE)/stlinux24-cross-sh4-binutils-$(BINUTILS_VER).i386.rpm \
+$(STL_ARCHIVE)/stlinux24-cross-sh4-binutils-dev-$(BINUTILS_VER).i386.rpm \
+$(STL_ARCHIVE)/stlinux24-cross-sh4-cpp-$(GCC_VER).i386.rpm \
+$(STL_ARCHIVE)/stlinux24-cross-sh4-gcc-$(GCC_VER).i386.rpm \
+$(STL_ARCHIVE)/stlinux24-cross-sh4-g++-$(GCC_VER).i386.rpm \
+$(STL_ARCHIVE)/stlinux24-sh4-linux-kernel-headers-$(STMKERNEL_VER).noarch.rpm \
+$(STL_ARCHIVE)/stlinux24-sh4-libgcc-$(LIBGCC_VER).sh4.rpm \
+$(STL_ARCHIVE)/stlinux24-sh4-glibc-$(GLIBC_VER).sh4.rpm \
+$(STL_ARCHIVE)/stlinux24-sh4-glibc-dev-$(GLIBC_VER).sh4.rpm \
+$(STL_ARCHIVE)/stlinux24-sh4-libstdc++-$(LIBGCC_VER).sh4.rpm \
+$(STL_ARCHIVE)/stlinux24-sh4-libstdc++-dev-$(LIBGCC_VER).sh4.rpm
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
 		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4=$(CROSS_BASE) \
-		$(ST_SH4_RPMS)/stlinux24-cross-sh4-binutils-2.19.1-41.i386.rpm \
-		$(ST_SH4_RPMS)/stlinux24-cross-sh4-binutils-dev-2.19.1-41.i386.rpm \
-		$(ST_SH4_RPMS)/stlinux24-cross-sh4-cpp-4.3.4-63.i386.rpm \
-		$(ST_SH4_RPMS)/stlinux24-cross-sh4-gcc-4.3.4-63.i386.rpm \
-		$(ST_SH4_RPMS)/stlinux24-cross-sh4-g++-4.3.4-63.i386.rpm \
-		$(ST_SH4_RPMS)/stlinux24-sh4-linux-kernel-headers-2.6.32.10_stm24_0201-42.noarch.rpm \
-		$(ST_SH4_RPMS)/stlinux24-sh4-libgcc-4.3.4-66.sh4.rpm \
-		$(ST_SH4_RPMS)/stlinux24-sh4-glibc-2.10.1-7.sh4.rpm \
-		$(ST_SH4_RPMS)/stlinux24-sh4-glibc-dev-2.10.1-7.sh4.rpm \
-		$(ST_SH4_RPMS)/stlinux24-sh4-libstdc++-4.3.4-66.sh4.rpm \
-		$(ST_SH4_RPMS)/stlinux24-sh4-libstdc++-dev-4.3.4-66.sh4.rpm \
-		;
+		$^
+
+
+# install the RPMs into CROSS_BASE
+crosstool: $(STL_ARCHIVE)/host/stlinux24-host-u-boot-tools-1.3.1_stm24-9.i386.rpm \
+$(STLINUX_DIR) $(STLINUX_DIR)/localmacros crosstool-rpminstall
 	# this puts mkimage etc. into cross/host/bin... not too nice...
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uhv --noscripts \
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
 		--badreloc --relocate $(STM_RELOCATE)=$(CROSS_BASE) \
-		$(STLINUX_SH4_MNT)/STLinux/host/stlinux24-host-u-boot-tools-1.3.1_stm24-8.i386.rpm
+		$(firstword $^)
 	set -e; cd $(CROSS_BASE); rm -f sh4-linux/sys-root; ln -s ../target sh4-linux/sys-root
 
 endif
