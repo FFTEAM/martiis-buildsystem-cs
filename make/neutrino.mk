@@ -5,11 +5,10 @@ NEUTRINO_DEPS += openthreads
 
 N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
-ifneq ($(PLATFORM), tripledragon)
-# coolstream
+ifeq ($(PLATFORM), coolstream)
 N_CPPFLAGS += -DUSE_NEVIS_GXA
-else
-# tripledragon
+endif
+ifeq ($(PLATFORM), tripledragon)
 N_CPPFLAGS += -I$(TARGETPREFIX)/include/hardware
 # TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
 N_CPPFLAGS += -D_FILE_OFFSET_BITS=64
@@ -34,7 +33,6 @@ N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
 
 # finally we can build outside of the source directory
 N_OBJDIR = $(BUILD_TMP)/$(FLAVOUR)
-#endif
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(N_HD_SOURCE)
 
