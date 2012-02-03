@@ -3,7 +3,7 @@
 BOOTSTRAP  = targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs
 BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
-BOOTSTRAP += $(HOSTPREFIX)/bin/find-requires.sh $(HOSTPREFIX)/bin/find-provides.sh
+BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-find-requires.sh $(HOSTPREFIX)/bin/opkg-find-provides.sh
 
 ifeq ($(PLATFORM), tripledragon)
 BOOTSTRAP += directfb-includes-and-libs td-modules
@@ -50,8 +50,7 @@ $(STL_ARCHIVE):
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
-$(HOSTPREFIX)/bin/opkg%sh \
-$(HOSTPREFIX)/bin/find%.sh: $(HOSTPREFIX)/bin
+$(HOSTPREFIX)/bin/opkg%sh: $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
 $(BUILD_TMP):

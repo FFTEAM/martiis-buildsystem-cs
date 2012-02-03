@@ -23,7 +23,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	VER=`cd $(PKGPREFIX)/lib; echo ld-*.so` && VER=$${VER#ld-} && VER=$${VER%.so} && \
 		sed -i "s/@VER@/$$VER/" $(BUILD_TMP)/glibc-control/control
 	# lame attempt at "auto-provides" for glibc...
-	PROV=`find-provides.sh $(PKGPREFIX)` && \
+	PROV=`opkg-find-provides.sh $(PKGPREFIX)` && \
 		sed -i "s/@PROV@/$$PROV/" $(BUILD_TMP)/glibc-control/control
 	$(OPKG_SH) $(BUILD_TMP)/glibc-control
 	sed -i	-e 's/^Package: glibc$$/Package: glibc-debug/' \
