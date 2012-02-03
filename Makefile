@@ -49,6 +49,17 @@ endif
 		echo "$(TARGET)-gcc not found in PATH or \$$CROSS_DIR/bin"; \
 		echo "=> please check your setup. Maybe you need to 'make crosstool'."; \
 	fi
+ifeq ($(PLATFORM), tripledragon)
+	@PATH=$(K_GCC_PATH):$(PATH); if type -p powerpc-405-linux-gnu-gcc >/dev/null 2>&1; then \
+		echo "kernelgcc (powerpc-405-linux-gnu-gcc) found."; \
+	else \
+		echo "##############################################################################"; \
+		echo "Could not find the gcc 3.x for building kernel modules. You will probably need"; \
+		echo "it later to build the necessary kernel modules. Please do 'make kernelgcc' now"; \
+		echo "(you can also do this later if necessary)."; \
+		echo "##############################################################################"; \
+	fi
+endif
 	@if ! LC_ALL=C make -n preqs|grep -q "Nothing to be done"; then \
 		echo;echo "Your next target to do is probably 'make preqs'"; fi
 	@if ! test -e $(BASE_DIR)/config; then \

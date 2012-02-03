@@ -31,7 +31,7 @@ ifeq ($(PLATFORM), tripledragon)
 ############################################################
 # stuff needed to build a td kernel (very experimental...) #
 ############################################################
-K_GCC_PATH = $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
+K_GCC_PATH ?= $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
 
 $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
@@ -102,11 +102,15 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 	cp $(PATCHES)/glibc-2.3.3-allow-gcc-4.0-configure.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
 	cp $(PATCHES)/glibc-2.3.6-new_make.patch                $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
 	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-0.43; \
+		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
+		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
+		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
 		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
 		export TARBALLS_DIR=$(ARCHIVE); \
 		export RESULT_TOP=$(CROSS_BASE); \
 		export GCC_LANGUAGES="c"; \
-		export PARALLELMFLAGS="-j 3"; \
+		export PARALLELMFLAGS="-j $$NUM_CPUS"; \
 		export QUIET_EXTRACTIONS=y; \
 		eval `cat powerpc-405.dat gcc-3.4.1-glibc-2.3.2.dat` LINUX_DIR=linux-2.6.12 sh all.sh --notest
 	$(REMOVE)/crosstool-0.43
