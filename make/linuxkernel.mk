@@ -61,9 +61,9 @@ $(TARGET_MODULE)/extra/td-dvb-frontend.ko: td-dvb-wrapper
 	install -m 644 -D $(SOURCE_MODULE)/extra/td-dvb-frontend.ko $@
 
 ifeq ($(TD_COMPILER), new)
-TDK_DEPS = kernelgcc
+TDK_DEPS = $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 endif
-$(D)/tdkernel: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
+$(D)/tdkernel: $(TDK_DEPS) | $(BUILD_TMP)/linux-2.6.12
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig; \
