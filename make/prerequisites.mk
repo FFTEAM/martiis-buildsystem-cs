@@ -100,7 +100,8 @@ neutrino-hd-source: $(N_HD_SOURCE)
 cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 # TRIPLEDRAGON stuff...
-$(TD_SVN): find-lzma
+$(TD_SVN):
+	make find-lzma
 	set -e; cd $(SOURCE_DIR); \
 		lzma -dc $(PATCHES)/tripledragon/tdsvn-essential.tar.lzma | tar xv
 
