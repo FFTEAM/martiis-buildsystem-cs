@@ -47,9 +47,11 @@ $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
 		cp $(PATCHES)/kernel.config-td .config
 
 $(SOURCE_DIR)/td-dvb-wrapper:
-	git clone $(GITORIOUS)/seife/td-dvb-wrapper $@
+	git clone $(GITORIOUS)/seife/td-dvb-wrapper.git $@
 
-td-dvb-wrapper: $(SOURCE_DIR)/td-dvb-wrapper |$(BUILD_TMP)/linux-2.6.12
+# td-dvb-wrapper does not strictly need tdkernel to be built (the source directory
+# with some preparation would be ok), but we'd be missing the module symbols.
+td-dvb-wrapper: $(SOURCE_DIR)/td-dvb-wrapper $(D)/tdkernel
 	PATH=$(K_GCC_PATH):$(PATH) make find-powerpc-405-linux-gnu-gcc
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
