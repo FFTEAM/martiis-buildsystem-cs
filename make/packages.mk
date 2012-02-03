@@ -151,7 +151,7 @@ addon-drivers-pkg: tdkernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 
 PHONY += td-module-pkg td-directfb-pkg
-SYSTEM_PKGS += td-module-pkg td-directfb-pkg
+SYSTEM_PKGS += td-module-pkg td-directfb-pkg td-dvb-wrapper-pkg addon-drivers-pkg
 endif
 
 aaa_base-pkg:
