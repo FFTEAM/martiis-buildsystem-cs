@@ -310,6 +310,11 @@ sparkdriver: $(BUILD_TMP)/driver
 		CROSS_COMPILE=$(TARGET)- \
 		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 
+sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
+		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4/target=$(TARGETPREFIX)/mymodules \
+		$^
+
 endif
 
 # rule for the autofs4 module - needed by the automounter
