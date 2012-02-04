@@ -25,6 +25,12 @@ NEUTRINO_DEPS += libvorbisidec
 N_CONFIG_OPTS += --enable-flac
 NEUTRINO_DEPS += libFLAC
 
+ifneq ($(USE_NEUTRINO_HAL),)
+N_CONFIG_OPTS += --with-neutrino-hal-includes=$(LN_HAL_SRC)/include \
+	--with-neutrino-hal-build=$(LN_OBJDIR)
+NEUTRINO_DEPS += libneutrino-hal
+endif
+
 # the original build script links against openssl, but it is not needed at all.
 # libcurl is picked up by configure anyway, so not needed here.
 # N_LDFLAGS  = -L$(TARGETPREFIX)/lib -lcurl -lssl -lcrypto -ldl
@@ -106,3 +112,21 @@ neutrino-clean:
 	-rm $(D)/neutrino
 
 PHONY += neutrino-clean neutrino-system neutrino-system-seife
+
+LN_OBJDIR = $(BUILD_TMP)/libneutrino-hal
+LN_HAL_SRC = $(SOURCE_DIR)/libneutrino-hal
+$(LN_OBJDIR)/config.status:
+	test -d $(LN_OBJDIR) || mkdir -p $(LN_OBJDIR)
+	$(LN_HAL_SRC)/autogen.sh
+	set -e; cd $(LN_OBJDIR); \
+		export PKG_CONFIG=$(PKG_CONFIG); \
+		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); \
+		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
+		LDFLAGS="$(N_LDFLAGS)" \
+		$(LN_HAL_SRC)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
+				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
+				--enable-silent-rules
+
+libneutrino-hal: $(LN_OBJDIR)/config.status
+	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
+	$(MAKE) -C $(LN_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
