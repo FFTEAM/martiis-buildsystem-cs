@@ -251,19 +251,23 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
 		done; \
-		cp $(TDT_PATCHES)/linux-sh4-2.6.32.46-0209_spark.config .config;
+		cp $(TDT_PATCHES)/linux-sh4-2.6.32.46-0209_spark.config .config; \
+		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/integrated_firmware\"#" .config; \
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/linux/version.h
 	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
 
+kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
 
 sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
 	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL); \
 		export PATH=$(CROSS_BASE)/host/bin:$(PATH); \
-		cp $(TDT_PATCHES)/linux-sh4-2.6.32.46-0209_spark.config .config; \
-		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/integrated_firmware\"#" .config; \
-		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules
+		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules; \
+		make    ARCH=sh CROSS_COMPILE=$(TARGET)- \
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+
 
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
@@ -287,13 +291,24 @@ $(BUILD_TMP)/driver: $(TARGETPREFIX)/include/linux/dvb
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	# disable wireless build
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
+	ln -sf $(BUILD_TMP)/linux-$(KVERSION_FULL)/.config $@/
 
 sparkdriver: $(BUILD_TMP)/driver
-	$(MAKE) -C $(BUILD_TMP)/driver ARCH=sh \
+	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
+		M=$^ \
 		SPARK=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
+	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
+		M=$^ \
+		SPARK=spark \
+		PLAYER191=player191 \
+		CROSS_COMPILE=$(TARGET)- \
+		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 
 endif
 
