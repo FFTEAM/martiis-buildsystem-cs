@@ -32,7 +32,7 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/glibc-control
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/glibc-control
 
-ifneq ($(PLATFORM), tripledragon)
+ifeq ($(PLATFORM), coolstream)
 cs-drivers-pkg:
 	# we have two directories packed, the newer one determines the package version
 	rm -rf $(BUILD_TMP)/tmp-ctrl
@@ -110,7 +110,8 @@ addon-drivers-pkg: cskernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 
 PHONY += cs-drivers-pkg cs-libs-pkg
 SYSTEM_PKGS += cs-libs-pkg cs-drivers-pkg
-else
+endif
+ifeq ($(PLATFORM), tripledragon)
 td-module-pkg:
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
