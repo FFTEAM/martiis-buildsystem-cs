@@ -8,4 +8,4 @@ Architecture: @ARCH@
 Homepage: http://sourceforge.net/projects/libjpeg-turbo/
 Source:
 Depends:
-Provides: libjpeg.so.62
+Provides: @PROV@
