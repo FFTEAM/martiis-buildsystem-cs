@@ -195,6 +195,7 @@ if test -e CONTROL/conffiles; then
 	done < CONTROL/conffiles
 	rm CONTROL/conffiles
 	test -s CONTROL/conffiles.new && mv CONTROL/conffiles.new CONTROL/conffiles
+	rm -f CONTROL/conffiles.new
 fi
 
 # the package name, needed for detection of already built old version...
