@@ -102,7 +102,7 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz | $(TARGETPREFIX)
 		ln -sf /bin/true ./ldconfig; \
 		CC=$(TARGET)-gcc \
 		RANLIB=$(TARGET)-ranlib \
-		CFLAGS="-Os -msoft-float" \
+		CFLAGS="-Os" \
 		PATH=$(BUILD_TMP)/e2fsprogs-$(E2FSPROGS-VER):$(PATH) \
 		./configure \
 			--build=$(BUILD) \
@@ -120,6 +120,7 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz | $(TARGETPREFIX)
 			--disable-resizer \
 			--disable-uuidd \
 			--disable-fsck \
+			--disable-defrag \
 			--with-gnu-ld \
 			--enable-symlink-install \
 			--disable-nls; \
@@ -135,7 +136,7 @@ $(D)/e2fsprogs: $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz | $(TARGETPREFIX)
 	cd $(PKGPREFIX) && rm sbin/badblocks sbin/dumpe2fs sbin/blkid sbin/logsave \
 		sbin/e2undo sbin/filefrag sbin/e2freefrag bin/chattr bin/lsattr bin/uuidgen \
 		lib/*.so && rm -r lib/pkgconfig include && rm -f lib/*.a
-	$(OPKG_SH) $(CONTROL_DIR)/e2fsprogs
+	PKG_VER=$(E2FSPROGS-VER) $(OPKG_SH) $(CONTROL_DIR)/e2fsprogs
 	rm -rf $(PKGPREFIX)
 	touch $@
 

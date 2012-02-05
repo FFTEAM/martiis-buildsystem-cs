@@ -105,7 +105,7 @@ PROCPS-VER=3.2.8
 BUSYBOX-VER=1.18.4
 
 # e2fsprogs; filesystem utilities for use with the ext[x] filesystem
-E2FSPROGS-VER=1.41.12
+E2FSPROGS-VER=1.42
 
 # xfsprogs; Utilities for managing the XFS filesystem
 XFSPROGS-VER=3.1.5
