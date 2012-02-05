@@ -239,10 +239,10 @@ TDT_PATCHES=$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/Patches
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
-		$(PATCHES)/linux-2.6.26.8-new-make.patch \
-		$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uhv --noscripts \
+		$(PATCHES)/kernel.config-spark
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
+	rm -fr $(TMP_KDIR)
 	tar -C $(BUILD_TMP) -xf $(STLINUX_DIR)/SOURCES/linux-2.6.32.tar.bz2; \
 	set -e; cd $(TMP_KDIR); \
 		bzcat $(STLINUX_DIR)/SOURCES/linux-2.6.32.46.patch.bz2 | patch -p1 ;\
@@ -251,11 +251,12 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
 		done; \
-		cp $(TDT_PATCHES)/linux-sh4-2.6.32.46-0209_spark.config .config; \
+		cp $(PATCHES)/kernel.config-spark .config; \
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/integrated_firmware\"#" .config; \
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/linux/version.h
+	rm -fr $@
 	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
 
 kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)
