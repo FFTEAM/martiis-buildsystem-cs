@@ -1,0 +1,39 @@
+Using this build system to build for FULAN SPARK boxes:
+=======================================================
+
+NOTICE: this is tested on a GoldenMedia GM990, you will probably
+        need to adapt it slightly for the other boxes.
+
+Building for SPARK boxes is not really special, you just set
+
+	PLATFORM=spark
+
+in config and there you go, same "make preqs; make crosstool;
+make bootstrap" as on Tripledragon.
+
+Some things are a bit different, however:
+* in order to get started quickly, I do not build my own toolchain /
+  libc but instead just use the binaries from stlinux.
+* stlinux host RPMs (crosscompiler / binutils etc) are 32bit only
+  If you are running an x86_64 Distribution then make sure it is biarch
+  capable and that you have 32bit support packages installed. It works
+  for me on an openSUSE 12.1 x86_64 installation. YMMV.
+* also, some system libraries (most notably DirectFB but probably a
+  few more in the future) are not built but installed from stlinux
+  RPMs. This might change in the future but right now it helps getting
+  off the grouund.
+
+Other than that, the same things as explained in README.opkg-bootstrap
+apply here.
+Booting from USB stick is explained in scripts/spark-usbboot.sh.
+Make sure you have serial console access to the U-Boot bootloader before
+trying to use that, though. You have been warned.
+
+IMPORTANT: in order to get serial access to U-Boot on the GM990, you have
+to start the box with the "Menu" key pressed, then either press "Menu"
+again or hit "3" or "ESC" on the serial console to get out of the "update
+menu".
+
+Feedback is welcome!
+
+Have a lot of fun...

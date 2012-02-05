@@ -1,5 +1,5 @@
 # The type of box to build for.
-# either "tripledragon" or "coolstream"
+# either "tripledragon", "coolstream" or "spark"
 # default (if empty) is "tripledragon"
 #PLATFORM=tripledragon
 
