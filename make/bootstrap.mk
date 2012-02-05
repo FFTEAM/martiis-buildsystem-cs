@@ -84,6 +84,10 @@ $(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	find $@ -name .svn -type d -print0 | xargs --no-run-if-empty -0 rm -rf
 
 $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
+	# stlinux RPM puts libstdc++ into /usr/lib...
+	if test -e $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/libstdc++.so; then \
+		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/libstdc++.s*[!y] $(TARGETPREFIX)/lib; \
+	fi
 	if test -e $(CROSS_DIR)/$(TARGET)/sys-root/lib; then \
 		cp -a $(CROSS_DIR)/$(TARGET)/sys-root/lib/*so* $(TARGETPREFIX)/lib; \
 	else \
