@@ -154,6 +154,35 @@ addon-drivers-pkg: tdkernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 PHONY += td-module-pkg td-directfb-pkg
 SYSTEM_PKGS += td-module-pkg td-directfb-pkg td-dvb-wrapper-pkg addon-drivers-pkg
 endif
+ifeq ($(PLATFORM), spark)
+$(TARGETPREFIX)/mymodules/lib: sparkkernel sparkdriver sparkfirmware
+spark-drivers-pkg: $(TARGETPREFIX)/mymodules/lib |$(HOSTPREFIX)/bin/opkg-module-deps.sh
+	$(REMOVE)/spark-drivers $(PKGPREFIX)
+	mkdir $(PKGPREFIX)
+	cp -a $(TARGETPREFIX)/mymodules/lib $(PKGPREFIX)
+	cp -a $(CONTROL_DIR)/spark-drivers $(BUILD_TMP)
+	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/spark-drivers/control
+	DONT_STRIP=1 PKG_VER=$(KVERSION_FULL) $(OPKG_SH) $(BUILD_TMP)/spark-drivers
+	$(REMOVE)/spark-drivers $(PKGPREFIX)
+
+## libpng14 does not belong here, but it saves me from building it right now
+spark-directfb-pkg: \
+	$(STL_ARCHIVE)/stlinux24-sh4-directfb-1.4.12+STM2011.09.27-1.sh4.rpm \
+	$(STL_ARCHIVE)/stlinux24-sh4-libpng-1.4.8-3.sh4.rpm
+	rm -rf $(PKGPREFIX)
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
+		--excludedocs \
+		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4/target=$(PKGPREFIX) \
+		$^
+	rm -rf $(PKGPREFIX)/usr/share/man
+	rm $(PKGPREFIX)/usr/lib/directfb-1.4-5/inputdrivers/libdirectfb_tslib.so # no touchscreen
+	rm $(PKGPREFIX)/usr/lib/directfb-1.4-5/systems/libdirectfb_x11.so        # no X11 yet
+	rm $(PKGPREFIX)/usr/lib/directfb-1.4-5/systems/libdirectfb_fbdev.so      # we have stmfb
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_VER=1.4.12+STM2011.09.27 $(OPKG_SH) $(CONTROL_DIR)/directfb
+	rm -rf $(PKGPREFIX)
+endif
 
 aaa_base-pkg:
 	rm -rf $(PKGPREFIX)
