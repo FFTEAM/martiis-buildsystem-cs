@@ -99,3 +99,23 @@ SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
 	linux-sh4-lmb_stm24$(PATCH_STR).patch \
 	linux-sh4-spark_setup_stm24$(PATCH_STR).patch \
 	linux-sh4-linux_yaffs2_stm24_0209.patch
+
+## temporary until I sort out the mess and find a better place...
+
+stlinux-dfb: \
+	$(STL_ARCHIVE)/stlinux24-sh4-directfb-1.4.12+STM2011.09.27-1.sh4.rpm \
+	$(STL_ARCHIVE)/stlinux24-sh4-directfb-dev-1.4.12+STM2011.09.27-1.sh4.rpm
+	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
+		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4=$(BUILD_TMP)/dfb \
+		$^
+	set -e; cd $(BUILD_TMP)/dfb/target; \
+		sed -i "s,/usr,$(TARGETPREFIX)/usr,g" usr/lib/*.la; \
+		sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/usr/lib'," usr/lib/*.la; \
+		cp -a usr $(TARGETPREFIX);
+		rm -f $(TARGETPREFIX)/include/directfb; \
+		ln -s ../usr/include/directfb $(TARGETPREFIX)/include
+	set -e; cd $(TARGETPREFIX)/usr/lib/pkgconfig; \
+		for i in *; do \
+			sed -e "s,^prefix=.*,prefix='$(TARGETPREFIX)/usr'," $$i > $(TARGETPREFIX)/lib/pkgconfig/$$i; \
+			rm $$i; \
+		done
