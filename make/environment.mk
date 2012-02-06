@@ -138,3 +138,14 @@ OPKG_SH_ENV += ARCH=$(BOXARCH)
 OPKG_SH_ENV += SOURCE=$(PKGPREFIX)
 OPKG_SH_ENV += BUILD_TMP=$(BUILD_TMP)
 OPKG_SH = $(OPKG_SH_ENV) opkg.sh
+
+## for spark TDT git repos...
+ifeq ($(TDT_REPO), "pinky")
+# this one seems to be more recent, but is a bit "chaotic" ...
+TDT_GIT ?= $(GITORIOUS)/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
+TDT_SRC ?= $(SOURCE_DIR)/pingulux-git
+else
+# ... but this one is not specific to SPARK boxes.
+TDT_GIT ?= $(GITORIOUS)/open-duckbox-project-sh4/tdt.git
+TDT_SRC ?= $(SOURCE_DIR)/tdt
+endif

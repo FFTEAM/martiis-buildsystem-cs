@@ -13,7 +13,7 @@ ifeq ($(PLATFROM), coolstream)
 PREQS += cs-svn
 endif
 ifeq ($(PLATFORM), spark)
-PREQS += $(SOURCE_DIR)/pingulux-git
+PREQS += $(TDT_SRC)
 endif
 
 preqs: $(PREQS)
@@ -107,6 +107,6 @@ $(TD_SVN):
 
 tdsvn: $(TD_SVN)
 
-$(SOURCE_DIR)/pingulux-git:
+$(TDT_SRC):
 	set -e; cd $(SOURCE_DIR); \
-		git clone $(GITORIOUS)/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
+		git clone $(TDT_GIT)

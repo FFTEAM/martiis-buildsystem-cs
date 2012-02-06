@@ -235,7 +235,7 @@ endif
 
 ifeq ($(PLATFORM), spark)
 TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
-TDT_PATCHES=$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/Patches
+TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
@@ -252,7 +252,7 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
 		done; \
 		cp $(PATCHES)/kernel.config-spark .config; \
-		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(SOURCE_DIR)/pingulux-git/tdt/cvs/cdk/integrated_firmware\"#" .config; \
+		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config; \
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/linux/version.h
@@ -273,8 +273,8 @@ sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
 
-$(BUILD_TMP)/driver: $(TARGETPREFIX)/include/linux/dvb
-	cp -a $(SOURCE_DIR)/pingulux-git/tdt/cvs/driver $(BUILD_TMP)
+$(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
+	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
 		rm -f player2 multicom; \
 		ln -s player2_191 player2; \
@@ -294,18 +294,23 @@ $(BUILD_TMP)/driver: $(TARGETPREFIX)/include/linux/dvb
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
 	ln -sf $(BUILD_TMP)/linux-$(KVERSION_FULL)/.config $@/
 
-sparkdriver: $(BUILD_TMP)/driver
+# CONFIG_MODULES_PATH= is needed because the Makefile contains
+# "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
+# host system includes are used and that might be fatal.
+sparkdriver: $(BUILD_TMP)/driver | $(BUILD_TMP)/linux-$(KVERSION_FULL)
 	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
 		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
-		M=$^ \
+		M=$(firstword $^) \
 		SPARK=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
 	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
 		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
-		M=$^ \
+		M=$(firstword $^) \
 		SPARK=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)- \
