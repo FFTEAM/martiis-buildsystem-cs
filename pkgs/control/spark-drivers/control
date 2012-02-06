@@ -1,0 +1,10 @@
+Package: spark-drivers
+Version: @VER@-1
+Description: Kernel modules for fulan spark Settopbox
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage
+Source:
+Depends: depmod

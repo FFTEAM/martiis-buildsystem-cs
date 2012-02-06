@@ -1,0 +1,11 @@
+Package: directfb
+Version: @VER@-1
+Description: DirectFB libraries
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://directfb.org
+Source:
+Provides: @PROV@
+Depends: @DEP@
