@@ -11,6 +11,9 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		else \
 			cp -a $(CROSS_DIR)/$(TARGET)/lib/*.so* lib/; \
 		fi; \
+		if test -e $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/libstdc++.so; then \
+			cp -a $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/libstdc++.s*[!y] lib/; \
+		fi
 		(cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/||true);  \
 		rm -fv lib/libnss_hesiod* lib/libnss_nis* lib/libnss_compat* \
 		   lib/libmudflap* lib/libc.so lib/libpthread.so \
