@@ -1,0 +1,49 @@
+#!/bin/sh
+export PATH=/sbin:/bin:/usr/sbin:/usr/bin
+export TZ=`cat /etc/TZ`
+# the default "vt102" is crap.
+export TERM=linux
+
+# for next boot ;) This is the device that will be on the root FS
+if ! [ -e /dev/console ]; then
+	mknod -m 644 /dev/console c 5 1
+	echo "If you are missing useful output on the console, reboot the box now." > /dev/console
+fi
+mount -t proc proc /proc
+mount -t tmpfs dev /dev
+# make sure that important devices are there before mdev startup
+# otherwise a redirection in a mdev script might create them...
+# those are on the freshly mounted tmpfs, not duplicating the above one
+mknod -m 644 /dev/console	c 5 1
+mknod -m 666 /dev/null		c 1 3
+mount -t sysfs sys /sys
+mount -t tmpfs tmp /tmp
+mkdir /dev/pts
+mount -t devpts devpts /dev/pts
+mkdir -p /dev/shm/usb
+# directory for mounting disks
+mkdir /tmp/media
+rm -f /media		# don't remove if it is a directory
+ln -s /tmp/media /	# /media points to /tmp/media/
+#
+# make mdev try to process the events in sequential order
+echo >/dev/mdev.seq
+# start up mdev with coldplugging
+mdev -s
+# manually create nodes for crappy drivers
+/sbin/mknodes
+# register mdev as hotplug handler
+echo $(which mdev) > /proc/sys/kernel/hotplug
+
+dmesg -n 4
+# update library cache before running init scripts
+ldconfig
+
+# /etc/profile sets up $PATH etc.
+. /etc/profile
+
+. /etc/init.d/functions
+
+run_initscripts start
+
+test -e /etc/init.d/rcS.local && . /etc/init.d/rcS.local

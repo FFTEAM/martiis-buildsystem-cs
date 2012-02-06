@@ -1,0 +1,16 @@
+#!/bin/sh
+/bin/echo "running $0"
+# <name ><type> <mode> <uid> <gid> <major> <minor> <start> <inc> <count>
+
+makedevs /dev << EOF
+vfd	c 644 0 0 147	0
+EOF
+
+# create firmware links...
+test -e /lib/firmware/component.fw || ln -s component_7111_mb618.fw /lib/firmware/component.fw
+# dummy firmware files, so that the module init code does not
+# wait for timeout
+test -e /lib/firmware/fdvo0.fw     || touch /lib/firmware/fdvo0.fw
+test -e /lib/firmware/downmix.fw   || touch /lib/firmware/downmix.fw
+
+/bin/echo "done $0"

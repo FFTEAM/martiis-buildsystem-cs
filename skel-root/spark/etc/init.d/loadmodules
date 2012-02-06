@@ -1,0 +1,63 @@
+#!/bin/sh
+
+im()
+{
+	modname=$1
+	modsane=${1//-/_}
+	params=$(eval echo \$OPT_${modsane})
+	shift
+	file=/lib/modules/${KVER}/${modname}.ko
+	# the CS modules are in /lib/modules/$KVER/*,
+	# own built modules are in /lib/modules/$KVER/kernel/... subdirectories
+	if test -e $file; then
+		/sbin/insmod $file ${params:-$@}
+	else
+		/sbin/modprobe $modname $@
+	fi
+}
+
+case $1 in
+start)
+	read dummy dummy KVER dummy < /proc/version
+	# set all "option foo ..." as OPT_foo="..." variables
+	eval $(sed -n "/^options\s/{
+		s/^options\s\(\S\+\)\s\(.*\)\$/OPT_\1=\"\2\"/;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		p }" /etc/modprobe.conf)
+	im aotom
+	im e2_proc
+	im stmcore_display_sti7111
+	MEMSIZE=8m
+	im stmfb.ko display0=1280x720-32@50:$MEMSIZE:pal:yuv:yuv
+	ustslave /dev/st231-1 /boot/audio.elf
+	ustslave /dev/st231-0 /boot/video.elf
+	im cpu_frequ
+	im embxshell
+	im embxmailbox mailbox0=0xfe211000:136:set2 mailbox1=0xfe212000:0
+	im embxshm mailbox0=shm:0:7:0x60000000:0:256:256:0:512:0x40000000:0x10000000
+	im mme_host transport0=shm
+	im avs type=avs_pio
+	read PLAYER < /proc/stb/player/version
+	im mmelog
+	im ksound
+	im p2div64
+	im stm_v4l2
+	im stmvout
+	im stmvbi
+	im pseudocard
+	im stv090x
+	im pti waitMS=20 videoMem=4096
+	im stm_monitor
+	im stmsysfs
+	im stmdvb
+	im player2 discardlateframe=0
+	im sth264pp
+	im stmalloc
+	im platform
+	im silencegen
+	im bpamem
+	im smartcard
+	;;
+esac
