@@ -119,3 +119,28 @@ stlinux-dfb: \
 			sed -e "s,^prefix=.*,prefix='$(TARGETPREFIX)/usr'," $$i > $(TARGETPREFIX)/lib/pkgconfig/$$i; \
 			rm $$i; \
 		done
+
+TDT_TOOLS ?= $(BUILD_TMP)/tdt-tools
+$(TDT_TOOLS)/config.status:
+	test -d $(TDT_TOOLS)|| mkdir $(TDT_TOOLS)
+	$(TDT_SRC)/tdt/cvs/apps/misc/tools/autogen.sh
+	set -e; cd $(shell dirname $@); \
+		export PKG_CONFIG=$(PKG_CONFIG); \
+		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); \
+		CC=$(TARGET)-gcc \
+		CFLAGS="$(TARGET_CFLAGS)" \
+		CXXFLAGS="$(TARGET_CFLAGS)" \
+		$(TDT_SRC)/tdt/cvs/apps/misc/tools/configure \
+			--host=$(TARGET) --build=$(BUILD) --prefix= \
+			--enable-silent-rules --enable-maintainer-mode \
+			;
+
+ustslave: $(TARGETPREFIX)/bin/ustslave
+fp_control: $(TARGETPREFIX)/bin/fp_control
+stfbcontrol: $(TARGETPREFIX)/bin/stfbcontrol
+$(TARGETPREFIX)/bin/ustslave \
+$(TARGETPREFIX)/bin/fp_control \
+$(TARGETPREFIX)/bin/stfbcontrol: \
+	$(TDT_TOOLS)/config.status
+	$(MAKE) -C $(TDT_TOOLS) install \
+		SUBDIRS=$(lastword $(subst /, ,$@)) DESTDIR=$(TARGETPREFIX)

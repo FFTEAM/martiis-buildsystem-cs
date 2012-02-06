@@ -184,13 +184,26 @@ spark-directfb-pkg: \
 	rm -rf $(PKGPREFIX)
 endif
 
-aaa_base-pkg:
+AAA_BASE_DEPS =
+ifeq ($(PLATFORM), spark)
+AAA_BASE_DEPS += stfbcontrol fp_control ustslave
+endif
+
+aaa_base-pkg: $(AAA_BASE_DEPS)
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
 	cp -a skel-root/common/* $(PKGPREFIX)/
 	cp -a skel-root/$(PLATFORM)/* $(PKGPREFIX)/
 	find $(PKGPREFIX) -name .gitignore | xargs rm
+ifeq ($(PLATFORM), spark)
+	test -d $(PKGPREFIX)/bin || mkdir $(PKGPREFIX)/bin
+	cp -a $(TARGETPREFIX)/bin/stfbcontrol $(TARGETPREFIX)/bin/fp_control \
+		$(TARGETPREFIX)/bin/rset $(TARGETPREFIX)/bin/ustslave \
+		$(PKGPREFIX)/bin
+	rm $(PKGPREFIX)/etc/init.d/start_neutrino
+else
 	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules && rm etc/init.d/start_neutrino # ugly...
+endif
 	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
