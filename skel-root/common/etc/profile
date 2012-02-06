@@ -30,6 +30,9 @@ fi
 
 unset _tmp
 
+# hostname in prompt...
+PS1='\\h:\\w \\$ '
+
 # make sure TZ is exported...
 read TZ < /etc/TZ
 export TZ
