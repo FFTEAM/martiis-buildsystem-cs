@@ -136,7 +136,10 @@ $(TDT_TOOLS)/config.status:
 
 ustslave: $(TARGETPREFIX)/bin/ustslave
 fp_control: $(TARGETPREFIX)/bin/fp_control
-stfbcontrol: $(TARGETPREFIX)/bin/stfbcontrol
+# BUILD_TMP/driver "provides" include/linux/stmfb.h
+stfbcontrol: | $(BUILD_TMP)/driver
+	$(MAKE) $(TARGETPREFIX)/bin/stfbcontrol
+
 $(TARGETPREFIX)/bin/ustslave \
 $(TARGETPREFIX)/bin/fp_control \
 $(TARGETPREFIX)/bin/stfbcontrol: \
