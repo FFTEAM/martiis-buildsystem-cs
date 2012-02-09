@@ -50,6 +50,7 @@ $(STL_ARCHIVE):
 $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
+$(HOSTPREFIX)/bin/unpack%.sh \
 $(HOSTPREFIX)/bin/opkg%sh: $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
@@ -265,9 +266,6 @@ directfb-includes-and-libs: $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREF
 endif
 
 ifeq ($(PLATFORM), spark)
-$(STLINUX_DIR): | $(BUILD_TMP)
-	mkdir $@
-
 ## stlinux crosstool is pretty lame since we only install the RPMs, but why bother
 ## building everything for yourself if they provide a working, tested, supported
 ## toolchain etc?
@@ -296,17 +294,16 @@ $(STL_ARCHIVE)/stlinux24-sh4-glibc-$(GLIBC_VER).sh4.rpm \
 $(STL_ARCHIVE)/stlinux24-sh4-glibc-dev-$(GLIBC_VER).sh4.rpm \
 $(STL_ARCHIVE)/stlinux24-sh4-libstdc++-$(LIBGCC_VER).sh4.rpm \
 $(STL_ARCHIVE)/stlinux24-sh4-libstdc++-dev-$(LIBGCC_VER).sh4.rpm
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
-		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4=$(CROSS_BASE) \
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4 $(CROSS_BASE) \
 		$^
 
 
 # install the RPMs into CROSS_BASE
 crosstool: $(STL_ARCHIVE)/host/stlinux24-host-u-boot-tools-1.3.1_stm24-9.i386.rpm \
-$(STLINUX_DIR) $(STLINUX_DIR)/localmacros crosstool-rpminstall
+$(HOSTPREFIX)/bin/unpack-rpm.sh \
+crosstool-rpminstall
 	# this puts mkimage etc. into cross/host/bin... not too nice...
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
-		--badreloc --relocate $(STM_RELOCATE)=$(CROSS_BASE) \
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE) $(CROSS_BASE) \
 		$(firstword $^)
 	set -e; cd $(CROSS_BASE); rm -f sh4-linux/sys-root; ln -s ../target sh4-linux/sys-root
 

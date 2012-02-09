@@ -240,13 +240,13 @@ TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
 		$(PATCHES)/kernel.config-spark
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
+	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
 	rm -fr $(TMP_KDIR)
-	tar -C $(BUILD_TMP) -xf $(STLINUX_DIR)/SOURCES/linux-2.6.32.tar.bz2; \
+	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2; \
 	set -e; cd $(TMP_KDIR); \
-		bzcat $(STLINUX_DIR)/SOURCES/linux-2.6.32.46.patch.bz2 | patch -p1 ;\
-		bzcat $(STLINUX_DIR)/SOURCES/linux-2.6.32.46_stm24_sh4_0209.patch.bz2 | patch -p1; \
+		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.46.patch.bz2 | patch -p1 ;\
+		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.46_stm24_sh4_0209.patch.bz2 | patch -p1; \
 		for i in $(SPARK_PATCHES_24); do \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
@@ -317,8 +317,7 @@ sparkdriver: $(BUILD_TMP)/driver | $(BUILD_TMP)/linux-$(KVERSION_FULL)
 		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
-		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4/target=$(TARGETPREFIX)/mymodules \
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules \
 		$^
 
 endif

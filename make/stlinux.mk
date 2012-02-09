@@ -1,5 +1,5 @@
 STLINUX     = stlinux24
-STLINUX_DIR = $(BUILD_TMP)/$(STLINUX)
+# STLINUX_DIR = $(BUILD_TMP)/$(STLINUX)
 
 ## not yet needed
 HOST_ARCH := $(shell uname -m)
@@ -12,8 +12,8 @@ SOURCES     = $(STLINUX_DIR)/SOURCES
 STL_PATCHES = $(PATCHES)/stlinux
 STM_RELOCATE = /opt/STM/STLinux-2.4
 
-DRPM = --macros /usr/lib/rpm/macros:$(STLINUX_DIR)/config/rpm/targets/sh4-linux:$(STLINUX_DIR)/config/rpm/common:$(STLINUX_DIR)/localmacros
-DRPMBUILD = --macros /usr/lib/rpm/macros:$(STLINUX_DIR)/config/rpm/targets/sh4-linux:$(STLINUX_DIR)/config/rpm/common:$(STLINUX_DIR)/localmacros
+# DRPM = --macros /usr/lib/rpm/macros:$(STLINUX_DIR)/config/rpm/targets/sh4-linux:$(STLINUX_DIR)/config/rpm/common:$(STLINUX_DIR)/localmacros
+# DRPMBUILD = --macros /usr/lib/rpm/macros:$(STLINUX_DIR)/config/rpm/targets/sh4-linux:$(STLINUX_DIR)/config/rpm/common:$(STLINUX_DIR)/localmacros
 
 ## most of the entries are not yet needed...
 $(STLINUX_DIR)/localmacros:
@@ -105,8 +105,7 @@ SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
 stlinux-dfb: \
 	$(STL_ARCHIVE)/stlinux24-sh4-directfb-1.4.12+STM2011.09.27-1.sh4.rpm \
 	$(STL_ARCHIVE)/stlinux24-sh4-directfb-dev-1.4.12+STM2011.09.27-1.sh4.rpm
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
-		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4=$(BUILD_TMP)/dfb \
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4 $(BUILD_TMP)/dfb \
 		$^
 	set -e; cd $(BUILD_TMP)/dfb/target; \
 		sed -i "s,/usr,$(TARGETPREFIX)/usr,g" usr/lib/*.la; \

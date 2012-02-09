@@ -173,11 +173,9 @@ spark-directfb-pkg: \
 	$(STL_ARCHIVE)/stlinux24-sh4-directfb-1.4.12+STM2011.09.27-1.sh4.rpm \
 	$(STL_ARCHIVE)/stlinux24-sh4-libpng-1.4.8-3.sh4.rpm
 	rm -rf $(PKGPREFIX)
-	rpm $(DRPM) --nosignature --ignorearch --force --nodeps -Uv --noscripts \
-		--excludedocs \
-		--badreloc --relocate $(STM_RELOCATE)/devkit/sh4/target=$(PKGPREFIX) \
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(PKGPREFIX) \
 		$^
-	rm -rf $(PKGPREFIX)/usr/share/man
+	rm -rf $(PKGPREFIX)/usr/share/man $(PKGPREFIX)/usr/share/doc
 	rm $(PKGPREFIX)/usr/lib/directfb-1.4-5/inputdrivers/libdirectfb_tslib.so # no touchscreen
 	rm $(PKGPREFIX)/usr/lib/directfb-1.4-5/systems/libdirectfb_x11.so        # no X11 yet
 	rm $(PKGPREFIX)/usr/lib/directfb-1.4-5/systems/libdirectfb_fbdev.so      # we have stmfb
