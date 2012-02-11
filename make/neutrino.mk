@@ -13,6 +13,9 @@ N_CPPFLAGS += -I$(TARGETPREFIX)/include/hardware
 # TODO: should we set this in a Header? Do we also need _D_LARGEFILE etc?
 N_CPPFLAGS += -D_FILE_OFFSET_BITS=64
 endif
+ifeq ($(BOXARCH), sh4)
+N_CFLAGS += -funsigned-char
+endif
 
 # choose between static and dynamic libtremor. As long as nothing else
 # uses libtremor, static usage does not really hurt and is compatible
