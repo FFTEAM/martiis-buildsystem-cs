@@ -25,10 +25,10 @@ NEUTRINO_DEPS += libvorbisidec
 N_CONFIG_OPTS += --enable-flac
 NEUTRINO_DEPS += libFLAC
 
-ifneq ($(USE_NEUTRINO_HAL),)
-N_CONFIG_OPTS += --with-neutrino-hal-includes=$(LN_HAL_SRC)/include \
-	--with-neutrino-hal-build=$(LN_OBJDIR)
-NEUTRINO_DEPS += libneutrino-hal
+ifneq ($(USE_STB_HAL),)
+N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
+	--with-stb-hal-build=$(LH_OBJDIR)
+NEUTRINO_DEPS2 = libstb-hal
 endif
 
 # the original build script links against openssl, but it is not needed at all.
@@ -70,14 +70,14 @@ $(TARGETPREFIX)/.version:
 
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
 
-$(D)/neutrino: $(N_OBJDIR)/config.status
+$(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
 	+make $(TARGETPREFIX)/.version
 	: touch $@
 
-neutrino-pkg: $(N_OBJDIR)/config.status
+neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
 	$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
@@ -113,20 +113,20 @@ neutrino-clean:
 
 PHONY += neutrino-clean neutrino-system neutrino-system-seife
 
-LN_OBJDIR = $(BUILD_TMP)/libneutrino-hal
-LN_HAL_SRC = $(SOURCE_DIR)/libneutrino-hal
-$(LN_OBJDIR)/config.status:
-	test -d $(LN_OBJDIR) || mkdir -p $(LN_OBJDIR)
-	$(LN_HAL_SRC)/autogen.sh
-	set -e; cd $(LN_OBJDIR); \
+LH_OBJDIR = $(BUILD_TMP)/libstb-hal
+LH_SRC = $(SOURCE_DIR)/libstb-hal
+$(LH_OBJDIR)/config.status:
+	test -d $(LH_OBJDIR) || mkdir -p $(LH_OBJDIR)
+	$(LH_SRC)/autogen.sh
+	set -e; cd $(LH_OBJDIR); \
 		export PKG_CONFIG=$(PKG_CONFIG); \
 		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
 		LDFLAGS="$(N_LDFLAGS)" \
-		$(LN_HAL_SRC)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
+		$(LH_SRC)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				--enable-silent-rules
 
-libneutrino-hal: $(LN_OBJDIR)/config.status
+libstb-hal: $(LH_OBJDIR)/config.status
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
-	$(MAKE) -C $(LN_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
+	$(MAKE) -C $(LH_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
