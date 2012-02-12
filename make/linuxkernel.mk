@@ -289,6 +289,7 @@ $(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
 		cd ../stgfb; \
 		rm -f stmfb; \
 		ln -s stmfb-3.1_stm24_0102 stmfb; \
+		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	# disable wireless build
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
