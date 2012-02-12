@@ -28,7 +28,7 @@ NEUTRINO_DEPS += libvorbisidec
 N_CONFIG_OPTS += --enable-flac
 NEUTRINO_DEPS += libFLAC
 
-ifneq ($(USE_STB_HAL),)
+ifeq ($(USE_STB_HAL), yes)
 N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
 	--with-stb-hal-build=$(LH_OBJDIR)
 NEUTRINO_DEPS2 = libstb-hal

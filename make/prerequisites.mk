@@ -15,6 +15,9 @@ endif
 ifeq ($(PLATFORM), spark)
 PREQS += $(TDT_SRC)
 endif
+ifeq ($(USE_STB_HAL), yes)
+PREQS += $(SOURCE_DIR)/libstb-hal
+endif
 
 preqs: $(PREQS)
 
@@ -47,6 +50,11 @@ $(SOURCE_DIR)/neutrino-hd-td:
 	cd $(SOURCE_DIR) && \
 		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
 
+$(SOURCE_DIR)/libstb-hal:
+	@echo "=== cloning libstb-hal ==="
+	mkdir -p $(SOURCE_DIR)
+	cd $(SOURCE_DIR) && \
+		git clone $(GITORIOUS)/neutrino-hd/libstb-hal.git libstb-hal
 
 $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)

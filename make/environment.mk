@@ -16,14 +16,17 @@ else
 # name it differently to avoid subtleties...
 TARGET      ?= powerpc-405n-linux-gnu
 endif
+USE_STB_HAL ?= no
 FLAVOUR     ?= neutrino-hd-tripledragon
 BOXARCH      = powerpc
 else
+USE_STB_HAL ?= yes
 TARGET      ?= sh4-linux
 BOXARCH      = sh4
 FLAVOUR     ?= neutrino-hd-tripledragon
 endif
 else
+USE_STB_HAL ?= no
 TARGET      ?= arm-cx2450x-linux-gnueabi
 FLAVOUR     ?= neutrino-hd
 BOXARCH      = arm

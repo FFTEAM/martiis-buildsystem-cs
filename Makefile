@@ -141,15 +141,17 @@ update-svn: | $(SOURCE_DIR)/svn/THIRDPARTY/lib
 update-svn-target:
 	make cs-modules includes-and-libs
 else
-NOW = $(shell date +%Y%m%d-%H%M%S)
-N_HD_SOURCE_S = $(subst $(BASE_DIR)/,"",$(N_HD_SOURCE))
-
 update-svn:
 	@echo "update-svn is not useful on $(PLATFORM)"
 endif
 
 ifeq ("$(FLAVOUR)", "neutrino-hd-tripledragon")
+NOW = $(shell date +%Y%m%d-%H%M%S)
+N_HD_SOURCE_S = $(subst $(BASE_DIR)/,"",$(N_HD_SOURCE))
+
 update-neutrino:
+	@if test -d $(SOURCE_DIR)/libstb-hal; then \
+		cd $(SOURCE_DIR)/libstb-hal; echo "=== updating libstb-hal ==="; git pull; fi
 	-cd $(N_HD_SOURCE) && { git branch "before-update-$(NOW)"; git stash save "before update $(NOW)" ; git pull; }
 	@echo ""
 	@echo "Sources updated. Local changes before update were stashed away,"
