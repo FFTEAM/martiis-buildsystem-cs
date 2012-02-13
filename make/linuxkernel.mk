@@ -276,6 +276,7 @@ $(TARGETPREFIX)/include/linux/dvb:
 $(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
+		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		rm -f player2 multicom; \
 		ln -s player2_191 player2; \
 		ln -s multicom-3.2.4_rc3 multicom; \
@@ -289,7 +290,6 @@ $(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
 		cd ../stgfb; \
 		rm -f stmfb; \
 		ln -s stmfb-3.1_stm24_0102 stmfb; \
-		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	# disable wireless build
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
