@@ -35,6 +35,9 @@ $(ARCHIVE)/dpfhack_pearl.zip:
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://ftp.de.debian.org/debian/pool/main/e/evtest/evtest_1.29.orig.tar.bz2
 
+$(ARCHIVE)/libass-$(LIBASS_VER).tar.gz:
+	$(WGET) http://libass.googlecode.com/files/libass-$(LIBASS_VER).tar.gz
+
 $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2:
 	$(WGET) http://download.videolan.org/pub/libdvdcss/1.2.10/libdvdcss-1.2.10.tar.bz2
 

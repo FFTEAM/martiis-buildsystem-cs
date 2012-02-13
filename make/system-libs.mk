@@ -290,6 +290,15 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/ffmpeg-$(FFMPEG-VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libass-$(LIBASS_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libass-$(LIBASS_VER); \
+		$(CONFIGURE) --disable-fontconfig --prefix= --disable-shared; \
+		$(MAKE); \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_LIBTOOL)/libass.la
+	touch $@
+
 $(D)/libogg: $(ARCHIVE)/libogg-$(OGG-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libogg-$(OGG-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libogg-$(OGG-VER); \

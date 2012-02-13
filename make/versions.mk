@@ -63,6 +63,9 @@ OGG-VER=1.1.4
 # libvorbis; encoding, decoding fixed or variable bitrates of ogg vorbis formats
 VORBIS-VER=1.2.3
 
+# libass: ass / ssa subtitle renderer
+LIBASS_VER=0.9.11
+
 # ncurses; software for controlling writing to the console screen
 NCURSES-VER=5.6
 
