@@ -33,6 +33,11 @@ N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
 	--with-stb-hal-build=$(LH_OBJDIR)
 NEUTRINO_DEPS2 = libstb-hal
 endif
+ifeq ($(PLATFORM), spark)
+# this is a hack: stfbcontrol triggers include/linux/stmfb.h,
+# which is needed by framebuffer_spark
+NEUTRINO_DEPS2 += | stfbcontrol
+endif
 
 # the original build script links against openssl, but it is not needed at all.
 # libcurl is picked up by configure anyway, so not needed here.
