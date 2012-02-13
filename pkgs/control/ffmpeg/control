@@ -1,5 +1,5 @@
 Package: ffmpeg
-Version: 0.6-1
+Version: @VER@-1
 Description: ffmpeg Audio/Video Processing Libraries
 Section: base/libraries
 Priority: standard
@@ -8,4 +8,4 @@ Architecture: @ARCH@
 Homepage: http://ffmpeg.org/
 Source:
 Depends:
-Provides: libavdevice.so.52, libavformat.so.52, libavutil.so.50, libavcodec.so.52
+Provides: @PROV@

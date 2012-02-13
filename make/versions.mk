@@ -55,7 +55,7 @@ OPENSSL-VER=0.9.8
 OPENSSL-SUBVER=q
 
 # libffmpeg; complete, cross-platform solution to record, convert and stream audio and video
-FFMPEG-VER=0.6
+FFMPEG-VER=0.10
 
 # libogg; encoding, decoding of the ogg file format
 OGG-VER=1.1.4

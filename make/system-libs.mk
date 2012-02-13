@@ -248,7 +248,7 @@ endif
 ## todo: check. this is a plain copy of tripledragon configure...
 ifeq ($(BOXARCH), sh4)
 FFMPEG_CONFIGURE  = --arch=sh4
-FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg --disable-filters
+FFMPEG_CONFIGURE += --enable-ffmpeg --disable-filters
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
@@ -256,9 +256,9 @@ endif
 $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/ffmpeg-$(FFMPEG-VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER); \
-		$(PATCH)/ffmpeg-dvbsubs.diff; \
+		: $(PATCH)/ffmpeg-dvbsubs.diff; \
 		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff; \
-		$(PATCH)/ffmpeg-0.6-remove-buildtime.diff; \
+		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
 		$(FFMPEG_ENV) \
 		./configure \
 			--disable-decoders --disable-encoders \
@@ -267,7 +267,7 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 			--enable-decoder=dvbsub --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
 			--disable-protocols --enable-protocol=file \
-			--disable-mpegaudio-hp --disable-zlib --enable-bzlib \
+			--disable-zlib --enable-bzlib \
 			--disable-network --disable-ffprobe \
 			--disable-static --enable-shared \
 			--enable-cross-compile \
@@ -286,7 +286,8 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/.remove
-	$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
+	PKG_VER=$(FFMPEG-VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
 	$(REMOVE)/ffmpeg-$(FFMPEG-VER) $(PKGPREFIX)
 	touch $@
 
