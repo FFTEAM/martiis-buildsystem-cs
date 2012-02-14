@@ -130,7 +130,7 @@ $(LH_OBJDIR)/config.status:
 		export PKG_CONFIG=$(PKG_CONFIG); \
 		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
-		LDFLAGS="$(N_LDFLAGS)" \
+		LDFLAGS="$(N_LDFLAGS) -L$(TARGETLIB)" \
 		$(LH_SRC)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				--enable-silent-rules
