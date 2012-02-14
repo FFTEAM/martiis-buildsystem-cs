@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.32.46
-# Sun Feb  5 11:57:54 2012
+# Tue Feb 14 22:33:46 2012
 #
 CONFIG_SUPERH=y
 CONFIG_SUPERH32=y
@@ -1407,7 +1407,7 @@ CONFIG_FILE_LOCKING=y
 # CONFIG_INOTIFY is not set
 # CONFIG_INOTIFY_USER is not set
 # CONFIG_QUOTA is not set
-CONFIG_AUTOFS_FS=y
+# CONFIG_AUTOFS_FS is not set
 CONFIG_AUTOFS4_FS=m
 CONFIG_FUSE_FS=y
 # CONFIG_CUSE is not set
