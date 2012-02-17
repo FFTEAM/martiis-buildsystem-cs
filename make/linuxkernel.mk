@@ -293,7 +293,6 @@ $(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	# disable wireless build
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
-	ln -sf $(BUILD_TMP)/linux-$(KVERSION_FULL)/.config $@/
 
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
