@@ -1,5 +1,7 @@
 # SYSTEM_PKGS is "install enough to get a TV picture"
 SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
+# packages which don't get pulled in by dependencies
+SYSTEM_OPKGS =
 
 glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	rm -rf $(PKGPREFIX)
@@ -158,6 +160,9 @@ PHONY += td-module-pkg td-directfb-pkg
 SYSTEM_PKGS += td-module-pkg td-directfb-pkg td-dvb-wrapper-pkg addon-drivers-pkg
 endif
 ifeq ($(PLATFORM), spark)
+SYSTEM_PKGS += spark-drivers-pkg
+SYSTEM_OPKGS += spark-drivers
+
 $(TARGETPREFIX)/mymodules/lib: sparkkernel sparkdriver sparkfirmware
 spark-drivers-pkg: $(TARGETPREFIX)/mymodules/lib |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	$(REMOVE)/spark-drivers $(PKGPREFIX)
@@ -255,7 +260,7 @@ system-pkgs: $(SYSTEM_PKGS)
 	+make pkg-index
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
-		neutrino-hd
+		neutrino-hd $(SYSTEM_OPKGS)
 	@echo
 	@echo "List of installed packages in $(subst $(BASE_DIR)/,,$(BUILD_TMP))/install:"
 	@opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install list-installed | \
