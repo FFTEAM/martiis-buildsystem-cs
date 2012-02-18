@@ -267,7 +267,8 @@ sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
 		export PATH=$(CROSS_BASE)/host/bin:$(PATH); \
 		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules; \
 		make    ARCH=sh CROSS_COMPILE=$(TARGET)- \
-			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install; \
+		cp -L arch/sh/boot/uImage $(BUILD_TMP)/
 
 
 $(TARGETPREFIX)/include/linux/dvb:
