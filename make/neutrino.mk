@@ -121,9 +121,13 @@ neutrino-clean:
 
 PHONY += neutrino-clean neutrino-system neutrino-system-seife
 
+LH_DEPS =
+ifeq ($(PLATFORM), spark)
+LH_DEPS += $(D)/libass
+endif
 LH_OBJDIR = $(BUILD_TMP)/libstb-hal
 LH_SRC = $(SOURCE_DIR)/libstb-hal
-$(LH_OBJDIR)/config.status:
+$(LH_OBJDIR)/config.status: $(LH_DEPS)
 	test -d $(LH_OBJDIR) || mkdir -p $(LH_OBJDIR)
 	$(LH_SRC)/autogen.sh
 	set -e; cd $(LH_OBJDIR); \
