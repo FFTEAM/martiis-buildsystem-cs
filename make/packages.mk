@@ -163,6 +163,8 @@ spark-drivers-pkg: $(TARGETPREFIX)/mymodules/lib |$(HOSTPREFIX)/bin/opkg-module-
 	$(REMOVE)/spark-drivers $(PKGPREFIX)
 	mkdir $(PKGPREFIX)
 	cp -a $(TARGETPREFIX)/mymodules/lib $(PKGPREFIX)
+	rm -fr $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4
+	rm -f $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/{build,source}
 	cp -a $(CONTROL_DIR)/spark-drivers $(BUILD_TMP)
 	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/spark-drivers/control
 	DONT_STRIP=1 PKG_VER=$(KVERSION_FULL) $(OPKG_SH) $(BUILD_TMP)/spark-drivers
