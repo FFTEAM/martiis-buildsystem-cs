@@ -41,14 +41,18 @@ ifeq ($(MAINTAINER),)
 	@echo "##########################################################################"
 	@echo
 endif
-	@make -i -s $(TARGETPREFIX)
-	@PATH=$(PATH):$(CROSS_DIR)/bin && \
-	if type -p $(TARGET)-gcc >/dev/null 2>&1; then \
-		echo "$(TARGET)-gcc found in PATH or in \$$CROSS_DIR/bin."; \
-	else \
-		echo "$(TARGET)-gcc not found in PATH or \$$CROSS_DIR/bin"; \
-		echo "=> please check your setup. Maybe you need to 'make crosstool'."; \
+	@LC_ALL=C make -n preqs|grep -q "Nothing to be done" && P=false || P=true; \
+	test -d $(TARGETPREFIX) && T=false || T=true; \
+	PATH=$(PATH):$(CROSS_DIR)/bin; \
+	type -p $(TARGET)-gcc >/dev/null 2>&1 && C=false || C=true; \
+	if $$P || $$T || $$C; then \
+		echo "Your next steps are most likely (in this order):"; \
+		$$P && echo "	* 'make preqs'		for prerequisites"; \
+		$$C && echo "	* 'make crosstool'	for the cross compiler"; \
+		$$T && echo "	* 'make bootstrap'	to prepare the target root"; \
+		echo; \
 	fi
+
 ifeq ($(PLATFORM), tripledragon)
 	@PATH=$(K_GCC_PATH):$(PATH); if type -p powerpc-405-linux-gnu-gcc >/dev/null 2>&1; then \
 		echo "kernelgcc (powerpc-405-linux-gnu-gcc) found."; \
@@ -60,8 +64,6 @@ ifeq ($(PLATFORM), tripledragon)
 		echo "##############################################################################"; \
 	fi
 endif
-	@if ! LC_ALL=C make -n preqs|grep -q "Nothing to be done"; then \
-		echo;echo "Your next target to do is probably 'make preqs'"; fi
 	@if ! test -e $(BASE_DIR)/config; then \
 		echo;echo "If you want to change the configuration, copy 'doc/config.example' to 'config'"; \
 		echo "and edit it to fit your needs. See the comments in there."; echo; fi
