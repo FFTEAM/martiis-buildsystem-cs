@@ -1,5 +1,5 @@
 Package: libz
-Version: 1.2.5-1
+Version: @VER@-1
 Description: Zlib Compression Library
 Section: base/libraries
 Priority: standard

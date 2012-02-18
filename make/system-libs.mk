@@ -11,7 +11,7 @@ $(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/zlib-$(ZLIB-VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libz.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libz
+	PKG_VER=$(ZLIB-VER) $(OPKG_SH) $(CONTROL_DIR)/libz
 	$(REMOVE)/.remove $(PKGPREFIX)
 	touch $@
 
