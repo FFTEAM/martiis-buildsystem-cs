@@ -1,0 +1,227 @@
+From 952a978c7f85e966fb39cca6962a51b75e666f14 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sun, 19 Feb 2012 17:42:01 +0100
+Subject: [PATCH 6/6] stmdvb: reinit TS merger when demux is idle
+
+During a satellite scan or sometimes during zapping, the demultiplexer
+stopped working. Debugging in the pti driver showed, that first it
+started delivering bogus data (inside pti.ko the "tag" value was often
+5, 6 or 7) and then stopped delivering any data at all.
+A call to stm_tsm_init() makes the demultiplexer work again, probably
+by resetting the TSM. However, care needs to be taken to not touch the
+DMA engine after initial setup or the box will crash after a few resets.
+
+The best place to trigger this would be from inside the pti module
+whenever there is bogus data received. However, there are also 3rd party
+pti module which people want to use, so we work arond the problem from
+outside: everytime a dmx feed is started and no other feed is running,
+the TSM is reset. This fixes the satscan problem for me AFAICT. Let's
+see if it also helps for the zapping problem which is harder to
+reproduce.
+---
+ .../linux/drivers/media/dvb/stm/dvb/dvb_demux.c    |   35 ++++++++++++++++++++
+ .../linux/drivers/media/dvb/stm/dvb/dvb_module.c   |    3 ++
+ .../linux/drivers/media/dvb/stm/dvb/st-merger.c    |   27 +++++++++++++--
+ 3 files changed, 62 insertions(+), 3 deletions(-)
+
+diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_demux.c b/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_demux.c
+index c27b72f..f3911c3 100644
+--- a/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_demux.c
++++ b/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_demux.c
+@@ -58,6 +58,10 @@ extern int stpti_stop_feed (struct dvb_demux_feed *dvbdmxfeed,
+                      struct DeviceContext_s *pContext);
+ #endif
+ 
++extern void stm_tsm_init ( int cfg );
++extern int reset_tsm;
++static int running = 0;
++
+ /********************************************************************************
+  *  This file contains the hook functions which allow the player to use the built-in
+  *  kernel demux device so that in-mux non audio/video streams can be read out of
+@@ -221,6 +225,13 @@ int StartFeed (struct dvb_demux_feed* Feed)
+ 
+     DVB_DEBUG ("(demux%d)\n", Context->Id);
+ 
++	/* either running == 0 and reset_tsm == 1 or reset_tsm > 1 */
++	if (running == 0 && reset_tsm)
++	{
++		printk(KERN_WARNING "reset_tsm: %d running: %d => calling stm_tsm_init(1)\n", reset_tsm, running);
++		stm_tsm_init(1);
++	}
++
+ #ifdef __TDT__
+ #ifdef no_subtitles
+   if ((Feed->type == DMX_TYPE_TS) && (Feed->pes_type > DMX_TS_PES_OTHER))
+@@ -262,6 +273,8 @@ int StartFeed (struct dvb_demux_feed* Feed)
+               (Feed->pes_type == DMX_TS_PES_OTHER))
+             {
+               mutex_lock (&(DvbContext->Lock));
++	      running++;
++	      //printk("%s:%d running: %d\n", __func__,__LINE__,running);
+               stpti_start_feed (Feed, Context);
+               mutex_unlock (&(DvbContext->Lock));
+ 
+@@ -341,6 +354,8 @@ int StartFeed (struct dvb_demux_feed* Feed)
+ #ifdef __TDT__
+ 	        if (Video)
+ 	        {
++			running++;
++			//printk("%s:%d running: %d\n", __func__,__LINE__,running);
+ 		       stpti_start_feed (Feed, Context);
+ 
+ 		       if(Feed->ts_type & TS_DECODER)
+@@ -348,6 +363,8 @@ int StartFeed (struct dvb_demux_feed* Feed)
+ 	        }
+ 	        else if (Audio)
+ 	        {
++			running++;
++			//printk("%s:%d running: %d\n", __func__,__LINE__,running);
+ 		       stpti_start_feed (Feed, Context);
+ 
+ 		       if(Feed->ts_type & TS_DECODER)
+@@ -385,6 +402,8 @@ int StartFeed (struct dvb_demux_feed* Feed)
+             //DVB_DEBUG ("feed type = SEC\n");
+ 
+             mutex_lock (&(DvbContext->Lock));
++	    running++;
++	    //printk("%s:%d running: %d\n", __func__,__LINE__,running);
+             stpti_start_feed (Feed, Context);
+             mutex_unlock (&(DvbContext->Lock));
+ #endif
+@@ -432,7 +451,11 @@ int StopFeed (struct dvb_demux_feed* Feed)
+                       AudioIoctlStop (AvContext);
+                     }*/
+                     stpti_stop_feed(Feed, Context);
++		    running--;
++		    //printk("%s:%d running: %d\n", __func__,__LINE__,running);
+                     mutex_unlock (&(DvbContext->Lock));
++		    if (running < 0)
++			printk(KERN_ERR "%s: running < 0: %d\n", __func__, running);
+                     break;
+                 }
+                 if (Feed->pes_type == VideoId[i])
+@@ -442,7 +465,11 @@ int StopFeed (struct dvb_demux_feed* Feed)
+                     if(Feed->ts_type & TS_DECODER)
+                       VideoIoctlStop(AvContext, AvContext->VideoState.video_blank);*/
+                     stpti_stop_feed(Feed, Context);
++		    running--;
++		    //printk("%s:%d running: %d\n", __func__,__LINE__,running);
+                     mutex_unlock (&(DvbContext->Lock));
++		    if (running < 0)
++			printk(KERN_ERR "%s: running < 0: %d\n", __func__, running);
+                     break;
+                 }
+                 //videotext & subtitles (other)
+@@ -452,7 +479,11 @@ int StopFeed (struct dvb_demux_feed* Feed)
+                 {
+                     mutex_lock (&(DvbContext->Lock));
+                     stpti_stop_feed(Feed, Context);
++		    running--;
++		    //printk("%s:%d running: %d\n", __func__,__LINE__,running);
+                     mutex_unlock (&(DvbContext->Lock));
++		    if (running < 0)
++			printk(KERN_ERR "%s: running < 0: %d\n", __func__, running);
+                     break;
+                 }
+                 else if (Feed->pes_type == DMX_TS_PES_PCR)
+@@ -508,7 +539,11 @@ int StopFeed (struct dvb_demux_feed* Feed)
+ #ifdef __TDT__
+             mutex_lock (&(DvbContext->Lock));
+             stpti_stop_feed(Feed, Context);
++	    running--;
++	    //printk("%s:%d running: %d\n", __func__,__LINE__,running);
+             mutex_unlock (&(DvbContext->Lock));
++		    if (running < 0)
++			printk(KERN_ERR "%s: running < 0: %d\n", __func__, running);
+ #endif
+             break;
+         default:
+diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_module.c b/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_module.c
+index e1c0bfc..d0e9f26 100644
+--- a/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_module.c
++++ b/player2_191/linux/drivers/media/dvb/stm/dvb/dvb_module.c
+@@ -91,6 +91,9 @@ MODULE_PARM_DESC(highSR, "Start Driver with support for Symbol Rates 30000.\nIf
+ module_param(swts, int, 0444);
+ MODULE_PARM_DESC(swts, "Do not route injected data through the tsm/pti\n");
+ #endif
++int reset_tsm = 1;
++module_param(reset_tsm, int, S_IRUGO | S_IWUSR);
++MODULE_PARM_DESC(reset_tsm, "reset the tsm when pti is idle? (default=1)");
+ 
+ struct DvbContext_s*     DvbContext;
+ 
+diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/st-merger.c b/player2_191/linux/drivers/media/dvb/stm/dvb/st-merger.c
+index 281f652..e912e58 100644
+--- a/player2_191/linux/drivers/media/dvb/stm/dvb/st-merger.c
++++ b/player2_191/linux/drivers/media/dvb/stm/dvb/st-merger.c
+@@ -126,7 +126,7 @@ unsigned long TSM_NUM_1394_ALT_OUT;
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
+ unsigned long tsm_io;
+ #else
+-void* tsm_io;
++void* tsm_io = NULL;
+ #endif
+ 
+ extern int highSR;
+@@ -353,17 +353,28 @@ EXPORT_SYMBOL(stm_tsm_inject_user_data);
+ 
+ #if defined(SPARK)
+ #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30)
++static void *reg_sys_config = NULL;
+ 
+ void spark_stm_tsm_init ( void )
+ {
+     unsigned int     ret;
+     int              n;
+ 
+-    void *reg_sys_config = NULL;
++	/* ugly hack: the TSM sometimes seems to stop working, a
++	 * reset of the config registers fixes it
++	 * but the DMA stuff must not be touched or everything
++	 * blows up badly */
++	int reinit = 0;
++	if (tsm_io)
++		reinit = 1;
+ 
++	if (reinit) {
++		printk("[Spark] reinit stream routing...\n");
++	} else {
+     printk("[Spark] Init Stream Routing...\n");
+     /* first configure sysconfig */
+     reg_sys_config = ioremap(SysConfigBaseAddress, 0x1000);
++	}
+     /*
+ 	 ->TSIN0 routed to TSIN2
+ 	 ->TSMerger TSIN2 receives TSIN0 (based on config before)
+@@ -373,9 +384,15 @@ void spark_stm_tsm_init ( void )
+     ctrl_outl(0x3, reg_sys_config + SYS_CFG0);
+     ctrl_outl(0x0, reg_sys_config + SYS_CFG1);
+ 
++	if (reinit) {
++		/* this seems to shorten the window for the race condition,
++		 * however I don't believe it is enough to be really safe.
++		 * but it works for now. */
++		dma_wait_for_completion(tsm_handle.fdma_channel);
++	} else {
+     /* set up tsmerger */
+     tsm_handle.tsm_io = tsm_io = ioremap(TSMergerBaseAddress, 0x0900);
+-
++	}
+     /* 1. Reset */
+     ctrl_outl(0x0, tsm_io + TSM_SW_RST);
+     ctrl_outl(0x6, tsm_io + TSM_SW_RST);
+@@ -516,6 +533,10 @@ void spark_stm_tsm_init ( void )
+     ctrl_outl( (ret & TSM_RAM_ALLOC_START(0xff)) |
+ 		           TSM_PRIORITY(0x7) | TSM_STREAM_ON | TSM_ADD_TAG_BYTES | TSM_SYNC_NOT_ASYNC | TSM_ASYNC_SOP_TOKEN, tsm_io + TSM_STREAM3_CFG);
+ 
++	/* don't touch the DMA engine -- seems unnecessary on reinit */
++	if (reinit)
++		return;
++
+     tsm_handle.swts_channel = 3;
+     tsm_handle.tsm_swts = (unsigned long)ioremap (0x1A300000, 0x1000);
+ 
+-- 
+1.7.7
+

@@ -274,9 +274,17 @@ sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
 
-$(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
+$(BUILD_TMP)/driver: \
+$(PATCHES)/sparkdrivers/0001-player2_191-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0006-stmdvb-reinit-TS-merger-when-demux-is-idle.patch \
+| $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
+		for i in $^; do patch -p1 -i $$i; done; \
 		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		rm -f player2 multicom; \
 		ln -s player2_191 player2; \
@@ -294,6 +302,8 @@ $(BUILD_TMP)/driver: | $(TARGETPREFIX)/include/linux/dvb
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	# disable wireless build
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
+	# disable led and button - it's not for spark
+	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
 
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,

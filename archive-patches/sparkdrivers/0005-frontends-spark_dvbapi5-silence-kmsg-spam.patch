@@ -1,0 +1,82 @@
+From e4f2226b20a3f7d0e40111ebac5475d4c3adb6a2 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sun, 19 Feb 2012 16:53:47 +0100
+Subject: [PATCH 5/6] frontends/spark_dvbapi5: silence kmsg spam
+
+---
+ frontends/spark_dvbapi5/ix7306.c  |    8 ++++++++
+ frontends/spark_dvbapi5/stv090x.c |    4 ++++
+ 2 files changed, 12 insertions(+), 0 deletions(-)
+
+diff --git a/frontends/spark_dvbapi5/ix7306.c b/frontends/spark_dvbapi5/ix7306.c
+index ac6633f..75b5a94 100644
+--- a/frontends/spark_dvbapi5/ix7306.c
++++ b/frontends/spark_dvbapi5/ix7306.c
+@@ -412,7 +412,9 @@ static int ix7306_get_status(struct dvb_frontend *fe, u32 *status)
+ 	}
+ 
+ 	if (result[0] & 0x40) {
++#ifdef VERY_VERBOSE
+ 		printk("%s: Tuner Phase Locked\n", __func__);
++#endif
+ 		*status = 1;
+ 	}
+ 	else
+@@ -466,7 +468,9 @@ int ix7306_get_frequency(struct dvb_frontend *fe, u32 *frequency)
+ 			return err;
+ 		}
+ 		*frequency = t_state.frequency;
++#ifdef VERY_VERBOSE
+ 		printk("%s: Frequency=%d\n", __func__, t_state.frequency);
++#endif
+ 	}
+ 	return 0;
+ }
+@@ -493,7 +497,9 @@ int ix7306_set_frequency(struct dvb_frontend *fe, u32 frequency)
+ 			return err;
+ 		}
+ 	}
++#ifdef VERY_VERBOSE
+ 	printk("%s: Frequency=%d\n", __func__, t_state.frequency);
++#endif
+ 	return 0;
+ }
+ 
+@@ -526,7 +532,9 @@ int ix7306_get_bandwidth(struct dvb_frontend *fe, u32 *bandwidth)
+ 		}
+ 		*bandwidth = t_state.bandwidth;
+ 	}
++#ifdef VERY_VERBOSE
+ 	printk("%s: Bandwidth=%d\n", __func__, t_state.bandwidth);
++#endif
+ 	return 0;
+ }
+ 
+diff --git a/frontends/spark_dvbapi5/stv090x.c b/frontends/spark_dvbapi5/stv090x.c
+index 39cab5a..473debe 100644
+--- a/frontends/spark_dvbapi5/stv090x.c
++++ b/frontends/spark_dvbapi5/stv090x.c
+@@ -3038,8 +3038,10 @@ static int stv090x_get_dmdlock(struct stv090x_state *state, s32 timeout)
+ 
+ 		if (!lock)
+ 			msleep(10);
++#ifdef VERY_VERBOSE
+ 		else
+ 			printk("Demodulator acquired LOCK\n");
++#endif
+ 
+ 		timer += 10;
+ 	}
+@@ -3864,7 +3866,9 @@ static u8 stv090x_optimize_carloop(struct stv090x_state *state, enum stv090x_mod
+  */
+ 	if ((state->dev_ver == 0x20) && (state->device == STX7111))
+ 	{
++#ifdef VERY_VERBOSE
+                 printk("%s STX7111 cut 0x20 handling (modcod %d, pilots %d)\n", __func__, modcod, pilots);
++#endif
+ 		car_loop		= stx7111_s2_crl_cut20;
+ #warning stv090x: fixme fixme dont know lowqpsk crl
+ 		car_loop_qpsk_low	= stv090x_s2_lowqpsk_crl_cut20;
+-- 
+1.7.7
+
