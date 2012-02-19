@@ -75,6 +75,10 @@ $(TARGETPREFIX)/.version:
 		test -n "$$E" && C="$$E"; \
 		echo "builddate=$$C$$D $${F:1}" >> $@
 	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
+ifeq ($(USE_STB_HAL), yes)
+	A=`cd $(LH_SRC); git describe --always --dirty`; \
+		echo "libstbhalver=$$A" >> $@
+endif
 
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
 
