@@ -1,0 +1,52 @@
+SPARK usb-boot HOWTO:
+
+create a U-Boot autoscript that can boot from USB
+the USB stick needs 2 partitions:
+ * sda1: fat with the kernel uImage and script.img
+ * sda2: ext2 with the target partition
+
+The easiest way to create the files for the two partitions
+is to do "make spark-system-usb". This sould give you two
+tarballs in build_tmp/sparksystem:
+
+  ~> ls -1 build_tmp/sparksystem/*gz
+  build_tmp/sparksystem/p1.tar.gz
+  build_tmp/sparksystem/p2.tar.gz
+
+Unpack p1.tar.gz into the FAT partition and p2.tar.gz into the
+ext2 partition. Unmount both partitions, unplug the stick.
+
+Plug the stick into the box.
+
+Now change your bootargs in U-boot like the following:
+
+* first copy your original bootcmd:
+  MB618> setenv bootcmd_fromflash ${bootcmd}
+  MB618> saveenv
+
+* then set the new bootcmd:
+  MB618> setenv bootcmd usb start\;fatload usb 0 81000000 script.img\;autoscr 81000000\;run bootcmd_fromflash
+
+* do not yet saveenv! first boot once manually without a plugged
+  USB stick to verify the fallback:
+
+  MB618> boot
+
+  the box now must boot the previously configured image.
+
+* if this works, reboot into u-boot, attach the USB stick,
+  MB618> setenv bootcmd usb start\;fatload usb 0 81000000 script.img\;autoscr 81000000\;run bootcmd_fromflash
+  MB618> boot
+
+  now it should boot from the USB stick.
+
+* If this worked as well, go back into U-boot, change the bootargs
+  and this time "saveenv" the new bootcmd.
+
+Even after changing the bootargs, if you unplug your stick
+from the box, the box will boot normally, so this should
+be harmless and convenient.
+
+Use at your own risk, though :-)
+
+Have a lot of fun...

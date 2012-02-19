@@ -268,6 +268,29 @@ system-pkgs: $(SYSTEM_PKGS)
 		while read a b c; do printf "\t%-15s %s\n" $$a $$c; done
 	@echo
 
+ifeq ($(PLATFORM), spark)
+# this creates an USB stick filesystem for spark boxes
+spark-system-usb:
+	rm -fr $(BUILD_TMP)/install
+	$(MAKE) system-pkgs
+	scripts/spark-usbboot.sh
+	set -e; cd $(BUILD_TMP); \
+		rm -fr sparksystem; mkdir sparksystem sparksystem/p1; \
+		cp -a script.img uImage sparksystem/p1; \
+		cp -a install sparksystem/p2; \
+		cd sparksystem; \
+		tar -czf p1.tar.gz --owner=0 --group=0 -C p1 .; \
+		tar -czf p2.tar.gz --owner=0 --group=0 -C p2 .
+	@echo;echo;echo "There are now two directories in build_tmp/sparksystem.";\
+		echo "create an USB stick with two partitions:"; \
+		echo " * first partition fat16 (about 16MB)"; \
+		echo " * second partition ext2 or ext3 (rest of stick)"; \
+		echo "then copy the contents of build_tmp/sparksystem/p1 onto the FAT partition"; \
+		echo "and the contents of build_tmp/sparksystem/p2 onto the ext2 partition."; \
+		echo "Change the bootargs as explained in doc/SPARK-USB-boot.txt and have fun :-)"; \
+		echo
+endif
+
 dist-pkgs: pkg-index
 ifeq ($(PKG_DEST_DIR),)
 	@printf "\ndist-pkgs needs the variable PKG_DEST_DIR set in config.\n\n"
