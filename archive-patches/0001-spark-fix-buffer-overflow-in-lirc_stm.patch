@@ -1,0 +1,42 @@
+From 66722c322be8e67a38d6932fd09bf9e1e1974375 Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Mon, 20 Feb 2012 08:31:42 +0100
+Subject: [PATCH] spark: "fix" buffer overflow(?) in lirc_stm
+
+Work around crashes probably caused by a buffer overrun in lirc_stm by
+simply doubling the allocated buffer size. This is lame but helps for
+now.
+---
+ drivers/char/lirc/lirc_stm.c |   16 +++++++++++++++-
+ 1 files changed, 15 insertions(+), 1 deletions(-)
+
+diff --git a/drivers/char/lirc/lirc_stm.c b/drivers/char/lirc/lirc_stm.c
+index ae8d71f..1741112 100644
+--- a/drivers/char/lirc/lirc_stm.c
++++ b/drivers/char/lirc/lirc_stm.c
+@@ -132,7 +132,21 @@ struct lirc_buffer lirc_stm_rbuf;
+ 
+ #define LIRC_STM_MINOR			0
+ #define LIRC_STM_MAX_SYMBOLS		100
+-#define LIRC_STM_BUFSIZE		(LIRC_STM_MAX_SYMBOLS*sizeof(lirc_t))
++/*
++ * HACK:
++ * there seems to be a race / buffer overrun somewhere in this LIRC code
++ * if it hits, you see this in dmesg:
++ * [25030.024000] lirc-stm: IR too many symbols (max 100)
++ * [25030.176000] lirc-stm: IR too many symbols (max 100)
++ * [25038.608000] lirc-stm: not enough space in user buffer
++ * any activity on the serial console afterwards makes the box crash
++ * with what looks like memory corruption inside the serial interrupt
++ * handler:
++ * 	PC is at asc_interrupt+0xc2/0x1ac
++ * 	PR is at handle_IRQ_event+0x38/0xe0
++ * simply doubling the buffer size is lame, but it seems to help.
++ */
++#define LIRC_STM_BUFSIZE		(2*LIRC_STM_MAX_SYMBOLS*sizeof(lirc_t))
+ 
+ /* Bit settings */
+ #define LIRC_STM_IS_OVERRUN	 	0x04
+-- 
+1.7.9
+

@@ -237,8 +237,12 @@ ifeq ($(PLATFORM), spark)
 TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
 TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
+MY_KERNELPATCHES = \
+	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch
+
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
+		$(MY_KERNELPATCHES) \
 		$(PATCHES)/kernel.config-spark
 	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
@@ -250,6 +254,10 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		for i in $(SPARK_PATCHES_24); do \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
+		done; \
+		for i in $(MY_KERNELPATCHES); do \
+			echo "==> Applying Patch: $(subst $(PATCHES)/,'',$$i)"; \
+			patch -p1 -i $$i; \
 		done; \
 		cp $(PATCHES)/kernel.config-spark .config; \
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config; \
