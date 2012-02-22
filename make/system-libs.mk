@@ -240,7 +240,7 @@ FFMPEG_CONFIGURE += --enable-bsfs
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
-FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg --disable-filters
+FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
