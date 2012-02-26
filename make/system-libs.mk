@@ -232,6 +232,7 @@ $(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz | $(TARG
 ifeq ($(BOXARCH), arm)
 FFMPEG_ENV = CFLAGS=-march=armv6
 FFMPEG_CONFIGURE  = --enable-armv6 --arch=arm
+FFMPEG_CONFIGURE += --disable-decoders
 FFMPEG_CONFIGURE += --enable-parsers --enable-demuxers --disable-ffmpeg --disable-swscale
 FFMPEG_CONFIGURE += --enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video
 FFMPEG_CONFIGURE += --enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio
@@ -240,6 +241,7 @@ FFMPEG_CONFIGURE += --enable-bsfs
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
+FFMPEG_CONFIGURE += --disable-decoders
 FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
@@ -248,7 +250,7 @@ endif
 ## todo: check. this is a plain copy of tripledragon configure...
 ifeq ($(BOXARCH), sh4)
 FFMPEG_CONFIGURE  = --arch=sh4
-FFMPEG_CONFIGURE += --enable-ffmpeg
+FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
@@ -261,7 +263,7 @@ $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
 		$(FFMPEG_ENV) \
 		./configure \
-			--disable-decoders --disable-encoders \
+			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
 			$(FFMPEG_CONFIGURE) \
 			--enable-decoder=dvbsub --enable-demuxer=mpegps \
