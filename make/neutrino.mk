@@ -127,7 +127,7 @@ PHONY += neutrino-clean neutrino-system neutrino-system-seife
 
 LH_DEPS =
 ifeq ($(PLATFORM), spark)
-LH_DEPS += $(D)/libass
+LH_DEPS += $(D)/libass | stfbcontrol
 endif
 LH_OBJDIR = $(BUILD_TMP)/libstb-hal
 LH_SRC = $(SOURCE_DIR)/libstb-hal
