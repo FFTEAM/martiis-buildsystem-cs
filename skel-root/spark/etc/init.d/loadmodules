@@ -18,8 +18,8 @@ im()
 
 case $1 in
 start)
-	grep -q uinput /lib/modules/2.6.12/modules.dep || depmod -a
 	read dummy dummy KVER dummy < /proc/version
+	grep -q uinput /lib/modules/${KVER}/modules.dep || depmod -a
 	# set all "option foo ..." as OPT_foo="..." variables
 	eval $(sed -n "/^options\s/{
 		s/^options\s\(\S\+\)\s\(.*\)\$/OPT_\1=\"\2\"/;
