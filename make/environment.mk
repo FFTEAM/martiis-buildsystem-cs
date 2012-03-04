@@ -16,7 +16,7 @@ else
 # name it differently to avoid subtleties...
 TARGET      ?= powerpc-405n-linux-gnu
 endif
-USE_STB_HAL ?= no
+USE_STB_HAL ?= yes
 FLAVOUR     ?= neutrino-hd-tripledragon
 BOXARCH      = powerpc
 else
