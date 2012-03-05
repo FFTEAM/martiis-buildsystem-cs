@@ -5,6 +5,7 @@ $(D)/vsftpd: $(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/vsftpd-$(VSFTPD-VER); \
 		$(PATCH)/vsftpd.diff; \
+		make clean; \
 		TARGETPREFIX=$(TARGETPREFIX) make CC=$(TARGET)-gcc CFLAGS="-pipe -O2 -g0 -I$(TARGETPREFIX)/include" LDFLAGS="$(LD_FLAGS)"
 	install -d $(PKGPREFIX)/share/empty
 	install -D -m 755 $(BUILD_TMP)/vsftpd-$(VSFTPD-VER)/vsftpd $(PKGPREFIX)/opt/pkg/sbin/vsftpd
