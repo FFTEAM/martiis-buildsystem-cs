@@ -289,6 +289,7 @@ $(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0006-stmdvb-reinit-TS-merger-when-demux-is-idle.patch \
+$(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
