@@ -4,7 +4,10 @@
 
 makedevs /dev << EOF
 vfd	c 644 0 0 147	0
+dvb/adapter0 d 755
 EOF
+# symlink ca1 to ca0, ca1 is not created by mdev
+ln -s ca0 /dev/dvb/adapter0/ca1
 
 # create firmware links...
 test -e /lib/firmware/component.fw || ln -s component_7111_mb618.fw /lib/firmware/component.fw
