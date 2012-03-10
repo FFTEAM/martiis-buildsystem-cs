@@ -298,14 +298,14 @@ $(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
 		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		rm -f player2 multicom; \
 		ln -s player2_191 player2; \
-		ln -s multicom-3.2.4_rc3 multicom; \
+		ln -s multicom-3.2.4 multicom; \
 		rm -f .config; printf "export CONFIG_PLAYER_191=y\nexport CONFIG_MULTICOM324=y\n" > .config; \
 		cp player2/linux/include/linux/dvb/stm_ioctls.h $(TARGETPREFIX)/include/linux/dvb; \
 		cd include; \
 		rm -f stmfb player2 multicom; \
 		ln -s stmfb-3.1_stm24_0102 stmfb; \
 		ln -s player2_179 player2; \
-		ln -s ../multicom-3.2.4_rc3/include multicom; \
+		ln -s ../multicom-3.2.4/include multicom; \
 		cd ../stgfb; \
 		rm -f stmfb; \
 		ln -s stmfb-3.1_stm24_0102 stmfb; \
