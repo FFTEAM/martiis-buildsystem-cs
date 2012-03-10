@@ -16,6 +16,26 @@ im()
 	fi
 }
 
+# hack, ugly: we should not need to know about neutrino.conf internals
+get_vidmode()
+{
+	M=$(grep video_Mode= /var/tuxbox/config/neutrino.conf)
+	if [ -z "$M" ]; then
+		echo "1280x720-32@50"
+		return
+	fi
+	M=${M#*=}
+	if [ $M = 6 ] || [ $M -gt 7 ]; then
+		echo "1920x1080-32@50"
+		return
+	fi
+	if [ $M -lt 5 ]; then
+		echo "720x576-32@50"
+		return
+	fi
+	echo "1280x720-32@50"
+}
+
 case $1 in
 start)
 	read dummy dummy KVER dummy < /proc/version
@@ -31,7 +51,8 @@ start)
 	im e2_proc
 	im stmcore_display_sti7111
 	MEMSIZE=8m
-	im stmfb.ko display0=1280x720-32@50:$MEMSIZE:pal:yuv:yuv
+	VM=$(get_vidmode)
+	im stmfb.ko display0=$VM:$MEMSIZE:pal:yuv:yuv
 	ustslave /dev/st231-1 /boot/audio.elf
 	ustslave /dev/st231-0 /boot/video.elf
 	im cpu_frequ
