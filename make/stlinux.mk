@@ -92,7 +92,13 @@ COMMONPATCHES_24 = \
 		linux-sh4-time_stm24$(PATCH_STR).patch \
 		linux-sh4-init_mm_stm24$(PATCH_STR).patch \
 		linux-sh4-copro_stm24$(PATCH_STR).patch \
-		bpa2_procfs_stm24$(PATCH_STR).patch
+		linux-sh4-strcpy_stm24$(PATCH_STR).patch \
+		linux-squashfs-lzma_stm24$(PATCH_STR).patch \
+		linux-sh4-ext23_as_ext4_stm24$(PATCH_STR).patch \
+		bpa2_procfs_stm24$(PATCH_STR).patch \
+		linux-ftdi_sio.c_stm24$(PATCH_STR).patch \
+		linux-sh4-lzma-fix_stm24$(PATCH_STR).patch \
+		linux-tune_stm24.patch
 
 SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
 	linux-sh4-stmmac_stm24$(PATCH_STR).patch \

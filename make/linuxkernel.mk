@@ -243,6 +243,7 @@ MY_KERNELPATCHES = \
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
 		$(MY_KERNELPATCHES) \
+		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
 		$(PATCHES)/kernel.config-spark
 	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
