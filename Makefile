@@ -154,6 +154,9 @@ N_HD_SOURCE_S = $(subst $(BASE_DIR)/,"",$(N_HD_SOURCE))
 update-neutrino:
 	@if test -d $(SOURCE_DIR)/libstb-hal; then \
 		cd $(SOURCE_DIR)/libstb-hal; echo "=== updating libstb-hal ==="; git pull; fi
+	@if test -d $(SOURCE_DIR)/tdt; then \
+		cd $(SOURCE_DIR)/tdt; git branch "before-update-$(NOW)"; \
+		echo "=== updating tdt git ==="; git pull; fi
 	-cd $(N_HD_SOURCE) && { git branch "before-update-$(NOW)"; git stash save "before update $(NOW)" ; git pull; }
 	@echo ""
 	@echo "Sources updated. Local changes before update were stashed away,"
