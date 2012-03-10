@@ -48,7 +48,7 @@ rm -f build_tmp/script.img
 rm -f build_tmp/script.scr
 cat > build_tmp/script.scr << EOF
 fatload usb 0:1 80000000 uImage
-setenv bootargs console=ttyAS0,115200 root=/dev/sda2 rootfstype=ext2 rw coprocessor_mem=4m@0x40000000,4m@0x40400000 printk=1 printk.time=1 nwhwconf=device:eth0,hwaddr:00:80:E1:12:40:69 bigphysarea=6000 stmmaceth=msglvl:0,phyaddr:2,watchdog:5000 panic=10 rootwait
+setenv bootargs console=ttyAS0,115200 root=/dev/sda2 rootfstype=ext2 rw coprocessor_mem=4m@0x40000000,4m@0x40400000 printk=1 printk.time=1 nwhwconf=device:eth0,hwaddr:00:80:E1:12:40:69 bigphysarea=6000 stmmaceth=msglvl:0,phyaddr:2,watchdog:5000 panic=10 rootwait usb_storage.delay_use=0
 bootm 80000000
 EOF
 
