@@ -7,6 +7,6 @@ TARGET_DIR="$1"
 CONTROL="$2"
 
 cd ${TARGET_DIR}/lib/modules
-MODS=$(echo $(find . -name '*.ko' -type f | sed 's#^.*/##'))
+MODS=$(echo $(find . -name '*.ko' -type f |sort| sed 's#^.*/##'))
 MODS=${MODS// /, }
 sed -i "s#@MODULE_PROV@#${MODS}#" "$CONTROL"
