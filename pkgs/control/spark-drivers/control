@@ -5,6 +5,7 @@ Section: base/drivers
 Priority: standard
 Maintainer: @MAINT@
 Architecture: @ARCH@
-Homepage
+Homepage:
 Source:
 Depends: depmod
+Provides: @MODULE_PROV@
