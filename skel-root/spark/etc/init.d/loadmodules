@@ -48,6 +48,7 @@ start)
 		s/^\(\S\+\)-/\1_/g;
 		p }" /etc/modprobe.conf)
 	im aotom
+	im uinput
 	im e2_proc
 	im stmcore_display_sti7111
 	MEMSIZE=8m
