@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.32.46
-# Sat Feb 25 17:38:24 2012
+# Sat Mar 17 19:20:40 2012
 #
 CONFIG_SUPERH=y
 CONFIG_SUPERH32=y
@@ -1614,7 +1614,7 @@ CONFIG_DEBUG_KERNEL=y
 # CONFIG_DEBUG_LOCKING_API_SELFTESTS is not set
 # CONFIG_DEBUG_KOBJECT is not set
 # CONFIG_DEBUG_BUGVERBOSE is not set
-CONFIG_DEBUG_INFO=y
+# CONFIG_DEBUG_INFO is not set
 # CONFIG_DEBUG_VM is not set
 # CONFIG_DEBUG_WRITECOUNT is not set
 # CONFIG_DEBUG_MEMORY_INIT is not set
