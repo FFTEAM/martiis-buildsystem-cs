@@ -1,0 +1,11 @@
+Package: lirc
+Version: @VER@-1
+Description: Linux Infrared Remote Control
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://http://www.lirc.org/
+Source:
+Depends: uinput.ko
+Provides: lircd, @PROV@

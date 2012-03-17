@@ -374,6 +374,43 @@ endif
 	$(REMOVE)/valgrind-3.6.1 $(PKGPREFIX)
 	touch $@
 
+# the exaudio driver seems to build no real driver and keeps the
+# binaries small. At least I hope so.
+$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_last_remote.diff $(PATCHES)/lirc-0.9.0-neutrino-uinput-hack.diff $(PATCHES)/lircd_spark.conf
+	$(UNTAR)/lirc-$(LIRC_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	set -e; cd $(BUILD_TMP)/lirc-$(LIRC_VER); \
+		$(PATCH)/lirc-0.9.0-try_first_last_remote.diff; \
+		$(PATCH)/lirc-0.9.0-neutrino-uinput-hack.diff; \
+		ac_cv_have_kernel='no_kernel=yes kerneldir="missing" kernelext="ko"' \
+		CFLAGS="$(TARGET_CFLAGS) -DUINPUT_NEUTRINO_HACK" ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--prefix= \
+			--mandir=/.remove \
+			--with-driver=exaudio \
+			--without-x \
+			--with-syslog=LOG_DAEMON \
+			; \
+		$(MAKE) all; \
+		make install DESTDIR=$(PKGPREFIX); \
+		make install DESTDIR=$(TARGETPREFIX)
+	install -m 0644 -D $(PATCHES)/lircd_spark.conf $(TARGETPREFIX)/etc/lircd.conf
+	install -m 0644 -D $(PATCHES)/lircd_spark.conf $(PKGPREFIX)/etc/lircd.conf
+	install -m 0755 -D $(SCRIPTS)/lircd.init $(TARGETPREFIX)/etc/init.d/lircd
+	install -m 0755 -D $(SCRIPTS)/lircd.init $(PKGPREFIX)/etc/init.d/lircd
+	ln -sf lircd $(TARGETPREFIX)/etc/init.d/S60lircd
+	ln -sf lircd $(PKGPREFIX)/etc/init.d/S60lircd
+	ln -sf lircd $(TARGETPREFIX)/etc/init.d/K40lircd
+	ln -sf lircd $(PKGPREFIX)/etc/init.d/K40lircd
+	rm -rf $(TARGETPREFIX)/.remove $(PKGPREFIX)/.remove \
+		$(PKGPREFIX)/include $(PKGPREFIX)/lib/lib*.a $(PKGPREFIX)/lib/lib*.?? \
+		$(PKGPREFIX)/bin/pronto2lirc $(PKGPREFIX)/var
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		PKG_VER=$(LIRC_VER) $(OPKG_SH) $(CONTROL_DIR)/lirc
+	$(REMOVE)/lirc-$(LIRC_VER) $(PKGPREFIX)
+	touch $@
+
 $(D)/iperf: $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/iperf-$(IPERF-VER).tar.gz
 	rm -rf $(PKGPREFIX)
