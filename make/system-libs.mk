@@ -469,7 +469,11 @@ $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz | $(TARGETPREFIX)
 	install -m 755 -D $(SCRIPTS)/load-fuse.init \
 		$(PKGPREFIX)/etc/init.d/load-fuse
 	ln -s load-fuse $(PKGPREFIX)/etc/init.d/S56load-fuse
-	PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+ifeq ($(PLATFORM), spark)
+	PKG_DEP=" " PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+else
+	PKG_DEP="fuse.ko" PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+endif
 	$(REMOVE)/fuse-$(FUSE-VER) $(PKGPREFIX)
 	touch $@
 

@@ -3,4 +3,6 @@ if test -x /sbin/ldconfig; then
 	echo "updating dynamic linker cache..."
 	/sbin/ldconfig
 fi
-modprobe fuse
+if ! grep -q fuse /proc/filesystems; then
+	modprobe fuse
+fi
