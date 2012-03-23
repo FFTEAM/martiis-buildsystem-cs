@@ -160,8 +160,8 @@ PHONY += td-module-pkg td-directfb-pkg
 SYSTEM_PKGS += td-module-pkg td-directfb-pkg td-dvb-wrapper-pkg addon-drivers-pkg
 endif
 ifeq ($(PLATFORM), spark)
-SYSTEM_PKGS += spark-drivers-pkg
-SYSTEM_OPKGS += spark-drivers
+SYSTEM_PKGS += spark-drivers-pkg lirc
+SYSTEM_OPKGS += spark-drivers lirc
 
 $(TARGETPREFIX)/mymodules/lib: sparkkernel sparkdriver sparkfirmware
 spark-drivers-pkg: $(TARGETPREFIX)/mymodules/lib |$(HOSTPREFIX)/bin/opkg-module-deps.sh
