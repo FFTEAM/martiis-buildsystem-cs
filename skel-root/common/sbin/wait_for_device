@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+# usage: wait_for_device <devname> <time in sec>
+#
+if test -z "$2"; then
+	echo "usage: $0 <devname> <timeout in seconds>"
+	exit 2
+fi
+
+# already there - exit immediately
+test -e "$1" && exit 0
+
+echo -n "waiting for device $1"
+for i in $(seq $(($2 * 4))); do
+	echo -n .
+	usleep 250000 # 250ms
+	if test -e "$1"; then
+		echo " ok"
+		exit 0
+	fi
+done
+echo " failed (timeout $2 seconds)."
+exit 1
