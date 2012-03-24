@@ -207,7 +207,7 @@ aaa_base-pkg: $(AAA_BASE_DEPS)
 ifeq ($(PLATFORM), spark)
 	test -d $(PKGPREFIX)/bin || mkdir $(PKGPREFIX)/bin
 	cp -a $(TARGETPREFIX)/bin/stfbcontrol $(TARGETPREFIX)/bin/fp_control \
-		$(TARGETPREFIX)/bin/rset $(TARGETPREFIX)/bin/ustslave \
+		$(TARGETPREFIX)/bin/ustslave \
 		$(PKGPREFIX)/bin
 	rm $(PKGPREFIX)/etc/init.d/start_neutrino
 else
