@@ -343,17 +343,12 @@ else
 VALGRIND_EXTRA_EXPORT = :
 endif
 # newer valgrind is probably only usable with external toolchain and newer glibc (posix threads)
-$(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.6.1.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/valgrind-3.6.1.tar.bz2
+$(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.7.0.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/valgrind-3.7.0.tar.bz2
 	rm -rf $(PKGPREFIX)
-ifeq ($(BOXARCH), powerpc)
-	set -e; cd $(BUILD_TMP)/valgrind-3.6.1; \
-		for i in $(shell cd $(PATCHES)/valgrind; echo *); do \
-			echo "apply patch $$i"; $(PATCH)/valgrind/$${i}; \
-		done; \
-		autoreconf
-endif
-	set -e; cd $(BUILD_TMP)/valgrind-3.6.1; \
+	set -e; cd $(BUILD_TMP)/valgrind-3.7.0; \
+		$(PATCH)/valgrind-3.7.0-configurefix.diff; \
+		$(PATCH)/valgrind-3.7.0-rwx_fix.diff; \
 		rm -f uname; \
 		printf "#!/bin/sh\necho 2.6.26.8\n" > uname; chmod 0755 uname; \
 		export PATH=.:$$PATH; \
@@ -370,8 +365,8 @@ endif
 	rm -rf $(PKGPREFIX)/opt/pkg/include $(PKGPREFIX)/opt/pkg/lib/pkconfig
 	rm -rf $(PKGPREFIX)/opt/pkg/lib/valgrind/*.a
 	rm -rf $(PKGPREFIX)/opt/pkg/bin/{cg_*,callgrind_*,ms_print} # perl scripts - we don't have perl
-	PKG_VER=3.6.1 $(OPKG_SH) $(CONTROL_DIR)/valgrind
-	$(REMOVE)/valgrind-3.6.1 $(PKGPREFIX)
+	PKG_VER=3.7.0 $(OPKG_SH) $(CONTROL_DIR)/valgrind
+	$(REMOVE)/valgrind-3.7.0 $(PKGPREFIX)
 	touch $@
 
 # the exaudio driver seems to build no real driver and keeps the

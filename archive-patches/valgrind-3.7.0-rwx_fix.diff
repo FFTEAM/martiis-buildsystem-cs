@@ -1,0 +1,13 @@
+diff --git a/coregrind/m_debuginfo/readelf.c b/coregrind/m_debuginfo/readelf.c
+index 96aa27d..ed04415 100644
+--- a/coregrind/m_debuginfo/readelf.c
++++ b/coregrind/m_debuginfo/readelf.c
+@@ -1539,7 +1539,7 @@ Bool ML_(read_elf_debug_info) ( struct _DebugInfo* di )
+                 && phdr->p_offset < di->fsm.rw_map_foff + di->fsm.rw_map_size
+                 && phdr->p_offset + phdr->p_filesz 
+                    <= di->fsm.rw_map_foff + di->fsm.rw_map_size
+-                && (phdr->p_flags & (PF_R | PF_W | PF_X)) == (PF_R | PF_W)) {
++                && (phdr->p_flags & (PF_R | PF_W | PF_X)) >= (PF_R | PF_W)) {
+                if (n_rw == N_RX_RW_AREAS) {
+                   ML_(symerr)(di, True,
+                               "N_RX_RW_AREAS is too low; "

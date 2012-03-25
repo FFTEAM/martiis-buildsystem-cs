@@ -227,8 +227,8 @@ $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2:
 $(ARCHIVE)/valgrind-3.3.1.tar.bz2:
 	$(WGET) http://valgrind.org/downloads/valgrind-3.3.1.tar.bz2
 
-$(ARCHIVE)/valgrind-3.6.1.tar.bz2:
-	$(WGET) http://valgrind.org/downloads/valgrind-3.6.1.tar.bz2
+$(ARCHIVE)/valgrind-3.7.0.tar.bz2:
+	$(WGET) http://valgrind.org/downloads/valgrind-3.7.0.tar.bz2
 
 $(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz:
 	$(WGET) https://security.appspot.com/downloads/vsftpd-$(VSFTPD-VER).tar.gz
