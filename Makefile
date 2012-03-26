@@ -157,18 +157,23 @@ update-neutrino:
 	@if test -d $(SOURCE_DIR)/tdt; then \
 		cd $(SOURCE_DIR)/tdt; git branch "before-update-$(NOW)"; \
 		echo "=== updating tdt git ==="; git pull; fi
-	-cd $(N_HD_SOURCE) && { git branch "before-update-$(NOW)"; git stash save "before update $(NOW)" ; git pull; }
+	@cd $(N_HD_SOURCE) && { \
+		echo "=== updating neutrino git ==="; \
+		git branch "before-update-$(NOW)"; git stash save "before update $(NOW)"; \
+		git pull || { \
+			echo ""; \
+			echo "An error occured during git pull. This is probably due to a";	\
+			echo "rebased upstream tree. In this case, the easiest way to recover";	\
+			echo "is probably to do 'make update-neutrino-hard', which will do a";	\
+			echo "'git reset --hard origin/master' in $(N_HD_SOURCE_S).";		\
+			echo ""; \
+			echo "The state before update was saved in branch 'before-update-$(NOW)'"; \
+			}; \
+		}
 	@echo ""
 	@echo "Sources updated. Local changes before update were stashed away,"
 	@echo "try 'git stash list' in $(N_HD_SOURCE_S) and restore with"
 	@echo "'git stash pop' there."
-	@echo ""
-	@echo "If you had lots of merge errors, then this is probably due to"
-	@echo "a rebased upstream tree. In this case, the easiest way to recover"
-	@echo "is probably to do 'make update-neutrino-hard', which will do a"
-	@echo "'git reset --hard origin/master' in $(N_HD_SOURCE_S)".
-	@echo ""
-	@echo "The state before update was saved in branch 'before-update-$(NOW)'"
 
 update-neutrino-hard:
 	cd $(N_HD_SOURCE) && git reset --hard origin/master
