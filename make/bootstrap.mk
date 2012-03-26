@@ -18,6 +18,7 @@ PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
 endif
 ifeq ($(PLATFORM), spark)
 BOOTSTRAP += $(STL_ARCHIVE)
+BOOTSTRAP += $(HOSTPREFIX)/bin/unpack-rpm.sh
 endif
 
 bootstrap: $(BOOTSTRAP)
@@ -52,7 +53,7 @@ $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
 $(HOSTPREFIX)/bin/unpack%.sh \
-$(HOSTPREFIX)/bin/opkg%sh: $(HOSTPREFIX)/bin
+$(HOSTPREFIX)/bin/opkg%sh: | $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
 $(BUILD_TMP):
