@@ -213,7 +213,7 @@ ifeq ($(PLATFORM), spark)
 else
 	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules && rm etc/init.d/start_neutrino # ugly...
 endif
-	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/aaa_base
+	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
 pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh
