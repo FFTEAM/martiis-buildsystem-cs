@@ -1,7 +1,5 @@
 #!/bin/sh
 
-export TZ=`cat /etc/TZ`
-
 . /etc/init.d/functions
 
 run_initscripts stop
