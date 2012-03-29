@@ -138,6 +138,9 @@ FBSHOT-VER=0.3
 # tcpdump. if you don't know it, you don't need it.
 TCPDUMP-VER=4.2.0
 
+# timezone files
+TZ_VER = 2012b
+
 # systemd; a system and service manager for Linux
 SYSTEMD-VER=19
 

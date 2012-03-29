@@ -1,0 +1,10 @@
+Package: timezone
+Version: @VER@-1
+Description: Some timezone definitions
+Section: base
+Priority: required
+Maintainer: @MAINT@
+Architecture: noarch
+Homepage: http://www.gnu.org/software/libc/libc.html
+Source:
+Depends:

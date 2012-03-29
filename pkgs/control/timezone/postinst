@@ -1,0 +1,5 @@
+#!/bin/sh
+#
+# default to CET if nothing is set for compatibility with old TZ setup
+test -e /etc/localtime && exit 0
+cp /share/localtime/CET /etc/localtime

@@ -493,6 +493,34 @@ $(D)/libpcap: $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz
 	$(REMOVE)/libpcap-$(PCAP-VER)
 	touch $@
 
+# timezone definitions. Package only those referenced by timezone.xml
+# zic is usually in a package called "timezone" or similar.
+$(D)/timezone: find-zic $(ARCHIVE)/tzdata$(TZ_VER).tar.gz
+	$(REMOVE)/timezone $(PKGPREFIX)
+	mkdir $(BUILD_TMP)/timezone $(BUILD_TMP)/timezone/zoneinfo
+	tar -C $(BUILD_TMP)/timezone -xf $(ARCHIVE)/tzdata$(TZ_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/timezone; \
+		unset ${!LC_*}; LANG=POSIX; LC_ALL=POSIX; export LANG LC_ALL; \
+		zic -d zoneinfo.tmp \
+			africa antarctica asia australasia \
+			europe northamerica southamerica pacificnew \
+			etcetera backward; \
+		sed -n '/zone=/{s/.*zone="\(.*\)".*$$/\1/; p}' $(PATCHES)/timezone.xml | sort -u | \
+		while read x; do \
+			find zoneinfo.tmp -type f -name $$x | sort | \
+			while read y; do \
+				cp -a $$y zoneinfo/$$x; \
+			done; \
+			test -e zoneinfo/$$x || echo "WARNING: timezone $$x not found."; \
+		done; \
+		install -d -m 0755 $(PKGPREFIX)/share/ $(PKGPREFIX)/usr/share $(PKGPREFIX)/etc; \
+		mv zoneinfo $(PKGPREFIX)/share/
+	ln -s ../../share/zoneinfo $(PKGPREFIX)/usr/share/
+	install -m 0644 $(PATCHES)/timezone.xml $(PKGPREFIX)/etc/
+	PKG_VER=$(TZ_VER) $(OPKG_SH) $(CONTROL_DIR)/timezone
+	$(REMOVE)/timezone $(PKGPREFIX)
+	touch $@
+
 #############################################################################################
 #############################################################################################
 ######### not yet needed and not tested #####################################################

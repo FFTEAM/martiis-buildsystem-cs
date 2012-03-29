@@ -215,6 +215,9 @@ $(ARCHIVE)/strace-4.5.20.tar.bz2:
 $(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/tcpdump-$(TCPDUMP-VER).tar.gz
 
+$(ARCHIVE)/tzdata$(TZ_VER).tar.gz:
+	$(WGET) ftp://munnari.oz.au/pub/tzdata$(TZ_VER).tar.gz
+
 $(ARCHIVE)/u-boot-2009.03.tar.bz2:
 	$(WGET) http://ftp.denx.de/pub/u-boot/u-boot-2009.03.tar.bz2
 
