@@ -198,7 +198,7 @@ ifeq ($(PLATFORM), spark)
 AAA_BASE_DEPS += stfbcontrol fp_control ustslave
 endif
 
-aaa_base-pkg: $(AAA_BASE_DEPS)
+aaa_base-pkg: $(AAA_BASE_DEPS) timezone
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
 	cp -a skel-root/common/* $(PKGPREFIX)/
