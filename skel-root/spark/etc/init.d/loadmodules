@@ -51,7 +51,7 @@ start)
 	im uinput
 	im e2_proc
 	im stmcore_display_sti7111
-	MEMSIZE=8m
+	MEMSIZE=12m	# neutrino now needs 12m for FB scaling backbuffer
 	VM=$(get_vidmode)
 	im stmfb.ko display0=$VM:$MEMSIZE:pal:yuv:yuv
 	ustslave /dev/st231-1 /boot/audio.elf
