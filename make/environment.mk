@@ -89,7 +89,9 @@ else
 N_HD_SOURCE ?= $(SOURCE_DIR)/neutrino-hd
 endif
 
-PATH := $(HOSTPREFIX)/bin:$(CROSS_DIR)/bin:$(PATH)
+# append */sbin for those not having sbin in their path. We need it.
+PATH := $(HOSTPREFIX)/bin:$(CROSS_DIR)/bin:$(PATH):/sbin:/usr/sbin:/usr/local/sbin
+
 PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig
 
