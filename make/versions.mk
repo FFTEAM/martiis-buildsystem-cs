@@ -190,3 +190,6 @@ FUSE-VER=2.8.5
 
 # gdb; the GNU debugger
 GDB-VER=7.3
+
+# mtd-utils for the host...
+MTD_UTILS_VER = 1.4.9

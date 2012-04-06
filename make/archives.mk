@@ -137,8 +137,8 @@ $(ARCHIVE)/libogg-$(OGG-VER).tar.gz:
 $(ARCHIVE)/libvorbis-$(VORBIS-VER).tar.bz2:
 	$(WGET) http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS-VER).tar.bz2
 
-$(ARCHIVE)/mtd-utils-1.4.4.tar.bz2:
-	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-1.4.4.tar.bz2
+$(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
+	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2
 
 $(ARCHIVE)/ncurses-$(NCURSES-VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES-VER).tar.gz

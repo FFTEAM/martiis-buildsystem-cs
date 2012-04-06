@@ -26,11 +26,11 @@ endif
 # mtd-utils build needs zlib-devel and lzo-devel packages
 # installed *on the host*, this is not a cross-build...
 #
-mtd-utils: $(ARCHIVE)/mtd-utils-1.4.4.tar.bz2 | $(HOSTPREFIX)/bin
-	$(UNTAR)/mtd-utils-1.4.4.tar.bz2
-	set -e; cd $(BUILD_TMP)/mtd-utils-1.4.4; \
+mtd-utils: $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 | $(HOSTPREFIX)/bin
+	$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER); \
 		$(MAKE) `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1; \
 		cp -a mkfs.jffs2 sumtool $(HOSTPREFIX)/bin
-	rm -rf $(BUILD_TMP)/mtd-utils-1.4.4
+	rm -rf $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)
 
 PHONY += flashimage mtd-utils
