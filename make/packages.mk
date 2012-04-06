@@ -3,6 +3,10 @@ SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
 # packages which don't get pulled in by dependencies
 SYSTEM_OPKGS =
 
+# additional stuff which is useful on most systems
+SYSTEM_PKGS  += e2fsprogs xfsprogs
+SYSTEM_OPKGS += e2fsprogs xfsprogs
+
 glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
