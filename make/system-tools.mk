@@ -63,10 +63,9 @@ $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	set -e; cd $(BUILD_TMP)/busybox-$(BUSYBOX-VER); \
-		$(PATCH)/busybox-1.18.3-fix-libiproute-compile-with-kernel-headers-2.6.17.patch; \
 		$(PATCH)/busybox-1.18-hack-init-s-console.patch; \
-		$(PATCH)/busybox-1.18-setconsole-open-console-for-writing-rather-than-read.patch; \
-		cp $(PATCHES)/busybox-1.18.config .config; \
+		$(PATCH)/busybox-1.19.4-revert-broken-sighandling.patch; \
+		cp $(PATCHES)/busybox-1.19.config .config; \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config; \
 		grep -q DBB_BT=AUTOCONF_TIMESTAMP Makefile.flags && \
 		sed -i 's#AUTOCONF_TIMESTAMP#"\\"$(PLATFORM)\\""#' Makefile.flags || true; \
