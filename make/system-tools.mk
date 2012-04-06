@@ -150,7 +150,7 @@ $(TARGETPREFIX)/lib/libuuid.so.1:
 $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz | $(TARGETPREFIX) $(TARGETPREFIX)/lib/libuuid.so.1
 	$(UNTAR)/xfsprogs-$(XFSPROGS-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/xfsprogs-$(XFSPROGS-VER); \
-		$(BUILDENV) root_libdir=/opt/xfsprogs/lib root_sbindir=/opt/xfsprogs/sbin \
+		$(BUILDENV) root_libdir=/opt/pkg/lib root_sbindir=/opt/pkg/sbin \
 		./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
@@ -158,11 +158,17 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz | $(TARGETPREFIX) $(TA
 			--oldincludedir=$(TARGETPREFIX)/include \
 			--enable-gettext=no \
 			--datarootdir=/.remove \
-			--prefix=/opt/xfsprogs; \
+			--prefix=/opt/pkg; \
 		LCFLAGS=-I$(TARGETPREFIX)/include $(MAKE) V=1; \
 		DIST_ROOT=$(PKGPREFIX) $(MAKE) install
-	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/xfsprogs-$(XFSPROGS-VER)
+	rm -rf $(PKGPREFIX)/.remove
+	cd $(PKGPREFIX)/opt/pkg/sbin; \
+		rm xfs_rtcp xfs_mdrestore xfs_estimate xfs_io xfs_mkfile xfs_bmap xfs_freeze \
+		   xfs_growfs xfs_info xfs_logprint xfs_copy xfs_ncheck xfs_metadump xfs_quota
+	PKG_VER=$(XFSPROGS-VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/xfsprogs
+	$(REMOVE)/xfsprogs-$(XFSPROGS-VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-$(NTFS_3G-VER).tgz | $(TARGETPREFIX)

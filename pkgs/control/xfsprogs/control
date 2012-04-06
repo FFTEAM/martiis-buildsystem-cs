@@ -1,0 +1,11 @@
+Package: xfsprogs
+Version: @VER@-1
+Description: Filesystem Utilities for the XFS File System
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://xfs.org/
+Source:
+Depends: @DEP@
+Provides:
