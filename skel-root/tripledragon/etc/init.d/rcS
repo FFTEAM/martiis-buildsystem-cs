@@ -16,7 +16,9 @@ ln -s /tmp/media /	# /media points to /tmp/media/
 # manually create nodes for crappy drivers
 /sbin/mknodes
 # update library cache before running init scripts
-ldconfig
+if [ ! -e /etc/ld.so.cache ] || [ /etc/ld.so.conf -nt /etc/ld.so.cache ]; then
+	ldconfig 2>/dev/null
+fi
 
 # /etc/profile sets up $PATH etc.
 . /etc/profile

@@ -1,4 +1,8 @@
 #!/bin/sh
+# on shutdown, the time is set, so the mtime of ld.so.cache will be set.
+if [ ! -e /etc/ld.so.cache ] || [ /etc/ld.so.conf -nt /etc/ld.so.cache ]; then
+	ldconfig 2>/dev/null
+fi
 
 . /etc/init.d/functions
 
