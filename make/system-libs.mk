@@ -230,13 +230,17 @@ $(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz | $(TARG
 	touch $@
 
 ifeq ($(BOXARCH), arm)
-FFMPEG_ENV = CFLAGS=-march=armv6
-FFMPEG_CONFIGURE  = --enable-armv6 --arch=arm
-FFMPEG_CONFIGURE += --disable-decoders
-FFMPEG_CONFIGURE += --enable-parsers --enable-demuxers --disable-ffmpeg --disable-swscale
-FFMPEG_CONFIGURE += --enable-decoder=h263 --enable-decoder=h264 --enable-decoder=mpeg4video
-FFMPEG_CONFIGURE += --enable-decoder=vc1 --enable-decoder=mpegvideo --enable-decoder=mpegaudio
-FFMPEG_CONFIGURE += --enable-decoder=aac --enable-decoder=dca --enable-decoder=ac3 --enable-decoder=iff_byterun1
+FFMPEG_CONFIGURE  = --arch=arm --cpu=armv6
+FFMPEG_CONFIGURE += --disable-decoders --disable-parsers --disable-demuxers
+FFMPEG_CONFIGURE += --disable-ffmpeg --disable-swscale --disable-filters --disable-swresample --disable-postproc
+FFMPEG_CONFIGURE += --enable-parser=aac --enable-parser=aac_latm --enable-parser=ac3 --enable-parser=dca
+FFMPEG_CONFIGURE += --enable-parser=mpeg4video --enable-parser=mpegvideo --enable-parser=mpegaudio
+FFMPEG_CONFIGURE += --enable-parser=h264 --enable-parser=vc1 --enable-parser=dvdsub --enable-parser=dvbsub
+FFMPEG_CONFIGURE += --enable-decoder=dca --enable-decoder=dvbsub
+FFMPEG_CONFIGURE += --enable-demuxer=aac --enable-demuxer=ac3
+FFMPEG_CONFIGURE += --enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegtsraw --enable-demuxer=mpegps
+FFMPEG_CONFIGURE += --enable-demuxer=mpegvideo --enable-demuxer=wav --enable-demuxer=pcm_s16be
+FFMPEG_CONFIGURE += --enable-demuxer=mp3 --enable-demuxer=pcm_s16le --enable-demuxer=matroska
 FFMPEG_CONFIGURE += --enable-bsfs
 endif
 ifeq ($(BOXARCH), powerpc)
@@ -256,18 +260,25 @@ FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
 endif
 $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
+ifeq ($(PLATFORM), coolstream)
+	if ! test -d $(SOURCE_DIR)/cst-public-libraries-ffmpeg; then \
+		cd $(SOURCE_DIR) && git clone git://c00lstreamtech.de/cst-public-libraries-ffmpeg.git; \
+	fi
+	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER)
+	cp -a $(SOURCE_DIR)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER)
+else
 	$(UNTAR)/ffmpeg-$(FFMPEG-VER).tar.bz2
+endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER); \
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
 		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff; \
 		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
-		$(FFMPEG_ENV) \
 		./configure \
 			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
 			$(FFMPEG_CONFIGURE) \
 			--enable-decoder=dvbsub --enable-demuxer=mpegps \
-			--disable-devices --disable-mmx --disable-altivec --disable-iwmmxt   \
+			--disable-devices --disable-mmx --disable-altivec \
 			--disable-protocols --enable-protocol=file \
 			--disable-zlib --enable-bzlib \
 			--disable-network --disable-ffprobe \
