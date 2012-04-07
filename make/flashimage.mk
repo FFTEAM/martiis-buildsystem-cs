@@ -13,10 +13,18 @@ SUMIMG   = $(BUILD_TMP)/flashroot-$(NOW).sum.img
 
 ifeq ($(PLATFORM), coolstream)
 # the devtable is used for having a console device on first boot.
-flashimage: find-mkfs.jffs2 find-sumtool
+flashimage: find-mkfs.jffs2 find-sumtool cskernel
 	echo "/dev/console c 0644 0 0 5 1 0 0 0" > $(BUILD_TMP)/devtable
+	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
 	mkfs.jffs2 -e 0x20000 -p -U -D $(BUILD_TMP)/devtable -d $(BUILD_TMP)/install -o $(FLASHIMG)
 	sumtool    -e 0x20000 -i $(FLASHIMG) -o $(SUMIMG)
+	$(REMOVE)/coolstream
+	mkdir $(BUILD_TMP)/coolstream
+	set -e;\
+		cp $(BUILD_TMP)/Image.img mtd1-hd1.img; scripts/mkmultiboot-hd1.sh; rm mtd1-hd1.img; \
+		cd $(BUILD_TMP); \
+		mv kernel-autoscr-mtd1.img coolstream/kernel.img; \
+		cp $(SUMIMG) coolstream/system.img
 endif
 ifeq ($(PLATFORM), spark)
 # you should probably "make system-pkgs" before...
