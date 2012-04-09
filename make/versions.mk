@@ -105,7 +105,7 @@ VSFTPD-VER=2.3.4
 RSYNC-VER=3.0.7
 
 # pkg-config; a helper tool used when compiling applications and libraries to insert the correct compiler options
-PKGCONFIG_VER=0.25
+PKGCONFIG_VER=0.26
 
 # procps; a bunch of small useful utilities that give information about processes using the /proc filesystem
 PROCPS-VER=3.2.8
