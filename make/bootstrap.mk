@@ -340,10 +340,11 @@ $(TARGETPREFIX)/sbin/ldconfig: | $(TARGETPREFIX)
 	fi
 
 pkg-config: $(HOSTPREFIX)/bin/pkg-config
-$(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-0.25.tar.gz | $(HOSTPREFIX)/bin
-	$(UNTAR)/pkg-config-0.25.tar.gz
-	cd $(BUILD_TMP)/pkg-config-0.25 && \
-		./configure --with-pc_path=$(PKG_CONFIG_PATH) --with-installed-glib && \
+$(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-0.$(PKGCONFIG_VER).tar.gz | $(HOSTPREFIX)/bin
+	$(UNTAR)/pkg-config-$(PKGCONFIG_VER).tar.gz
+	cd $(BUILD_TMP)/pkg-config-$(PKGCONFIG_VER) && \
+		./configure --with-pc_path=$(PKG_CONFIG_PATH) \
+					--with-installed-glib && \
 		$(MAKE) && \
 		cp -a pkg-config $(HOSTPREFIX)/bin
 	ln -s pkg-config $(HOSTPREFIX)/bin/$(TARGET)-pkg-config
