@@ -9,7 +9,7 @@ PREQS = download neutrino-hd-source $(D)
 ifeq ($(PLATFORM), tripledragon)
 PREQS += tdsvn
 endif
-ifeq ($(PLATFROM), coolstream)
+ifeq ($(PLATFORM), coolstream)
 PREQS += cs-svn
 endif
 ifeq ($(PLATFORM), spark)
