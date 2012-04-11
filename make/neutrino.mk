@@ -54,8 +54,6 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 	test -d $(N_OBJDIR) || mkdir -p $(N_OBJDIR)
 	$(N_HD_SOURCE)/autogen.sh
 	set -e; cd $(N_OBJDIR); \
-		export PKG_CONFIG=$(PKG_CONFIG); \
-		export PKG_CONFIG_PATH=$(PKG_CONFIG_PATH); \
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
 		LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
