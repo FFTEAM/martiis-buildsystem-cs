@@ -340,7 +340,7 @@ $(TARGETPREFIX)/sbin/ldconfig: | $(TARGETPREFIX)
 	fi
 
 pkg-config: $(HOSTPREFIX)/bin/pkg-config
-$(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-0.$(PKGCONFIG_VER).tar.gz | $(HOSTPREFIX)/bin
+$(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz | $(HOSTPREFIX)/bin
 	$(UNTAR)/pkg-config-$(PKGCONFIG_VER).tar.gz
 	cd $(BUILD_TMP)/pkg-config-$(PKGCONFIG_VER) && \
 		./configure --with-pc_path=$(PKG_CONFIG_PATH) \
