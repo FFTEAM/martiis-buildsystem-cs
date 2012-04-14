@@ -1,6 +1,16 @@
 #!/bin/sh
 PID=/var/run/lirc/lircd.pid
 
+boxver()
+{
+	if test -z "$STB_ID"; then
+		eval $(sed 's/^.* \(STB_ID[^[:space:]]*\).*$/\1/' /proc/cmdline)
+	fi
+	BOX_ID=${STB_ID:0:8}	# 09:00:07
+	BOX_ID=${BOX_ID//:/_}	# 09_00_07
+	export BOX_ID
+}
+
 makelink()
 {
 	FOUND=false
@@ -31,6 +41,9 @@ case $1 in
 			test -e /dev/uinput && break
 			usleep 100000	# 100ms
 		done
+		boxver	# determine boxtype
+		# if a /etc/lircd.conf.$BOX_ID exists, use it...
+		test -z "$LIRCD_OPTS" && test -e /etc/lircd.conf.$BOX_ID && LIRCD_OPTS=/etc/lircd.conf.$BOX_ID
 		/sbin/lircd -u $LIRCD_OPTS
 		makelink
 		;;
