@@ -36,18 +36,15 @@ create_symlinks() {
 	fi
 	BUS=""
 	PORT=""
-	P=$PHYSDEVPATH
+	P=$DEVPATH
 	case "$P" in
-	/devices/platform/cx2450x-ehci.?/usb?/?-?/?-?.?/?-?.?:?.?/host*) # hub
+	/devices/platform/stm-usb.?/stm-ehci.?/usb?/?-?/?-?.?/?-?.?:?.?/host*) # hub
 		PORT=${P#*.*.}	# strip off /devices/platform/cx2450x-ehci.?/usb?/?-?/?-?
 		PORT=${PORT%%/*}	# strip off /?-?.?:?.?/host*, leaving the port
 		BUS="usb-${P:31:1}-hub-${PORT}"
 		;;
-	/devices/platform/cx2450x-ehci.?/usb?/?-?/?-?:?.?/host*) # no hub
+	/devices/platform/stm-usb.?/stm-ehci.?/usb?/?-?/?-?:?.?/host*) # no hub
 		BUS="usb-${P:31:1}"
-		;;
-	/devices/platform/cnxt_sata?-?.?/host*)
-		BUS="sata-${P:27:1}"
 		;;
 	*)
 		# BUS="unknown" # ignored for now
