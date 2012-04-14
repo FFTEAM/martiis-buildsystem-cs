@@ -92,7 +92,7 @@ endif
 # append */sbin for those not having sbin in their path. We need it.
 PATH := $(HOSTPREFIX)/bin:$(CROSS_DIR)/bin:$(PATH):/sbin:/usr/sbin:/usr/local/sbin
 
-PKG_CONFIG = /usr/bin/pkg-config
+PKG_CONFIG = $(HOSTPREFIX)/bin/$(TARGET)-pkg-config
 PKG_CONFIG_PATH = $(TARGETPREFIX)/lib/pkgconfig
 
 # helper-"functions":
