@@ -293,6 +293,8 @@ $(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
+$(PATCHES)/sparkdrivers/0002-aotom-add-ioctl-to-set-time-date.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
@@ -314,6 +316,7 @@ $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
 		rm -f stmfb; \
 		ln -s stmfb-3.1_stm24_0102 stmfb; \
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
+	cp -a $(BUILD_TMP)/driver/frontcontroller/aotom/aotom_main.h $(TARGETPREFIX)/include
 	# disable wireless build
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
 	# disable led and button - it's not for spark
