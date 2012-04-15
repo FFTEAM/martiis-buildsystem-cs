@@ -26,7 +26,7 @@ if [ -e /sys/class/stmcoredisplay/hdmi0.0/hotplug ]; then
 	echo
 fi
 
-touch /tmp/norestart
+# touch /tmp/norestart
 until neutrino; do
 	RET=$?
 	echo "Neutrino exited with exit code $RET"
@@ -34,12 +34,18 @@ until neutrino; do
 	while [ -e /tmp/norestart ]; do # for debugging: stop the restart loop
 		sleep 1;
 	done
+	if [ $RET = 1 ]; then
+		touch /tmp/.halt
+		break;
+	fi
 done
 
 $MESSAGE "start_n ends"
 if [ -e /tmp/.reboot ]; then # gets created by neutrino
 	$MESSAGE "rebooting..."
 	reboot
-#else
-#	halt
+fi
+if [ -e /tmp/.halt ]; then
+	$MESSAGE "shutting down..."
+	poweroff
 fi
