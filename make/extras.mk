@@ -472,12 +472,12 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libsgutils2.la
 	rm -r $(PKGPREFIX)/lib $(PKGPREFIX)/include $(PKGPREFIX)/bin/sg_start
-	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/addon
+	PKG_VER=$(SG3_UTILS-VER) $(OPKG_SH) $(CONTROL_DIR)/sg3_utils/addon
 	rm -r $(PKGPREFIX)/*
 	mkdir $(PKGPREFIX)/lib $(PKGPREFIX)/bin
 	cp -a $(TARGETPREFIX)/lib/libsgutils2.so.2* $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/bin/sg_start          $(PKGPREFIX)/bin
-	$(OPKG_SH) $(CONTROL_DIR)/sg3_utils/base
+	PKG_VER=$(SG3_UTILS-VER) $(OPKG_SH) $(CONTROL_DIR)/sg3_utils/base
 	$(REMOVE)/sg3_utils-$(SG3_UTILS-VER) $(PKGPREFIX)
 	touch $@
 
