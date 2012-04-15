@@ -1,11 +1,11 @@
-From c4e0900fa64719590bdfd6279becc9d3a6e18b84 Mon Sep 17 00:00:00 2001
+From 8d81442b3468a7e2b4d8a02842b73e10b3fa57ef Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sat, 18 Feb 2012 21:55:34 +0100
 Subject: [PATCH 1/6] player2_191: silence kmsg spam
 
 ---
  .../drivers/media/dvb/stm/backend/player_module.c  |    1 +
- .../media/dvb/stm/dvb/e2_proc/e2_proc_audio.c      |   37 +++--
+ .../media/dvb/stm/dvb/e2_proc/e2_proc_audio.c      |   22 ++-
  .../media/dvb/stm/dvb/e2_proc/e2_proc_avs.c        |   70 +++++----
  .../media/dvb/stm/dvb/e2_proc/e2_proc_video.c      |  158 +++++++++++++-------
  .../media/dvb/stm/dvb/e2_proc/e2_proc_vmpeg.c      |  108 ++++++++-----
@@ -13,7 +13,7 @@ Subject: [PATCH 1/6] player2_191: silence kmsg spam
  player2_191/linux/drivers/sound/kreplay/kreplay.c  |    3 +-
  .../linux/drivers/sound/ksound/ksound-core.c       |    6 +-
  player2_191/linux/drivers/sound/ksound/ktone.c     |    3 +-
- 9 files changed, 261 insertions(+), 157 deletions(-)
+ 9 files changed, 253 insertions(+), 150 deletions(-)
 
 diff --git a/player2_191/linux/drivers/media/dvb/stm/backend/player_module.c b/player2_191/linux/drivers/media/dvb/stm/backend/player_module.c
 index 09513a8..a7cf6bf 100644
@@ -28,77 +28,30 @@ index 09513a8..a7cf6bf 100644
      DisplayInit ();
      BackendInit ();
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c
-index 16c000c..8080834 100644
+index d2a6cb1..03eb6a6 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c
-@@ -55,9 +55,9 @@ int proc_audio_delay_pcm_write(struct file *file, const char __user *buf,
- 	char 		*page;
- 	char		*myString;
- 	ssize_t 	ret = -ENOMEM;
--
-+#ifdef VERY_VERBOSE
- 	printk("%s %d - ", __FUNCTION__, (int) count);
--
-+#endif
- 	page = (char *)__get_free_page(GFP_KERNEL);
- 	if (page)
- 	{
-@@ -68,8 +68,9 @@ int proc_audio_delay_pcm_write(struct file *file, const char __user *buf,
- 		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
- 		strncpy(myString, page, count);
- 		myString[count] = '\0';
--
-+#ifdef VERY_VERBOSE
- 		printk("%s\n", myString);
-+#endif
- 		kfree(myString);
- 		//result = sscanf(page, "%3s %3s %3s %3s %3s", s1, s2, s3, s4, s5);
- 	}
-@@ -86,8 +87,9 @@ int proc_audio_delay_pcm_read (char *page, char **start, off_t off, int count,
- 			  int *eof, void *data_unused)
- {
- 	int len = 0;
-+#ifdef VERY_VERBOSE
- 	printk("%s %d\n", __FUNCTION__, count);
--
-+#endif
-         return len;
- }
+@@ -56,7 +56,9 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
+     char    *myString;
+     ssize_t  ret = -ENOMEM;
  
-@@ -97,9 +99,9 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
- 	char 		*page;
- 	char		*myString;
- 	ssize_t 	ret = -ENOMEM;
--
 +#ifdef VERY_VERBOSE
- 	printk("%s %d - ", __FUNCTION__, (int) count);
--
+     printk("%s %ld - ", __FUNCTION__, count);
 +#endif
- 	page = (char *)__get_free_page(GFP_KERNEL);
- 	if (page)
- 	{
-@@ -110,8 +112,9 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
- 		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
- 		strncpy(myString, page, count);
- 		myString[count] = '\0';
--
+ 
+     page = (char *)__get_free_page(GFP_KERNEL);
+     if (page)
+@@ -80,7 +82,9 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
+         strncpy(myString, page, count);
+         myString[count] = '\0';
+ 
 +#ifdef VERY_VERBOSE
- 		printk("%s\n", myString);
+         printk("%s\n", myString);
 +#endif
- 		kfree(myString);
- 		//result = sscanf(page, "%3s %3s %3s %3s %3s", s1, s2, s3, s4, s5);
- 	}
-@@ -128,7 +131,9 @@ int proc_audio_delay_bitstream_read (char *page, char **start, off_t off, int co
- 			  int *eof, void *data_unused)
- {
- 	int len = 0;
-+#ifdef VERY_VERBOSE
- 	printk("%s %d\n", __FUNCTION__, ProcDeviceContext->AudioState.mute_state);
-+#endif
- 	len = sprintf(page, "%d\n", ProcDeviceContext->AudioState.mute_state);
-         return len;
- }
-@@ -210,7 +215,9 @@ int proc_audio_j1_mute_write(struct file *file, const char __user *buf,
+         sscanf(myString, "%x", &delay);
+ 
+         if (delay != 0)
+@@ -218,7 +222,9 @@ int proc_audio_j1_mute_write(struct file *file, const char __user *buf,
  	ssize_t 	ret = -ENOMEM;
  	unsigned int 	State;
  
@@ -108,7 +61,7 @@ index 16c000c..8080834 100644
  	mutex_lock (&(ProcDeviceContext->DvbContext->Lock));
  
  	page = (char *)__get_free_page(GFP_KERNEL);
-@@ -224,7 +231,9 @@ int proc_audio_j1_mute_write(struct file *file, const char __user *buf,
+@@ -232,7 +238,9 @@ int proc_audio_j1_mute_write(struct file *file, const char __user *buf,
  		strncpy(myString, page, count);
  		myString[count] = '\0';
  
@@ -118,7 +71,7 @@ index 16c000c..8080834 100644
  		sscanf(myString, "%d", &State);
  
  		if (State == 1) { //MUTE
-@@ -368,9 +377,9 @@ int proc_audio_ac3_write(struct file *file, const char __user *buf,
+@@ -376,9 +384,9 @@ int proc_audio_ac3_write(struct file *file, const char __user *buf,
  	char 		*page;
  	char		*myString;
  	ssize_t 	ret = -ENOMEM;
@@ -130,7 +83,7 @@ index 16c000c..8080834 100644
  	page = (char *)__get_free_page(GFP_KERNEL);
  	if (page)
  	{
-@@ -381,9 +390,9 @@ int proc_audio_ac3_write(struct file *file, const char __user *buf,
+@@ -389,9 +397,9 @@ int proc_audio_ac3_write(struct file *file, const char __user *buf,
  		myString = (char *) kmalloc(count + 1, GFP_KERNEL);
  		strncpy(myString, page, count);
  		myString[count] = '\0';
@@ -142,7 +95,7 @@ index 16c000c..8080834 100644
  		if (strncmp("passthrough", page, count - 1) == 0)
  		{
  			if(passthrough == 0)
-@@ -457,8 +466,9 @@ int proc_audio_ac3_read (char *page, char **start, off_t off, int count,
+@@ -465,8 +473,9 @@ int proc_audio_ac3_read (char *page, char **start, off_t off, int count,
  			  int *eof, void *data_unused)
  {
  	int len = 0;
@@ -153,7 +106,7 @@ index 16c000c..8080834 100644
  	if (passthrough == 1)
  	{
  		len = sprintf(page, "passthrough\n");
-@@ -473,8 +483,9 @@ int proc_audio_ac3_choices_read (char *page, char **start, off_t off, int count,
+@@ -481,8 +490,9 @@ int proc_audio_ac3_choices_read (char *page, char **start, off_t off, int count,
  			  int *eof, void *data_unused)
  {
  	int len = 0;
@@ -1311,10 +1264,10 @@ index fe28a0e..4480106 100644
  		}
  		
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c b/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
-index e633d64..2841450 100644
+index 7b9cef1..52c5d6e 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
-@@ -96,11 +96,11 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -108,11 +108,11 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
           ((pSession->source == DMX_SOURCE_DVR0) && swts)))
      return -1;
  
@@ -1328,7 +1281,7 @@ index e633d64..2841450 100644
    switch ( dvbdmxfeed->type )
    {
    case DMX_TYPE_TS:
-@@ -139,10 +139,12 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -151,10 +151,12 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
        return -EINVAL;
      }
    }
@@ -1341,7 +1294,7 @@ index e633d64..2841450 100644
  
    if (dvbdmxfeed->type == DMX_TYPE_SEC)
    	my_pes_type = 99;
-@@ -172,13 +174,16 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -184,13 +186,16 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
  	       int err;
  	       if ((err = pti_hal_descrambler_link(pSession->session, pSession->descramblers[pSession->descramblerindex[vLoop]], pSession->slots[vLoop])) != 0)
  	         printk("Error linking slot %d to descrambler %d, err = %d\n", pSession->slots[vLoop], pSession->descramblers[pSession->descramblerindex[vLoop]], err);
@@ -1359,7 +1312,7 @@ index e633d64..2841450 100644
        return 0;
      }
    }
-@@ -196,9 +201,9 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -208,9 +213,9 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
  							    pes_type, demux , NULL, NULL);
  
    pSession->descramblerindex[pSession->num_pids]= pSession->descramblerForPid[dvbdmxfeed->pid];
@@ -1371,7 +1324,7 @@ index e633d64..2841450 100644
    if(pti_hal_slot_link_buffer ( pSession->session,
                               pSession->slots[pSession->num_pids],
  			     bufType) != 0)
-@@ -224,8 +229,10 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -236,8 +241,10 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
  	      printk("Error linking slot %d to descrambler %d, err = %d\n",
                  pSession->slots[pSession->num_pids],
                  pSession->descramblers[pSession->descramblerindex[pSession->num_pids]], err);
@@ -1382,7 +1335,7 @@ index e633d64..2841450 100644
      }
    }
  
-@@ -240,7 +247,7 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -252,7 +259,7 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
    dprintk ( "%s: pid = %d, num_pids = %d \n", __FUNCTION__, dvbdmxfeed->pid,
  	   pSession->num_pids );
  
@@ -1391,7 +1344,7 @@ index e633d64..2841450 100644
    printk ( "#  pid t pt ref\n");
    for ( vLoop = 0; vLoop < ( pSession->num_pids ); vLoop++ )
    {
-@@ -274,8 +281,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -286,8 +293,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
           (pSession->source < DMX_SOURCE_FRONT2)) ||
           ((pSession->source == DMX_SOURCE_DVR0) && swts)))
      return -1;
@@ -1402,7 +1355,7 @@ index e633d64..2841450 100644
    //printk ( "%s(): demux = %p, context = %p, sesison = %p, pid = %d, type = %d, pes_type = %d>", __FUNCTION__, dvbdmxfeed->demux, pContext, pSession, dvbdmxfeed->pid, dvbdmxfeed->type, dvbdmxfeed->pes_type );
  
    if (dvbdmxfeed->type == DMX_TYPE_SEC)
-@@ -291,9 +299,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -303,9 +311,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
      if (( pSession->pidtable[vLoop] == dvbdmxfeed->pid ) )
      {
        pSession->references[vLoop]--;
@@ -1414,7 +1367,7 @@ index e633d64..2841450 100644
        haveFound = 1;
  
        if (pSession->references[vLoop] == 0)
-@@ -324,7 +332,7 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -336,7 +344,7 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
  
  	pSession->num_pids--;
  
@@ -1423,7 +1376,7 @@ index e633d64..2841450 100644
  	if(dvbdmxfeed->pes_type == DMX_TS_PES_VIDEO)
  	{
            /* reset the DMA threshold to 1 to allow low rate TS
-@@ -508,9 +516,9 @@ int SetSource (struct dmx_demux* demux, const dmx_source_t *src)
+@@ -533,9 +541,9 @@ int SetSource (struct dmx_demux* demux, const dmx_source_t *src)
             __func__, pContext, pContext->pPtiSession, src);
      return -EINVAL;
    }
