@@ -199,7 +199,7 @@ endif
 
 AAA_BASE_DEPS =
 ifeq ($(PLATFORM), spark)
-AAA_BASE_DEPS += stfbcontrol fp_control ustslave
+AAA_BASE_DEPS += stfbcontrol fp_control ustslave libstb-hal
 endif
 
 aaa_base-pkg: $(AAA_BASE_DEPS) timezone
@@ -212,6 +212,7 @@ ifeq ($(PLATFORM), spark)
 	test -d $(PKGPREFIX)/bin || mkdir $(PKGPREFIX)/bin
 	cp -a $(TARGETPREFIX)/bin/stfbcontrol $(TARGETPREFIX)/bin/fp_control \
 		$(TARGETPREFIX)/bin/ustslave \
+		$(TARGETPREFIX)/bin/spark_fp \
 		$(PKGPREFIX)/bin
 	rm $(PKGPREFIX)/etc/init.d/start_neutrino
 else

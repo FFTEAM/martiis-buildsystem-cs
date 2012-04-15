@@ -146,3 +146,4 @@ $(LH_OBJDIR)/config.status: $(LH_DEPS)
 libstb-hal: $(LH_OBJDIR)/config.status
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(LH_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
+	$(MAKE) -C $(LH_OBJDIR) install DESTDIR=$(TARGETPREFIX)

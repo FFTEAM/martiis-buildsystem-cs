@@ -1,0 +1,52 @@
+#!/bin/sh
+
+im()
+{
+	modname=$1
+	modsane=${1//-/_}
+	params=$(eval echo \$OPT_${modsane})
+	shift
+	file=/lib/modules/${KVER}/${modname}.ko
+	# own built modules are in /lib/modules/$KVER/kernel/... subdirectories
+	if test -e $file; then
+		echo "overriding from $file..."
+		/sbin/insmod $file ${params:-$@}
+	else
+		/sbin/modprobe $modname $@
+	fi
+}
+
+case $1 in
+start)
+	read dummy dummy KVER dummy < /proc/version
+	# set all "option foo ..." as OPT_foo="..." variables
+	eval $(sed -n "/^options\s/{
+		s/^options\s\(\S\+\)\s\(.*\)\$/OPT_\1=\"\2\"/;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		p }" /etc/modprobe.conf)
+	im aotom
+	WAKEUP=$(spark_fp -g)
+	REASON=$?
+	echo "wakeup reason: $REASON ($WAKEUP)"
+	test $REASON = 3 && touch /tmp/.timer_wakeup
+	# 1 == poweron, no valid time there...
+	if test $REASON != 1; then
+		TIME=$(spark_fp -t)
+		echo -n "setting time from FP time: "
+		date -s @$TIME
+	fi
+	;;
+stop)
+	test -e /tmp/.reboot && exit 1
+	WAKEUP_TIME=1
+	test -e /tmp/.timer && read WAKEUP_TIME < /tmp/.timer
+	# hack: K99mount is never run since we never come out of spark_fp...
+	sync
+	/etc/init.d/mount stop
+	sync; sync
+	spark_fp -w $WAKEUP_TIME
+	sleep 1;
+	;;
+esac
