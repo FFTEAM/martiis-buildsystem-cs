@@ -38,6 +38,7 @@ alias ll='ls -l'
 alias dir='ls -lA'
 alias ..='cd ..'
 alias ldd='/lib/ld-*.so --list'
+alias reboot='touch /tmp/.reboot; /sbin/reboot'
 
 # aliases for old farts who can't remember new names :)
 alias fcp='flashcp -v'
