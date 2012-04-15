@@ -296,7 +296,9 @@ $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
-		for i in $^; do patch -p1 -i $$i; done; \
+		for i in $^; do \
+			echo "==> Applying Patch: $${i#$(PATCHES)/}"; \
+			patch -p1 -i $$i; done; \
 		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		rm -f player2 multicom; \
 		ln -s player2_191 player2; \
