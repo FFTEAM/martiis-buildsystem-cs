@@ -488,10 +488,10 @@ $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
 	$(REMOVE)/dbus-$(DBUS-VER) $(TARGETPREFIX)/.remove
 	touch $@
 
-$(D)/ntp: $(ARCHIVE)/ntp-$(NTP-VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/ntp-$(NTP-VER).tar.gz
+$(D)/ntp: $(ARCHIVE)/ntp-$(NTP_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/ntp-$(NTP_VER).tar.gz
 	rm -rf $(PKGPREFIX)
-	set -e; cd $(BUILD_TMP)/ntp-$(NTP-VER); \
+	set -e; cd $(BUILD_TMP)/ntp-$(NTP_VER); \
 		$(BUILDENV) ./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
@@ -504,7 +504,7 @@ $(D)/ntp: $(ARCHIVE)/ntp-$(NTP-VER).tar.gz | $(TARGETPREFIX)
 	rm $(PKGPREFIX)/bin/*
 	rm -rf $(PKGPREFIX)/share/man
 	$(OPKG_SH) $(CONTROL_DIR)/ntp
-	$(REMOVE)/ntp-$(NTP-VER) $(PKGPREFIX)
+	$(REMOVE)/ntp-$(NTP_VER) $(PKGPREFIX)
 	touch $@
 
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp
