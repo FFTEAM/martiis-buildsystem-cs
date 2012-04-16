@@ -98,6 +98,7 @@ COMMONPATCHES_24 = \
 		bpa2_procfs_stm24$(PATCH_STR).patch \
 		linux-ftdi_sio.c_stm24$(PATCH_STR).patch \
 		linux-sh4-lzma-fix_stm24$(PATCH_STR).patch \
+		linux-sh4-dwmac_stm24_0209.patch \
 		linux-tune_stm24.patch
 
 SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
