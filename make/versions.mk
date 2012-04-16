@@ -150,6 +150,9 @@ SYSTEMD-VER=19
 # dbus; message bus system
 DBUS-VER=1.4.6
 
+# ntp; synchronize system clock over a network
+NTP-VER=4.2.6p5
+
 #########################
 # extras; make/extras.mk
 ########################

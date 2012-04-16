@@ -253,3 +253,6 @@ $(ARCHIVE)/expat-$(EXPAT-VER).tar.gz:
 
 $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz:
 	$(WGET) http://download.savannah.gnu.org/releases/attr/attr-$(ATTR-VER).src.tar.gz
+
+$(ARCHIVE)/ntp-$(NTP-VER).tar.gz:
+	$(WGET) http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-$(NTP-VER).tar.gz
