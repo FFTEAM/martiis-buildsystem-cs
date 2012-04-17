@@ -492,6 +492,7 @@ $(D)/ntp: $(ARCHIVE)/ntp-$(NTP_VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/ntp-$(NTP_VER).tar.gz
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/ntp-$(NTP_VER); \
+		$(PATCH)/ntp-fix-MOD_NANO-on-kernel-2.6.3x.patch; \
 		$(BUILDENV) ./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \

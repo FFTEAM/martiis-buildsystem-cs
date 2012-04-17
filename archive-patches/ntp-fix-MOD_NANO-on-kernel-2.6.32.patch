@@ -1,0 +1,14 @@
+diff --git a/include/ntp_machine.h b/include/ntp_machine.h
+index 69dca68..91d233a 100644
+--- a/include/ntp_machine.h
++++ b/include/ntp_machine.h
+@@ -20,6 +20,9 @@
+ # endif
+ #endif
+ 
++#ifndef MOD_NANO
++#define MOD_NANO ADJ_NANO
++#endif
+ #include "ntp_proto.h"
+ 
+ /*
