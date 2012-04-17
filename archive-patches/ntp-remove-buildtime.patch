@@ -1,0 +1,13 @@
+diff --git a/scripts/mkver b/scripts/mkver
+index aa5f371..2c2fcd9 100755
+--- a/scripts/mkver.in
++++ b/scripts/mkver.in
+@@ -17,7 +17,7 @@ case "" in
+  *) ConfStr="${ConfStr}-?" ;;
+ esac
+ 
+-ConfStr="$ConfStr `LC_TIME=C TZ=UTC date`"
++ConfStr="$ConfStr"
+ 
+ if [ ! -f .version ]; then
+   echo 0 > .version
