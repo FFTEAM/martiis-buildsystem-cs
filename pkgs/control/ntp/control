@@ -1,5 +1,5 @@
 Package: ntp
-Version: 4.2.6p5-1
+Version: @VER@-1
 Description: Synchronize system clock over a network
 Section: base
 Priority: optional

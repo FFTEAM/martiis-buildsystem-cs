@@ -508,7 +508,7 @@ endif
 	mv -v $(PKGPREFIX)/bin/ntpdate $(PKGPREFIX)/sbin/
 	rm $(PKGPREFIX)/bin/*
 	rm -rf $(PKGPREFIX)/share/man
-	$(OPKG_SH) $(CONTROL_DIR)/ntp
+	PKG_VER=$(NTP_VER) $(OPKG_SH) $(CONTROL_DIR)/ntp
 	$(REMOVE)/ntp-$(NTP_VER) $(PKGPREFIX)
 	touch $@
 
