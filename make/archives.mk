@@ -256,3 +256,6 @@ $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz:
 
 $(ARCHIVE)/ntp-$(NTP_VER).tar.gz:
 	$(WGET) http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-$(NTP_VER).tar.gz
+
+$(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2:
+	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2

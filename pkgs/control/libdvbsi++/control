@@ -1,0 +1,11 @@
+Package: libdvbsi++
+Version: @VER@-1
+Description: Open source C++ library for parsing DVB Service Information and MPEG-2 Program Specific Information.
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.saftware.de
+Source:
+Depends: @DEP@
+Provides: @PROV@

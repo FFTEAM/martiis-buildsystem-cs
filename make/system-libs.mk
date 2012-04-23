@@ -591,4 +591,22 @@ $(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz
 	$(REWRITE_LIBTOOL)/libattr.la
 	touch $@
 
+$(D)/libdvbsi++: $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
+	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER)
+	$(UNTAR)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libdvbsi++-$(LIBDVBSI_VER); \
+			.$(CONFIGURE) \
+				--prefix=$(TARGETPREFIX) \
+				--build=$(BUILD) \
+				--host=$(TARGET); \
+			$(MAKE); \
+			$(MAKE) install
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(BUILD_TMP)/libdvbsi++-$(LIBDVBSI_VER)/src/.libs/libdvbsi++.so.* $(PKGPREFIX)/lib
+	PKG_DEP=" " PKG_VER=$(LIBDVBSI_VER) PKG_VER=$(LIBDVBSI_VER) \
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+	$(OPKG_SH) $(CONTROL_DIR)/libdvbsi++
+	rm -rf $(PKGPREFIX)
+	touch $@
+
 PHONY += ncurses-prereq
