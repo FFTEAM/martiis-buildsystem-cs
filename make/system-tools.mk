@@ -491,8 +491,11 @@ $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
 $(D)/ntp: $(ARCHIVE)/ntp-$(NTP_VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/ntp-$(NTP_VER).tar.gz
 	rm -rf $(PKGPREFIX)
+ifeq ($(PLATFORM), spark)
 	set -e; cd $(BUILD_TMP)/ntp-$(NTP_VER); \
-		$(PATCH)/ntp-fix-MOD_NANO-on-kernel-2.6.32.patch; \
+		$(PATCH)/ntp-fix-MOD_NANO-on-kernel-2.6.32.patch
+endif
+	set -e; cd $(BUILD_TMP)/ntp-$(NTP_VER); \
 		$(PATCH)/ntp-remove-buildtime.patch; \
 		$(BUILDENV) ./configure \
 			--build=$(BUILD) \
