@@ -595,6 +595,7 @@ $(D)/libdvbsi++: $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER)
 	$(UNTAR)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/libdvbsi++-$(LIBDVBSI_VER); \
+			patch -p1 <  $(PATCHES)/libdvbsi++-src-time_date_section.cpp-fix-sectionLength-check.patch; \
 			.$(CONFIGURE) \
 				--prefix=$(TARGETPREFIX) \
 				--build=$(BUILD) \
