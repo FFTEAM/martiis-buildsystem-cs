@@ -40,6 +40,8 @@ start)
 	im stv6110 verbose=0
 	im stv090x verbose=0
 	im tda10023
+	im avl2108
+	im max2112
 	im dvb-core
 	im cs_frontend
 	im cnxt_sata_drv
