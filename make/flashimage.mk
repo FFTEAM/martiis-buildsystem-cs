@@ -8,8 +8,8 @@
 #
 
 NOW := $(shell date +%Y%m%d%H%M)
-FLASHIMG = $(BUILD_TMP)/flashroot-$(NOW).img
-SUMIMG   = $(BUILD_TMP)/flashroot-$(NOW).sum.img
+FLASHIMG = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(NOW).img
+SUMIMG   = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(NOW).sum.img
 
 ifeq ($(PLATFORM), coolstream)
 # the devtable is used for having a console device on first boot.
