@@ -11,9 +11,16 @@ NOW := $(shell date +%Y%m%d%H%M)
 FLASHIMG = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(NOW).img
 SUMIMG   = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(NOW).sum.img
 
+local-install:
+	# copy local/flash/* into the image...
+	# you can e.g. create local/flash/boot/audio.elf ...
+	@if test -d $(BASE_DIR)/local/flash/; then \
+		cp -a -v $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
+	fi
+
 ifeq ($(PLATFORM), coolstream)
 # the devtable is used for having a console device on first boot.
-flashimage: find-mkfs.jffs2 find-sumtool cskernel
+flashimage: local-install find-mkfs.jffs2 find-sumtool cskernel
 	echo "/dev/console c 0644 0 0 5 1 0 0 0" > $(BUILD_TMP)/devtable
 	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
 	mkfs.jffs2 -e 0x20000 -p -U -D $(BUILD_TMP)/devtable -d $(BUILD_TMP)/install -o $(FLASHIMG)
@@ -29,12 +36,7 @@ endif
 ifeq ($(PLATFORM), spark)
 # you should probably "make system-pkgs" before...
 # this has been tested by flashing from an USB stick on GM 990
-flashimage: find-mkfs.jffs2 find-sumtool
-	# copy local/flash/* into the image...
-	# you can e.g. create local/flash/boot/audio.elf ...
-	@if test -d $(BASE_DIR)/local/flash/; then \
-		cp -a $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
-	fi
+flashimage: local-install find-mkfs.jffs2 find-sumtool
 	echo "/dev/console c 0644 0 0 5 1 0 0 0" > $(BUILD_TMP)/devtable
 	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
 	mkfs.jffs2 -e 0x20000 -p -U -D $(BUILD_TMP)/devtable -d $(BUILD_TMP)/install -o $(FLASHIMG)
