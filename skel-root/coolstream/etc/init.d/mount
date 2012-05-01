@@ -37,6 +37,9 @@ stop)
 	/sbin/swapoff -a	# so that swapping doesn't wake up the drive
 	mount -oro,remount /	# just to make sure, to get the FS as clean as possible
 				# for the unclean neutrino-hd poweroff
+	for i in /dev/sd*[0-9] /dev/sd*[^0-9]; do	# flush buffers to be as safe as
+		test -b $i && blockdev --flushbufs $i	# possible...
+	done
 	/sbin/hdparm -y /dev/sd*[^0-9]	# whole devices only, no partitions
 	;;
 esac
