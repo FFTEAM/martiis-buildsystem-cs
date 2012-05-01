@@ -7,9 +7,10 @@ im()
 	params=$(eval echo \$OPT_${modsane})
 	shift
 	file=/lib/modules/${KVER}/${modname}.ko
-	# the CS modules are in /lib/modules/$KVER/*,
 	# own built modules are in /lib/modules/$KVER/kernel/... subdirectories
+	# ...but we can override this by putting modules to /lib/modules/$KVER directly
 	if test -e $file; then
+		echo "overriding ${modname}.ko from /lib/modules/$KVER ..."
 		/sbin/insmod $file ${params:-$@}
 	else
 		/sbin/modprobe $modname $@
