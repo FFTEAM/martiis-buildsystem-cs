@@ -176,7 +176,7 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz | $(TARGETPREFIX) $(TA
 $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz | $(TARGETPREFIX)
 	$(UNTAR)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz
 	set -e; cd $(BUILD_TMP)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER); \
-		$(BUILDENV) ./configure \
+		CFLAGS="-pipe -O2 -g" ./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
 			--prefix= \
