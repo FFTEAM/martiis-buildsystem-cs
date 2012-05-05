@@ -102,7 +102,7 @@ LIBDVBSI_VER=0.3.6
 #############################
 
 # vsftpd; a small, tiny and "v"ery "s"ecure "ftp" deamon
-VSFTPD-VER=2.3.4
+VSFTPD_VER=2.3.5
 
 # rsync; fast and extraordinarily versatile file copying tool
 RSYNC-VER=3.0.7
