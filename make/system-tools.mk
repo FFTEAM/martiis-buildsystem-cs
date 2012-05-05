@@ -173,9 +173,9 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz | $(TARGETPREFIX) $(TA
 	$(REMOVE)/xfsprogs-$(XFSPROGS-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-$(NTFS_3G-VER).tgz | $(TARGETPREFIX)
-	$(UNTAR)/ntfs-3g-$(NTFS_3G-VER).tgz
-	set -e; cd $(BUILD_TMP)/ntfs-3g-$(NTFS_3G-VER); \
+$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz | $(TARGETPREFIX)
+	$(UNTAR)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz
+	set -e; cd $(BUILD_TMP)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER); \
 		$(BUILDENV) ./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
@@ -183,16 +183,19 @@ $(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g-$(NTFS_3G-VER).tgz | $(TARGETPREFIX)
 			--mandir=/.remove \
 			--docdir=/.remove \
 			--disable-ldconfig \
+			--disable-ntfsprogs \
 			--disable-static \
 			; \
 		$(MAKE); \
 		make install DESTDIR=$(PKGPREFIX)
-	$(REMOVE)/ntfs-3g-$(NTFS_3G-VER) $(PKGPREFIX)/.remove
+	$(REMOVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER) $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -r $(PKGPREFIX)/include $(PKGPREFIX)/lib/*.la $(PKGPREFIX)/lib/*.so \
 		$(PKGPREFIX)/lib/pkgconfig/ $(PKGPREFIX)/bin/ntfs-3g.{usermap,secaudit}
 	find $(PKGPREFIX) -name '*lowntfs*' | xargs rm
-	$(OPKG_SH) $(CONTROL_DIR)/ntfs-3g
+	PKG_VER=$(NTFS_3G_VER) \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/ntfs-3g
 	rm -rf $(PKGPREFIX)
 	touch $@
 

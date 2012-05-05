@@ -167,8 +167,8 @@ $(ARCHIVE)/mc-$(MC-VER).tar.gz:
 $(ARCHIVE)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz:
 	$(WGET) http://www.tux.org/~mayer/linux/nbench-byte-$(NBENCH_BYTE-VER).tar.gz
 
-$(ARCHIVE)/ntfs-3g-$(NTFS_3G-VER).tgz:
-	$(WGET) http://tuxera.com/opensource/ntfs-3g-$(NTFS_3G-VER).tgz
+$(ARCHIVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz:
+	$(WGET) http://tuxera.com/opensource/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz
 
 $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz:
 	$(WGET) http://www.openssl.org/source/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz
