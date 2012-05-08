@@ -1,46 +1,13 @@
-From 221e73982ca5754319d10c438792e8fcb77ba8a8 Mon Sep 17 00:00:00 2001
+From 3c068dbba50038fb9234dfa6ff1c622931c07926 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sun, 15 Apr 2012 14:54:15 +0200
 Subject: [PATCH 2/2] aotom: add ioctl to set time + date
 
 ---
- ...ow-0-reference-count-when-incrementing-re.patch |   25 ++++++++++++++++++++
- frontcontroller/aotom/aotom_main.c                 |   11 ++++++++
- frontcontroller/aotom/aotom_main.h                 |    1 +
- 3 files changed, 37 insertions(+), 0 deletions(-)
- create mode 100644 frontcontroller/aotom/0001-player2-allow-0-reference-count-when-incrementing-re.patch
+ frontcontroller/aotom/aotom_main.c |   11 +++++++++++
+ frontcontroller/aotom/aotom_main.h |    1 +
+ 2 files changed, 12 insertions(+), 0 deletions(-)
 
-diff --git a/frontcontroller/aotom/0001-player2-allow-0-reference-count-when-incrementing-re.patch b/frontcontroller/aotom/0001-player2-allow-0-reference-count-when-incrementing-re.patch
-new file mode 100644
-index 0000000..b08d5d2
---- /dev/null
-+++ b/frontcontroller/aotom/0001-player2-allow-0-reference-count-when-incrementing-re.patch
-@@ -0,0 +1,25 @@
-+From 7e9c08a332b6969d083aa386d9aea1d84f2739f8 Mon Sep 17 00:00:00 2001
-+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
-+Date: Thu, 15 Mar 2012 19:26:21 +0100
-+Subject: [PATCH] player2: allow 0 reference count when incrementing refcount
-+
-+---
-+ .../player/buffer/buffer_individual_generic.cpp    |    2 +-
-+ 1 files changed, 1 insertions(+), 1 deletions(-)
-+
-+diff --git a/player2_191/player/buffer/buffer_individual_generic.cpp b/player2_191/player/buffer/buffer_individual_generic.cpp
-+index 8c13122..4cb2cfc 100644
-+--- a/player2_191/player/buffer/buffer_individual_generic.cpp
-++++ b/player2_191/player/buffer/buffer_individual_generic.cpp
-+@@ -669,7 +669,7 @@ unsigned int	  i;
-+ 
-+ //
-+ 
-+-    AssertNonZeroReferenceCount( "Buffer_Generic_c::IncrementReferenceCount" );
-++//    AssertNonZeroReferenceCount( "Buffer_Generic_c::IncrementReferenceCount" );
-+ 
-+     OS_LockMutex( &Pool->Lock );
-+     Pool->ReferenceCount++;
-+-- 
-+1.7.7
-+
 diff --git a/frontcontroller/aotom/aotom_main.c b/frontcontroller/aotom/aotom_main.c
 index 383bbc5..a2afd10 100644
 --- a/frontcontroller/aotom/aotom_main.c
