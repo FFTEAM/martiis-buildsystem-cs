@@ -104,131 +104,14 @@ $(TD_SVN)/ARMAS:
 	@echo
 	@false
 
-ifneq ($(PLATFORM), spark)
-crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
-endif
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 
 ifeq ($(PLATFORM), coolstream)
 cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
-
-$(CROSS_DIR)/bin/$(TARGET)-gcc:
-	@echo
-	@echo "====================================================="
-	@echo "old crosstool is hard to maintain and likely to break"
-	@echo " consider using 'make crosstool-new' which also gets"
-	@echo "  you a shiny new(er) gcc 4.5.2 and eglibc 2.12 ;-)"
-	@echo "====================================================="
-	@echo
-	@echo "sleeping for 10 seconds before continuing..."
-	@echo
-	@sleep 10
-	$(MAKE) crosstool-old
-
-crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs $(ARCHIVE)/linux-2.6.26.8.tar.bz2 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2
-	make $(BUILD_TMP)
-	tar --exclude='*/.svn' -cC $(SOURCE_DIR)/svn/CROSSENVIROMENT/ crosstool-ng-1.3.2 | tar -xC $(BUILD_TMP)
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.3.2; \
-		test "$(GIT_PROTOCOL)" = http && \
-			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
-				scripts/build/libc/eglibc.sh || \
-			true; \
-		$(PATCH)/crosstool-132-bash4.diff; \
-		mkdir -p patches/linux/2.6.26.8; \
-		cp $(PATCHES)/linux-2.6.26.8-rename-getline.patch patches/linux/2.6.26.8; \
-		cp $(PATCHES)/linux-2.6.26.8-new-make.patch       patches/linux/2.6.26.8; \
-		cp $(PATCHES)/eglibc-2_8-new-make.patch           patches/eglibc/2_8/; \
-		cp -a $(PATCHES)/crosstool-ng-1.3.2-newconfig .config; \
-		sed -i -e 's#^CT_LOCAL_TARBALLS_DIR=.*#CT_LOCAL_TARBALLS_DIR="$(BASE_DIR)/download"#' \
-		       -e 's#^CT_PREFIX_DIR=.*#CT_PREFIX_DIR="$(CROSS_BASE)"#' .config; \
-		./configure --local; make; chmod 0755 ct-ng; \
-		./ct-ng oldconfig; ./ct-ng build.2
-
-crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.tar.bz2
-	make $(BUILD_TMP)
-	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0 \
-		test "$(GIT_PROTOCOL)" = http && \
-			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
-				scripts/build/libc/eglibc.sh || \
-			true; \
-		mkdir -p targets/src/; \
-		tar -C targets/src/ -xf $(ARCHIVE)/linux-2.6.26.8.tar.bz2; \
-		(cd targets/src/linux-2.6.26.8 && \
-			patch -p1 -i $(PATCHES)/linux-2.6.26.8-new-make.patch && \
-			patch -p1 -i $(PATCHES)/linux-2.6.26.8-rename-getline.patch); \
-		ln -sf linux-2.6.26.8 targets/src/linux-custom; \
-		touch targets/src/.linux-custom.extracted; \
-		cp -a $(PATCHES)/crosstool-ng-coolstreamnew.config .config; \
-		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
-		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
-		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
-		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
-		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
-		export TD_BASE_DIR=$(BASE_DIR); \
-		export TD_BUILD_TMP=$(BUILD_TMP); \
-		./configure --local; make; chmod 0755 ct-ng; \
-		./ct-ng oldconfig; \
-		./ct-ng build
-	ln -sf sys-root/lib $(CROSS_BASE)/$(TARGET)/
-	$(REMOVE)/crosstool-ng-1.10.0
 endif
 
 ifeq ($(PLATFORM), tripledragon)
 td-modules: $(TARGETPREFIX)/lib/modules/2.6.12
-
-ifneq ($(TD_COMPILER), new)
-$(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
-	@echo ' ============================================================================== '
-	@echo "                       Preparing to Build crosstool"
-	@echo ' ============================================================================== '
-	@echo ' '
-	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
-		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
-	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
-	cp $(PATCHES)/glibc-2.3.6-allow-binutils-2.20+.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
-	cp $(PATCHES)/glibc-2.3.6-new_make.patch             $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-0.43; \
-		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
-		export TARBALLS_DIR=$(ARCHIVE); \
-		export RESULT_TOP=$(CROSS_BASE); \
-		export GCC_LANGUAGES="c,c++"; \
-		export PARALLELMFLAGS="-s -j 3"; \
-		export QUIET_EXTRACTIONS=y; \
-		eval `cat powerpc-405.dat $(CROSS_BUILD_VER).dat` LINUX_DIR=linux-2.6.12 bash all.sh --notest; \
-		echo done
-	# crosstool should do that, but it doesnt
-	if [ ! -e $(CROSS_DIR)/$(TARGET)/include/mtd ]; then \
-		cp -a $(BUILD_TMP)/crosstool-0.43/build/$(TARGET)/$(CROSS_BUILD_DIR)/linux-2.6.12/include/mtd $(CROSS_DIR)/$(TARGET)/include/;\
-	fi
-
-else
-#
-# $(TD_COMPILER) == new
-$(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2
-	make $(BUILD_TMP)
-	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
-	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
-	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
-		test "$(GIT_PROTOCOL)" = http && \
-			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
-				scripts/build/libc/eglibc.sh || \
-			true; \
-		cp -a $(PATCHES)/crosstool-ng-tripledragon.config .config; \
-		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
-		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
-		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
-		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
-		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
-		export TD_BASE_DIR=$(BASE_DIR); \
-		export TD_BUILD_TMP=$(BUILD_TMP); \
-		./configure --local; make; chmod 0755 ct-ng; \
-		./ct-ng oldconfig; \
-		./ct-ng build
-	$(REMOVE)/crosstool-ng-1.10.0
-
-endif
 
 $(TARGETPREFIX)/include/hardware/xp/xp_osd_user.h: $(TARGETPREFIX) $(TD_SVN)/ARMAS
 	@echo ' ============================================================================== '
@@ -263,53 +146,7 @@ directfb-includes-and-libs: $(TARGETPREFIX)/stb/lib/directfb-0.9.24 $(TARGETPREF
 	mkdir -p $(TARGETPREFIX)/etc
 	cp -a $(SCRIPTS)/directfbrc-td $(TARGETPREFIX)/etc/directfbrc
 
-
 # PLATFORM = tripledagon
-endif
-
-ifeq ($(PLATFORM), spark)
-## stlinux crosstool is pretty lame since we only install the RPMs, but why bother
-## building everything for yourself if they provide a working, tested, supported
-## toolchain etc?
-
-# the mount point for the ISOs
-$(STLINUX_SRC_MNT) $(STLINUX_SH4_MNT):
-	mkdir -p $@
-
-# mount the ISOs. later, we'll just download what's needed on demand, but for
-# now this is less work.
-stlinux-isomount: | $(STLINUX_SRC_MNT) $(STLINUX_SH4_MNT)
-	test -e $(STLINUX_SRC_MNT)/stlinux24-host-filesystem-1.0-7.src.rpm || \
-		sudo mount -oloop,ro $(STLINUX_SRC_ISO) $(STLINUX_SRC_MNT)
-	test -e $(STLINUX_SH4_MNT)/README || \
-		sudo mount -oloop,ro $(STLINUX_SH4_ISO) $(STLINUX_SH4_MNT)
-
-crosstool-rpminstall: \
-$(STL_ARCHIVE)/stlinux24-cross-sh4-binutils-$(BINUTILS_VER).i386.rpm \
-$(STL_ARCHIVE)/stlinux24-cross-sh4-binutils-dev-$(BINUTILS_VER).i386.rpm \
-$(STL_ARCHIVE)/stlinux24-cross-sh4-cpp-$(GCC_VER).i386.rpm \
-$(STL_ARCHIVE)/stlinux24-cross-sh4-gcc-$(GCC_VER).i386.rpm \
-$(STL_ARCHIVE)/stlinux24-cross-sh4-g++-$(GCC_VER).i386.rpm \
-$(STL_ARCHIVE)/stlinux24-sh4-linux-kernel-headers-$(STMKERNEL_VER).noarch.rpm \
-$(STL_ARCHIVE)/stlinux24-sh4-libgcc-$(LIBGCC_VER).sh4.rpm \
-$(STL_ARCHIVE)/stlinux24-sh4-glibc-$(GLIBC_VER).sh4.rpm \
-$(STL_ARCHIVE)/stlinux24-sh4-glibc-dev-$(GLIBC_VER).sh4.rpm \
-$(STL_ARCHIVE)/stlinux24-sh4-libstdc++-$(LIBGCC_VER).sh4.rpm \
-$(STL_ARCHIVE)/stlinux24-sh4-libstdc++-dev-$(LIBGCC_VER).sh4.rpm
-	make $(BUILD_TMP)
-	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4 $(CROSS_BASE) \
-		$^
-
-
-# install the RPMs into CROSS_BASE
-crosstool: $(STL_ARCHIVE)/host/stlinux24-host-u-boot-tools-1.3.1_stm24-9.i386.rpm \
-$(HOSTPREFIX)/bin/unpack-rpm.sh \
-crosstool-rpminstall
-	# this puts mkimage etc. into cross/host/bin... not too nice...
-	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE) $(CROSS_BASE) \
-		$(firstword $^)
-	set -e; cd $(CROSS_BASE); rm -f sh4-linux/sys-root; ln -s ../target sh4-linux/sys-root
-
 endif
 
 

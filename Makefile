@@ -116,6 +116,7 @@ include make/packages.mk
 include make/plugins.mk
 include make/example.mk
 include make/flashimage.mk
+include make/crosstool-$(BOXARCH).mk
 
 update-self:
 	git pull
