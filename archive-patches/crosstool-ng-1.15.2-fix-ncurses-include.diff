@@ -1,0 +1,16 @@
+diff -r f80b978b443b kconfig/nconf.h
+--- a/kconfig/nconf.h	Mon May 07 00:10:00 2012 +0200
++++ b/kconfig/nconf.h	Wed May 09 10:46:59 2012 +0200
+@@ -16,9 +16,9 @@
+ #include <unistd.h>
+ #include <locale.h>
+ #include <curses.h>
+-#include <menu.h>
+-#include <panel.h>
+-#include <form.h>
++#include <ncurses/menu.h>
++#include <ncurses/panel.h>
++#include <ncurses/form.h>
+ 
+ #include <stdio.h>
+ #include <time.h>

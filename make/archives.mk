@@ -20,6 +20,9 @@ $(ARCHIVE)/crosstool-0.43.tar.gz:
 $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2:
 	$(WGET) http://ymorin.is-a-geek.org/download/crosstool-ng/crosstool-ng-1.10.0.tar.bz2
 
+$(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2:
+	$(WGET) http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.15.2.tar.bz2
+
 $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB-VER).tar.gz
 
