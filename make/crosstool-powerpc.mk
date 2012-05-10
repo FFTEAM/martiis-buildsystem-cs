@@ -36,6 +36,8 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
 	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm
 	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
+		$(PATCH)/crosstool-ng-1.10.0-new-file.patch; \
+		cp $(PATCHES)/111-ppl-0_10_2-fix-CXXFLAGS-for-gcc-4_7.patch patches/ppl/0.10.2/; \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
 				scripts/build/libc/eglibc.sh || \

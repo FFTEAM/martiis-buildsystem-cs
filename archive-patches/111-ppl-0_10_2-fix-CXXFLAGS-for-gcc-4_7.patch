@@ -1,0 +1,13 @@
+diff --git a/configure b/configure
+index b5de329..2859a41 100755
+--- a/configure
++++ b/configure
+@@ -32186,6 +32186,8 @@ LIBEXT=$libext
+ SHREXT=$shrext_cmds
+ 
+ 
++# allow building with gcc 4.7...
++CXXFLAGS="$CXXFLAGS -fpermissive"
+ 
+ 
+ 

@@ -38,6 +38,8 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.
 	make $(BUILD_TMP)
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
 	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
+		$(PATCH)/crosstool-ng-1.10.0-new-file.patch; \
+		cp $(PATCHES)/111-ppl-0_10_2-fix-CXXFLAGS-for-gcc-4_7.patch patches/ppl/0.10.2/; \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
 				scripts/build/libc/eglibc.sh || \

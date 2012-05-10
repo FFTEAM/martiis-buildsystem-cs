@@ -1,0 +1,13 @@
+diff --git a/scripts/build/internals.sh b/scripts/build/internals.sh
+index a0749a6..edf5523 100644
+--- a/scripts/build/internals.sh
++++ b/scripts/build/internals.sh
+@@ -30,6 +30,8 @@ do_finish() {
+             case "${_type}" in
+                 *"script text executable")
+                     ;;
++                *"shell script"*)
++                    ;;
+                 *executable*)
+                     CT_DoExecLog ALL ${CT_HOST}-strip ${strip_args} "${_t}"
+                     ;;
