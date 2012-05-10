@@ -18,18 +18,18 @@ TARGET      ?= powerpc-405n-linux-gnu
 endif
 USE_STB_HAL ?= yes
 FLAVOUR     ?= neutrino-hd-tripledragon
-BOXARCH      = powerpc
+BOXARCH     ?= powerpc
 else
 USE_STB_HAL ?= yes
 TARGET      ?= sh4-linux
-BOXARCH      = sh4
+BOXARCH     ?= sh4
 FLAVOUR     ?= neutrino-hd-tripledragon
 endif
 else
 USE_STB_HAL ?= no
 TARGET      ?= arm-cx2450x-linux-gnueabi
 FLAVOUR     ?= neutrino-hd
-BOXARCH      = arm
+BOXARCH     ?= arm
 endif
 
 ifneq ($(GIT_PROTOCOL), http)
