@@ -196,6 +196,13 @@ print-targets:
 		`ls -1 make/*.mk|grep -v make/unmaintained.mk` Makefile | \
 		sort | fmt -65
 
+$(BUILD_TMP)/Makefile.archivecheck: make/archives.mk make/versions.mk scripts/archivecheck.pl | $(BUILD_TMP)
+	rm -f $@
+	scripts/archivecheck.pl > $@
+
+archivecheck: $(BUILD_TMP)/Makefile.archivecheck
+	make -f $(BUILD_TMP)/Makefile.archivecheck
+
 # for local extensions, e.g. special plugins or similar...
 # put them into $(BASE_DIR)/local since that is ignored in .gitignore
 -include ./Makefile.local
