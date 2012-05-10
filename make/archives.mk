@@ -2,8 +2,8 @@
 #
 # take a look in versions.mk for version numbers
 
-$(ARCHIVE)/autofs-$(AUTOFS-VER).tar.bz2:
-	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-$(AUTOFS-VER).tar.bz2
+$(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz:
+	$(WGET) http://www.kernel.org/pub/linux/daemons/autofs/v4/autofs-$(AUTOFS-VER).tar.gz
 
 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2:
 	$(WGET) http://www.dbox2world.net/download/binutils-2.19.50.0.1.tar.bz2
@@ -42,7 +42,7 @@ $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2:
 	$(WGET) http://download.videolan.org/pub/libdvdcss/1.2.10/libdvdcss-1.2.10.tar.bz2
 
 $(ARCHIVE)/libdvdread-4.1.3.tar.bz2:
-	$(WGET) http://www1.mplayerhq.hu/MPlayer/releases/dvdnav/libdvdread-4.1.3.tar.bz2
+	$(WGET) http://www1.mplayerhq.hu/MPlayer/releases/dvdnav-old/libdvdread-4.1.3.tar.bz2
 
 $(ARCHIVE)/libmad-$(MAD-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/mad/libmad/$(MAD-VER)/libmad-$(MAD-VER).tar.gz
@@ -114,7 +114,7 @@ $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/iperf/iperf-$(IPERF-VER).tar.gz
 
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
-	$(WGET) ftp://slackware.su29.ru/pub/linux/slackware/slackware-10.0/source/l/libjpeg/jpegsrc.v6b.tar.gz
+	$(WGET) http://www.ijg.org/files/jpegsrc.v6b.tar.gz
 
 $(ARCHIVE)/boost_$(BOOST-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/boost/boost/$(BOOST-MAJOR).$(BOOST-MINOR).$(BOOST-MICRO)/boost_$(BOOST-VER).tar.bz2
@@ -150,7 +150,7 @@ $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/libpcap-$(PCAP-VER).tar.gz
 
 $(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz:
-	$(WGET) http://www.kernel.org/pub/linux/libs/security/linux-privs/libcap2/libcap-$(LIBCAP2-VER).tar.gz
+	$(WGET) http://mirror.nexcess.net/kernel.org/linux/libs/security/linux-privs/libcap2/libcap-$(LIBCAP2-VER).tar.gz
 
 $(ARCHIVE)/links-$(LINKS-VER).tar.bz2:
 	$(WGET) http://links.twibright.com/download/links-$(LINKS-VER).tar.bz2
@@ -225,7 +225,7 @@ $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/unfs3/unfs3-$(UNFS3-VER).tar.gz
 
 $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2:
-	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux-ng/v$(UTIL_LINUX_NG-VER)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2
+	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux/v$(UTIL_LINUX_NG-VER)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2
 
 $(ARCHIVE)/valgrind-3.3.1.tar.bz2:
 	$(WGET) http://valgrind.org/downloads/valgrind-3.3.1.tar.bz2

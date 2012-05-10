@@ -203,10 +203,10 @@ $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/common/* $(TARGETPREFIX)/
 	cp --remove-destination -a skel-root/$(PLATFORM)/* $(TARGETPREFIX)/
 
-$(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
 	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/autofs-$(AUTOFS-VER).tar.bz2
+	$(UNTAR)/autofs-$(AUTOFS-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/autofs-$(AUTOFS-VER); \
 		$(PATCH)/autofs-4.1.4-td.diff; \
 		$(BUILDENV) $(MAKE) CC=$(TARGET)-gcc STRIP=$(TARGET)-strip SUBDIRS="lib daemon modules"; \
