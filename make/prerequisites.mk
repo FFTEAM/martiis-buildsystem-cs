@@ -77,11 +77,6 @@ $(SVN_TP_LIBS)/libnxp:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/libraries/$(shell basename $@)
 
-$(SVN_TP_LIBS)/OpenThreads-svn:
-	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && \
-		$(CSSVN_CMD) co $(CSSVN_URL)/THIRDPARTY/libraries/$(shell basename $@)
-
 $(SOURCE_DIR)/svn/THIRDPARTY/lib:
 	mkdir -p $@
 	cd $@ && $(SVNCO)/THIRDPARTY/lib/firmware

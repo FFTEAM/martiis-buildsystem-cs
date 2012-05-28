@@ -1,11 +1,11 @@
 Package: libOpenThreads
-Version: 928-1
+Version: @VER@-1
 Description: Lightweight C++ Thread API
 Section: base/libraries
 Priority: standard
 Maintainer: @MAINT@
 Architecture: @ARCH@
-Homepage: http://openthreads.sourceforge.net/
+Homepage: http://www.openscenegraph.org/svn/osg/OpenThreads/
 Source:
 Depends:
 Provides: libOpenThreads.so.12

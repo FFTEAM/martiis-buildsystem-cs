@@ -424,10 +424,9 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz $(D)/zlib $(D)/freetyp
 
 # the strange find | sed hack is needed for old cmake versions which
 # don't obey CMAKE_INSTALL_PREFIX (e.g. debian lenny 5.0.7's cmake 2.6)
-$(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
-	opkg-chksvn.sh $(CONTROL_DIR)/libOpenThreads $(SVN_TP_LIBS)/OpenThreads-svn
-	tar -C $(SVN_TP_LIBS) -cp OpenThreads-svn --exclude=.svn | tar -C $(BUILD_TMP) -x
-	set -e; cd $(BUILD_TMP)/OpenThreads-svn; \
+$(D)/openthreads: | $(TARGETPREFIX) find-lzma
+	lzma -dc $(PATCHES)/sources/OpenThreads-svn-13083.tar.lzma | tar -C $(BUILD_TMP) -x
+	set -e; cd $(BUILD_TMP)/OpenThreads-svn-13083; \
 		rm CMakeFiles/* -rf CMakeCache.txt cmake_install.cmake; \
 		cmake . -DCMAKE_BUILD_TYPE=Release -DCMAKE_SYSTEM_NAME="Linux" \
 			-DCMAKE_INSTALL_PREFIX="" \
@@ -439,10 +438,10 @@ $(D)/openthreads: $(SVN_TP_LIBS)/OpenThreads-svn | $(TARGETPREFIX)
 		$(MAKE); \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/openthreads.pc
-	$(REMOVE)/OpenThreads-svn $(PKGPREFIX)
+	$(REMOVE)/OpenThreads-svn-13083 $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libOpenThreads.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libOpenThreads
+	PKG_VER=13083 $(OPKG_SH) $(CONTROL_DIR)/libOpenThreads
 	rm -rf $(PKGPREFIX)
 	touch $@
 
