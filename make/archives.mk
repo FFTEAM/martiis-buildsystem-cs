@@ -41,8 +41,8 @@ $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz:
 	$(WGET) http://libass.googlecode.com/files/libass-$(LIBASS_VER).tar.gz
 
-$(ARCHIVE)/libdvdcss-1.2.10.tar.bz2:
-	$(WGET) http://download.videolan.org/pub/libdvdcss/1.2.10/libdvdcss-1.2.10.tar.bz2
+$(ARCHIVE)/libdvdcss-$(DVDCSS_VER).tar.bz2:
+	$(WGET) http://download.videolan.org/pub/libdvdcss/$(DVDCSS_VER)/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/libdvdread-4.1.3.tar.bz2:
 	$(WGET) http://www1.mplayerhq.hu/MPlayer/releases/dvdnav-old/libdvdread-4.1.3.tar.bz2

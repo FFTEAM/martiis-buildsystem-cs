@@ -78,10 +78,10 @@ $(D)/evtest: $(ARCHIVE)/evtest_1.29.orig.tar.bz2
 	$(REMOVE)/evtest-1.29
 	touch $@
 
-$(D)/libdvdcss: $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2 | $(TARGETPREFIX)
+$(D)/libdvdcss: $(ARCHIVE)/libdvdcss-$(DVDCSS_VER).tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/libdvdcss-1.2.10.tar.bz2
-	set -e; cd $(BUILD_TMP)/libdvdcss-1.2.10; \
+	$(UNTAR)/libdvdcss-$(DVDCSS_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libdvdcss-$(DVDCSS_VER); \
 		$(CONFIGURE) \
 			--host=$(TARGET) \
 			--build=$(BUILD) \
@@ -93,8 +93,8 @@ $(D)/libdvdcss: $(ARCHIVE)/libdvdcss-1.2.10.tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libdvdcss.la
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libdvdcss.so.* $(PKGPREFIX)/lib
-	PKG_VER=1.2.10 $(OPKG_SH) $(CONTROL_DIR)/libdvdcss
-	$(REMOVE)/libdvdcss-1.2.10 $(PKGPREFIX)
+	PKG_VER=$(DVDCSS_VER) $(OPKG_SH) $(CONTROL_DIR)/libdvdcss
+	$(REMOVE)/libdvdcss-$(DVDCSS_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/libdvdread: $(ARCHIVE)/libdvdread-4.1.3.tar.bz2 | $(TARGETPREFIX)

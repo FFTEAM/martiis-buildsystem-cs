@@ -75,6 +75,10 @@ NCURSES-VER=5.6
 # DirectFB; thin library that provides hardware graphics acceleration, input device handling and abstraction
 DIRECTFB-VER=1.4.3
 
+# libdvdcss: a simple library designed for accessing DVDs like a block device
+# without having to bother about the decryption.
+DVDCSS_VER=1.2.12
+
 # libvorbisidec;  libvorbisidec is an Ogg Vorbis audio decoder (also known as "tremor") with no floating point arithmatic
 VORBISIDEC-VER=1.0.2+svn16259
 VORBISIDEC-VER_APPEND=.orig
