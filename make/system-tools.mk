@@ -327,7 +327,7 @@ $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz
 	touch $@
 
 fbshot: $(TARGETPREFIX)/bin/fbshot
-$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz $(PATCHES)/fbshot-0.3-32bit_cs_fb.diff $(PATCHES)/fbshot-0.3-32bit_td_fb.diff | $(TARGETPREFIX)
+$(TARGETPREFIX)/bin/fbshot: $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz $(PATCHES)/fbshot-0.3-32bit_cs_fb.diff $(PATCHES)/fbshot-0.3-32bit_td_fb.diff libpng | $(TARGETPREFIX)
 	$(UNTAR)/fbshot-$(FBSHOT-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/fbshot-$(FBSHOT-VER); \
 		$(PATCH)/fbshot-0.3-32bit_cs_fb.diff; \
