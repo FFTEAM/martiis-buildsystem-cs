@@ -43,6 +43,9 @@ $(D)/dvdreadfs: $(ARCHIVE)/dvdreadfs.tar fuse libdvdread | $(TARGETPREFIX)
 		$(TARGET_CFLAGS) -DFUSE_USE_VERSION=26 -D_FILE_OFFSET_BITS=64 -DFORCE_SINGLE_THREAD=1 \
 		$(TARGET_LDFLAGS) -lfuse -ldvdread \
 		-o $(PKGPREFIX)/bin/dvdreadfs $(BUILD_TMP)/dvdreadfs/dvdreadfs.c
+	install -D -m 755 $(SCRIPTS)/dvdreadfs.init $(PKGPREFIX)/etc/init.d/dvdreadfs
+	ln -sf dvdreadfs $(PKGPREFIX)/etc/init.d/S80dvdreadfs
+	ln -sf dvdreadfs $(PKGPREFIX)/etc/init.d/K20dvdreadfs
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	PKG_VER=0.0 $(OPKG_SH) $(CONTROL_DIR)/dvdreadfs
 	$(REMOVE)/dvdreadfs $(PKGPREFIX)

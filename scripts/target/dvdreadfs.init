@@ -1,0 +1,17 @@
+#!/bin/sh
+#
+# mount dvdreadfs to play back video DVDs
+# dvdreadfs handles both missing discs and devices gracefully...
+#
+# TODO: what if we have more than one drive?
+
+MP=/media/DVD/disc
+
+case $1 in
+	start)	test -d $(dirname $MP) || mkdir $(dirname $MP
+		test -d $MP || mkdir $MP
+		grep -q ' sr$' /proc/devices || modprobe sr_mod
+		dvdreadfs /dev/sr0 $MP -okernel_cache,ro ;;
+	stop)	fusermount -u $MP ;;
+	restart) $0 stop; $0 start ;;
+esac
