@@ -160,7 +160,7 @@ if [ -n "$PKG_DEP" ]; then
 fi
 
 # extract package name and version from control file...
-eval $(awk -F":[[:space:]*]" \
+eval $(awk -F":[ \t]*" \
 	'/^Package:/{print "NAME=\""$2"\""};
 	 /^Version:/{print "VERSION=\""$2"\""}' CONTROL/control)
 echo "2.0" > debian-binary
