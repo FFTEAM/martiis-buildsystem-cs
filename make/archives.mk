@@ -197,6 +197,13 @@ $(ARCHIVE)/busybox-snapshot.tar.bz2:
 $(ARCHIVE)/opkg-$(OPKG-VER).tar.gz:
 	$(WGET) http://opkg.googlecode.com/files/opkg-$(OPKG-VER).tar.gz
 
+$(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf opkg-$(OPKG_SVN_VER); \
+		svn export -r $(OPKG_SVN) http://opkg.googlecode.com/svn/trunk/ opkg-$(OPKG_SVN_VER); \
+		tar cvpzf $@ opkg-$(OPKG_SVN_VER); \
+		rm -rf opkg-$(OPKG_SVN_VER)
+
 $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz:
 	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-$(QT-VER).tar.gz
 

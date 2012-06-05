@@ -182,6 +182,10 @@ DROPBEAR-VER=0.53.1
 # opkg; a lightweight package management system based on Ipkg
 OPKG-VER=0.1.8
 
+# for recent versions, the SVN trunk rev is used:
+OPKG_SVN=635
+OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
+
 # glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
 GLIB-MAJOR=2
 GLIB-MINOR=24
