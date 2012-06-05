@@ -42,6 +42,10 @@ if test -z "$MAINTAINER"; then
 	exit 42
 fi
 
+# force GNU format as opkg cannot handle newer pax/posix format which is
+# default in e.g. openSUSE 12.2
+TAR="tar -H gnu"
+
 # checks if an old package of the same name and version is already present in $PACKAGE_DIR.
 # if not present, return -1
 # if different, retur the revision (build number) of that package
@@ -230,7 +234,7 @@ VERSION=${VERS}-${BREV}
 
 # pack up root, list contents:
 echo "${ME}: root contents:"
-out=$(tar -cvzf data.tar.gz    --owner=0 --group=0 -C root .)
+out=$(${TAR} -cvzf data.tar.gz --owner=0 --group=0 -C root .)
 for file in $out; do
 	# skip directories, they are not that interesting
 	test "${file:$((${#file}-1))}" = "/" && continue
@@ -256,7 +260,7 @@ done
 
 # pack control
 echo "${ME}: control contents:"
-tar -cvzf control.tar.gz --owner=0 --group=0 -C CONTROL .
+${TAR} -cvzf control.tar.gz --owner=0 --group=0 -C CONTROL .
 
 # create the package...
 PKG=${NAME}-${VERSION}.opk
