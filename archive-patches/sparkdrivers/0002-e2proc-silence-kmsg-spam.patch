@@ -1,17 +1,17 @@
-From a2061c67ddf97a59b2b8dc23d0635f918adf2031 Mon Sep 17 00:00:00 2001
+From 43032ce33791d95a77fe9ad53b2672ded361dbca Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sun, 19 Feb 2012 16:45:49 +0100
-Subject: [PATCH 2/6] e2proc: silence kmsg spam
+Subject: [PATCH 2/5] e2proc: silence kmsg spam
 
 ---
  e2_proc/e2_proc_main.c |   29 ++++++++++++++++-------------
  1 files changed, 16 insertions(+), 13 deletions(-)
 
 diff --git a/e2_proc/e2_proc_main.c b/e2_proc/e2_proc_main.c
-index c8e01c4..4e08e2c 100644
+index 92f6f4a..2ae500c 100644
 --- a/e2_proc/e2_proc_main.c
 +++ b/e2_proc/e2_proc_main.c
-@@ -312,9 +312,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
+@@ -314,9 +314,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
  	ssize_t 	ret = -ENOMEM;
  
  	char* myString = kmalloc(count + 1, GFP_KERNEL);
@@ -23,7 +23,7 @@ index c8e01c4..4e08e2c 100644
  	page = (char *)__get_free_page(GFP_KERNEL);
  	if (page) 
  	{
-@@ -324,9 +324,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
+@@ -326,9 +326,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
  
  		strncpy(myString, page, count);
  		myString[count] = '\0';
@@ -35,7 +35,7 @@ index c8e01c4..4e08e2c 100644
  		if (strncmp("sbs", myString, 3) == 0 || strncmp("sidebyside", myString, 10) == 0)
  		{
  			if(three_d_mode != NULL) kfree(three_d_mode);
-@@ -374,9 +374,9 @@ static int wakeup_time_write(struct file *file, const char __user *buf,
+@@ -376,9 +376,9 @@ static int wakeup_time_write(struct file *file, const char __user *buf,
  	ssize_t 	ret = -ENOMEM;
  
  	char* myString = kmalloc(count + 1, GFP_KERNEL);
@@ -47,7 +47,7 @@ index c8e01c4..4e08e2c 100644
  	page = (char *)__get_free_page(GFP_KERNEL);
  	if (page) 
  	{
-@@ -386,9 +386,9 @@ static int wakeup_time_write(struct file *file, const char __user *buf,
+@@ -388,9 +388,9 @@ static int wakeup_time_write(struct file *file, const char __user *buf,
  
  		strncpy(myString, page, count);
  		myString[count] = '\0';
@@ -59,7 +59,7 @@ index c8e01c4..4e08e2c 100644
  		if(wakeup_time != NULL) kfree(wakeup_time);
  		wakeup_time = myString;
  		
-@@ -412,9 +412,9 @@ int proc_misc_12V_output_write(struct file *file, const char __user *buf,
+@@ -414,9 +414,9 @@ int proc_misc_12V_output_write(struct file *file, const char __user *buf,
  	char 		*page;
  	ssize_t 	ret = -ENOMEM;
      char        *myString;
@@ -71,7 +71,7 @@ index c8e01c4..4e08e2c 100644
  	page = (char *)__get_free_page(GFP_KERNEL);
  	if (page) 
  	{
-@@ -452,8 +452,9 @@ int proc_misc_12V_output_read (char *page, char **start, off_t off, int count,
+@@ -454,8 +454,9 @@ int proc_misc_12V_output_read (char *page, char **start, off_t off, int count,
  			  int *eof, void *data_unused)
  {
  	int len = 0;
@@ -82,7 +82,7 @@ index c8e01c4..4e08e2c 100644
  	if(_12v_isON)
  		len = sprintf(page, "on\n");
  	else
-@@ -801,9 +802,9 @@ EXPORT_SYMBOL(install_e2_procs);
+@@ -805,9 +806,9 @@ EXPORT_SYMBOL(install_e2_procs);
  int cpp_install_e2_procs(const char *path, read_proc_t *read_func, write_proc_t *write_func, void* instance)
  {
    int i;
@@ -94,7 +94,7 @@ index c8e01c4..4e08e2c 100644
    /* find the entry */
    for(i = 0; i < sizeof(e2Proc) / sizeof(e2Proc[0]); i++)
    {
-@@ -907,8 +908,10 @@ int cpp_remove_e2_procs(const char *path, read_proc_t *read_func, write_proc_t *
+@@ -911,8 +912,10 @@ int cpp_remove_e2_procs(const char *path, read_proc_t *read_func, write_proc_t *
  	if(e2Proc[i].read_proc == read_func)
  	{
  	  e2Proc[i].read_proc = NULL;

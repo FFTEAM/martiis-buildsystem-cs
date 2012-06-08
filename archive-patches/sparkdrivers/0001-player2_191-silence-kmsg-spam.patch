@@ -1,7 +1,7 @@
-From 8d81442b3468a7e2b4d8a02842b73e10b3fa57ef Mon Sep 17 00:00:00 2001
+From 91eea35f600e01c7c5fd58a3dcb1c0593cac74aa Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sat, 18 Feb 2012 21:55:34 +0100
-Subject: [PATCH 1/6] player2_191: silence kmsg spam
+Subject: [PATCH 1/5] player2_191: silence kmsg spam
 
 ---
  .../drivers/media/dvb/stm/backend/player_module.c  |    1 +
@@ -28,7 +28,7 @@ index 09513a8..a7cf6bf 100644
      DisplayInit ();
      BackendInit ();
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c
-index d2a6cb1..03eb6a6 100644
+index 031c072..af23ca7 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_audio.c
 @@ -56,7 +56,9 @@ int proc_audio_delay_bitstream_write(struct file *file, const char __user *buf,
@@ -118,7 +118,7 @@ index d2a6cb1..03eb6a6 100644
  
          return len;
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_avs.c b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_avs.c
-index 19d8c73..10d79aa 100644
+index 423fe94..acbde20 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_avs.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_avs.c
 @@ -115,9 +115,9 @@ int proc_avs_0_volume_write(struct file *file, const char __user *buf,
@@ -144,7 +144,7 @@ index 19d8c73..10d79aa 100644
 +#endif
  		sscanf(myString, "%d", &volume);
  
- #if defined(CUBEREVO) || defined(CUBEREVO_MINI) || defined(CUBEREVO_MINI2) || defined(CUBEREVO_MINI_FTA) || defined(CUBEREVO_250HD) || defined(CUBEREVO_2000HD) || defined(CUBEREVO_9500HD) || defined(TF7700) || defined(UFS912) || defined(UFS922) || defined(HL101) || defined(VIP1_V2) || defined(VIP2_V1) || defined(HOMECAST5101) || defined(ATEVIO7500) || defined(HS7810A) || defined(HS7110) || defined(IPBOX9900) || defined(IPBOX99) || defined(IPBOX55) || defined(ADB_BOX)
+ #if defined(CUBEREVO) || defined(CUBEREVO_MINI) || defined(CUBEREVO_MINI2) || defined(CUBEREVO_MINI_FTA) || defined(CUBEREVO_250HD) || defined(CUBEREVO_2000HD) || defined(CUBEREVO_9500HD) || defined(TF7700) || defined(UFS912) || defined(UFS922) || defined(HL101) || defined(VIP1_V2) || defined(VIP2_V1) || defined(HOMECAST5101) || defined(ATEVIO7500) || defined(HS7810A) || defined(HS7110) || defined(WHITEBOX) || defined(IPBOX9900) || defined(IPBOX99) || defined(IPBOX55) || defined(ADB_BOX)
 @@ -226,8 +226,9 @@ int proc_avs_0_volume_read (char *page, char **start, off_t off, int count,
  			  int *eof, void *data_unused)
  {
@@ -352,7 +352,7 @@ index 19d8c73..10d79aa 100644
  		len = sprintf(page, "off\n");
  	if(current_standby == 1)
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_video.c b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_video.c
-index 1f0acc3..4182693 100644
+index 71c406a..e1e041a 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_video.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/e2_proc/e2_proc_video.c
 @@ -298,7 +298,7 @@ int proc_video_aspect_write(struct file *file, const char __user *buf,
@@ -1264,7 +1264,7 @@ index fe28a0e..4480106 100644
  		}
  		
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c b/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
-index 7b9cef1..52c5d6e 100644
+index 11ff86b..640e6d6 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
 @@ -108,11 +108,11 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
