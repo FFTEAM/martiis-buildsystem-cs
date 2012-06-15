@@ -33,7 +33,7 @@ ZLIB-VER=1.2.6
 UTIL_LINUX_NG-VER=2.18
 
 # curl; command line tool for transferring data with URL syntax
-CURL-VER=7.20.0
+CURL_VER=7.26.0
 
 # libpng; reference library for reading and writing PNGs
 PNG-VER=1.2.44

@@ -1,5 +1,5 @@
 Package: libcurl
-Version: 7.20.0-1
+Version: @VER@-1
 Description: Client-side URL Transfer Library
 Section: base/libraries
 Priority: standard

@@ -99,9 +99,9 @@ $(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF-VER).tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libcurl: $(ARCHIVE)/curl-$(CURL-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
-	$(UNTAR)/curl-$(CURL-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/curl-$(CURL-VER); \
+$(D)/libcurl: $(ARCHIVE)/curl-$(CURL_VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+	$(UNTAR)/curl-$(CURL_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/curl-$(CURL_VER); \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
 			--disable-manual --disable-file --disable-rtsp --disable-dict \
 			--disable-imap --disable-pop3 --disable-smtp --without-ssl \
@@ -115,14 +115,14 @@ $(D)/libcurl: $(ARCHIVE)/curl-$(CURL-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REMOVE)/pkg-lib; mkdir $(BUILD_TMP)/pkg-lib
 	cd $(PKGPREFIX) && rm -r include lib/pkgconfig lib/*.so lib/*a .remove/ && mv lib $(BUILD_TMP)/pkg-lib
-	$(OPKG_SH) $(CONTROL_DIR)/curl/curl
+	PKG_VER=$(CURL_VER) $(OPKG_SH) $(CONTROL_DIR)/curl/curl
 	rm -rf $(PKGPREFIX)/*
 	mv $(BUILD_TMP)/pkg-lib/* $(PKGPREFIX)/
-	$(OPKG_SH) $(CONTROL_DIR)/curl/libcurl
+	PKG_VER=$(CURL_VER) $(OPKG_SH) $(CONTROL_DIR)/curl/libcurl
 	$(REWRITE_LIBTOOL)/libcurl.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcurl.pc
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/curl-$(CURL-VER) $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
+	$(REMOVE)/curl-$(CURL_VER) $(PKGPREFIX) $(BUILD_TMP)/pkg-lib
 	touch $@
 
 # no Package, since it's only linked statically for now also only install static lib

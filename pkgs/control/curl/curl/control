@@ -1,5 +1,5 @@
 Package: curl
-Version: 7.20.0-1
+Version: @VER@-1
 Description: Command Line Tool For Transferring Data With URL Syntax
 Section: base
 Priority: optional
@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://curl.haxx.se
 Source:
-Depends: libcurl (= 7.20.0-1)
+Depends: libcurl.so.4, libz.so.1
