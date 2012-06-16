@@ -71,8 +71,8 @@ $(ARCHIVE)/libusb-1.0.8.tar.bz2:
 $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-0.1.3/libusb-compat-0.1.3.tar.bz2
 
-$(ARCHIVE)/curl-$(CURL-VER).tar.bz2:
-	$(WGET) http://curl.haxx.se/download/curl-$(CURL-VER).tar.bz2
+$(ARCHIVE)/curl-$(CURL_VER).tar.bz2:
+	$(WGET) http://curl.haxx.se/download/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2:
 	$(WGET) http://sourceforge.net/projects/libpng/files/libpng12/older-releases/$(PNG-VER)/libpng-$(PNG-VER).tar.bz2
