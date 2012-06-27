@@ -259,6 +259,13 @@ FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decode
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
 endif
+ifeq ($(BOXARCH), mipsel)
+FFMPEG_CONFIGURE  = --arch=mips
+FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
+FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
+FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
+FFMPEG_CONFIGURE += --disable-bsfs
+endif
 $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(SOURCE_DIR)/cst-public-libraries-ffmpeg; then \
