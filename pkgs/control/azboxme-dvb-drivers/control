@@ -1,0 +1,11 @@
+Package: azboxme-dvb-drivers
+Version: @VER@-1
+Description: DVB kernel drivers for the azbox ME Settopbox
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage:
+Source:
+Depends: depmod
+Provides: @MODULE_PROV@

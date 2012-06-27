@@ -1,0 +1,7 @@
+#!/bin/sh
+# compatibility with aztrino-images
+if [ -d /etc/rcS.d ]; then
+	# we need to come before S04bootup...
+	ln -s ../init.d/loadmodules /etc/rcS.d/S04aaa_loadmodules
+fi
+depmod

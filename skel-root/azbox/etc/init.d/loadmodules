@@ -1,1 +1,36 @@
-# dummy file to satisfy makefile rules
+#!/bin/sh
+
+im()
+{
+	modname=$1
+	modsane=${1//-/_}
+	params=$(eval echo \$OPT_${modsane})
+	shift
+	file=/lib/modules/${KVER}/${modname}.ko
+	# own built modules are in /lib/modules/$KVER/kernel/... subdirectories
+	# ...but we can override this by putting modules to /lib/modules/$KVER directly
+	if test -e $file; then
+		echo "overriding ${modname}.ko from /lib/modules/$KVER ..."
+		/sbin/insmod $file ${params:-$@}
+	else
+		/sbin/modprobe $modname $@
+	fi
+}
+
+case $1 in
+start)
+	read dummy dummy KVER dummy < /proc/version
+	test -e /lib/modules/${KVER}/modules.dep || depmod -a
+	# set all "option foo ..." as OPT_foo="..." variables
+	eval $(sed -n "/^options\s/{
+		s/^options\s\(\S\+\)\s\(.*\)\$/OPT_\1=\"\2\"/;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		s/^\(\S\+\)-/\1_/g;
+		p }" /etc/modprobe.conf)
+	read MODEL < /proc/model
+	for i in 865xi2c avl6211 avl2108 mxl241sf nimdetect sci${MODEL} 865xdvb; do
+		im $i
+	done
+	;;
+esac

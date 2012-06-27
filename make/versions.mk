@@ -10,6 +10,9 @@
 # Libs; make/system-libs.mk
 ###########################
 
+# azbox-dvb-modules
+AZBOX_DVB_M_VER=20120517
+
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG-VER=0.15.1
 ID3TAG-SUBVER=b

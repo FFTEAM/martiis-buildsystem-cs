@@ -384,6 +384,26 @@ azboxkernel: $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER) $(BUILD_TMP)/linux-$(LINUX_AZ
 		$(MAKE) ARCH=mips CROSS_COMPILE=$(TARGET)- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 
+azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz
+	$(REMOVE)/azboxme-dvb-modules $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers
+	set -e; cd $(BUILD_TMP); \
+		mkdir azboxme-dvb-modules; \
+		cd azboxme-dvb-modules; \
+		for i in me minime; do \
+			tar -xf $(ARCHIVE)/azbox$${i}-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz; \
+			mv sci.ko sci$${i}.ko; \
+		done; \
+		install -d lib/modules/$(LINUX_AZBOX_VER)-opensat/extra; \
+		install -d lib/firmware; \
+		mv *.fw lib/firmware; \
+		mv *.ko lib/modules/$(LINUX_AZBOX_VER)-opensat/extra; \
+		rm staticdevices.tar.gz.install
+	install -d $(PKGPREFIX)/etc/init.d
+	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
+	mv $(BUILD_TMP)/azboxme-dvb-modules/* $(PKGPREFIX)
+	cp -a $(CONTROL_DIR)/azboxme-dvb-drivers $(BUILD_TMP)
+	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers/control
+	DONT_STRIP=1 PKG_VER=$(LINUX_AZBOX_VER).$(AZBOX_DVB_M_VER) $(OPKG_SH) $(BUILD_TMP)/azboxme-dvb-drivers
 endif
 
 
