@@ -18,9 +18,11 @@ local-install:
 		cp -a -v $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
 	fi
 
+flash-prepare: local-install find-mkfs.jffs2 find-sumtool
+
 ifeq ($(PLATFORM), coolstream)
 # the devtable is used for having a console device on first boot.
-flashimage: local-install find-mkfs.jffs2 find-sumtool cskernel
+flashimage: flash-prepare cskernel
 	echo "/dev/console c 0644 0 0 5 1 0 0 0" > $(BUILD_TMP)/devtable
 	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
 	mkfs.jffs2 -e 0x20000 -p -U -D $(BUILD_TMP)/devtable -d $(BUILD_TMP)/install -o $(FLASHIMG)
@@ -36,7 +38,7 @@ endif
 ifeq ($(PLATFORM), spark)
 # you should probably "make system-pkgs" before...
 # this has been tested by flashing from an USB stick on GM 990
-flashimage: local-install find-mkfs.jffs2 find-sumtool
+flashimage: flash-prepare
 	echo "/dev/console c 0644 0 0 5 1 0 0 0" > $(BUILD_TMP)/devtable
 	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
 	mkfs.jffs2 -e 0x20000 -p -U -D $(BUILD_TMP)/devtable -d $(BUILD_TMP)/install -o $(FLASHIMG)
