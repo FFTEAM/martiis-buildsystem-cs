@@ -164,6 +164,9 @@ $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2:
 $(ARCHIVE)/linux-2.6.26.8.tar.bz2:
 	$(WGET) http://www.dbox2world.net/download/linux-2.6.26.8.tar.bz2
 
+$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))
+
 $(ARCHIVE)/mc-$(MC-VER).tar.gz:
 	$(WGET) http://midnight-commander.org/downloads/mc-$(MC-VER).tar.gz
 

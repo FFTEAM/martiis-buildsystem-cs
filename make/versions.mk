@@ -66,6 +66,9 @@ VORBIS-VER=1.2.3
 # libass: ass / ssa subtitle renderer
 LIBASS_VER=0.9.11
 
+# azbox kernel
+LINUX_AZBOX_VER=3.3.1
+
 # LIRC: linux infrared control
 LIRC_VER=0.9.0
 
