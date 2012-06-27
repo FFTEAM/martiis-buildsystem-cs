@@ -1,0 +1,45 @@
+#!/bin/sh
+
+case $1 in
+start)
+	# actually only mounts devpts with the default fstab...
+	/bin/mount -a
+	if grep -q swap /etc/fstab; then # todo: better grep ;-)
+		echo "Enable Swap space..."
+		/sbin/swapon -a
+	fi
+	if [ -e /dev/root ]; then # does not exist on NFS boot...
+		case "$(readlink /dev/root)" in
+			sd*)
+				if test -e /forcefsck; then
+					echo "forcing fsck..."
+					rm /forcefsck
+					mount / -o ro,remount
+				fi
+				if touch /.fsck 2>/dev/null ; then
+					rm /.fsck
+					echo "root FS is mounted rw, skipping filesystem check"
+				else
+					echo "running 'fsck /dev/root'"
+					fsck.ext3 -p -C0 /dev/root
+					echo "remounting root FS rw..."
+				fi
+				mount / -o rw,remount,noatime,nodiratime
+				;;
+			*)	;;	# do nothing on internal FLASH
+		esac
+	fi
+	exit 0
+	;;
+stop)
+	umount -a -r		# unmount, if busy remount readonly
+	mount -t proc proc /proc # workaround for neutrino-hd "power down" routine
+	/sbin/swapoff -a	# so that swapping doesn't wake up the drive
+	mount -oro,remount /	# just to make sure, to get the FS as clean as possible
+				# for the unclean neutrino-hd poweroff
+	for i in /dev/sd*[0-9] /dev/sd*[^0-9]; do	# flush buffers to be as safe as
+		test -b $i && blockdev --flushbufs $i	# possible...
+	done
+	/sbin/hdparm -y /dev/sd*[^0-9]	# whole devices only, no partitions
+	;;
+esac

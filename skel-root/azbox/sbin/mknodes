@@ -1,0 +1,39 @@
+#!/bin/sh
+/bin/echo "running $0"
+# <name ><type> <mode> <uid> <gid> <major> <minor> <start> <inc> <count>
+#makedevs /dev << EOF
+#EOF
+
+# create symlink /dev/input/nevis_ir
+# most likely this will always be event0, since the irvfd module is loaded
+# in initramfs, but we can't be shure in case a USB keyboard is attached
+### I: Bus=0000 Vendor=0001 Product=0001 Version=0100
+### N: Name="dreambox remote control (native)"
+### P: Phys=
+### S: Sysfs=/devices/virtual/input/input0
+### U: Uniq=
+### H: Handlers=event0
+### B: PROP=0
+### B: EV=100003
+### B: KEY=108fc312 2002041 0 0 0 0 18000 4110 800 1e16c0 0 0 ffc
+FOUND=false
+while read A B; do
+	case $A in
+	N:)	if [ "$B" = 'Name="dreambox remote control (native)"' ]; then
+			FOUND=true
+		else
+			FOUND=false
+		fi
+		;;
+	H:)	$found || continue
+		C=${B#*=}
+		ln -sf $C /dev/input/nevis_ir
+		break
+		;;
+	esac
+done < /proc/bus/input/devices
+
+# lame, better fix the neutrino code instead :-)
+ln -s /proc/vfd /dev/vfd
+
+/bin/echo "done $0"
