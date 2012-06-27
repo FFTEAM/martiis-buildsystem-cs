@@ -383,6 +383,9 @@ azboxkernel: $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER) $(BUILD_TMP)/linux-$(LINUX_AZ
 		$(MAKE) ARCH=mips CROSS_COMPILE=$(TARGET)- modules; \
 		$(MAKE) ARCH=mips CROSS_COMPILE=$(TARGET)- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+	set -e; cd $(BUILD_TMP); \
+		rm -f azboxkernel.tar; \
+		tar -cvpf azboxkernel.tar -C linux-$(LINUX_AZBOX_VER) zbimage-linux-xload
 
 azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz
 	$(REMOVE)/azboxme-dvb-modules $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers
