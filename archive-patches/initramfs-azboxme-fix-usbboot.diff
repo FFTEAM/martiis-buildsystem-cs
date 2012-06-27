@@ -1,0 +1,51 @@
+The openazbox initramfs no longer allows to boot from USB,
+so add it back ...
+TODO: how is this kexec stuff supposed to work (rootfs passing etc)?
+
+diff --git a/initramfs/init b/initramfs/init
+index 1e33c77..3d6f389 100755
+--- a/initramfs/init
++++ b/initramfs/init
+@@ -218,6 +218,42 @@ fi
+ # Do your stuff here.
+ echo "Mounting rootfs and booting ..."
+ 
++### first try USB...
++for disk in sdb sdb1 sda sda1; do
++	# Mount the root filesystem on USB1.
++	mount -o rw /dev/$disk /mnt/root
++	if [ $? = 0 ]; then
++		if [ -L "/mnt/root/sbin/init" ]; then
++			# Unmount all other mounts so that the ram used by
++			# the initramfs can be cleared after switch_root
++			rmmod scsi_wait_scan
++			umount /sys /proc
++			# Switch to the new root and execute init
++			exec switch_root /mnt/root /sbin/init
++		elif [ -f "/mnt/root/kexec" ]; then
++			# TODO: check how this kexec stuff is supposed to work...
++			/mnt/root/kexec -l /mnt/root/vmlinux
++			/mnt/root/kexec -e &
++		fi
++		umount /mnt/root
++	fi
++done
++
++# Mount the root filesystem on HDD.
++mount -o rw /dev/hdb1 /mnt/root
++if [ $? = 0 ]; then
++	if [ -L "/mnt/root/sbin/init" ]; then
++		# Unmount all other mounts so that the ram used by
++		# the initramfs can be cleared after switch_root
++		rmmod scsi_wait_scan
++		umount /sys /proc
++		# Switch to the new root and execute init
++		exec switch_root /mnt/root /sbin/init
++		# TODO: no kexec from hdb1? why?
++	fi
++	umount /mnt/root
++fi
++
+ # Mount the root filesystem.
+ 
+ if [ $modesel = 2 ] ; then

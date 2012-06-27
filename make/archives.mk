@@ -272,3 +272,6 @@ $(ARCHIVE)/ntp-$(NTP_VER).tar.gz:
 
 $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2:
 	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
+
+$(ARCHIVE)/initramfs-azboxme.tar.bz2:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))

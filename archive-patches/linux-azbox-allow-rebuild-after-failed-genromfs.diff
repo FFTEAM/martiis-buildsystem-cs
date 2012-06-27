@@ -1,0 +1,44 @@
+diff --git a/arch/mips/boot/Makefile b/arch/mips/boot/Makefile
+index 8a2ef06..54e17c5 100644
+--- a/arch/mips/boot/Makefile
++++ b/arch/mips/boot/Makefile
+@@ -95,6 +95,7 @@ endif
+ 
+ ifdef CONFIG_TANGO2
+ $(obj)/zbimage-linux-xload: $(obj)/vmlinux_xload.zbf
++	rm -rf romfs
+ 	mkdir romfs
+ 	cp -f $< romfs
+ 	genromfs -V MIPS_LINUX_XRPC -d romfs -f $@
+@@ -103,6 +104,7 @@ $(obj)/zbimage-linux-xload: $(obj)/vmlinux_xload.zbf
+ endif
+ ifdef CONFIG_TANGO3
+ $(obj)/zbimage-linux-xload: $(obj)/vmlinux_xload.zbf
++	rm -rf romfs
+ 	mkdir romfs
+ 	cp -f $< romfs
+ 	genromfs -V MIPSLINUX_XLOAD -d romfs -f $@
+@@ -111,6 +113,7 @@ $(obj)/zbimage-linux-xload: $(obj)/vmlinux_xload.zbf
+ endif
+ ifdef CONFIG_TANGO4
+ $(obj)/zbimage-linux-xload: $(obj)/vmlinux_xload.zbf
++	rm -rf romfs
+ 	mkdir romfs
+ 	cp -f $< romfs
+ 	genromfs -V MIPSLINUX_XLOAD -d romfs -f $@
+@@ -138,6 +141,7 @@ $(obj)/vmlinux_enc.zbf: $(obj)/vmlinux_enc.bin
+ zbimage-linux-enc: $(obj)/zbimage-linux-enc
+ 
+ $(obj)/zbimage-linux-enc: $(obj)/vmlinux_enc.zbf
++	rm -rf romfs
+ 	mkdir romfs
+ 	cp -f $< romfs
+ 	genromfs -V MIPS_LINUX_ENC -d romfs -f $@
+@@ -149,6 +153,7 @@ $(obj)/vmlinux_encs.zbf: $(obj)/vmlinux_enc.bin
+ zbimage-linux-encs: $(obj)/zbimage-linux-encs
+ 
+ $(obj)/zbimage-linux-encs: $(obj)/vmlinux_encs.zbf
++	rm -rf romfs
+ 	mkdir romfs
+ 	cp -f $< romfs
+ 	genromfs -V MIPS_LINUX_ENC -d romfs -f $@
