@@ -1,0 +1,48 @@
+#!/bin/sh
+#
+# set the frontprocessor's clock to the current system time on shutdown
+# additionally set a wakeup time if neutrino instructed us to
+# during boot, determine if we woke up from a timer
+#
+# this needs to come after the 865xdvb.ko was loaded as this module
+# provides the /proc/stb stuff
+#
+
+# set hwclock via /proc/settime
+set_time() {
+	CURR=$(date -Iseconds)          # 2012-06-17T01:50:25+0200
+	OFFH=${CURR:19:3}               # +02
+	OFFM=${CURR:19:1}${CURR:22}     # +00
+	OFFS=$(($OFFH * 3600 + $OFFM * 60))
+	# the '\"' hardcodes UTC+2... TODO: fix...
+	TIMESTR=$(TZ=UTC date +%Y%m%d%H%M%S_\" -d @$(date +%s))
+	echo "==> set_time: setting FP clock to $TIMESTR"
+	echo $TIMESTR > /proc/settime
+}
+
+# set wakeup time via /proc/stb/fp/wakeup_time
+set_wakeup_time() {
+	WAKEUP_TIME=1
+	read WAKEUP_TIME < /tmp/.timer
+	NOW=$(date +%s)
+	WAKEUP=$(($WAKEUP_TIME - $NOW))
+	echo "==> wakeup in $WAKEUP seconds -- $(date -d @$WAKEUP_TIME)"
+	# the frontprocessor takes care of wakeup_time being in the past,
+	# so we don't have to...
+	echo $WAKEUP_TIME > /proc/stb/fp/wakeup_time
+}
+
+case $1 in
+start)
+	read TIMER < "/proc/stb/fp/was_timer_wakeup"
+	echo "==> was_timer_wakeup: $TIMER"
+	test $TIMER != 0 && touch /tmp/.timer_wakeup
+	echo 0 > /proc/stb/fp/was_timer_wakeup
+	;;
+stop)
+	set_time
+	if test -e /tmp/.timer; then
+		set_wakeup_time
+	fi
+	;;
+esac
