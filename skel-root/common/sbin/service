@@ -24,8 +24,8 @@ done
 
 echo "$SERVICE not found in /etc/init.d/ and /opt/*/etc/init.d/"
 SERVICES=$(for i in /opt/*/etc/init.d/[^SK]* /etc/init.d/[^SK]*; do
-		echo ${i##*/};
-	done | sort -u | grep -v '^\(functions\|rcK\|rcS\|start\|start_neutrino\)$')
+		echo "${i##*/}";
+	done | sort -u | grep -v '^\(functions\|rcK\|rcS\|start\|start_neutrino\|\[\^SK\]\*\)$')
 echo "available services:"
 echo $SERVICES | xargs -n 1 echo "	"
 exit 1
