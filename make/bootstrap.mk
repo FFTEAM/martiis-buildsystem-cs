@@ -4,6 +4,7 @@ BOOTSTRAP  = targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-
 BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-find-requires.sh $(HOSTPREFIX)/bin/opkg-find-provides.sh
+BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-module-deps.sh
 BOOTSTRAP += pkg-config
 
 ifeq ($(PLATFORM), tripledragon)
