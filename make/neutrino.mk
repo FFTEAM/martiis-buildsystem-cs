@@ -116,6 +116,9 @@ ifeq ($(PLATFORM), coolstream)
 		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134), cs-drivers/' $(BUILD_TMP)/neutrino-hd-control/control; \
 	fi
 endif
+ifeq ($(PLATFORM), azbox)
+	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
+endif
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
