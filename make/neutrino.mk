@@ -16,6 +16,9 @@ endif
 ifeq ($(BOXARCH), sh4)
 N_CFLAGS += -funsigned-char
 endif
+ifeq ($(BOXARCH), mipsel)
+N_CFLAGS += -funsigned-char
+endif
 
 # choose between static and dynamic libtremor. As long as nothing else
 # uses libtremor, static usage does not really hurt and is compatible
