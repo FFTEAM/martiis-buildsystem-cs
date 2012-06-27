@@ -6,9 +6,18 @@ export CONFIG_SITE
 BASE_DIR    := $(shell pwd)
 -include $(BASE_DIR)/config
 
-ifneq ($(PLATFORM), coolstream)
-ifneq ($(PLATFORM), spark)
+# default platform...
 PLATFORM    ?= tripledragon
+
+# coolstream is the pariah here -- everything is different...
+ifneq ($(PLATFORM), coolstream)
+
+# good platforms use the open sourced libstb-hal...
+USE_STB_HAL ?= yes
+# ...and the neutrino-multiplatform edition
+FLAVOUR     ?= neutrino-hd-tripledragon
+
+ifeq ($(PLATFORM), tripledragon)
 ifneq ($(TD_COMPILER), new)
 TD_COMPILER ?= old
 TARGET      ?= powerpc-405-linux-gnu
@@ -16,16 +25,20 @@ else
 # name it differently to avoid subtleties...
 TARGET      ?= powerpc-405n-linux-gnu
 endif
-USE_STB_HAL ?= yes
-FLAVOUR     ?= neutrino-hd-tripledragon
 BOXARCH     ?= powerpc
-else
-USE_STB_HAL ?= yes
+endif # tripledragon
+
+ifeq ($(PLATFORM), spark)
 TARGET      ?= sh4-linux
 BOXARCH     ?= sh4
-FLAVOUR     ?= neutrino-hd-tripledragon
+endif # spark
+
+ifeq ($(PLATFORM), azbox)
+TARGET      ?= mipsel-unknown-linux-gnu
+BOXARCH     ?= mipsel
 endif
-else
+
+else  # coolstream
 USE_STB_HAL ?= no
 TARGET      ?= arm-cx2450x-linux-gnueabi
 FLAVOUR     ?= neutrino-hd
