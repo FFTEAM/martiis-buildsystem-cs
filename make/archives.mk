@@ -134,6 +134,10 @@ $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz:
 $(ARCHIVE)/fuse-2.7.5.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/fuse/fuse-2.X/2.7.5/fuse-2.7.5.tar.gz
 
+# this relies on the version starting with 0.
+$(ARCHIVE)/gstreamer%.tar.bz2:
+	$(WGET) http://gstreamer.freedesktop.org/src/$(firstword $(subst -0., ,$(lastword $(subst /, ,$@))))/$(lastword $(subst /, ,$@))
+
 $(ARCHIVE)/libogg-$(OGG-VER).tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG-VER).tar.gz
 
