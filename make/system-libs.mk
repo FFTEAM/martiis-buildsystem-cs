@@ -377,8 +377,10 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-$(NCURSES-VER).tar.gz | ncurses-prereq $(TAR
 			--with-fallbacks='linux vt100 xterm'; \
 		$(MAKE) libs HOSTCC=gcc HOSTLDFLAGS="$(TARGET_LDFLAGS)" \
 			HOSTCCFLAGS="$(TARGET_CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include"; \
-		make install.libs DESTDIR=$(TARGETPREFIX)
+		make install.libs DESTDIR=$(TARGETPREFIX); \
+		install -D -m 0755 misc/ncurses-config $(HOSTPREFIX)/bin/ncurses5-config
 	$(REMOVE)/ncurses-$(NCURSES-VER) $(PKGPREFIX)
+	$(REWRITE_PKGCONF) $(HOSTPREFIX)/bin/ncurses5-config
 	mkdir -p $(PKGPREFIX)/lib
 	# deliberately ignore libforms and libpanel - not yet needed
 	cp -a $(TARGETPREFIX)/lib/libncurses.so.* $(PKGPREFIX)/lib
