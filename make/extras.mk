@@ -418,6 +418,7 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 		$(BUILDENV) \
 		./configure \
 			--cache-file=config.cache \
+			--disable-gtk-doc \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
 			--with-html-dir=/.remove \
@@ -430,12 +431,18 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 		mv $$i $(PKG_CONFIG_PATH); $(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/$$i; done
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/bin/glib-mkenums # no perl available on the box
-	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig
 	sed -i "s,^libdir=.*,libdir='$(TARGETPREFIX)/opt/pkg/lib'," $(PKGPREFIX)/opt/pkg/lib/*.la
+	sed -i '/^dependency_libs=/{ s#/opt/pkg/lib#$(TARGETPREFIX)/opt/pkg/lib#g }' $(PKGPREFIX)/opt/pkg/lib/*.la
+	rm $(PKGPREFIX)/opt/pkg/bin/gdbus
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
-		rm -r include lib/*.so lib/*.la share
-	$(OPKG_SH) $(CONTROL_DIR)/libglib
+		rm -r include lib/*.so lib/*.la share etc/bash_completion.d \
+		bin/gtester-report bin/glib-gettextize
+	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig $(PKGPREFIX)/opt/pkg/etc
+	PKG_VER=$(GLIB-VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/libglib
 	$(REMOVE)/glib-$(GLIB-VER) $(PKGPREFIX)
 	touch $@
 

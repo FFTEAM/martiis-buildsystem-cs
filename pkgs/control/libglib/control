@@ -1,5 +1,5 @@
 Package: libglib
-Version: 2.8.6-1
+Version: @VER@-1
 Description: General-Purpose Utility Library
 Section: extras/libraries
 Priority: optional
@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://www.gtk.org/
 Source:
-Depends:
-Provides: libgmodule-2.0.so.0, libgthread-2.0.so.0, libglib-2.0.so.0, libgobject-2.0.so.0
+Depends: @DEP@
+Provides: @PROV@

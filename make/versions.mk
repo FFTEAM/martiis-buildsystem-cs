@@ -194,7 +194,7 @@ OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
 
 # glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
 GLIB-MAJOR=2
-GLIB-MINOR=24
+GLIB-MINOR=26
 GLIB-MICRO=1
 GLIB-VER=$(GLIB-MAJOR).$(GLIB-MINOR).$(GLIB-MICRO)
 

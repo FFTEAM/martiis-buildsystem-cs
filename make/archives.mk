@@ -111,7 +111,7 @@ $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/$(FREETYPE-VER)/freetype-$(FREETYPE-VER).tar.bz2
 
 $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
-	$(WGET) ftp://ftp.gtk.org/pub/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/glib-$(GLIB-VER).tar.bz2
+	$(WGET) http://ftp.gnome.org/pub/gnome/sources/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/iperf/iperf-$(IPERF-VER).tar.gz
