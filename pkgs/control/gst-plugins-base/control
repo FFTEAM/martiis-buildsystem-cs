@@ -1,0 +1,11 @@
+Package: gst-plugins-base
+Version: @VER@-1
+Description: A well-maintained collection of GStreamer plug-ins and elements
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gstreamer.freedesktop.org/
+Source:
+Depends: @DEP@
+Provides: @PROV@
