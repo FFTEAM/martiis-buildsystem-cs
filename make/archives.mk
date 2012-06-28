@@ -134,6 +134,9 @@ $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz:
 $(ARCHIVE)/fuse-2.7.5.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/fuse/fuse-2.X/2.7.5/fuse-2.7.5.tar.gz
 
+$(ARCHIVE)/gst123-$(GST123_VER).tar.bz2:
+	$(WGET) http://space.twc.de/~stefan/gst123/$(lastword $(subst /, ,$@))
+
 # this relies on the version starting with 0.
 $(ARCHIVE)/gstreamer%.tar.bz2 \
 $(ARCHIVE)/gst-%.tar.bz2:

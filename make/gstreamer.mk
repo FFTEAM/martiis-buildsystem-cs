@@ -165,3 +165,18 @@ $(D)/gst-plugin-dvbmediasink: $(SOURCE_DIR)/gst-plugin-dvbmediasink $(D)/gst-plu
 		$(OPKG_SH) $(CONTROL_DIR)/gst-plugin-dvbmediasink
 	$(REMOVE)/gst-plugin-dvbmediasink $(PKGPREFIX)
 	touch $@
+
+# not yet packaged, just for testing...
+$(D)/gst123: $(ARCHIVE)/gst123-$(GST123_VER).tar.bz2 $(D)/gstreamer $(D)/libncurses $(PATCHES)/gst123-0001-add-disable-gtk-option-to-build-without-GTK.patch
+	$(UNTAR)/gst123-$(GST123_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/gst123-$(GST123_VER); \
+		$(PATCH)/gst123-0001-add-disable-gtk-option-to-build-without-GTK.patch; \
+		autoreconf -fi; \
+		$(CONFIGURE) --prefix= \
+			--mandir=/.remove \
+			--disable-gtk \
+			; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	cp -v $(PKGPREFIX)/bin/gst123 $(TARGETPREFIX)/bin
+	$(REMOVE)/gst123-$(GST123_VER) $(PKGPREFIX)
