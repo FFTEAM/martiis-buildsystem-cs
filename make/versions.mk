@@ -171,6 +171,7 @@ NTP_VER=4.2.6p5
 ########################
 
 GSTREAMER_VER=0.10.36
+GST_PLUG_GOOD_VER=0.10.31
 
 # links; a text WWW browser, similar to Lynx
 LINKS-VER=2.3pre1

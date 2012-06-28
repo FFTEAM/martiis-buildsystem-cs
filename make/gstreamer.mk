@@ -71,3 +71,30 @@ $(D)/gst-plugins-base: $(ARCHIVE)/gst-plugins-base-$(GSTREAMER_VER).tar.bz2 $(D)
 		$(OPKG_SH) $(CONTROL_DIR)/gst-plugins-base
 	$(REMOVE)/gst-plugins-base-$(GSTREAMER_VER) $(PKGPREFIX)
 	touch $@
+
+$(D)/gst-plugins-good: $(ARCHIVE)/gst-plugins-good-$(GST_PLUG_GOOD_VER).tar.bz2 $(D)/gstreamer $(D)/gst-plugins-base
+	$(UNTAR)/gst-plugins-good-$(GST_PLUG_GOOD_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/gst-plugins-good-$(GST_PLUG_GOOD_VER); \
+		$(CONFIGURE) --prefix= \
+			--disable-examples \
+			--disable-cairo \
+			--disable-x \
+			--disable-esd \
+			--disable-gdk_pixbuf \
+			LDFLAGS="$(LD_FLAGS) -Wl,-rpath-link,$(TARGETLIB)" \
+			; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	cd $(PKGPREFIX)/share && rm -rf locale
+	sed -i '/^dependency_libs=/{ s# /lib# $(TARGETPREFIX)/lib#g }' \
+		$(PKGPREFIX)/lib/gstreamer-0.10/*.la
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	for i in `cd $(PKGPREFIX)/lib/gstreamer-0.10; echo *.la`; do \
+		$(REWRITE_LIBTOOL)/gstreamer-0.10/$$i; done
+	rm $(PKGPREFIX)/lib/gstreamer-0.10/*.la
+	PKG_VER=$(GST_PLUG_GOOD_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/gst-plugins-good
+	$(REMOVE)/gst-plugins-good-$(GST_PLUG_GOOD_VER) $(PKGPREFIX)
+	touch $@
