@@ -191,6 +191,7 @@ $(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz | $(
 		$(MAKE); \
 		cp -a pkg-config $(HOSTPREFIX)/bin
 	ln -sf pkg-config $(HOSTPREFIX)/bin/$(TARGET)-pkg-config
+	$(REMOVE)/pkg-config-$(PKGCONFIG_VER)
 
 # hack to make sure they are always copied
 PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
