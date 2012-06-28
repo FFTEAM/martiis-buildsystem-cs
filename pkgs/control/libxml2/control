@@ -1,0 +1,11 @@
+Package: libxml2
+Version: @VER@-1
+Description: XML C parser and toolkit
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.xmlsoft.org/
+Source:
+Depends: @DEP@
+Provides: @PROV@

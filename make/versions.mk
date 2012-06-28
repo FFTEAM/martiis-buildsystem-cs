@@ -182,6 +182,8 @@ NBENCH_BYTE-VER=2.2.3
 # libupnp; a portable open source UPnP development kit
 LIBUPNP-VER=1.6.10
 
+LIBXML2_VER=2.8.0
+
 # dropbear; a relatively small SSH 2 server and client
 DROPBEAR-VER=0.53.1
 

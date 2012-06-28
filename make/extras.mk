@@ -446,6 +446,28 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(REMOVE)/glib-$(GLIB-VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/libxml2: $(D)/zlib $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libxml2-$(LIBXML2_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libxml2-$(LIBXML2_VER); \
+		$(CONFIGURE) --prefix= \
+			--without-python \
+			; \
+		$(MAKE) ; \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	cd $(PKGPREFIX)/share && rm -rf doc gtk-doc man
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	mv $(TARGETPREFIX)/bin/xml2-config $(HOSTPREFIX)/bin
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libxml-2.0.pc $(HOSTPREFIX)/bin/xml2-config
+	sed -i 's/^\(Libs:.*\)/\1 -lz/' $(PKG_CONFIG_PATH)/libxml-2.0.pc
+	$(REWRITE_LIBTOOL)/libxml2.la
+	cd $(PKGPREFIX); rm -r [^l]* lib/*[^0-9]
+	PKG_VER=$(LIBXML2_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/libxml2
+	$(REMOVE)/libxml2-$(LIBXML2_VER) $(PKGPREFIX)
+	touch $@
+
 $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETPREFIX) find-autopoint
 	$(UNTAR)/mc-$(MC-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/mc-$(MC-VER); \

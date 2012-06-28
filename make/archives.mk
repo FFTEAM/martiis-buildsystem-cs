@@ -140,6 +140,9 @@ $(ARCHIVE)/libogg-$(OGG-VER).tar.gz:
 $(ARCHIVE)/libvorbis-$(VORBIS-VER).tar.bz2:
 	$(WGET) http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS-VER).tar.bz2
 
+$(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz:
+	$(WGET) ftp://xmlsoft.org/libxml2/$(lastword $(subst /, ,$@))
+
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
 	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2
 
