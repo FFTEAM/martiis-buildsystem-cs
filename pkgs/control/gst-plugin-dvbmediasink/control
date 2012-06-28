@@ -1,0 +1,11 @@
+Package: gst-plugin-dvbmediasink
+Version: @VER@-1
+Description: GStreamer dvbmediasink plugin
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://openpli.git.sourceforge.net/git/gitweb.cgi
+Source:
+Depends: @DEP@
+Provides: @PROV@

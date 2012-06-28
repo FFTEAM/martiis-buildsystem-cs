@@ -137,3 +137,31 @@ $(D)/gst-plugins-bad: $(ARCHIVE)/gst-plugins-bad-$(GST_PLUG_BAD_VER).tar.bz2 $(D
 		$(OPKG_SH) $(CONTROL_DIR)/gst-plugins-bad
 	$(REMOVE)/gst-plugins-bad-$(GST_PLUG_BAD_VER) $(PKGPREFIX)
 	touch $@
+
+# FIXME!
+$(SOURCE_DIR)/gst-plugin-dvbmediasink:
+	cd $(SOURCE_DIR) && \
+		git clone git://openpli.git.sourceforge.net/gitroot/openpli/gst-plugin-dvbmediasink
+
+$(D)/gst-plugin-dvbmediasink: $(SOURCE_DIR)/gst-plugin-dvbmediasink $(D)/gst-plugins-base
+	set -e; cd $(BUILD_TMP); \
+		mkdir -p gst-plugin-dvbmediasink; \
+		cd gst-plugin-dvbmediasink; \
+		cp -a $</* .; \
+		$(PATCH)/dvbmediasink.patch; \
+		aclocal --force; \
+		libtoolize --copy --force; \
+		autoconf --force; \
+		autoheader --force; \
+		automake --add-missing --copy --force-missing --foreign; \
+		$(CONFIGURE) --prefix= \
+			; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	rm $(PKGPREFIX)/lib/gstreamer-0.10/*a
+	PKG_VER=0.0.0 \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/gst-plugin-dvbmediasink
+	$(REMOVE)/gst-plugin-dvbmediasink $(PKGPREFIX)
+	touch $@
