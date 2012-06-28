@@ -1,0 +1,11 @@
+Package: gst-plugins-bad
+Version: @VER@-1
+Description: A set of GStreamer plug-ins that need more quality
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gstreamer.freedesktop.org/
+Source:
+Depends: @DEP@
+Provides: @PROV@

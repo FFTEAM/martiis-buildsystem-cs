@@ -98,3 +98,42 @@ $(D)/gst-plugins-good: $(ARCHIVE)/gst-plugins-good-$(GST_PLUG_GOOD_VER).tar.bz2 
 		$(OPKG_SH) $(CONTROL_DIR)/gst-plugins-good
 	$(REMOVE)/gst-plugins-good-$(GST_PLUG_GOOD_VER) $(PKGPREFIX)
 	touch $@
+
+$(D)/gst-plugins-bad: $(ARCHIVE)/gst-plugins-bad-$(GST_PLUG_BAD_VER).tar.bz2 $(D)/gstreamer $(D)/gst-plugins-base
+	$(UNTAR)/gst-plugins-bad-$(GST_PLUG_BAD_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/gst-plugins-bad-$(GST_PLUG_BAD_VER); \
+		$(CONFIGURE) --prefix= \
+			--disable-apexsink \
+			--disable-dvdnav \
+			--disable-cdaudio \
+			--disable-mpeg2enc \
+			--disable-mplex \
+			--disable-librfb \
+			--disable-vdpau \
+			--disable-examples \
+			--disable-sdl \
+			--disable-sdltest \
+			--disable-curl \
+			--disable-rsvg \
+			LDFLAGS="$(LD_FLAGS) -Wl,-rpath-link,$(TARGETLIB)" \
+			; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	cd $(PKGPREFIX)/share && rm -rf locale gtk-doc
+	sed -i '/^dependency_libs=/{ s# /lib# $(TARGETPREFIX)/lib#g }' \
+		$(PKGPREFIX)/lib/gstreamer-0.10/*.la
+	for i in $(PKGPREFIX)/lib/pkgconfig/*.pc; do \
+		mv $$i $(PKG_CONFIG_PATH); \
+		$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/$${i##*/}; \
+		done
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	for i in `cd $(PKGPREFIX)/lib/; echo gstreamer-0.10/*.la *.la`; do \
+		$(REWRITE_LIBTOOL)/$$i; done
+	cd $(PKGPREFIX)/lib && rm gstreamer-0.10/*.la *.la *.a *.so
+	rm -r $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig
+	PKG_VER=$(GST_PLUG_BAD_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/gst-plugins-bad
+	$(REMOVE)/gst-plugins-bad-$(GST_PLUG_BAD_VER) $(PKGPREFIX)
+	touch $@
