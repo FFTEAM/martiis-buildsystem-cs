@@ -3,17 +3,51 @@ so add it back ...
 TODO: how is this kexec stuff supposed to work (rootfs passing etc)?
 
 diff --git a/initramfs/init b/initramfs/init
-index 1e33c77..3d6f389 100755
+index 1e33c77..8b918b0 100755
 --- a/initramfs/init
 +++ b/initramfs/init
-@@ -218,6 +218,42 @@ fi
- # Do your stuff here.
- echo "Mounting rootfs and booting ..."
+@@ -188,6 +188,11 @@ fi
+ modesel=`cat /proc/rescue`
  
-+### first try USB...
-+for disk in sdb sdb1 sda sda1; do
-+	# Mount the root filesystem on USB1.
-+	mount -o rw /dev/$disk /mnt/root
+ if [ "$modesel" -ne 255 ]; then	
++	keypressed=true
++else
++	keypressed=false
++fi
++if $keypressed; then
+ 	if [ "$modesel" -ne 1 ]; then	
+ 		echo $modesel > /mnt/root/.boot
+ 	else
+@@ -201,6 +206,46 @@ fi
+ 
+ umount /mnt/root
+ 
++### first try USB, but only if no boot requested by RC...
++if ! $keypressed; then
++	for disk in sdb sdb1 sda sda1; do
++		echo "try $disk" > /proc/vfd
++		# Mount the root filesystem on USB1.
++		mount -o rw /dev/$disk /mnt/root
++		if [ $? = 0 ]; then
++			if [ -L "/mnt/root/sbin/init" ]; then
++				# Unmount all other mounts so that the ram used by
++				# the initramfs can be cleared after switch_root
++				rmmod scsi_wait_scan
++				umount /sys /proc
++				# Switch to the new root and execute init
++				exec switch_root /mnt/root /sbin/init
++			elif [ -f "/mnt/root/kexec" ]; then
++				# TODO: check how this kexec stuff is supposed to work...
++				/mnt/root/kexec -l /mnt/root/vmlinux
++				/mnt/root/kexec -e &
++			fi
++			umount /mnt/root
++		fi
++	done
++
++	# Mount the root filesystem on HDD.
++	echo "try hdb1" > /proc/vfd
++	mount -o rw /dev/hdb1 /mnt/root
 +	if [ $? = 0 ]; then
 +		if [ -L "/mnt/root/sbin/init" ]; then
 +			# Unmount all other mounts so that the ram used by
@@ -22,30 +56,12 @@ index 1e33c77..3d6f389 100755
 +			umount /sys /proc
 +			# Switch to the new root and execute init
 +			exec switch_root /mnt/root /sbin/init
-+		elif [ -f "/mnt/root/kexec" ]; then
-+			# TODO: check how this kexec stuff is supposed to work...
-+			/mnt/root/kexec -l /mnt/root/vmlinux
-+			/mnt/root/kexec -e &
++			# TODO: no kexec from hdb1? why?
 +		fi
 +		umount /mnt/root
 +	fi
-+done
-+
-+# Mount the root filesystem on HDD.
-+mount -o rw /dev/hdb1 /mnt/root
-+if [ $? = 0 ]; then
-+	if [ -L "/mnt/root/sbin/init" ]; then
-+		# Unmount all other mounts so that the ram used by
-+		# the initramfs can be cleared after switch_root
-+		rmmod scsi_wait_scan
-+		umount /sys /proc
-+		# Switch to the new root and execute init
-+		exec switch_root /mnt/root /sbin/init
-+		# TODO: no kexec from hdb1? why?
-+	fi
-+	umount /mnt/root
 +fi
 +
- # Mount the root filesystem.
- 
- if [ $modesel = 2 ] ; then
+ if [ $modesel = 1 ] ; then
+   echo "VOL+ RESCUE" > /proc/vfd
+   rescue_shell	

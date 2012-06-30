@@ -358,7 +358,7 @@ $(SOURCE_DIR)/genzbf:
 		wget -O genzbf.c 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/genzbf.c;hb=HEAD'; \
 		wget -O zboot.h  'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/zboot.h;hb=HEAD'
 
-$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs: $(ARCHIVE)/initramfs-azboxme.tar.bz2
+$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs: $(ARCHIVE)/initramfs-azboxme.tar.bz2 $(PATCHES)/initramfs-azboxme-fix-usbboot.diff
 	$(UNTAR)/initramfs-azboxme.tar.bz2
 	set -e; cd $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER); \
 		$(PATCH)/initramfs-azboxme-fix-usbboot.diff
