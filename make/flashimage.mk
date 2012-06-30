@@ -7,9 +7,9 @@
 # the needed mkfs.jffs2 and sumtool are built with the mtd-utils target
 #
 
-NOW := $(shell date +%Y%m%d%H%M)
-FLASHIMG = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(NOW).img
-SUMIMG   = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(NOW).sum.img
+TIME := $(shell date +%Y%m%d%H%M)
+FLASHIMG = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(TIME).img
+SUMIMG   = $(BUILD_TMP)/flashroot-$(PLATFORM)-$(TIME).sum.img
 
 local-install:
 	# copy local/flash/* into the image...
