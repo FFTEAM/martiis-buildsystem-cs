@@ -196,6 +196,9 @@ spark-directfb-pkg: \
 		PKG_VER=1.4.12+STM2011.09.27 $(OPKG_SH) $(CONTROL_DIR)/directfb
 	rm -rf $(PKGPREFIX)
 endif
+ifeq ($(PLATFORM), azbox)
+SYSTEM_PKGS += azboxdriver
+endif
 
 AAA_BASE_DEPS =
 ifeq ($(PLATFORM), spark)
