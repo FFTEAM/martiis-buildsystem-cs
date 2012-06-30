@@ -138,6 +138,30 @@ $(D)/gst-plugins-bad: $(ARCHIVE)/gst-plugins-bad-$(GST_PLUG_BAD_VER).tar.bz2 $(D
 	$(REMOVE)/gst-plugins-bad-$(GST_PLUG_BAD_VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/gst-ffmpeg: $(ARCHIVE)/gst-ffmpeg-$(GST_FFMPEG_VER).tar.bz2 $(D)/gstreamer $(D)/gst-plugins-base
+	$(UNTAR)/gst-ffmpeg-$(GST_FFMPEG_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/gst-ffmpeg-$(GST_FFMPEG_VER); \
+		$(PATCH)/gst-ffmpeg-0.10.13-use_mpegdemux.diff; \
+		$(CONFIGURE) --prefix= \
+			--with-ffmpeg-extra-configure="--disable-decoders \
+						--disable-encoders \
+						--disable-muxers" \
+			LDFLAGS="$(LD_FLAGS) -Wl,-rpath-link,$(TARGETLIB)" \
+			; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	cd $(PKGPREFIX)/lib/gstreamer-0.10 && rm libgstffmpegscale.* libgstpostproc.*
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	for i in `cd $(PKGPREFIX)/lib/; echo gstreamer-0.10/*.la *.la`; do \
+		$(REWRITE_LIBTOOL)/$$i; done
+	cd $(PKGPREFIX)/lib && rm gstreamer-0.10/*.la
+	PKG_VER=$(GST_FFMPEG_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/gst-ffmpeg
+	$(REMOVE)/gst-ffmpeg-$(GST_FFMPEG_VER) $(PKGPREFIX)
+	touch $@
+
 # FIXME!
 $(SOURCE_DIR)/gst-plugin-dvbmediasink:
 	cd $(SOURCE_DIR) && \
@@ -167,7 +191,7 @@ $(D)/gst-plugin-dvbmediasink: $(SOURCE_DIR)/gst-plugin-dvbmediasink $(D)/gst-plu
 	touch $@
 
 # not yet packaged, just for testing...
-$(D)/gst123: $(ARCHIVE)/gst123-$(GST123_VER).tar.bz2 $(D)/gstreamer $(D)/libncurses $(PATCHES)/gst123-0001-add-disable-gtk-option-to-build-without-GTK.patch
+$(D)/gst123: $(ARCHIVE)/gst123-$(GST123_VER).tar.bz2 $(D)/gstreamer $(D)/gst-plugins-base $(D)/libncurses $(PATCHES)/gst123-0001-add-disable-gtk-option-to-build-without-GTK.patch
 	$(UNTAR)/gst123-$(GST123_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/gst123-$(GST123_VER); \
 		$(PATCH)/gst123-0001-add-disable-gtk-option-to-build-without-GTK.patch; \

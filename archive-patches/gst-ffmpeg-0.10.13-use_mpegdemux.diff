@@ -1,0 +1,26 @@
+diff --git a/ext/ffmpeg/gstffmpegdemux.c b/ext/ffmpeg/gstffmpegdemux.c
+index 3eb5328..1f3a97b 100644
+--- a/ext/ffmpeg/gstffmpegdemux.c
++++ b/ext/ffmpeg/gstffmpegdemux.c
+@@ -1993,6 +1993,8 @@ gst_ffmpegdemux_register (GstPlugin * plugin)
+         !strcmp (in_plugin->name, "yuv4mpegpipe") ||
+         !strcmp (in_plugin->name, "mpc") || !strcmp (in_plugin->name, "gif"))
+       rank = GST_RANK_MARGINAL;
++    else if (!strncmp (in_plugin->name, "mpeg", 4))
++      rank = GST_RANK_PRIMARY * 2;
+     else {
+       GST_DEBUG ("ignoring %s", in_plugin->name);
+       goto next;
+@@ -2020,9 +2022,12 @@ gst_ffmpegdemux_register (GstPlugin * plugin)
+     type = g_type_register_static (GST_TYPE_ELEMENT, type_name, &typeinfo, 0);
+     g_type_set_qdata (type, GST_FFDEMUX_PARAMS_QDATA, (gpointer) in_plugin);
+ 
++#if 0
++/* this segfaults, no idea why */
+     if (in_plugin->extensions)
+       extensions = g_strsplit (in_plugin->extensions, " ", 0);
+     else
++#endif
+       extensions = NULL;
+ 
+     if (!gst_element_register (plugin, type_name, rank, type) ||
