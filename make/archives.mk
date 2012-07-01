@@ -122,8 +122,8 @@ $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 $(ARCHIVE)/boost_$(BOOST_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/boost/boost/$(BOOST_MAJOR).$(BOOST_MINOR).$(BOOST_MICRO)/boost_$(BOOST_VER).tar.bz2
 
-$(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2:
-	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-$(FFMPEG-VER).tar.bz2
+$(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2:
+	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-$(FFMPEG_VER).tar.bz2
 
 $(ARCHIVE)/flac-1.2.1.tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/sourceforge/flac/flac-1.2.1.tar.gz

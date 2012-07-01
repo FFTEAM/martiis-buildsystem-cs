@@ -266,17 +266,17 @@ FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decode
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
 endif
-$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(SOURCE_DIR)/cst-public-libraries-ffmpeg; then \
 		cd $(SOURCE_DIR) && git clone git://c00lstreamtech.de/cst-public-libraries-ffmpeg.git; \
 	fi
-	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER)
-	cp -a $(SOURCE_DIR)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER)
+	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
+	cp -a $(SOURCE_DIR)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 else
-	$(UNTAR)/ffmpeg-$(FFMPEG-VER).tar.bz2
+	$(UNTAR)/ffmpeg-$(FFMPEG_VER).tar.bz2
 endif
-	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER); \
+	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
 		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff; \
 		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
@@ -300,15 +300,15 @@ endif
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/share/ffmpeg
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	cp $(BUILD_TMP)/ffmpeg-$(FFMPEG-VER)/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
+	cp $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/.remove
-	PKG_VER=$(FFMPEG-VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+	PKG_VER=$(FFMPEG_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
 		$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
-	$(REMOVE)/ffmpeg-$(FFMPEG-VER) $(PKGPREFIX)
+	$(REMOVE)/ffmpeg-$(FFMPEG_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz | $(TARGETPREFIX)
