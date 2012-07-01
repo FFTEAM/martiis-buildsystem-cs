@@ -497,10 +497,10 @@ endif
 	touch $@
 
 # build only static lib - just needed by tcpdump
-$(D)/libpcap: $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz
+$(D)/libpcap: $(ARCHIVE)/libpcap-$(LIBPCAP_VER).tar.gz
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/libpcap-$(PCAP-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/libpcap-$(PCAP-VER); \
+	$(UNTAR)/libpcap-$(LIBPCAP_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libpcap-$(LIBPCAP_VER); \
 		echo "ac_cv_linux_vers=2" >> config.cache; \
 		$(CONFIGURE) --with-pcap=linux --prefix= --mandir=/.remove -C; \
 		$(MAKE) all ; \
@@ -509,7 +509,7 @@ $(D)/libpcap: $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz
 	rm -rf $(TARGETPREFIX)/.remove $(PKGPREFIX)/.remove \
 		$(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/lib/*.a
 	rm -rf $(TARGETPREFIX)/lib/libpcap.s*
-	$(REMOVE)/libpcap-$(PCAP-VER)
+	$(REMOVE)/libpcap-$(LIBPCAP_VER)
 	touch $@
 
 # timezone definitions. Package only those referenced by timezone.xml

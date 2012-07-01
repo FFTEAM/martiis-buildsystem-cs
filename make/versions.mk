@@ -90,7 +90,7 @@ VORBISIDEC_VER=1.0.2+svn16259
 VORBISIDEC_VER_APPEND=.orig
 
 # libpcap; system-independent interface for user-level packet capture
-PCAP-VER=1.2.0
+LIBPCAP_VER=1.2.0
 
 # libcap2; setting and proofing POSIX.1e functionality
 LIBCAP2-VER=2.20
