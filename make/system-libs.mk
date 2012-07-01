@@ -454,9 +454,9 @@ $(D)/openthreads: | $(TARGETPREFIX) find-lzma
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz
-	$(UNTAR)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz
-	set -e; cd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC-VER); \
+$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
+	$(UNTAR)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
+	set -e; cd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC_VER); \
 		patch -p1 < $(PATCHES)/tremor.diff; \
 		./autogen.sh; \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET); \
@@ -464,7 +464,7 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_A
 		perl -pi -e "s,^prefix=.*$$,prefix=$(TARGETPREFIX)," vorbisidec.pc; \
 		make install DESTDIR=$(TARGETPREFIX); \
 		install -m644 vorbisidec.pc $(TARGETPREFIX)/lib/pkgconfig
-	$(REMOVE)/libvorbisidec-$(VORBISIDEC-VER) $(PKGPREFIX)
+	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	$(REWRITE_LIBTOOL)/libvorbisidec.la
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisidec.so.1* $(PKGPREFIX)/lib

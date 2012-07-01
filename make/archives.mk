@@ -157,8 +157,8 @@ $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
 $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES_VER).tar.gz
 
-$(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz:
-	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz
+$(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz:
+	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
 
 $(ARCHIVE)/libpcap-$(PCAP-VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/libpcap-$(PCAP-VER).tar.gz
