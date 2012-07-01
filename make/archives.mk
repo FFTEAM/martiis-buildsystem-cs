@@ -142,8 +142,8 @@ $(ARCHIVE)/gstreamer%.tar.bz2 \
 $(ARCHIVE)/gst-%.tar.bz2:
 	$(WGET) http://gstreamer.freedesktop.org/src/$(firstword $(subst -0., ,$(lastword $(subst /, ,$@))))/$(lastword $(subst /, ,$@))
 
-$(ARCHIVE)/libogg-$(OGG-VER).tar.gz:
-	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG-VER).tar.gz
+$(ARCHIVE)/libogg-$(OGG_VER).tar.gz:
+	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VER).tar.gz
 
 $(ARCHIVE)/libvorbis-$(VORBIS-VER).tar.bz2:
 	$(WGET) http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS-VER).tar.bz2

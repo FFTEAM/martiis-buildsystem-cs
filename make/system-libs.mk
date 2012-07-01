@@ -320,16 +320,16 @@ $(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz | $(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libass.la
 	touch $@
 
-$(D)/libogg: $(ARCHIVE)/libogg-$(OGG-VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libogg-$(OGG-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/libogg-$(OGG-VER); \
+$(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libogg-$(OGG_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libogg-$(OGG_VER); \
 		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff; \
 		$(CONFIGURE) --prefix= --enable-shared; \
 		$(MAKE); \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
 	$(REWRITE_LIBTOOL)/libogg.la
-	$(REMOVE)/libogg-$(OGG-VER) $(PKGPREFIX)
+	$(REMOVE)/libogg-$(OGG_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libogg.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libogg
