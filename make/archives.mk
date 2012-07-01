@@ -59,8 +59,8 @@ $(ARCHIVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar.gz:
 $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz:
 	$(WGET) http://sourceforge.net/projects/libjpeg-turbo/files/$(JPEG_TURBO-VER)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz
 
-$(ARCHIVE)/libungif-$(UNGIF-VER).tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-$(UNGIF-VER)/libungif-$(UNGIF-VER).tar.bz2
+$(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif%204.x/libungif-$(UNGIF_VER)/libungif-$(UNGIF_VER).tar.bz2
 
 $(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP-VER)/libupnp-$(LIBUPNP-VER).tar.bz2

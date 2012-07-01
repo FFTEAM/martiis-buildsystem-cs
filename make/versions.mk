@@ -21,7 +21,7 @@ ID3TAG_SUBVER=b
 MAD_VER=0.15.1b
 
 # libungif; converting images
-UNGIF-VER=4.1.4
+UNGIF_VER=4.1.4
 
 # libiconv; converting encodings
 ICONV-VER=1.14

@@ -84,15 +84,15 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libungif-$(UNGIF-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/libungif-$(UNGIF-VER); \
+$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libungif-$(UNGIF_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libungif-$(UNGIF_VER); \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove; \
 		$(MAKE) all; \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libungif.la
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/libungif-$(UNGIF-VER) $(PKGPREFIX)
+	$(REMOVE)/libungif-$(UNGIF_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libungif.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libungif
