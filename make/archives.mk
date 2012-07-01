@@ -23,8 +23,8 @@ $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2:
 $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2:
 	$(WGET) http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.15.2.tar.bz2
 
-$(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz:
-	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB-VER).tar.gz
+$(ARCHIVE)/DirectFB_$(DIRECTFB_VER).tar.gz:
+	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB_VER).tar.gz
 
 $(ARCHIVE)/dvdreadfs.tar:
 	$(WGET) http://www.daemoninc.com/dvdreadfs/dvdreadfs.tar

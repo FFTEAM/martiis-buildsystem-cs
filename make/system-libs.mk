@@ -391,10 +391,10 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz | ncurses-prereq $(TAR
 # this is butt ugly. For some reason, the old libtool in debian lenny 5.0.7
 # does not put "-lz" into LDFLAGS of some subdirs, and I was not able to fix that.
 # Hence the LDFLAGS="$(TARGET_LDFLAGS) -lz" hack... :-(
-$(D)/directfb: $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
+$(D)/directfb: $(ARCHIVE)/DirectFB-$(DIRECTFB_VER).tar.gz $(D)/zlib $(D)/freetype $(D)/libpng $(D)/libjpeg | $(TARGETPREFIX) $(HOSTPREFIX)/bin
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/DirectFB-$(DIRECTFB-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/DirectFB-$(DIRECTFB-VER); \
+	$(UNTAR)/DirectFB-$(DIRECTFB_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/DirectFB-$(DIRECTFB_VER); \
 		gzip -dc $(PATCHES)/coolstream/directfb-1.4.3-coolstream.diff | patch -p2; \
 		patch -p1 -i $(PATCHES)/directfb-1.4.3-cx245x-deinit-restore-fix.diff; \
 		sed -i 's/"-DBUILDTIME=.*/"-DBUILDTIME=\\"($(PLATFORM))\\""/' src/core/Makefile.am; \
@@ -428,7 +428,7 @@ $(D)/directfb: $(ARCHIVE)/DirectFB-$(DIRECTFB-VER).tar.gz $(D)/zlib $(D)/freetyp
 	mv $(BUILD_TMP)/dfb-tmp/opt $(PKGPREFIX)
 	rmdir $(BUILD_TMP)/dfb-tmp
 	$(OPKG_SH) $(CONTROL_DIR)/cs-directfb/directfb-tools
-	$(REMOVE)/DirectFB-$(DIRECTFB-VER) $(PKGPREFIX)
+	$(REMOVE)/DirectFB-$(DIRECTFB_VER) $(PKGPREFIX)
 	touch $@
 
 # the strange find | sed hack is needed for old cmake versions which
