@@ -269,8 +269,8 @@ $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2:
 $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz:
 	$(WGET) http://dbus.freedesktop.org/releases/dbus/dbus-$(DBUS-VER).tar.gz
 
-$(ARCHIVE)/expat-$(EXPAT-VER).tar.gz:
-	$(WGET) http://sourceforge.net/projects/expat/files/expat/$(EXPAT-VER)/expat-$(EXPAT-VER).tar.gz
+$(ARCHIVE)/expat-$(EXPAT_VER).tar.gz:
+	$(WGET) http://sourceforge.net/projects/expat/files/expat/$(EXPAT_VER)/expat-$(EXPAT_VER).tar.gz
 
 $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz:
 	$(WGET) http://download.savannah.gnu.org/releases/attr/attr-$(ATTR-VER).src.tar.gz

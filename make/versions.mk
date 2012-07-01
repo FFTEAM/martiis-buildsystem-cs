@@ -99,7 +99,7 @@ LIBCAP2_VER=2.22
 FLEX_VER=2.5.35
 
 # libexpat; XML parser
-EXPAT-VER=2.0.1
+EXPAT_VER=2.0.1
 
 # attr; setting up extended attributes
 ATTR-VER=2.4.44

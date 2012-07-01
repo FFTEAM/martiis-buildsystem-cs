@@ -559,15 +559,15 @@ $(D)/libflex: $(ARCHIVE)/flex-$(FLEX_VER).tar.gz
 	$(REMOVE)/flex-$(FLEX_VER)
 	touch $@
 
-$(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT-VER).tar.gz
-	$(UNTAR)/expat-$(EXPAT-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/expat-$(EXPAT-VER); \
+$(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz
+	$(UNTAR)/expat-$(EXPAT_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/expat-$(EXPAT_VER); \
 		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls; \
 		$(MAKE); \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
 	$(REWRITE_LIBTOOL)/libexpat.la
-	$(REMOVE)/expat-$(EXPAT-VER)
+	$(REMOVE)/expat-$(EXPAT_VER)
 	touch $@
 
 # !!! libcap != libpcap !!!
