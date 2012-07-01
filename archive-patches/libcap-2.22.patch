@@ -1,7 +1,7 @@
-diff -ru libcap-2.20/libcap/Makefile libcap-2.20-build//libcap/Makefile
---- libcap-2.20/libcap/Makefile	2010-08-09 00:26:04.000000000 +0200
-+++ libcap-2.20-build//libcap/Makefile	2011-03-08 20:59:23.000000000 +0100
-@@ -16,7 +16,7 @@
+diff -puNr -Nru libcap-2.22/libcap/Makefile libcap-2.22-mod//libcap/Makefile
+--- libcap-2.22/libcap/Makefile	2010-08-09 00:26:04.000000000 +0200
++++ libcap-2.22-mod//libcap/Makefile	2012-07-01 11:09:20.529124507 +0200
+@@ -16,7 +16,7 @@ FILES=cap_alloc cap_proc cap_extint cap_
  # no support).
  ifeq ($(LIBATTR),yes)
  FILES += cap_file
@@ -10,7 +10,7 @@ diff -ru libcap-2.20/libcap/Makefile libcap-2.20-build//libcap/Makefile
  endif
  
  INCLS=libcap.h cap_names.h $(INCS)
-@@ -33,7 +33,7 @@
+@@ -33,7 +33,7 @@ INCLUDE_GPERF_OUTPUT = -include $(GPERF_
  endif
  
  _makenames: _makenames.c cap_names.list.h
@@ -19,7 +19,7 @@ diff -ru libcap-2.20/libcap/Makefile libcap-2.20-build//libcap/Makefile
  
  cap_names.h: _makenames
  	./_makenames > cap_names.h
-@@ -68,9 +68,9 @@
+@@ -68,9 +68,9 @@ install: all
  	install -m 0644 $(MINLIBNAME) $(LIBDIR)/$(MINLIBNAME)
  	ln -sf $(MINLIBNAME) $(LIBDIR)/$(MAJLIBNAME)
  	ln -sf $(MAJLIBNAME) $(LIBDIR)/$(LIBNAME)
@@ -32,10 +32,10 @@ diff -ru libcap-2.20/libcap/Makefile libcap-2.20-build//libcap/Makefile
  
  clean:
  	$(LOCALCLEAN)
-diff -ru libcap-2.20/Make.Rules libcap-2.20-build//Make.Rules
---- libcap-2.20/Make.Rules	2011-01-19 06:06:44.000000000 +0100
-+++ libcap-2.20-build//Make.Rules	2011-03-08 20:58:14.430329802 +0100
-@@ -47,12 +47,19 @@
+diff -puNr -Nru libcap-2.22/Make.Rules libcap-2.22-mod//Make.Rules
+--- libcap-2.22/Make.Rules	2011-07-25 04:18:23.000000000 +0200
++++ libcap-2.22-mod//Make.Rules	2012-07-01 11:16:42.964822620 +0200
+@@ -47,12 +47,18 @@ MINOR=22
  KERNEL_HEADERS := $(topdir)/libcap/include
  IPATH += -fPIC -I$(topdir)/libcap/include -I$(KERNEL_HEADERS)
  
@@ -43,8 +43,7 @@ diff -ru libcap-2.20/Make.Rules libcap-2.20-build//Make.Rules
 +#CC := gcc
 +HOST_CC := gcc
 +CC := $(CROSS_BASE)/bin/$(TARGET)-gcc
-+
- CFLAGS := -O2
+ CFLAGS := -O2 -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
  BUILD_CC := $(CC)
  BUILD_CFLAGS := $(CFLAGS) $(IPATH)
 -AR := ar
@@ -58,21 +57,20 @@ diff -ru libcap-2.20/Make.Rules libcap-2.20-build//Make.Rules
  DEBUG = -g #-DDEBUG
  WARNINGS=-Wall -Wwrite-strings \
          -Wpointer-arith -Wcast-qual -Wcast-align \
-@@ -61,7 +68,9 @@
+@@ -61,7 +67,8 @@ WARNINGS=-Wall -Wwrite-strings \
  LD=$(CC) -Wl,-x -shared
  LDFLAGS := #-g
  
 -SYSTEM_HEADERS = /usr/include
 +#SYSTEM_HEADERS = /usr/include
 +SYSTEM_HEADERS = $(TARGETPREFIX)/include
-+
  INCS=$(topdir)/libcap/include/sys/capability.h
  LDFLAGS += -L$(topdir)/libcap
  CFLAGS += -Dlinux $(WARNINGS) $(DEBUG)
-diff -ru libcap-2.20/progs/Makefile libcap-2.20-build//progs/Makefile
---- libcap-2.20/progs/Makefile	2010-08-09 01:56:40.000000000 +0200
-+++ libcap-2.20-build//progs/Makefile	2011-03-08 20:58:14.000000000 +0100
-@@ -14,7 +14,7 @@
+diff -puNr -Nru libcap-2.22/progs/Makefile libcap-2.22-mod//progs/Makefile
+--- libcap-2.22/progs/Makefile	2010-08-09 01:56:40.000000000 +0200
++++ libcap-2.22-mod//progs/Makefile	2012-07-01 11:18:01.523822606 +0200
+@@ -14,7 +14,7 @@ BUILD=$(PROGS)
  ifneq ($(DYNAMIC),yes)
  LDFLAGS += --static
  endif

@@ -570,17 +570,16 @@ $(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT-VER).tar.gz
 	$(REMOVE)/expat-$(EXPAT-VER)
 	touch $@
 
-
 # !!! libcap != libpcap !!!
 # only the libs will be installed!
-$(D)/libcap: $(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz $(D)/libattr1
-	$(UNTAR)/libcap-$(LIBCAP2-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/libcap-$(LIBCAP2-VER); \
-		patch -p1 < $(PATCHES)/libcap-$(LIBCAP2-VER).patch;\
-		CROSS_BASE=$(CROSS_BASE) TARGET=$(TARGET) TARGETPREFIX=$(TARGETPREFIX)\
+$(D)/libcap: $(ARCHIVE)/libcap2_$(LIBCAP2_VER).orig.tar.gz $(D)/libattr1
+	$(UNTAR)/libcap2_$(LIBCAP2_VER).orig.tar.gz
+	set -e; cd $(BUILD_TMP)/libcap-$(LIBCAP2_VER); \
+		export CROSS_BASE=$(CROSS_BASE); export TARGET=$(TARGET); export TARGETPREFIX=$(TARGETPREFIX);\
+		patch -p1 < $(PATCHES)/libcap-$(LIBCAP2_VER).patch;\
 		$(MAKE);\
 		$(MAKE) -C libcap INCDIR=$(TARGETPREFIX)/include LIBDIR=$(TARGETPREFIX)/lib  install
-	$(REMOVE)/libcap-$(LIBCAP2-VER)
+	$(REMOVE)/libcap2_$(LIBCAP2_VER)
 	touch $@
 
 $(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz

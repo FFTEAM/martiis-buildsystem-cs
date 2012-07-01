@@ -92,8 +92,8 @@ VORBISIDEC_VER_APPEND=.orig
 # libpcap; system-independent interface for user-level packet capture
 LIBPCAP_VER=1.2.0
 
-# libcap2; setting and proofing POSIX.1e functionality
-LIBCAP2-VER=2.20
+# libcap; setting and proofing POSIX.1e functionality (Version 2!)
+LIBCAP2_VER=2.22
 
 # flex; fast lexical analyser generator
 FLEX-VER=2.5.35

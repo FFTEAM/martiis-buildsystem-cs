@@ -163,8 +163,8 @@ $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz:
 $(ARCHIVE)/libpcap-$(LIBPCAP_VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/libpcap-$(LIBPCAP_VER).tar.gz
 
-$(ARCHIVE)/libcap-$(LIBCAP2-VER).tar.gz:
-	$(WGET) http://mirror.nexcess.net/kernel.org/linux/libs/security/linux-privs/libcap2/libcap-$(LIBCAP2-VER).tar.gz
+$(ARCHIVE)/libcap-$(LIBCAP2_VER).tar.gz:
+	$(WGET) ftp://ftp.de.debian.org/debian/pool/main/libc/libcap2/libcap2_$(LIBCAP2_VER).orig.tar.gz
 
 $(ARCHIVE)/links-$(LINKS-VER).tar.bz2:
 	$(WGET) http://links.twibright.com/download/links-$(LINKS-VER).tar.bz2
