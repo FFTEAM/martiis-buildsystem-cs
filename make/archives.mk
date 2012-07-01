@@ -92,8 +92,8 @@ $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz:
 $(ARCHIVE)/gd-2.0.35.tar.gz:
 	$(WGET) http://fossies.org/unix/www/gd-2.0.35.tar.gz
 
-$(ARCHIVE)/gdb-$(GDB-VER).tar.bz2:
-	$(WGET) ftp://sourceware.org/pub/gdb/releases/gdb-$(GDB-VER).tar.bz2
+$(ARCHIVE)/gdb-$(GDB_VER).tar.bz2:
+	$(WGET) ftp://sourceware.org/pub/gdb/releases/gdb-$(GDB_VER).tar.bz2
 
 $(ARCHIVE)/flex-$(FLEX-VER).tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/flex/flex-$(FLEX-VER).tar.gz
