@@ -198,12 +198,12 @@ $(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz | $(TARGETPREFIX
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libboost: $(ARCHIVE)/boost_$(BOOST-VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/libboost: $(ARCHIVE)/boost_$(BOOST_VER).tar.bz2 | $(TARGETPREFIX)
 	set -e; cd $(BUILD_TMP); \
-		tar xf $(ARCHIVE)/boost_$(BOOST-VER).tar.bz2 boost_$(BOOST-VER)/boost; \
+		tar xf $(ARCHIVE)/boost_$(BOOST_VER).tar.bz2 boost_$(BOOST_VER)/boost; \
 		rm -rf $(TARGETPREFIX)/include/boost;\
-		mv boost_$(BOOST-VER)/boost $(TARGETPREFIX)/include/boost; \
-		rmdir boost_$(BOOST-VER)
+		mv boost_$(BOOST_VER)/boost $(TARGETPREFIX)/include/boost; \
+		rmdir boost_$(BOOST_VER)
 	touch $@
 
 # openssl seems to have problem with parallel builds, so use "make" instead of "$(MAKE)"

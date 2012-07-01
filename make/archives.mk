@@ -119,8 +119,8 @@ $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz:
 $(ARCHIVE)/jpegsrc.v6b.tar.gz:
 	$(WGET) http://www.ijg.org/files/jpegsrc.v6b.tar.gz
 
-$(ARCHIVE)/boost_$(BOOST-VER).tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/boost/boost/$(BOOST-MAJOR).$(BOOST-MINOR).$(BOOST-MICRO)/boost_$(BOOST-VER).tar.bz2
+$(ARCHIVE)/boost_$(BOOST_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/boost/boost/$(BOOST_MAJOR).$(BOOST_MINOR).$(BOOST_MICRO)/boost_$(BOOST_VER).tar.bz2
 
 $(ARCHIVE)/ffmpeg-$(FFMPEG-VER).tar.bz2:
 	$(WGET) http://www.ffmpeg.org/releases/ffmpeg-$(FFMPEG-VER).tar.bz2
