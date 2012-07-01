@@ -30,7 +30,7 @@ ICONV-VER=1.14
 IPERF-VER=2.0.5
 
 # zlib; compression an decompressin library
-ZLIB-VER=1.2.6
+ZLIB_VER=1.2.6
 
 # util-linux-ng; tools for filesystems, partitions, console und system messages
 UTIL_LINUX_NG-VER=2.18

@@ -260,8 +260,8 @@ $(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz:
 $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
 	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
 
-$(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/$(ZLIB-VER)/zlib-$(ZLIB-VER).tar.bz2
+$(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/$(ZLIB_VER)/zlib-$(ZLIB_VER).tar.bz2
 
 $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2:
 	$(WGET) http://www.freedesktop.org/software/systemd/systemd-$(SYSTEMD-VER).tar.bz2

@@ -1,17 +1,17 @@
 # Makefile to build system libs, potentially needed by neutrino and enigma
 
-$(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/zlib-$(ZLIB-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/zlib-$(ZLIB-VER); \
+$(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/zlib-$(ZLIB_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/zlib-$(ZLIB_VER); \
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared; \
 		$(MAKE); \
 		ln -sf /bin/true ldconfig; \
-		PATH=$(BUILD_TMP)/zlib-$(ZLIB-VER):$(PATH) make install prefix=$(TARGETPREFIX)
+		PATH=$(BUILD_TMP)/zlib-$(ZLIB_VER):$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
-	$(REMOVE)/zlib-$(ZLIB-VER) $(PKGPREFIX)
+	$(REMOVE)/zlib-$(ZLIB_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libz.so.* $(PKGPREFIX)/lib
-	PKG_VER=$(ZLIB-VER) $(OPKG_SH) $(CONTROL_DIR)/libz
+	PKG_VER=$(ZLIB_VER) $(OPKG_SH) $(CONTROL_DIR)/libz
 	$(REMOVE)/.remove $(PKGPREFIX)
 	touch $@
 
