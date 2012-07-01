@@ -154,8 +154,8 @@ $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz:
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
 	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2
 
-$(ARCHIVE)/ncurses-$(NCURSES-VER).tar.gz:
-	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES-VER).tar.gz
+$(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz:
+	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES_VER).tar.gz
 
 $(ARCHIVE)/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz:
 	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_$(VORBISIDEC-VER)$(VORBISIDEC-VER_APPEND).tar.gz

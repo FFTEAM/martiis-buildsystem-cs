@@ -76,7 +76,7 @@ LINUX_AZBOX_VER=3.3.1
 LIRC_VER=0.9.0
 
 # ncurses; software for controlling writing to the console screen
-NCURSES-VER=5.6
+NCURSES_VER=5.6
 
 # DirectFB; thin library that provides hardware graphics acceleration, input device handling and abstraction
 DIRECTFB-VER=1.4.3

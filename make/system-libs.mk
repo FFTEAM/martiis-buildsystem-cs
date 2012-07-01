@@ -367,9 +367,9 @@ ncurses-prereq:
 		false; \
 	fi
 
-$(D)/libncurses: $(ARCHIVE)/ncurses-$(NCURSES-VER).tar.gz | ncurses-prereq $(TARGETPREFIX)
-	$(UNTAR)/ncurses-$(NCURSES-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/ncurses-$(NCURSES-VER); \
+$(D)/libncurses: $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz | ncurses-prereq $(TARGETPREFIX)
+	$(UNTAR)/ncurses-$(NCURSES_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/ncurses-$(NCURSES_VER); \
 		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
 			--prefix= --with-terminfo-dirs=/usr/share/terminfo \
 			--disable-big-core --without-debug --without-progs --without-ada --with-shared \
@@ -379,7 +379,7 @@ $(D)/libncurses: $(ARCHIVE)/ncurses-$(NCURSES-VER).tar.gz | ncurses-prereq $(TAR
 			HOSTCCFLAGS="$(TARGET_CFLAGS) -DHAVE_CONFIG_H -I../ncurses -DNDEBUG -D_GNU_SOURCE -I../include"; \
 		make install.libs DESTDIR=$(TARGETPREFIX); \
 		install -D -m 0755 misc/ncurses-config $(HOSTPREFIX)/bin/ncurses5-config
-	$(REMOVE)/ncurses-$(NCURSES-VER) $(PKGPREFIX)
+	$(REMOVE)/ncurses-$(NCURSES_VER) $(PKGPREFIX)
 	$(REWRITE_PKGCONF) $(HOSTPREFIX)/bin/ncurses5-config
 	mkdir -p $(PKGPREFIX)/lib
 	# deliberately ignore libforms and libpanel - not yet needed
