@@ -174,9 +174,9 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGE
 ## build both libjpeg.so.62 and libjpeg.so.8
 ## use only libjpeg.so.62 for our own build, but keep libjpeg8 for
 ## compatibility to third party binaries
-$(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/libjpeg-turbo-$(JPEG_TURBO-VER); \
+$(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libjpeg-turbo-$(JPEG_TURBO_VER); \
 		export CC=$(TARGET)-gcc; \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared \
 			--mandir=/.remove --bindir=/.remove \
@@ -190,11 +190,11 @@ $(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz | $(TARGETPREFIX
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libjpeg.la
 	rm -f $(TARGETPREFIX)/lib/libturbojpeg* $(TARGETPREFIX)/include/turbojpeg.h
-	$(REMOVE)/libjpeg-turbo-$(JPEG_TURBO-VER) $(TARGETPREFIX)/.remove $(PKGPREFIX)
+	$(REMOVE)/libjpeg-turbo-$(JPEG_TURBO_VER) $(TARGETPREFIX)/.remove $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libjpeg.so.* $(PKGPREFIX)/lib
 	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
-		PKG_VER=$(JPEG_TURBO-VER) $(OPKG_SH) $(CONTROL_DIR)/libjpeg
+		PKG_VER=$(JPEG_TURBO_VER) $(OPKG_SH) $(CONTROL_DIR)/libjpeg
 	rm -rf $(PKGPREFIX)
 	touch $@
 
