@@ -64,7 +64,7 @@ FFMPEG_VER=0.10
 OGG_VER=1.1.4
 
 # libvorbis; encoding, decoding fixed or variable bitrates of ogg vorbis formats
-VORBIS-VER=1.2.3
+VORBIS_VER=1.2.3
 
 # libass: ass / ssa subtitle renderer
 LIBASS_VER=0.9.11

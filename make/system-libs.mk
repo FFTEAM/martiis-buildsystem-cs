@@ -337,9 +337,9 @@ $(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
 	touch $@
 
 # for some reason, libvorbis does not work with "--prefix=/"
-$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libvorbis-$(VORBIS-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/libvorbis-$(VORBIS-VER); \
+$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libvorbis-$(VORBIS_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libvorbis-$(VORBIS_VER); \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff; \
 		patch -p1 < $(PATCHES)/libvorbis-1.2.3-smaller-chunksize.diff; \
 		$(CONFIGURE) --enable-shared --prefix=$(TARGETPREFIX) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)"; \
@@ -348,7 +348,7 @@ $(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS-VER).tar.bz2 | $(TARGE
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbis.pc
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisenc.pc
 	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisfile.pc
-	$(REMOVE)/libvorbis-$(VORBIS-VER) $(PKGPREFIX)
+	$(REMOVE)/libvorbis-$(VORBIS_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbis.so.* $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libvorbisfile.so.* $(PKGPREFIX)/lib
