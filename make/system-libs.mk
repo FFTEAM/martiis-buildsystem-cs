@@ -68,16 +68,16 @@ $(D)/libmad: $(ARCHIVE)/libmad-$(MAD_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz
-	set -e; cd $(BUILD_TMP)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER); \
+$(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar.gz
+	set -e; cd $(BUILD_TMP)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER); \
 		patch -p1 < $(PATCHES)/libid3tag.diff; \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --enable-shared=yes; \
 		$(MAKE) all; \
 		make install DESTDIR=$(TARGETPREFIX); \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" id3tag.pc > $(PKG_CONFIG_PATH)/libid3tag.pc
 	$(REWRITE_LIBTOOL)/libid3tag.la
-	$(REMOVE)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER) $(PKGPREFIX)
+	$(REMOVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libid3tag.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libid3tag

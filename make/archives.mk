@@ -53,8 +53,8 @@ $(ARCHIVE)/libmad-$(MAD_VER).tar.gz:
 $(ARCHIVE)/libiconv-$(ICONV-VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/gnu/libiconv/libiconv-$(ICONV-VER).tar.gz
 
-$(ARCHIVE)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz:
-	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/$(ID3TAG-VER)$(ID3TAG-SUBVER)/libid3tag-$(ID3TAG-VER)$(ID3TAG-SUBVER).tar.gz
+$(ARCHIVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/project/mad/libid3tag/$(ID3TAG_VER)$(ID3TAG_SUBVER)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar.gz
 
 $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz:
 	$(WGET) http://sourceforge.net/projects/libjpeg-turbo/files/$(JPEG_TURBO-VER)/libjpeg-turbo-$(JPEG_TURBO-VER).tar.gz

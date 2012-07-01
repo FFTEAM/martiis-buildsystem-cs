@@ -14,8 +14,8 @@
 AZBOX_DVB_M_VER=20120517
 
 # libdid3tag; writing, reading and manipulating ID3 tags
-ID3TAG-VER=0.15.1
-ID3TAG-SUBVER=b
+ID3TAG_VER=0.15.1
+ID3TAG_SUBVER=b
 
 # libmad; MPEG audio decoder
 MAD_VER=0.15.1b
