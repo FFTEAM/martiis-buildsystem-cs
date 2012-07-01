@@ -33,7 +33,7 @@ IPERF-VER=2.0.5
 ZLIB_VER=1.2.6
 
 # util-linux-ng; tools for filesystems, partitions, console und system messages
-UTIL_LINUX_NG-VER=2.18
+UTIL_LINUX_NG_VER=2.18
 
 # curl; command line tool for transferring data with URL syntax
 CURL_VER=7.26.0

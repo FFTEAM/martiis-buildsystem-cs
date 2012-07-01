@@ -16,9 +16,9 @@ $(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2 | $(TARGETPREFIX)
 	touch $@
 
 $(D)/libblkid: $(D)/libuuid
-$(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/util-linux-ng-$(UTIL_LINUX_NG-VER); \
+$(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/util-linux-ng-$(UTIL_LINUX_NG_VER); \
 		$(CONFIGURE) --prefix= \
 			--disable-libmount \
 			--disable-static \
@@ -29,7 +29,7 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2 | $(TARGETPR
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/uuid.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/blkid.pc
 	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/util-linux-ng-$(UTIL_LINUX_NG-VER)
+	$(REMOVE)/util-linux-ng-$(UTIL_LINUX_NG_VER)
 	rm -fr $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libblkid.so.{1,1.1.0} $(PKGPREFIX)/lib

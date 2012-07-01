@@ -245,8 +245,8 @@ $(ARCHIVE)/u-boot-2009.03.tar.bz2:
 $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/unfs3/unfs3-$(UNFS3-VER).tar.gz
 
-$(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2:
-	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux/v$(UTIL_LINUX_NG-VER)/util-linux-ng-$(UTIL_LINUX_NG-VER).tar.bz2
+$(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2:
+	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux/v$(UTIL_LINUX_NG_VER)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2
 
 $(ARCHIVE)/valgrind-3.3.1.tar.bz2:
 	$(WGET) http://valgrind.org/downloads/valgrind-3.3.1.tar.bz2
