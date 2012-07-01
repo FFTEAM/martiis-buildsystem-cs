@@ -96,7 +96,7 @@ LIBPCAP_VER=1.2.0
 LIBCAP2_VER=2.22
 
 # flex; fast lexical analyser generator
-FLEX-VER=2.5.35
+FLEX_VER=2.5.35
 
 # libexpat; XML parser
 EXPAT-VER=2.0.1

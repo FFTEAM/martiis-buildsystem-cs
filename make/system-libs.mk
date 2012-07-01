@@ -547,16 +547,16 @@ $(D)/timezone: find-zic $(ARCHIVE)/tzdata$(TZ_VER).tar.gz
 #############################################################################################
 
 # builds only static lib, needed e.g. by unfsd
-$(D)/libflex: $(ARCHIVE)/flex-$(FLEX-VER).tar.gz
-	$(UNTAR)/flex-$(FLEX-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/flex-$(FLEX-VER); \
+$(D)/libflex: $(ARCHIVE)/flex-$(FLEX_VER).tar.gz
+	$(UNTAR)/flex-$(FLEX_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/flex-$(FLEX_VER); \
 		echo "ac_cv_func_malloc_0_nonnull=yes" > config.cache; \
 		echo "ac_cv_func_realloc_0_nonnull=yes" >> config.cache; \
 		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls; \
 		$(MAKE); \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
-	$(REMOVE)/flex-$(FLEX-VER)
+	$(REMOVE)/flex-$(FLEX_VER)
 	touch $@
 
 $(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT-VER).tar.gz

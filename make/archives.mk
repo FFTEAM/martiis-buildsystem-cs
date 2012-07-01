@@ -95,8 +95,8 @@ $(ARCHIVE)/gd-2.0.35.tar.gz:
 $(ARCHIVE)/gdb-$(GDB_VER).tar.bz2:
 	$(WGET) ftp://sourceware.org/pub/gdb/releases/gdb-$(GDB_VER).tar.bz2
 
-$(ARCHIVE)/flex-$(FLEX-VER).tar.gz:
-	$(WGET) http://prdownloads.sourceforge.net/flex/flex-$(FLEX-VER).tar.gz
+$(ARCHIVE)/flex-$(FLEX_VER).tar.gz:
+	$(WGET) http://prdownloads.sourceforge.net/flex/flex-$(FLEX_VER).tar.gz
 
 $(ARCHIVE)/freetype-2.1.4.tar.bz2:
 	$(WGET) http://heanet.dl.sourceforge.net/sourceforge/freetype/freetype-2.1.4.tar.bz2
