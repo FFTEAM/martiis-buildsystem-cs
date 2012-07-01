@@ -152,9 +152,9 @@ $(D)/libpng: $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/freetype-$(FREETYPE-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/freetype-$(FREETYPE-VER); \
+$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/freetype-$(FREETYPE_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/freetype-$(FREETYPE_VER); \
 		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff; \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET); \
 		$(MAKE) all; \
@@ -164,7 +164,7 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE-VER).tar.bz2 | $(TARGE
 	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
-	$(REMOVE)/freetype-$(FREETYPE-VER) $(PKGPREFIX)
+	$(REMOVE)/freetype-$(FREETYPE_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libfreetype.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libfreetype
