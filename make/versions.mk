@@ -212,8 +212,8 @@ MC-VER=4.6.2
 # sg3_utils; a package of utilities for accessing devices that use SCSI command sets
 SG3_UTILS-VER=1.33
 
-# FUSE, filesystems in userspace
-FUSE-VER=2.8.5
+# FUSE; filesystems in userspace
+FUSE_VER=2.8.5
 
 ##################################
 # devel-tools; make/devel-tools.mk

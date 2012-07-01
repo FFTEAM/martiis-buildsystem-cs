@@ -128,8 +128,8 @@ $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2:
 $(ARCHIVE)/flac-1.2.1.tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/sourceforge/flac/flac-1.2.1.tar.gz
 
-$(ARCHIVE)/fuse-$(FUSE-VER).tar.gz:
-	$(WGET) http://downloads.sourceforge.net/project/fuse/fuse-2.X/$(FUSE-VER)/fuse-$(FUSE-VER).tar.gz
+$(ARCHIVE)/fuse-$(FUSE_VER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/project/fuse/fuse-2.X/$(FUSE_VER)/fuse-$(FUSE_VER).tar.gz
 
 $(ARCHIVE)/fuse-2.7.5.tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/fuse/fuse-2.X/2.7.5/fuse-2.7.5.tar.gz

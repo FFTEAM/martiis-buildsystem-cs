@@ -472,10 +472,10 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_A
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/fuse: $(ARCHIVE)/fuse-$(FUSE-VER).tar.gz | $(TARGETPREFIX)
+$(D)/fuse: $(ARCHIVE)/fuse-$(FUSE_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/fuse-$(FUSE-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/fuse-$(FUSE-VER); \
+	$(UNTAR)/fuse-$(FUSE_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/fuse-$(FUSE_VER); \
 		$(CONFIGURE) --prefix= ; \
 		$(MAKE) all; \
 		make install DESTDIR=$(TARGETPREFIX) ;\
@@ -489,11 +489,11 @@ ifneq ($(PLATFORM), spark)
 	install -m 755 -D $(SCRIPTS)/load-fuse.init \
 		$(PKGPREFIX)/etc/init.d/load-fuse
 	ln -s load-fuse $(PKGPREFIX)/etc/init.d/S56load-fuse
-	PKG_DEP="fuse.ko" PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	PKG_DEP="fuse.ko" PKG_VER=$(FUSE_VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
 else
-	PKG_DEP=" " PKG_VER=$(FUSE-VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	PKG_DEP=" " PKG_VER=$(FUSE_VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
 endif
-	$(REMOVE)/fuse-$(FUSE-VER) $(PKGPREFIX)
+	$(REMOVE)/fuse-$(FUSE_VER) $(PKGPREFIX)
 	touch $@
 
 # build only static lib - just needed by tcpdump
