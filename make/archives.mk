@@ -184,8 +184,8 @@ $(ARCHIVE)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz:
 $(ARCHIVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz:
 	$(WGET) http://tuxera.com/opensource/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz
 
-$(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz:
-	$(WGET) http://www.openssl.org/source/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz
+$(ARCHIVE)/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER).tar.gz:
+	$(WGET) http://www.openssl.org/source/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER).tar.gz
 
 $(ARCHIVE)/rsync-$(RSYNC-VER).tar.gz:
 	$(WGET) http://samba.anu.edu.au/ftp/rsync/src/rsync-$(RSYNC-VER).tar.gz

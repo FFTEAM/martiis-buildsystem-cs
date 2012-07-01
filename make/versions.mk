@@ -54,8 +54,8 @@ BOOST_MICRO=0
 BOOST_VER=$(BOOST_MAJOR)_$(BOOST_MINOR)_$(BOOST_MICRO)
 
 # openssl; toolkit for the SSL v2/v3 and TLS v1 protocol
-OPENSSL-VER=0.9.8
-OPENSSL-SUBVER=q
+OPENSSL_VER=0.9.8
+OPENSSL_SUBVER=q
 
 # libffmpeg; complete, cross-platform solution to record, convert and stream audio and video
 FFMPEG-VER=0.10

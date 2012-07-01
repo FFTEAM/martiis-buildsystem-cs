@@ -207,9 +207,9 @@ $(D)/libboost: $(ARCHIVE)/boost_$(BOOST_VER).tar.bz2 | $(TARGETPREFIX)
 	touch $@
 
 # openssl seems to have problem with parallel builds, so use "make" instead of "$(MAKE)"
-$(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz
-	set -e; cd $(BUILD_TMP)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER); \
+$(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER).tar.gz
+	set -e; cd $(BUILD_TMP)/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER); \
 		sed -i 's/#define DATE.*/#define DATE \\"($(PLATFORM))\\""; \\/' crypto/Makefile; \
 		CC=$(TARGET)-gcc \
 		./Configure shared no-hw no-engine linux-generic32 --prefix=/ --openssldir=/.remove; \
@@ -220,11 +220,11 @@ $(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER).tar.gz | $(TARG
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libcrypto.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libssl.pc
 	rm -r $(TARGETPREFIX)/.remove $(TARGETPREFIX)/bin/openssl $(TARGETPREFIX)/bin/c_rehash
-	$(REMOVE)/openssl-$(OPENSSL-VER)$(OPENSSL-SUBVER)
+	$(REMOVE)/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER)
 	chmod 0755 $(TARGETPREFIX)/lib/libcrypto.so.* $(TARGETPREFIX)/lib/libssl.so.*
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/lib{crypto,ssl}.so.$(OPENSSL-VER) $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/lib{crypto,ssl}.so.$(OPENSSL_VER) $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/openssl-libs
 	rm -rf $(PKGPREFIX)
 	touch $@
