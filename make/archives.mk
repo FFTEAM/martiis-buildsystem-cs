@@ -272,8 +272,8 @@ $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz:
 $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz:
 	$(WGET) http://sourceforge.net/projects/expat/files/expat/$(EXPAT_VER)/expat-$(EXPAT_VER).tar.gz
 
-$(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz:
-	$(WGET) http://download.savannah.gnu.org/releases/attr/attr-$(ATTR-VER).src.tar.gz
+$(ARCHIVE)/attr-$(ATTR_VER).src.tar.gz:
+	$(WGET) http://download.savannah.gnu.org/releases/attr/attr-$(ATTR_VER).src.tar.gz
 
 $(ARCHIVE)/ntp-$(NTP_VER).tar.gz:
 	$(WGET) http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-$(NTP_VER).tar.gz

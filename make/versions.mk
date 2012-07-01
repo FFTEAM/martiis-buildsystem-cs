@@ -102,7 +102,7 @@ FLEX_VER=2.5.35
 EXPAT_VER=2.0.1
 
 # attr; setting up extended attributes
-ATTR-VER=2.4.44
+ATTR_VER=2.4.44
 
 # libdvbsi++; libdvbsi++ is a open source C++ library for parsing DVB Service Information and MPEG-2 Program Specific Information.
 LIBDVBSI_VER=0.3.6

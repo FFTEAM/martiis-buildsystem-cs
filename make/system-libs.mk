@@ -582,9 +582,9 @@ $(D)/libcap: $(ARCHIVE)/libcap2_$(LIBCAP2_VER).orig.tar.gz $(D)/libattr1
 	$(REMOVE)/libcap2_$(LIBCAP2_VER)
 	touch $@
 
-$(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz
-	$(UNTAR)/attr-$(ATTR-VER).src.tar.gz
-	set -e; cd $(BUILD_TMP)/attr-$(ATTR-VER); \
+$(D)/libattr1: $(ARCHIVE)/attr-$(ATTR_VER).src.tar.gz
+	$(UNTAR)/attr-$(ATTR_VER).src.tar.gz
+	set -e; cd $(BUILD_TMP)/attr-$(ATTR_VER); \
 		$(CONFIGURE) \
 			--prefix= \
 			--enable-gettext=no \
@@ -592,7 +592,7 @@ $(D)/libattr1: $(ARCHIVE)/attr-$(ATTR-VER).src.tar.gz
 			--datadir=/.remove; \
 		$(MAKE); \
 		make install-lib install-dev DIST_ROOT=$(TARGETPREFIX)
-	$(REMOVE)/attr-$(ATTR-VER) $(TARGETPREFIX)/.remove
+	$(REMOVE)/attr-$(ATTR_VER) $(TARGETPREFIX)/.remove
 	rm $(TARGETPREFIX)/lib/libattr.*a $(TARGETPREFIX)/libexec/libattr.so
 	mv $(TARGETPREFIX)/libexec/libattr* $(TARGETPREFIX)/lib/
 	$(REWRITE_LIBTOOL)/libattr.la
