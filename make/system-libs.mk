@@ -49,11 +49,11 @@ else
 MAD_FPM = default
 endif
 endif
-$(D)/libmad: $(ARCHIVE)/libmad-$(MAD-VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/libmad-$(MAD-VER).tar.gz
-	set -e; cd $(BUILD_TMP)/libmad-$(MAD-VER); \
+$(D)/libmad: $(ARCHIVE)/libmad-$(MAD_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/libmad-$(MAD_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libmad-$(MAD_VER); \
 		patch -p1 < $(PATCHES)/libmad.diff; \
-		patch -p1 < $(PATCHES)/libmad-$(MAD-VER)-arm-buildfix.diff; \
+		patch -p1 < $(PATCHES)/libmad-$(MAD_VER)-arm-buildfix.diff; \
 		touch NEWS AUTHORS ChangeLog; \
 		autoreconf -fi; \
 		$(CONFIGURE) --prefix= --enable-shared=yes --enable-speed --enable-fpm=$(MAD_FPM) --enable-sso; \
@@ -61,7 +61,7 @@ $(D)/libmad: $(ARCHIVE)/libmad-$(MAD-VER).tar.gz | $(TARGETPREFIX)
 		make install DESTDIR=$(TARGETPREFIX); \
 		sed "s!^prefix=.*!prefix=$(TARGETPREFIX)!;" mad.pc > $(PKG_CONFIG_PATH)/libmad.pc
 	$(REWRITE_LIBTOOL)/libmad.la
-	$(REMOVE)/libmad-$(MAD-VER) $(PKGPREFIX)
+	$(REMOVE)/libmad-$(MAD_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libmad.so.* $(PKGPREFIX)/lib
 	$(OPKG_SH) $(CONTROL_DIR)/libmad

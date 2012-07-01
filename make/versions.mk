@@ -18,7 +18,7 @@ ID3TAG-VER=0.15.1
 ID3TAG-SUBVER=b
 
 # libmad; MPEG audio decoder
-MAD-VER=0.15.1b
+MAD_VER=0.15.1b
 
 # libungif; converting images
 UNGIF-VER=4.1.4
