@@ -16,7 +16,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHI
 		tar -C targets/src/ -xf $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2; \
 		sed -i 's/ -static//' targets/src/linux-$(LINUX_AZBOX_VER)/scripts/Makefile.host; \
 		cp -a $(PATCHES)/crosstool-ng-mips.config .config; \
-		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		NUM_CPUS=$$(expr `getconf _NPROCESSORS_ONLN` \* 2); \
 		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
 		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
 		test $$NUM_CPUS = 0 && NUM_CPUS=1; \

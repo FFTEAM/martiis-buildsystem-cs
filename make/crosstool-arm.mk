@@ -52,7 +52,7 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.
 		ln -sf linux-2.6.26.8 targets/src/linux-custom; \
 		touch targets/src/.linux-custom.extracted; \
 		cp -a $(PATCHES)/crosstool-ng-coolstreamnew.config .config; \
-		NUM_CPUS=$$(expr `grep -c ^processor /proc/cpuinfo` \* 2); \
+		NUM_CPUS=$$(expr `getconf _NPROCESSORS_ONLN` \* 2); \
 		MEM_512M=$$(awk '/MemTotal/ {M=int($$2/1024/512); print M==0?1:M}' /proc/meminfo); \
 		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
 		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
