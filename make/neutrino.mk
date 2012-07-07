@@ -62,7 +62,8 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-silent-rules --enable-mdev \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
-				$(N_CONFIG_OPTS); \
+				$(N_CONFIG_OPTS) \
+				INSTALL="`which install` -p"; \
 		test -e src/gui/svn_version.h || echo '#define BUILT_DATE "error - not set"' > src/gui/svn_version.h
 
 
@@ -137,7 +138,7 @@ LH_DEPS += $(D)/libass | stfbcontrol
 endif
 LH_OBJDIR = $(BUILD_TMP)/libstb-hal
 LH_SRC = $(SOURCE_DIR)/libstb-hal
-$(LH_OBJDIR)/config.status: $(LH_DEPS)
+$(LH_OBJDIR)/config.status: $(MAKE_DIR)/neutrino.mk $(LH_DEPS)
 	test -d $(LH_OBJDIR) || mkdir -p $(LH_OBJDIR)
 	$(LH_SRC)/autogen.sh
 	set -e; cd $(LH_OBJDIR); \
@@ -147,7 +148,8 @@ $(LH_OBJDIR)/config.status: $(LH_DEPS)
 		LDFLAGS="$(N_LDFLAGS) -L$(TARGETLIB)" \
 		$(LH_SRC)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
-				--enable-silent-rules
+				--enable-silent-rules \
+				INSTALL="`which install` -p"
 
 libstb-hal: $(LH_OBJDIR)/config.status
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
