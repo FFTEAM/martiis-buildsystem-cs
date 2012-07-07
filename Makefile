@@ -43,6 +43,7 @@ ifeq ($(MAINTAINER),)
 endif
 	@LC_ALL=C make -n preqs|grep -q "Nothing to be done" && P=false || P=true; \
 	test -d $(TARGETPREFIX) && T=false || T=true; \
+	type -p $(TARGET)-pkg-config >/dev/null 2>&1 || T=true; \
 	PATH=$(PATH):$(CROSS_DIR)/bin; \
 	type -p $(TARGET)-gcc >/dev/null 2>&1 && C=false || C=true; \
 	if $$P || $$T || $$C; then \
