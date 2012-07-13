@@ -634,7 +634,6 @@ $(D)/graphlcd-base-touchcol: $(GRAPHLCD_ARCHIVE) libusb-compat | $(TARGETPREFIX)
 
 graphlcd-base-touchcol: $(D)/graphlcd-base-touchcol
 
-
 $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/alsa-lib-$(ALSA_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
@@ -649,7 +648,7 @@ $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/alsa-lib-$(ALSA-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TARGETPREFIX)
 	$(UNTAR)/alsa-utils-$(ALSA_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
