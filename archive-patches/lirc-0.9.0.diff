@@ -1,0 +1,140 @@
+Only in lirc-0.9.0: config.log
+diff -ur lirc-0.9.0.orig/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
+--- lirc-0.9.0.orig/daemons/ir_remote.c	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/ir_remote.c	2012-07-13 21:21:00.746944467 +0200
+@@ -506,9 +506,17 @@
+ 	lirc_t min_remaining_gap, max_remaining_gap;
+ 	struct ir_remote *scan;
+ 	struct ir_ncode *scan_ncode;
++	int try_last_remote = 1;
+ 
+ 	/* use remotes carefully, it may be changed on SIGHUP */
+-	decoding = remote = remotes;
++	if (last_remote == NULL) {
++		decoding = remote = remotes;
++		try_last_remote = 0;
++	} else {
++		decoding = remote = last_remote;
++		try_last_remote = 1;
++	}
++	
+ 	while (remote) {
+ 		LOGPRINTF(1, "trying \"%s\" remote", remote->name);
+ 
+@@ -556,6 +564,11 @@
+ 			}
+ 		} else {
+ 			LOGPRINTF(1, "failed \"%s\" remote", remote->name);
++			if (try_last_remote == 1) {
++				try_last_remote = 0;
++				decoding = remote = remotes;
++				continue;
++			}
+ 		}
+ 		remote->toggle_mask_state = 0;
+ 		remote = remote->next;
+diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
+--- lirc-0.9.0.orig/daemons/lircd.c	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/lircd.c	2012-07-13 21:22:12.036943272 +0200
+@@ -60,6 +60,9 @@
+ #if defined(__linux__)
+ #include <linux/input.h>
+ #include <linux/uinput.h>
++#ifdef SPARK
++#include <aotom_main.h>
++#endif
+ #include "input_map.h"
+ #endif
+ 
+@@ -386,6 +389,9 @@
+ #endif
+ 
+ 	config();
++#ifdef UINPUT_NEUTRINO_HACK
++	/* TODO: re-register uinput keys after re-reading the config file */
++#endif
+ 
+ 	for (i = 0; i < clin; i++) {
+ 		if (!
+@@ -432,7 +438,7 @@
+ 		goto setup_error;
+ 	}
+ 
+-	for (key = KEY_RESERVED; key <= KEY_UNKNOWN; key++) {
++	for (key = KEY_RESERVED; key <= KEY_MAX; key++) {
+ 		if (ioctl(fd, UI_SET_KEYBIT, key) != 0) {
+ 			goto setup_error;
+ 		}
+@@ -1786,18 +1792,41 @@
+ 	if (uinputfd != -1) {
+ 		linux_input_code input_code;
+ 
+-		if (reps < 2 && get_input_code(button_name, &input_code) != -1) {
++		int r = get_input_code(button_name, &input_code);
++		if (r == -1)
++			logprintf(LOG_ERR, "writing unknown key name \"%s\" to uinput failed\n", button_name);
++		else if (reps < 2) {
+ 			struct input_event event;
++#ifdef SPARK
++			static int aotom_fd = -2;
++
++			if (aotom_fd == -2)
++				aotom_fd = open("/dev/vfd", O_RDWR);
++
++			if (aotom_fd > -1 && !release) {
++				struct aotom_ioctl_data vfd_data;
++				vfd_data.u.led.led_nr = 1;
++				vfd_data.u.led.on = 10;
++				ioctl(aotom_fd, VFDSETLED, &vfd_data);
++			}
++#endif
+ 
+ 			memset(&event, 0, sizeof(event));
+ 			event.type = EV_KEY;
+ 			event.code = input_code;
++			/* the input subsystem is handling repeats on its own, so no need
++			 * to send a repeat event here
++			 * this would only break the rate and delay settings
+ 			event.value = release ? 0 : (reps > 0 ? 2 : 1);
++			 */
++			event.value = release ? 0 : 1;
+ 			if (write(uinputfd, &event, sizeof(event)) != sizeof(event)) {
+ 				logprintf(LOG_ERR, "writing to uinput failed");
+ 				logperror(LOG_ERR, NULL);
+ 			}
+ 
++#ifndef UINPUT_NEUTRINO_HACK
++/* neutrino does not need and/or deal well with the SYN_REPORT events... */
+ 			/* Need to write sync event */
+ 			memset(&event, 0, sizeof(event));
+ 			event.type = EV_SYN;
+@@ -1807,6 +1836,7 @@
+ 				logprintf(LOG_ERR, "writing EV_SYN to uinput failed");
+ 				logperror(LOG_ERR, NULL);
+ 			}
++#endif
+ 		}
+ 	}
+ #endif
+@@ -2233,6 +2263,10 @@
+ 
+ 	signal(SIGPIPE, SIG_IGN);
+ 
++#ifdef UINPUT_NEUTRINO_HACK
++	remotes = NULL;
++	config();		/* read config file */
++#endif
+ 	start_server(permission, nodaemon);
+ 
+ 	act.sa_handler = sigterm;
+@@ -2246,8 +2280,10 @@
+ 	act.sa_flags = SA_RESTART;	/* don't fiddle with EINTR */
+ 	sigaction(SIGALRM, &act, NULL);
+ 
++#ifndef UINPUT_NEUTRINO_HACK
+ 	remotes = NULL;
+ 	config();		/* read config file */
++#endif
+ 
+ 	act.sa_handler = sighup;
+ 	sigemptyset(&act.sa_mask);

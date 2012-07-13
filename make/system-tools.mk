@@ -382,10 +382,7 @@ $(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_l
 	$(UNTAR)/lirc-$(LIRC_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/lirc-$(LIRC_VER); \
-		$(PATCH)/lirc-0.9.0-try_first_last_remote.diff; \
-		$(PATCH)/lirc-0.9.0-neutrino-uinput-hack.diff; \
-		$(PATCH)/lirc-0.9.0-uinput-repeat-fix.diff; \
-		$(PATCH)/lirc-0.9.0-uinput-spark.diff; \
+		$(PATCH)/lirc-0.9.0.diff ;\
 		ac_cv_have_kernel='no_kernel=yes kerneldir="missing" kernelext="ko"' \
 		CFLAGS="$(TARGET_CFLAGS) -DUINPUT_NEUTRINO_HACK -DSPARK" ./configure \
 			--build=$(BUILD) \
