@@ -1,0 +1,12 @@
+# These drivers are available to the user for selection in
+# the Ntrino Extra menu, via /etc/modules.extra.
+#
+#
+cfg80211 mac80211 rt2x00lib rt2x00usb rt2500usb # Ralink RT2500 USB WLAN
+rt2870sta	# Ralink RT2870 USB WLAN
+rt3070sta	# Ralink RT3070 USB WLAN
+rt5370sta	# Ralink RT5370 USB WLAN
+zd1201		# ZYDAS 1201 USB WLAN
+usbserial pl2303 # Prolific PL-2303 USB-to-serial
+cec(activemode=1 deviceName=EvoLux deviceType=3) # HDMI CEC
+

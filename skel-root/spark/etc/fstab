@@ -1,0 +1,6 @@
+# enter stuff you want mounted here. This gets
+# mounted early during system boot
+#
+# file system	mount pt	type	options		dump	pass
+/dev/mtdblock4	/mnt/spark	yaffs2	defaults,ro	0	0
+#

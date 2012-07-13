@@ -1,0 +1,11 @@
+Package: alsa-lib
+Version: @VER@-1
+Description: ALSA Libraries
+Section: extras/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.alsa-project.org
+Source:
+Depends:
+Provides: libasound.so.2

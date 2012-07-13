@@ -1,0 +1,41 @@
+#!/bin/sh
+#
+# Home Sharing script
+#
+# May only be used if and only if it doesn't violate your cable or sat
+# providers terms of service.
+#
+# Inactive by default. Fill the gaps, and chmod 755 to activate.
+
+cam_start() {
+	# MISSING. ADD RELEVANT CODE YOURSELF.
+}
+
+cam_stop() {
+	# MISSING. ADD RELEVANT CODE YOURSELF.
+}
+
+case $1 in
+start)
+	cam_start
+	;;
+stop)
+	cam_stop
+	;;
+restart)
+	cam_stop
+	sleep 2
+	cam_start
+	sleep 2
+	/usr/local/bin/pzapit -rz
+	;;
+init)
+	sleep 2
+	cam_start
+	if grep lastChannelTVScrambled=true /usr/local/share/config/zapit/zapit.conf
+	then
+		sleep 2
+		/usr/local/bin/pzapit -rz
+	fi	
+esac
+	

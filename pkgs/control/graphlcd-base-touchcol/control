@@ -1,0 +1,11 @@
+Package: graphlcd-base-touchcol
+Version: @VER@-1
+Description: GraphLCD library (low-level drivers, basic functionality)
+Section: base
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://linuxtv.org/vdrwiki/index.php/Graphlcd-plugin/touchcol
+Source:
+Depends:
+Provides: libglcddrivers.so.2, libglcdgraphics.so.2

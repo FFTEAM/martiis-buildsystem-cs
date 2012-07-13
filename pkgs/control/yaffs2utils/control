@@ -1,0 +1,10 @@
+Package: yaffs2utils
+Version: @VER@-1
+Description: Utilities to create/extract a yaffs2 image on Linux
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://code.google.com/p/yaffs2utils/
+Source:
+Depends: libc.so.6
