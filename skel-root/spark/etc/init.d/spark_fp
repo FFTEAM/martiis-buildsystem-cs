@@ -39,12 +39,19 @@ start)
 	fi
 	;;
 stop)
-	test -e /tmp/.reboot && exit 1
+	if [ -e /tmp/.reboot ]
+	then
+		echo reboot > /dev/vfd
+		exit 1
+	fi
+	echo shutdown > /dev/vfd
 	WAKEUP_TIME=1
 	test -e /tmp/.timer && read WAKEUP_TIME < /tmp/.timer
 	# hack: K99mount is never run since we never come out of spark_fp...
 	sync
 	/etc/init.d/mount stop
+	fp_control -l 0 0 >/dev/null 2>&1
+	fp_control -l 1 0 >/dev/null 2>&1
 	sync; sync
 	spark_fp -w $WAKEUP_TIME
 	sleep 1;
