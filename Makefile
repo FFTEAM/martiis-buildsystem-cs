@@ -117,7 +117,11 @@ include make/gstreamer.mk
 include make/packages.mk
 include make/plugins.mk
 include make/example.mk
-include make/flashimage.mk
+ifeq ($(PLATFORM), spark)
+ include make/flashimage-yaffs2.mk
+else
+ include make/flashimage.mk
+endif
 include make/crosstool-$(BOXARCH).mk
 
 update-self:
