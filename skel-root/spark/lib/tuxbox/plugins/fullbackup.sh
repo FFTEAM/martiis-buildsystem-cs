@@ -6,7 +6,7 @@
 PATH=/usr/bin:/bin:/usr/local/bin:/var/bin:/usr/sbin:/sbin
 export PATH
 
-B=/autofs/sda1/enigma2-`date '+%Y%m%d%H%M%S'`
+B=/media/sda1/enigma2-`date '+%Y%m%d%H%M%S'`
 R=yaffs2
 O=oob.img
 U=uImage
