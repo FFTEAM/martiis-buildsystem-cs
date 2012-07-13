@@ -38,6 +38,10 @@ until neutrino; do
 		touch /tmp/.halt
 		break;
 	fi
+	if [ $RET = 2 ]; then
+		touch /tmp/.reboot
+		break;
+	fi
 done
 
 $MESSAGE "start_n ends"
