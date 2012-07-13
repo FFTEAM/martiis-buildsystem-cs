@@ -10,6 +10,8 @@ if ! [ -e /dev/console ]; then
 fi
 mount -t proc proc /proc
 mount -t tmpfs dev /dev
+mount -t usbfs usbfs /proc/bus/usb
+
 # make sure that important devices are there before mdev startup
 # otherwise a redirection in a mdev script might create them...
 # those are on the freshly mounted tmpfs, not duplicating the above one
