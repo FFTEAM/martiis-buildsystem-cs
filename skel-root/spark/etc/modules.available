@@ -8,5 +8,5 @@ rt3070sta	# Ralink RT3070 USB WLAN
 rt5370sta	# Ralink RT5370 USB WLAN
 zd1201		# ZYDAS 1201 USB WLAN
 usbserial pl2303 # Prolific PL-2303 USB-to-serial
-cec(activemode=1 deviceName=EvoLux deviceType=3) # HDMI CEC
+cec(activemode=1 deviceName=DuckBox deviceType=3) # HDMI CEC
 
