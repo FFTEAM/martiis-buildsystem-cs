@@ -1,0 +1,46 @@
+--- yaffs2utils-0.2.9/Makefile.orig	2012-07-06 22:27:39.305093099 +0200
++++ yaffs2utils-0.2.9/Makefile	2012-07-07 13:10:18.160055349 +0200
+@@ -19,7 +19,7 @@
+ #
+ 
+ CROSS		=
+-CC		= $(CROSS)gcc
++CC		?= $(CROSS)gcc
+ 
+ CFLAGS		=  -I. -I./yaffs2
+ CFLAGS		+= -O2
+@@ -50,15 +50,14 @@
+ UNSPARE2SRCS	= unspare2.c
+ UNSPARE2OBJS	= $(UNSPARE2SRCS:.c=.o)
+ 
+-TARGET		= mkyaffs2 unyaffs2 unspare2
++ALL		= mkyaffs2 unyaffs2 unspare2
+ 
+-INSTALLDIR	= /bin
++INSTALLDIR	?= /bin
+ 
++all: $(ALL)
+ 
+-all: $(TARGET)
+-
+-install:
+-	cp $(TARGET) $(INSTALLDIR)
++install: $(ALL)
++	$(STRIP) $(ALL) ; cp $(ALL) $(INSTALLDIR)
+ 
+ mkyaffs2: $(YAFFS2OBJS) $(LIBOBJS) $(MKYAFFS2OBJS)
+ 	$(CC) -o $@ $(YAFFS2OBJS) $(LIBOBJS) $(MKYAFFS2OBJS) $(LDFLAGS)
+@@ -70,10 +69,10 @@
+ 	$(CC) -o $@ $(YAFFS2OBJS) $(LIBOBJS) $(UNSPARE2OBJS) $(LDFLAGS)
+ 
+ clean:
+-	rm -rf $(YAFFS2OBJS) $(LIBOBJS) \
++	rm -f $(YAFFS2OBJS) $(LIBOBJS) \
+ 	       $(MKYAFFS2OBJS) $(UNYAFFS2OBJS) $(UNSPARE2OBJS)
+ 
+ distclean: clean
+-	rm -rf $(TARGET)
++	rm -f $(ALL)
+ 
+-.PHONY: all clean distclean $(TARGET)
++.PHONY: all clean distclean $(ALL)

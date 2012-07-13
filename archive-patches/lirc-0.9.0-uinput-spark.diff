@@ -1,0 +1,38 @@
+--- a/daemons/lircd.c	2012-07-10 20:41:43.423418844 +0200
++++ b/daemons/lircd.c	2012-07-10 20:45:05.523417817 +0200
+@@ -60,6 +60,9 @@
+ #if defined(__linux__)
+ #include <linux/input.h>
+ #include <linux/uinput.h>
++#ifdef SPARK
++#include <aotom_main.h>
++#endif
+ #include "input_map.h"
+ #endif
+ 
+@@ -1808,8 +1811,24 @@
+ 	if (uinputfd != -1) {
+ 		linux_input_code input_code;
+ 
+-		if (reps < 2 && get_input_code(button_name, &input_code) != -1) {
++		int r = get_input_code(button_name, &input_code);
++		if (r == -1)
++			logprintf(LOG_ERR, "writing unknown key name \"%s\" to uinput failed\n", button_name);
++		else if (reps < 2) {
+ 			struct input_event event;
++#ifdef SPARK
++			static int aotom_fd = -2;
++
++			if (aotom_fd == -2)
++				aotom_fd = open("/dev/vfd", O_RDWR);
++
++			if (aotom_fd > -1 && !release) {
++				struct aotom_ioctl_data vfd_data;
++				vfd_data.u.led.led_nr = 1;
++				vfd_data.u.led.on = 10;
++				ioctl(aotom_fd, VFDSETLED, &vfd_data);
++			}
++#endif
+ 
+ 			memset(&event, 0, sizeof(event));
+ 			event.type = EV_KEY;
