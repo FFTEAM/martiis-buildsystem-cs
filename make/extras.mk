@@ -279,22 +279,22 @@ $(DEPDIR)/nbench: $(ARCHIVE)/nbench-byte-$(NBENCH_BYTE-VER).tar.gz | $(TARGETPRE
 	$(REMOVE)/nbench-byte-$(NBENCH_BYTE-VER)
 	touch $@
 
-$(D)/libupnp: $(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libupnp-$(LIBUPNP-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/libupnp-$(LIBUPNP-VER); \
-		$(CONFIGURE) --prefix=/opt/pkg; \
+$(D)/libupnp: $(ARCHIVE)/libupnp-$(LIBUPNP_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libupnp-$(LIBUPNP_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libupnp-$(LIBUPNP_VER); \
+		$(CONFIGURE) --prefix=; \
 		$(MAKE); \
 		$(MAKE) install DESTDIR=$(PKGPREFIX)
-	mv $(PKGPREFIX)/opt/pkg/lib/pkgconfig/libupnp.pc $(PKG_CONFIG_PATH)/
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	$(REWRITE_PKGCONF_OPT) $(PKG_CONFIG_PATH)/libupnp.pc
-	$(REWRITE_LIBTOOL_OPT)/libixml.la
-	$(REWRITE_LIBTOOL_OPT)/libthreadutil.la
-	$(REWRITE_LIBTOOL_OPT)/libupnp.la
-	cd $(PKGPREFIX)/opt/pkg; \
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libupnp.pc
+	$(REWRITE_LIBTOOL)/libixml.la
+	$(REWRITE_LIBTOOL)/libthreadutil.la
+	$(REWRITE_LIBTOOL)/libupnp.la
+	cd $(PKGPREFIX); \
 		rm -r include lib/pkgconfig lib/*a lib/*.so
-	$(OPKG_SH) $(CONTROL_DIR)/libupnp
-	$(REMOVE)/libupnp-$(LIBUPNP-VER) $(PKGPREFIX)
+	PKG_VER=$(LIBUPNP_VER) PKG_AUTOREQPROV=1 \
+		$(OPKG_SH) $(CONTROL_DIR)/libupnp
+	$(REMOVE)/libupnp-$(LIBUPNP_VER) $(PKGPREFIX)
 	touch $@
 
 $(ARCHIVE)/libdlna-hg.tar.bz2: | find-hg

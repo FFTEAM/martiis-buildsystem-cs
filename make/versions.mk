@@ -186,7 +186,7 @@ QT-VER=4.6.3
 NBENCH_BYTE-VER=2.2.3
 
 # libupnp; a portable open source UPnP development kit
-LIBUPNP-VER=1.6.10
+LIBUPNP_VER=1.6.17
 
 LIBXML2_VER=2.8.0
 
