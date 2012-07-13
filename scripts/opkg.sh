@@ -146,6 +146,13 @@ if [ -n "$PKG_VER" ]; then
 		sed -i "s/@VER@/$PKG_VER/" CONTROL/control
 	fi
 fi
+
+# auto-reqprov
+if [ -n "$PKG_AUTOREQPROV" ]; then
+	PKG_DEP="$(opkg-find-requires.sh ${SOURCE})"
+	PKG_PROV="$(opkg-find-provides.sh ${SOURCE})"
+fi
+
 # update package provides in the control file
 if [ -n "$PKG_PROV" ]; then
 	if ! grep -q "@PROV@" CONTROL/control; then
