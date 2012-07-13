@@ -124,10 +124,14 @@ PKGCONFIG_VER=0.26
 PROCPS-VER=3.2.8
 
 # busybox; combines tiny versions of many common UNIX utilities into a single binary
-BUSYBOX-VER=1.19.4
+#BUSYBOX-VER=1.19.4
+BUSYBOX-VER=1.20.2
 
 # e2fsprogs; filesystem utilities for use with the ext[x] filesystem
 E2FSPROGS-VER=1.42
+
+# yaffs2utils; filesystem utilities for YAFFS2 filesystems
+YAFFS2UTILS-VER=0.2.9
 
 # xfsprogs; Utilities for managing the XFS filesystem
 XFSPROGS-VER=3.1.8
@@ -214,6 +218,9 @@ SG3_UTILS-VER=1.33
 
 # FUSE; filesystems in userspace
 FUSE_VER=2.8.5
+
+# ALSA, the Advanced Linux Sound Architecture
+ALSA_VER=1.0.25
 
 ##################################
 # devel-tools; make/devel-tools.mk

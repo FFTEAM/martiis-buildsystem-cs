@@ -86,6 +86,9 @@ $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-$(E2FSPROGS-VER).tar.gz
 
+$(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz:
+	$(WGET) -O $@ http://yaffs2utils.googlecode.com/files/$(YAFFS2UTILS-VER).tar.gz
+
 $(ARCHIVE)/fbshot-$(FBSHOT-VER).tar.gz:
 	$(WGET) http://www.sfires.net/stuff/fbshot/fbshot-$(FBSHOT-VER).tar.gz
 
@@ -280,6 +283,12 @@ $(ARCHIVE)/ntp-$(NTP_VER).tar.gz:
 
 $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2:
 	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
+
+$(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2:
+	$(WGET) ftp://ftp.alsa-project.org/pub/lib/alsa-lib-$(ALSA_VER).tar.bz2
+
+$(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
+	$(WGET) ftp://ftp.alsa-project.org/pub/utils/alsa-utils-$(ALSA_VER).tar.bz2
 
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \

@@ -60,14 +60,11 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz | $(TARGETPR
 	touch $@
 
 $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2
-	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
+	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2 ;\
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control ;\
 	set -e; cd $(BUILD_TMP)/busybox-$(BUSYBOX-VER); \
-		$(PATCH)/busybox-1.18-hack-init-s-console.patch; \
-		$(PATCH)/busybox-1.19.4-revert-broken-sighandling.patch; \
-		test -e $(PATCHES)/busybox-1.19.config.$(PLATFORM) && \
-			cp $(PATCHES)/busybox-1.19.config.$(PLATFORM) .config || \
-			cp $(PATCHES)/busybox-1.19.config .config; \
+		test -e $(PATCHES)/busybox-$(BUSYBOX-VER).config && \
+			cp $(PATCHES)/busybox-$(BUSYBOX-VER).config .config; \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config; \
 		grep -q DBB_BT=AUTOCONF_TIMESTAMP Makefile.flags && \
 		sed -i 's#AUTOCONF_TIMESTAMP#"\\"$(PLATFORM)\\""#' Makefile.flags || true; \
@@ -381,15 +378,16 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.7.0.tar.bz2 | $(TARGETPREFIX)
 
 # the exaudio driver seems to build no real driver and keeps the
 # binaries small. At least I hope so.
-$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_last_remote.diff $(PATCHES)/lirc-0.9.0-neutrino-uinput-hack.diff $(PATCHES)/lirc-0.9.0-uinput-repeat-fix.diff $(PATCHES)/lircd_spark.conf $(PATCHES)/lircd_spark.conf.09_00_0A
+$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_last_remote.diff $(PATCHES)/lirc-0.9.0-neutrino-uinput-hack.diff $(PATCHES)/lirc-0.9.0-uinput-spark.diff $(PATCHES)/lirc-0.9.0-uinput-repeat-fix.diff $(PATCHES)/lircd_spark.conf $(PATCHES)/lircd_spark.conf.09_00_07 $(PATCHES)/lircd_spark.conf.09_00_08 $(PATCHES)/lircd_spark.conf.09_00_0A $(PATCHES)/lircd_spark.conf.09_00_0B
 	$(UNTAR)/lirc-$(LIRC_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/lirc-$(LIRC_VER); \
 		$(PATCH)/lirc-0.9.0-try_first_last_remote.diff; \
 		$(PATCH)/lirc-0.9.0-neutrino-uinput-hack.diff; \
 		$(PATCH)/lirc-0.9.0-uinput-repeat-fix.diff; \
+		$(PATCH)/lirc-0.9.0-uinput-spark.diff; \
 		ac_cv_have_kernel='no_kernel=yes kerneldir="missing" kernelext="ko"' \
-		CFLAGS="$(TARGET_CFLAGS) -DUINPUT_NEUTRINO_HACK" ./configure \
+		CFLAGS="$(TARGET_CFLAGS) -DUINPUT_NEUTRINO_HACK -DSPARK" ./configure \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
 			--prefix= \
@@ -402,7 +400,10 @@ $(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_l
 		make install DESTDIR=$(PKGPREFIX); \
 		make install DESTDIR=$(TARGETPREFIX)
 	install -m 0644 -D $(PATCHES)/lircd_spark.conf $(PKGPREFIX)/etc/lircd.conf
+	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_07 $(PKGPREFIX)/etc/lircd.conf.09_00_07
+	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_08 $(PKGPREFIX)/etc/lircd.conf.09_00_08
 	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_0A $(PKGPREFIX)/etc/lircd.conf.09_00_0A
+	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_0B $(PKGPREFIX)/etc/lircd.conf.09_00_0B
 	install -m 0755 -D $(SCRIPTS)/lircd.init $(PKGPREFIX)/etc/init.d/lircd
 	ln -sf lircd $(PKGPREFIX)/etc/init.d/S60lircd
 	ln -sf lircd $(PKGPREFIX)/etc/init.d/K40lircd
@@ -513,6 +514,18 @@ endif
 	rm -rf $(PKGPREFIX)/share/man
 	PKG_VER=$(NTP_VER) $(OPKG_SH) $(CONTROL_DIR)/ntp
 	$(REMOVE)/ntp-$(NTP_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/yaffs2utils: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(TARGETPREFIX)
+	-mkdir -p $(TARGETPREFIX)/sbin $(PKGPREFIX)/sbin;
+	$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz ; \
+	mv $(BUILD_TMP)/$(YAFFS2UTILS-VER) $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER) ; \
+	set -e; cd $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER); \
+		$(PATCH)/yaffs2utils-0.2.9.patch; \
+		$(BUILDENV) $(MAKE) CC=$(TARGET)-gcc STRIP=$(TARGET)-strip INSTALLDIR=$(TARGETPREFIX)/sbin install ; \
+	cp -a $(TARGETPREFIX)/sbin/{mkyaffs2,unspare2,unyaffs2} $(PKGPREFIX)/sbin ; \
+	PKG_VER=$(YAFFS2UTILS-VER) $(OPKG_SH) $(CONTROL_DIR)/yaffs2utils ; \
+	$(REMOVE)/yaffs2utils-$(YAFFS2UTILS-VER) $(PKGPREFIX) ; \
 	touch $@
 
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp

@@ -4,8 +4,13 @@ SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
 SYSTEM_OPKGS =
 
 # additional stuff which is useful on most systems
-SYSTEM_PKGS  += e2fsprogs xfsprogs
-SYSTEM_OPKGS += e2fsprogs xfsprogs
+SYSTEM_PKGS  += e2fsprogs xfsprogs yaffs2utils dropbear alsa-utils
+SYSTEM_OPKGS += e2fsprogs xfsprogs yaffs2utils dropbear alsa-utils
+
+ifeq ($(USE_GRAPHLCD), yes)
+SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
+SYSTEM_OPKGS  += graphlcd-base-touchcol
+endif
 
 glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 	rm -rf $(PKGPREFIX)
@@ -200,7 +205,7 @@ ifeq ($(PLATFORM), azbox)
 SYSTEM_PKGS += azboxdriver
 endif
 
-AAA_BASE_DEPS =
+AAA_BASE_DEPS = mhwepg
 ifeq ($(PLATFORM), spark)
 AAA_BASE_DEPS += stfbcontrol fp_control ustslave libstb-hal
 endif
@@ -221,6 +226,7 @@ ifeq ($(PLATFORM), spark)
 else
 	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules && rm etc/init.d/start_neutrino # ugly...
 endif
+	cp -a $(TARGETPREFIX)/bin/mhwepg $(PKGPREFIX)/bin
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
@@ -268,7 +274,7 @@ minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginsta
 system-pkgs: $(SYSTEM_PKGS)
 	+make pkg-index
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
-	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
+	opkg-cl -V4 -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
 		neutrino-hd $(SYSTEM_OPKGS)
 	@echo
 	@echo "List of installed packages in $(subst $(BASE_DIR)/,,$(BUILD_TMP))/install:"

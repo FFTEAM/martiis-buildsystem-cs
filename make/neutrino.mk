@@ -3,7 +3,7 @@
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg libdvbsi++
 NEUTRINO_DEPS += openthreads
 
-N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL
+N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL -DSCREENSHOT -DMARTII
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
 ifeq ($(PLATFORM), coolstream)
 N_CPPFLAGS += -DUSE_NEVIS_GXA
@@ -30,6 +30,11 @@ NEUTRINO_DEPS += libvorbisidec
 # enable FLAC decoder in neutrino
 N_CONFIG_OPTS += --enable-flac
 NEUTRINO_DEPS += libFLAC
+
+ifeq ($(USE_GRAPHLCD), yes)
+NEUTRINO_DEPS += graphlcd-base-touchcol
+N_CONFIG_OPTS += --enable-graphlcd
+endif
 
 ifeq ($(USE_STB_HAL), yes)
 N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
@@ -60,7 +65,7 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
 		LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
-				--enable-silent-rules --enable-mdev \
+				--enable-silent-rules --enable-mdev --enable-freesatepg \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				$(N_CONFIG_OPTS) \
 				INSTALL="`which install` -p"; \
@@ -95,7 +100,7 @@ $(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 
 neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
-	$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
+	#$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)

@@ -3,7 +3,7 @@
 TOOLCHECK  = find-git find-svn find-gzip find-bzip2 find-patch find-gawk
 TOOLCHECK += find-makeinfo find-automake find-gcc find-libtool
 TOOLCHECK += find-yacc find-flex find-tic find-pkg-config
-TOOLCHECK += find-cmake
+TOOLCHECK += find-cmake find-mkyaffs2
 
 PREQS = download neutrino-hd-source $(D)
 ifeq ($(PLATFORM), tripledragon)
@@ -48,18 +48,21 @@ $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
+		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-neutrino-hd-tripledragon.git neutrino-hd-td
+#		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
 
 $(SOURCE_DIR)/libstb-hal:
 	@echo "=== cloning libstb-hal ==="
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/libstb-hal.git libstb-hal
+		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-libstb-hal.git libstb-hal
+#		git clone $(GITORIOUS)/neutrino-hd/libstb-hal.git libstb-hal
 
 $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-plugins.git
+		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-neutrino-hd-plugins.git
+#		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-plugins.git
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
 	mkdir -p $(shell dirname $@)
@@ -112,4 +115,4 @@ tdsvn: $(TD_SVN)
 
 $(TDT_SRC):
 	set -e; cd $(SOURCE_DIR); \
-		git clone $(TDT_GIT)
+		git clone $(TDT_GIT) tdt

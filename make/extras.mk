@@ -356,7 +356,7 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 		$(PATCH)/dropbear-0.52-allow-empty-password-for-key-login.diff; \
 		$(PATCH)/dropbear-0.53-opt-pkg-prefix.diff; \
 		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -DDSS_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_dss_host_key\\\"\" -DRSA_PRIV_FILENAME=\"\\\"/opt/pkg/etc/dropbear/dropbear_rsa_host_key\\\"\"" \
-			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg; \
+			 ./configure $(CONFIGURE_OPTS) --prefix=/opt/pkg --disable-lastlog --disable-utmp --disable-utmpx --disable-wtmpx ; \
 		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" SCPPROGRESS=1; \
 		$(MAKE) PROGRAMS="dropbear dbclient dropbearkey scp" install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 $(SCRIPTS)/dropbear.init $(PKGPREFIX)/opt/pkg/etc/init.d/dropbear
@@ -604,3 +604,63 @@ $(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(AR
 	PKG_VER=0.10.9999.r$(LCD4LINUXREV) $(OPKG_SH) $(CONTROL_DIR)/lcd4linux
 	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
 	touch $@
+
+GRAPHLCD_OBJDIR=$(BUILD_TMP)/graphlcd-base-touchcol
+GRAPHLCD_ARCHIVE=$(ARCHIVE)/graphlcd-base-touchcol.tar.gz
+
+$(ARCHIVE)/graphlcd-base-touchcol.tar.gz:
+	cd $(BUILD_TMP) && \
+	rm -rf graphlcd-base-touchcol && \
+	git clone git://projects.vdr-developer.org/graphlcd-base.git -b touchcol graphlcd-base-touchcol && \
+	cd graphlcd-base-touchcol && \
+	git checkout a39f265732d0bc28cb66b58b5ecf1964a130d02b && \
+	tar -C $(BUILD_TMP) -zcf $@ graphlcd-base-touchcol && \
+	$(PATCH)/graphlcd.patch
+
+$(D)/graphlcd-base-touchcol: $(GRAPHLCD_ARCHIVE) libusb-compat | $(TARGETPREFIX)
+	-rm -rf $(PKGPREFIX)
+	set -e; if [ ! -d $(GRAPHLCD_OBJDIR) ]; then tar -C $(BUILD_TMP) -xpf $(GRAPHLCD_ARCHIVE) && cd $(GRAPHLCD_OBJDIR) && $(PATCH)/graphlcd.patch ; fi ;\
+	cd $(GRAPHLCD_OBJDIR) && \
+	$(MAKE) -C glcdgraphics all TARGET=$(TARGET)- && \
+	$(MAKE) -C glcddrivers all TARGET=$(TARGET)- && \
+	$(MAKE) -C glcdgraphics install DESTDIR=$(TARGETPREFIX) && \
+	$(MAKE) -C glcddrivers install DESTDIR=$(TARGETPREFIX) && \
+	cd $(BUILD_TMP) && \
+	mkdir -p $(PKGPREFIX)/lib && \
+	cp -a $(TARGETPREFIX)/lib/libglcd{drivers,graphics}* $(PKGPREFIX)/lib && \
+	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/graphlcd-base-touchcol && \
+	rm -rf $(GRAPHLCD_OBJDIR) && \
+	touch $(D)/graphlcd-base-touchcol
+
+graphlcd-base-touchcol: $(D)/graphlcd-base-touchcol
+
+
+$(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/alsa-lib-$(ALSA_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	set -e; cd $(BUILD_TMP)/alsa-lib-$(ALSA_VER); \
+		$(CONFIGURE) --prefix= --mandir=/.remove --disable-aload --disable-rawmidi --disable-python --disable-old-symbols --disable-alisp --disable-ucm --disable-hwdep ;\
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/share/aclocal $(PKGPREFIX)/lib/alsa-lib
+	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-lib
+	$(REMOVE)/alsa-lib-$(ALSA-VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/alsa-utils-$(ALSA_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
+		sed -ir -r "s/(alsamixer|amidi|aplay|iecset|speaker-test|seq|alsactl|alsaucm)//g" Makefile.am ;\
+		$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsatest --disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto ;\
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)/var
+	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
+	$(REMOVE)/alsa-utils-$(ALSA-VER) $(PKGPREFIX)
+	touch $@
+
