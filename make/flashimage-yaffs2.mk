@@ -28,8 +28,6 @@ flash-build:
 	mkyaffs2 --all-root -v -o $(BASE_DIR)/misc/oob-spark.img $(BUILD_TMP)/install $(FLASHIMG)
 
 
-# you should probably "make system-pkgs" before...
-# this has been tested by flashing from an USB stick on GM 990
 flashimage: flash-prepare flash-build
 	rm -fr $(BUILD_TMP)/install
 	$(MAKE) system-pkgs
@@ -37,8 +35,11 @@ flashimage: flash-prepare flash-build
 		cd $(BUILD_TMP)/enigma2; \
 		cp -a $(BUILD_TMP)/uImage .; \
 		cp -a $(FLASHIMG) e2yaffs2.img; \
-		echo; echo; echo "SPARK flash image is in build_tmp/enigma2:"; ls -l *; \
-		echo; echo "copy this directory onto an USB stick and flash via the boot loader.";
+		cp -a $(BASE_DIR)/misc/install_yaffs2.sh $(BASE_DIR)/misc/upgrade_yaffs2.sh .; \
+		chmod 755 install_yaffs2.sh upgrade_yaffs2.sh ; \
+		echo; echo; echo "Flash image is in build_tmp/enigma2:"; ls -l *; \
+		echo; echo "Copy this directory to an USB stick, boot SPARK"; \
+		echo "and run either upgrade_yaffs2.sh or install_yaffs2.sh"
 
 # installed *on the host*, this is not a cross-build...
 #
