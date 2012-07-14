@@ -27,15 +27,15 @@ restart)
 	sleep 2
 	cam_start
 	sleep 2
-	/usr/local/bin/pzapit -rz
+	/bin/pzapit -rz
 	;;
 init)
 	sleep 2
 	cam_start
-	if grep lastChannelTVScrambled=true /usr/local/share/config/zapit/zapit.conf
+	if grep lastChannelTVScrambled=true /var/tuxbox/config/zapit/zapit.conf
 	then
-		sleep 2
-		/usr/local/bin/pzapit -rz
+		sleep 5
+		/bin/pzapit -rz
 	fi	
 esac
-	
+
