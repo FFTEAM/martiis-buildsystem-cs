@@ -1,5 +1,5 @@
 Package: ushare
-Version: 1.1a.451-1
+Version: @VER@-1
 Description: A free UPnP A/V & DLNA Media Server
 Section: extras/servers
 Priority: optional
@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://ushare.geexbox.org
 Source:
-Depends: libdlna >= 0.2.99.439-1
+Depends: @DEP@

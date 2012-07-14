@@ -1,5 +1,5 @@
 Package: libupnp
-Version: 1.6.10-1
+Version: @VER@-1
 Description: Portable SDK for UPnP Devices
 Section: extras/libraries
 Priority: optional
@@ -7,4 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://pupnp.sourceforge.net
 Source:
-Depends:
+Depends: @DEP@
+Provides: @PROV@
