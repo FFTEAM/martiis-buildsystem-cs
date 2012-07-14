@@ -632,8 +632,6 @@ $(D)/graphlcd-base-touchcol: $(GRAPHLCD_ARCHIVE) libusb-compat | $(TARGETPREFIX)
 	rm -rf $(GRAPHLCD_OBJDIR) && \
 	touch $(D)/graphlcd-base-touchcol
 
-graphlcd-base-touchcol: $(D)/graphlcd-base-touchcol
-
 $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/alsa-lib-$(ALSA_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
@@ -643,7 +641,7 @@ $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	rm -rf $(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/share/aclocal $(PKGPREFIX)/lib/alsa-lib
+	rm -rf $(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/share/aclocal $(PKGPREFIX)/lib/alsa-lib $(PKGPREFIX)/share/alsa/cards $(PKGPREFIX)/share/alsa/pcm $(PKGPREFIX)/share/alsa/alsa.conf.d
 	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-lib
 	$(REMOVE)/alsa-lib-$(ALSA-VER) $(PKGPREFIX)
 	touch $@

@@ -3,9 +3,9 @@
 . /etc/profile
 
 if [ -e /etc/init.d/start_neutrino ]; then
-	/etc/init.d/start_neutrino
+	exec /etc/init.d/start_neutrino
 elif [ -e /etc/init.d/start_enigma ]; then
-	/etc/init.d/start_enigma
+	exec /etc/init.d/start_enigma
 else
 	echo "Neither start_neutrino nor start_enigma found"
 fi
