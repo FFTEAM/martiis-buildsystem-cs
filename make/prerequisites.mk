@@ -61,7 +61,7 @@ $(SOURCE_DIR)/libstb-hal:
 $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-neutrino-hd-plugins.git
+		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-neutrino-hd-plugins.git neutrino-hd-plugins
 #		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-plugins.git
 
 $(SOURCE_DIR)/svn/COOLSTREAM:

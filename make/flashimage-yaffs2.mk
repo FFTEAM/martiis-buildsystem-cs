@@ -31,6 +31,8 @@ flash-build:
 # you should probably "make system-pkgs" before...
 # this has been tested by flashing from an USB stick on GM 990
 flashimage: flash-prepare flash-build
+	rm -fr $(BUILD_TMP)/install
+	$(MAKE) system-pkgs
 	@set -e; rm -rf $(BUILD_TMP)/enigma2; mkdir $(BUILD_TMP)/enigma2; \
 		cd $(BUILD_TMP)/enigma2; \
 		cp -a $(BUILD_TMP)/uImage .; \
@@ -41,12 +43,12 @@ flashimage: flash-prepare flash-build
 # installed *on the host*, this is not a cross-build...
 #
 yaffs2utils-host: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(HOSTPREFIX)/bin
-	$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz ; \
-	cd $(BUILD_TMP) ; pwd ; \
+	$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz && \
+	cd $(BUILD_TMP) && \
 	mv $(YAFFS2UTILS-VER) yaffs2utils-$(YAFFS2UTILS-VER)-host ; \
-	cd yaffs2utils-$(YAFFS2UTILS-VER)-host ; \
-	ls -l ; make all ; sudo make install ; \
-	rm -rf yaffs2utils-$(YAFFS2UTILS-VER)-host \;
+	cd yaffs2utils-$(YAFFS2UTILS-VER)-host && \
+	make all && cp mkyaffs2 unspare2 unyaffs2 $(HOSTPREFIX)/bin/ && \
+	cd $(BUILD_TMP) && \
 	rm -rf $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host
 
 PHONY += flashimage mtd-utils
