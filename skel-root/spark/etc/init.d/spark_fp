@@ -50,10 +50,9 @@ stop)
 	# hack: K99mount is never run since we never come out of spark_fp...
 	sync
 	/etc/init.d/mount stop
-	fp_control -l 0 0 >/dev/null 2>&1
-	fp_control -l 1 0 >/dev/null 2>&1
-	sync; sync
-	spark_fp -w $WAKEUP_TIME
-	sleep 1;
+	sync
+	sleep 1
+	echo > /dev/vfd
+	spark_fp -L 0 -L 1 -w $WAKEUP_TIME
 	;;
 esac
