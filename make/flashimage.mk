@@ -48,6 +48,24 @@ flashimage: flash-prepare flash-build
 		echo; echo; echo "SPARK flash image is in build_tmp/enigma2:"; ls -l *; \
 		echo; echo "copy this directory onto an USB stick and flash via the boot loader.";
 endif
+ifeq ($(PLATFORM), azbox)
+flashimage: flash-prepare flash-build
+	set -e; cd $(BUILD_TMP); \
+		curl -f -z update.ext -o update.ext -# \
+			http://azbox-enigma2-project.googlecode.com/files/update.ext
+	@set -e; $(REMOVE)/webif-image; mkdir $(BUILD_TMP)/webif-image; \
+		cd $(BUILD_TMP)/webif-image; \
+		cp -a $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/zbimage-linux-xload .; \
+		cp -a $(SUMIMG) flash.jffs2; \
+		ln flash.jffs2 image0.jffs2; \
+		cp -a $(BUILD_TMP)/update.ext .; \
+		tar cvf webif-update.tar zbimage-linux-xload flash.jffs2; \
+		zip -o usb-update.zip zbimage-linux-xload image0.jffs2 update.ext; \
+		echo; echo; echo "AZbox flash image is in build_tmp/webif-image/webif-update.tar."; \
+		echo "AZbox USB update is in build_tmp/webif-image/usb-update.zip."; \
+		echo; echo "flash this via the rescue boot / webinterface."
+endif
+
 ifeq ($(PLATFORM), tripledragon)
 flashimage:
 	@echo flashimage is not a supported target for $(PLATFORM)
