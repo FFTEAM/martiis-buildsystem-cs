@@ -46,7 +46,7 @@ if [ ! -e /etc/ld.so.cache ] || [ /etc/ld.so.conf -nt /etc/ld.so.cache ]; then
 fi
 
 # set mixer values to a reasonable level
-if wait_for_device /dev/snd/controlC1 5; then
+if wait_for_device /dev/snd/controlC1 20; then
 	for MIXER in Analog SPDIF HDMI ; do
 		amixer -c 1 set $MIXER playback '75%' unmute
 	done
