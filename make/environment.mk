@@ -170,3 +170,6 @@ OPKG_SH = $(OPKG_SH_ENV) opkg.sh
 TDT_GIT ?= $(GITORIOUS)/~martii/open-duckbox-project-sh4/martiis-tdt.git
 TDT_SRC ?= $(SOURCE_DIR)/tdt
 #endif
+
+ROOTFS_TYPE ?= yaffs2 # either "default", or "yaffs2"
+

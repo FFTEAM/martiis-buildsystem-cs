@@ -100,10 +100,11 @@ COMMONPATCHES_24 = \
 		linux-sh4-lzma-fix_stm24$(PATCH_STR).patch \
 		linux-tune_stm24.patch
 
+
 SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
 	linux-sh4-stmmac_stm24$(PATCH_STR).patch \
 	linux-sh4-lmb_stm24$(PATCH_STR).patch \
-	linux-sh4-spark_setup_stm24$(PATCH_STR)_yaffs2.patch \
+	linux-sh4-spark_setup_stm24$(PATCH_STR)_$(ROOTFS_TYPE).patch \
 	linux-sh4-cifs-unaligned-mem-access-kernel_stm24.patch \
 	linux-sh4-linux_yaffs2_stm24$(PATCH_STR).patch
 

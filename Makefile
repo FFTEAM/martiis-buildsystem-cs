@@ -117,7 +117,7 @@ include make/gstreamer.mk
 include make/packages.mk
 include make/plugins.mk
 include make/example.mk
-ifeq ($(PLATFORM), spark)
+ifeq ($(ROOTFS_TYPE), yaffs2)
  include make/flashimage-yaffs2.mk
 else
  include make/flashimage.mk

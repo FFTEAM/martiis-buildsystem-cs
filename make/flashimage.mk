@@ -40,7 +40,7 @@ endif
 ifeq ($(PLATFORM), spark)
 # you should probably "make system-pkgs" before...
 # this has been tested by flashing from an USB stick on GM 990
-flashimage: flash-prepare flash-build
+flashimage: system-pkgs flash-prepare flash-build
 	@set -e; rm -rf $(BUILD_TMP)/enigma2; mkdir $(BUILD_TMP)/enigma2; \
 		cd $(BUILD_TMP)/enigma2; \
 		cp -a $(BUILD_TMP)/uImage .; \
