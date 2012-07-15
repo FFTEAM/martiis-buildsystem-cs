@@ -1,0 +1,21 @@
+--- libnl-1.1/include/netlink-local.h-orig	2008-01-14 16:48:45.000000000 +0100
++++ libnl-1.1/include/netlink-local.h	2012-07-15 09:32:34.371596567 +0200
+@@ -26,6 +26,7 @@
+ #include <sys/socket.h>
+ #include <inttypes.h>
+ #include <assert.h>
++#include <limits.h>
+ 
+ #include <arpa/inet.h>
+ #include <netdb.h>
+--- libnl-1.1/lib/socket.c-orig	2008-01-14 16:48:45.000000000 +0100
++++ libnl-1.1/lib/socket.c	2012-07-15 09:31:58.641596490 +0200
+@@ -153,7 +153,7 @@
+ 		return;
+ 	
+ 	nr = port >> 22;
+-	used_ports_map[nr / 32] &= ~((nr % 32) + 1);
++	used_ports_map[nr / 32] &= ~(1 << nr % 32);
+ }
+ 
+ /**

@@ -617,4 +617,19 @@ $(D)/libdvbsi++: $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+$(D)/libnl: $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz
+	$(REMOVE)/libnl-$(LIBNL_VER)
+	$(UNTAR)/libnl-$(LIBNL_VER).tar.gz && \
+	cd $(BUILD_TMP)/libnl-$(LIBNL_VER) && \
+	patch -p1 <  $(PATCHES)/libnl-1.1.diff && \
+	cd $(BUILD_TMP)/libnl-$(LIBNL_VER) && \
+	$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls --with-lib-prefix=$(TARGETPREFIX) && \
+	$(MAKE) && \
+	$(MAKE) install DESTDIR=$(TARGETPREFIX) && \
+	mkdir -p $(PKGPREFIX)/lib && \
+	cp -a $(TARGETPREFIX)/lib/libnl.so* $(PKGPREFIX)/lib && \
+	PKG_VER=$(LIBNL_VER) $(OPKG_SH) $(CONTROL_DIR)/libnl && \
+	$(REMOVE)/.remove $(PKGPREFIX) && \
+	touch $@
+
 PHONY += ncurses-prereq

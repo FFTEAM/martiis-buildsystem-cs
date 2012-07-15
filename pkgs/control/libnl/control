@@ -1,0 +1,11 @@
+Package: libnl
+Version: @VER@-1
+Description: Netlink Protocol Library Suite
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.infradead.org/~tgr/libnl/
+Source:
+Depends:
+Provides: libnl.so.1, libnl.so.1.1

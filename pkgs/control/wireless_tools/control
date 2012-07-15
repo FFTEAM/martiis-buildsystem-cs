@@ -1,0 +1,10 @@
+Package: wireless_tools
+Version: @VER@-1
+Description: Wireless Tools
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/Tools.html
+Source:
+Depends: libc.so.6

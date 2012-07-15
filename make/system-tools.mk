@@ -514,7 +514,7 @@ endif
 	touch $@
 
 $(D)/yaffs2utils: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(TARGETPREFIX)
-	-mkdir -p $(TARGETPREFIX)/sbin $(PKGPREFIX)/sbin;
+	-rm -rf $(PKGPREFIX) ; mkdir -p $(TARGETPREFIX)/sbin $(PKGPREFIX)/sbin; \
 	$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz ; \
 	mv $(BUILD_TMP)/$(YAFFS2UTILS-VER) $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER) ; \
 	set -e; cd $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER); \
@@ -525,7 +525,32 @@ $(D)/yaffs2utils: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(TARGETPRE
 	$(REMOVE)/yaffs2utils-$(YAFFS2UTILS-VER) $(PKGPREFIX) ; \
 	touch $@
 
-system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp
+$(D)/wireless_tools: $(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz | $(TARGETPREFIX)
+	-rm -rf $(PKGPREFIX) ; mkdir $(PKGPREFIX); \
+	$(UNTAR)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz && \
+	set -e; cd $(BUILD_TMP)/wireless_tools.$(WIRELESSTOOLS_VER) && sed -i "s/CC = gcc/CC = $(TARGET)-gcc/" Makefile && \
+	make PREFIX=$(PKGPREFIX) install && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/man && \
+	PKG_VER=$(WIRELESSTOOLS_VER) $(OPKG_SH) $(CONTROL_DIR)/wireless_tools && \
+	$(REMOVE)/wireless_tools-$(WPASUPP-VER) $(PKGPREFIX) && \
+	touch $@
+
+$(D)/wpa_supplicant: libnl $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz | $(TARGETPREFIX)
+	-rm -rf $(PKGPREFIX) ; mkdir -p $(TARGETPREFIX)/sbin $(PKGPREFIX)/sbin; \
+	$(BUILDENV) ; $(UNTAR)/wpa_supplicant-$(WPASUPP_VER).tar.gz && \
+	cd $(BUILD_TMP)/wpa_supplicant-$(WPASUPP_VER)/wpa_supplicant && \
+	cp $(PATCHES)/wpa_supplicant.config .config && \
+	cd $(BUILD_TMP)/wpa_supplicant-$(WPASUPP_VER)/wpa_supplicant && \
+	make CC=$(TARGET)-gcc TARGETPREFIX=$(TARGETPREFIX) wpa_supplicant && \
+	$(TARGET)-strip --strip-unneeded wpa_supplicant && \
+	cp -a wpa_supplicant $(TARGETPREFIX)/sbin/ && \
+	cp -a wpa_supplicant $(PKGPREFIX)/sbin/ && \
+	PKG_VER=$(WPASUPP_VER) $(OPKG_SH) $(CONTROL_DIR)/wpa_supplicant && \
+	$(REMOVE)/wpa_supplicant-$(WPASUPP-VER) $(PKGPREFIX) && \
+	touch $@
+
+system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools
 system-tools-opt: $(D)/samba2 $(D)/xfsprogs $(D)/vsftpd
 system-tools-all: system-tools system-tools-opt
 

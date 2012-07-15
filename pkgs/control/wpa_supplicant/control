@@ -1,0 +1,11 @@
+Package: wpa_supplicant
+Version: @VER@-1
+Description: WPA Supplicant
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://hostap.epitest.fi
+Source:
+Depends: libc.so.6, libnl.so.1
+Provides: wpa_supplicant

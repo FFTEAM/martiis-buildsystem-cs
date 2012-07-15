@@ -222,6 +222,15 @@ FUSE_VER=2.8.5
 # ALSA, the Advanced Linux Sound Architecture
 ALSA_VER=1.0.25
 
+# WPA Supplicant
+WPASUPP_VER=1.0
+
+# Wireless Tools
+WIRELESSTOOLS_VER=29
+
+# Netlink Protocol Library Suite (libnl)
+LIBNL_VER=1.1
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

@@ -290,6 +290,16 @@ $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2:
 $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
 	$(WGET) ftp://ftp.alsa-project.org/pub/utils/alsa-utils-$(ALSA_VER).tar.bz2
 
+$(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz:
+	$(WGET) http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz
+
+$(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz:
+	$(WGET) http://hostap.epitest.fi/releases/wpa_supplicant-$(WPASUPP_VER).tar.gz
+
+$(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz:
+	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/libn/libnl/libnl_$(LIBNL_VER).orig.tar.gz
+
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \
 $(ARCHIVE)/azbox%-mrua-3.11.tar.gz \
