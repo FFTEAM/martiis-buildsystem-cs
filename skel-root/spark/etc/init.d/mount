@@ -32,7 +32,7 @@ start)
 		esac
 	fi
 		rm /tmp/.init_mount
-	} &
+	) &
 	exit 0
 	;;
 stop)

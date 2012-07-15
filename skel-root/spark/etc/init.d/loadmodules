@@ -48,7 +48,6 @@ start)
 		s/^\(\S\+\)-/\1_/g;
 		s/^\(\S\+\)-/\1_/g;
 		p }" /etc/modprobe.conf)
-	im aotom
 	echo loading > /dev/vfd
 	im uinput
 	im e2_proc
