@@ -1,1 +1,0 @@
-stlinux-210.mk
