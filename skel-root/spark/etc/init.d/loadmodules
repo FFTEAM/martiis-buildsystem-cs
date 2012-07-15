@@ -56,8 +56,12 @@ start)
 	MEMSIZE=12m	# neutrino now needs 12m for FB scaling backbuffer
 	VM=$(get_vidmode)
 	im stmfb.ko display0=$VM:$MEMSIZE:pal:yuv:yuv
-	ustslave /dev/st231-1 /boot/audio.elf
-	ustslave /dev/st231-0 /boot/video.elf
+	touch /tmp/.loading_firmware
+	(
+		ustslave /dev/st231-1 /boot/audio.elf
+		ustslave /dev/st231-0 /boot/video.elf
+		rm /tmp/.loading_firmware
+	) &
 	im cpu_frequ
 	im embxshell
 	im embxmailbox mailbox0=0xfe211000:136:set2 mailbox1=0xfe212000:0
@@ -84,5 +88,9 @@ start)
 	im bpamem
 	im smartcard
 	[ -f /etc/modules.extra ] && eval `awk '{ if ($1) print "modprobe " $1 " " $2,$3,$4,$5,$6,$7,$8,$9 "; "}' < /etc/modules.extra`
+	while [ -f /tmp/loading_firmware ] ; do
+        	usleep 100000   # 100ms
+	done
+	echo done loading > /dev/vfd
 	;;
 esac

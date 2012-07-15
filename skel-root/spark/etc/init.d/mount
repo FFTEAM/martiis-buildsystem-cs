@@ -2,6 +2,8 @@
 
 case $1 in
 start)
+	(
+		touch /tmp/.init_mount
 	# actually only mounts devpts with the default fstab...
 	/bin/mount -a
 	if grep -q swap /etc/fstab; then # todo: better grep ;-)
@@ -29,6 +31,8 @@ start)
 			*)	;;	# do nothing on internal FLASH
 		esac
 	fi
+		rm /tmp/.init_mount
+	} &
 	exit 0
 	;;
 stop)
