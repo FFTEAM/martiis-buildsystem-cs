@@ -12,7 +12,7 @@ mount -t yaffs2 /dev/mtdblock6 $N
 B=backup
 mkdir $B
 W=""
-[ -f /root/neutrino-backup-files ] && W=`grep -v ^# /root/neutrino-backup-files`
+[ -f /root/neutrino-backup-files ] && W=`grep -v ^# /root/neutrino-backup-files`
 W="$W
 root
 var/tuxbox/config
@@ -21,7 +21,7 @@ etc/network/interfaces
 etc/resolv.conf
 etc/modules.extra
 "
-tar -C $N -cf - `echo $W | sort -u`| tar -C $B -xf -
+tar -C $N -cf - $W | tar -C $B -xf -
 umount $N
 
 #install
