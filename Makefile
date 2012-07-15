@@ -97,7 +97,7 @@ endif
 	@echo
 
 ifeq ($(BOXARCH), sh4)
-include make/stlinux.mk
+include make/stlinux-210.mk
 endif
 # define package versions first...
 include make/versions.mk
@@ -110,7 +110,11 @@ include make/devel-tools.mk
 #include make/tuxbox.mk
 include make/neutrino.mk
 include make/cleantargets.mk
+ifeq ($(BOXARCH), sh4)
+include make/linuxkernel-210.mk
+else
 include make/linuxkernel.mk
+endif
 include make/archives.mk
 include make/extras.mk
 include make/gstreamer.mk
