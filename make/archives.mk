@@ -36,7 +36,7 @@ $(ARCHIVE)/dpfhack_pearl.zip:
 	$(WGET) -O $@ https://nodeload.github.com/makefu/dpfhack_pearl/zipball/master
 
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
-	$(WGET) http://ftp.de.debian.org/debian/pool/main/e/evtest/evtest_1.29.orig.tar.bz2
+	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2
 
 $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz:
 	$(WGET) http://libass.googlecode.com/files/libass-$(LIBASS_VER).tar.gz
@@ -62,8 +62,8 @@ $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz:
 $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif-4.x/libungif-$(UNGIF_VER)/libungif-$(UNGIF_VER).tar.bz2
 
-$(ARCHIVE)/libupnp-$(LIBUPNP-VER).tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP-VER)/libupnp-$(LIBUPNP-VER).tar.bz2
+$(ARCHIVE)/libupnp-$(LIBUPNP_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP_VER)/libupnp-$(LIBUPNP_VER).tar.bz2
 
 $(ARCHIVE)/libusb-1.0.8.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.8/libusb-1.0.8.tar.bz2
