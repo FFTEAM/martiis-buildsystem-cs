@@ -299,6 +299,8 @@ $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz:
 $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz:
 	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/libn/libnl/libnl_$(LIBNL_VER).orig.tar.gz
 
+$(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz:
+	$(WGET) -O $@ http://projects.vdr-developer.org/git/graphlcd-base.git/snapshot/graphlcd-base-$(GRAPHLCD_VER).tar.gz
 
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \

@@ -231,6 +231,9 @@ WIRELESSTOOLS_VER=29
 # Netlink Protocol Library Suite (libnl)
 LIBNL_VER=1.1
 
+# GraphLCD
+GRAPHLCD_VER = a39f265732d0bc28cb66b58b5ecf1964a130d02b
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

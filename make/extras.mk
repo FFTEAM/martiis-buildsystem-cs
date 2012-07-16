@@ -608,28 +608,29 @@ $(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(AR
 GRAPHLCD_OBJDIR=$(BUILD_TMP)/graphlcd-base-touchcol
 GRAPHLCD_ARCHIVE=$(ARCHIVE)/graphlcd-base-touchcol.tar.gz
 
-$(ARCHIVE)/graphlcd-base-touchcol.tar.gz:
-	cd $(BUILD_TMP) && \
-	rm -rf graphlcd-base-touchcol && \
-	git clone git://projects.vdr-developer.org/graphlcd-base.git -b touchcol graphlcd-base-touchcol && \
-	cd graphlcd-base-touchcol && \
-	git checkout a39f265732d0bc28cb66b58b5ecf1964a130d02b && \
-	tar -C $(BUILD_TMP) -zcf $@ graphlcd-base-touchcol && \
-	$(PATCH)/graphlcd.patch
+#$(ARCHIVE)/graphlcd-base-touchcol.tar.gz:
+#	cd $(BUILD_TMP) && \
+#	rm -rf graphlcd-base-touchcol && \
+#	git clone git://projects.vdr-developer.org/graphlcd-base.git -b touchcol graphlcd-base-touchcol && \
+#	cd graphlcd-base-touchcol && \
+#	git checkout a39f265732d0bc28cb66b58b5ecf1964a130d02b && \
+#	tar -C $(BUILD_TMP) -zcf $@ graphlcd-base-touchcol && \
+#	$(PATCH)/graphlcd.patch
 
-$(D)/graphlcd-base-touchcol: $(GRAPHLCD_ARCHIVE) libusb-compat | $(TARGETPREFIX)
-	-rm -rf $(PKGPREFIX)
-	set -e; if [ ! -d $(GRAPHLCD_OBJDIR) ]; then tar -C $(BUILD_TMP) -xpf $(GRAPHLCD_ARCHIVE) && cd $(GRAPHLCD_OBJDIR) && $(PATCH)/graphlcd.patch ; fi ;\
-	cd $(GRAPHLCD_OBJDIR) && \
-	$(MAKE) -C glcdgraphics all TARGET=$(TARGET)- && \
-	$(MAKE) -C glcddrivers all TARGET=$(TARGET)- && \
-	$(MAKE) -C glcdgraphics install DESTDIR=$(TARGETPREFIX) && \
-	$(MAKE) -C glcddrivers install DESTDIR=$(TARGETPREFIX) && \
-	cd $(BUILD_TMP) && \
-	mkdir -p $(PKGPREFIX)/lib && \
-	cp -a $(TARGETPREFIX)/lib/libglcd{drivers,graphics}* $(PKGPREFIX)/lib && \
-	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/graphlcd-base-touchcol && \
-	rm -rf $(GRAPHLCD_OBJDIR) && \
+$(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz libusb-compat | $(TARGETPREFIX)
+	-$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX)
+	set -e ; $(UNTAR)/graphlcd-base-$(GRAPHLCD_VER).tar.gz ;\
+	cd $(BUILD_TMP)/graphlcd-base-$(GRAPHLCD_VER) ;\
+	$(PATCH)/graphlcd.patch ;\
+	$(MAKE) -C glcdgraphics all TARGET=$(TARGET)- ;\
+	$(MAKE) -C glcddrivers all TARGET=$(TARGET)- ;\
+	$(MAKE) -C glcdgraphics install DESTDIR=$(TARGETPREFIX) ;\
+	$(MAKE) -C glcddrivers install DESTDIR=$(TARGETPREFIX) ;\
+	cd $(BUILD_TMP) ;\
+	mkdir -p $(PKGPREFIX)/lib ;\
+	cp -a $(TARGETPREFIX)/lib/libglcd{drivers,graphics}* $(PKGPREFIX)/lib ;\
+	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/graphlcd-base-touchcol ;\
+	$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX) ;\
 	touch $(D)/graphlcd-base-touchcol
 
 $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
