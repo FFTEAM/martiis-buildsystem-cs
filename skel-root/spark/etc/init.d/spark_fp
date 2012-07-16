@@ -18,7 +18,6 @@ im()
 
 case $1 in
 start)
-	im aotom
 	read dummy dummy KVER dummy < /proc/version
 	# set all "option foo ..." as OPT_foo="..." variables
 	eval $(sed -n "/^options\s/{
@@ -27,6 +26,7 @@ start)
 		s/^\(\S\+\)-/\1_/g;
 		s/^\(\S\+\)-/\1_/g;
 		p }" /etc/modprobe.conf)
+	im aotom
 	WAKEUP=$(spark_fp -g)
 	REASON=$?
 	echo "wakeup reason: $REASON ($WAKEUP)"
