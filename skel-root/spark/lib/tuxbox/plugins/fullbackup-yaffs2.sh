@@ -25,13 +25,12 @@ dd if=/dev/mtd5 of=$U bs=8192 count=$Z1
 truncate -s $Z $U 2>/dev/null
 
 echo "Creating YAFFS2 image ... please wait."
-# Create YAFFS2 image
 unspare2 /dev/mtd6 oob.img
 mkdir yaffs2
 mount --bind / $R
 mkyaffs2 -v -o $O $R e2yaffs2.img
 
-rm $O $CO
+rm $O
 
 umount $R
 rmdir $R
