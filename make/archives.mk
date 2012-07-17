@@ -302,6 +302,9 @@ $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz:
 $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz:
 	$(WGET) -O $@ http://projects.vdr-developer.org/git/graphlcd-base.git/snapshot/graphlcd-base-$(GRAPHLCD_VER).tar.gz
 
+$(ARCHIVE)/lzo-$(LZO_VER).tar.gz:
+	$(WGET) -O $@ http://www.oberhumer.com/opensource/lzo/download/lzo-$(LZO_VER).tar.gz
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \
 $(ARCHIVE)/azbox%-mrua-3.11.tar.gz \

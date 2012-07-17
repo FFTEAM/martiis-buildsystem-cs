@@ -1,0 +1,10 @@
+Package: mtd-utils
+Version: @VER@-1
+Description: Utilities to create a jffs2 image on Linux
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage:
+Source:
+Depends: libc.so.6

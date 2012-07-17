@@ -525,6 +525,29 @@ $(D)/yaffs2utils: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(TARGETPRE
 	$(REMOVE)/yaffs2utils-$(YAFFS2UTILS-VER) $(PKGPREFIX) ; \
 	touch $@
 
+$(D)/lzo: $(ARCHIVE)/lzo-$(LZO_VER).tar.gz
+	-rm -rf $(PKGPREFIX) ; mkdir -p $(TARGETPREFIX)/sbin $(PKGPREFIX)/sbin; \
+	$(UNTAR)/lzo-$(LZO_VER).tar.gz && \
+	cd $(BUILD_TMP)/lzo-$(LZO_VER) && \
+	$(BUILDENV) ./configure \
+		--build=$(BUILD) \
+		--host=$(TARGET) \
+		--target=$(TARGET) \
+		--prefix= \
+		&& \
+	$(MAKE) install DESTDIR=$(TARGETPREFIX) && \
+	touch $@
+
+$(D)/mtd-utils: $(D)/zlib $(D)/lzo $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 | $(TARGETPREFIX)
+	-rm -rf $(PKGPREFIX) ; mkdir -p $(PKGPREFIX)/sbin ; \
+	$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 ; \
+	set -e; cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER); \
+		$(BUILDENV) $(MAKE) PREFIX= CC=${TARGET}-gcc LD=${TARGET}-ld STRIP=${TARGET}-strip `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1 DESTDIR=$(TARGETPREFIX) install ; \
+	cp -a $(TARGETPREFIX)/sbin/{mkfs.jffs2,sumtool} $(PKGPREFIX)/sbin ; \
+	PKG_VER=$(MTD_UTILS_VER) $(OPKG_SH) $(CONTROL_DIR)/mtd-utils ; \
+	$(REMOVE)/mtd-utils-$(MTD_UTILS_VER) $(PKGPREFIX) ; \
+	touch $@
+
 $(D)/wireless_tools: $(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz | $(TARGETPREFIX)
 	-rm -rf $(PKGPREFIX) ; mkdir $(PKGPREFIX); \
 	$(UNTAR)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz && \

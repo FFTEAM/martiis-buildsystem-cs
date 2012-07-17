@@ -4,8 +4,16 @@ SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
 SYSTEM_OPKGS =
 
 # additional stuff which is useful on most systems
-SYSTEM_PKGS  += e2fsprogs xfsprogs yaffs2utils dropbear alsa-utils wireless_tools wpa_supplicant
-SYSTEM_OPKGS += e2fsprogs xfsprogs yaffs2utils dropbear alsa-utils wireless_tools wpa_supplicant
+SYSTEM_PKGS  += e2fsprogs xfsprogs dropbear alsa-utils wireless_tools wpa_supplicant
+SYSTEM_OPKGS += e2fsprogs xfsprogs dropbear alsa-utils wireless_tools wpa_supplicant
+
+ifeq ($(ROOTFS_TYPE), yaffs2)
+SYSTEM_PKGS  += yaffs2utils
+SYSTEM_OPKGS += yaffs2utils
+else
+SYSTEM_PKGS  += mtd-tools
+SYSTEM_OPKGS += mtd-tools
+endif
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
