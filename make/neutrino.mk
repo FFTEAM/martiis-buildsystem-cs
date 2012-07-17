@@ -86,7 +86,7 @@ endif
 
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
 
-$(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
+$(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2) fbshot
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
@@ -120,6 +120,7 @@ endif
 ifeq ($(PLATFORM), azbox)
 	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
 endif
+	install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
