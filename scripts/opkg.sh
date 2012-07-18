@@ -170,6 +170,11 @@ if [ -n "$PKG_DEP" ]; then
 	fi
 fi
 
+if grep -E '@DEP@|@PROV@|@VER@' CONTROL/control; then
+	echo "${ME}: ERROR: placeholders not substituted. Something went wrong."
+	exit 1
+fi
+
 # extract package name and version from control file...
 eval $(awk -F":[ \t]*" \
 	'/^Package:/{print "NAME=\""$2"\""};
