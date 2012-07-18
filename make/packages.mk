@@ -11,8 +11,8 @@ ifeq ($(ROOTFS_TYPE), yaffs2)
 SYSTEM_PKGS  += yaffs2utils
 SYSTEM_OPKGS += yaffs2utils
 else
-SYSTEM_PKGS  += mtd-tools
-SYSTEM_OPKGS += mtd-tools
+SYSTEM_PKGS  += mtd-utils
+SYSTEM_OPKGS += mtd-utils
 endif
 
 ifeq ($(USE_GRAPHLCD), yes)

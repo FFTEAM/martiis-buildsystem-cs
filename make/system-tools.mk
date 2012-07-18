@@ -538,6 +538,9 @@ $(D)/lzo: $(ARCHIVE)/lzo-$(LZO_VER).tar.gz
 	$(MAKE) install DESTDIR=$(TARGETPREFIX) && \
 	touch $@
 
+$(TARGETPREFIX)/include/lzo/lzo1x.h:
+	rm $(D)/lzo
+
 $(D)/mtd-utils: $(D)/zlib $(D)/lzo $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 | $(TARGETPREFIX)
 	-rm -rf $(PKGPREFIX) ; mkdir -p $(PKGPREFIX)/sbin ; \
 	$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 ; \

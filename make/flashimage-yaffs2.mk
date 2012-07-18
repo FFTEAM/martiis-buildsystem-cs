@@ -19,10 +19,6 @@ local-install:
 
 flash-prepare: local-install
 
-yaffs2utils_installed: /bin/mkyaffs2
-
-/bin/mkyaffs2: yaffs2utils-host
-
 flash-build:
 	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
 	mkyaffs2 --all-root -v -o $(BASE_DIR)/misc/oob-spark.img $(BUILD_TMP)/install $(FLASHIMG)
@@ -51,4 +47,4 @@ yaffs2utils-host: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(HOSTPREFI
 	cd $(BUILD_TMP) && \
 	rm -rf $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host
 
-PHONY += flashimage mtd-utils
+PHONY += flashimage yaffs2utils-host
