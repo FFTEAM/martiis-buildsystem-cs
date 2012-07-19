@@ -44,8 +44,9 @@ endif
 ifeq ($(PLATFORM), spark)
 # this is a hack: stfbcontrol triggers include/linux/stmfb.h,
 # which is needed by framebuffer_spark
-NEUTRINO_DEPS2 += | stfbcontrol
+NEUTRINO_DEPS2 += $(TARGETPREFIX)/bin/stfbcontrol
 endif
+NEUTRINO_DEPS2 += $(TARGETPREFIX)/bin/fbshot
 
 # the original build script links against openssl, but it is not needed at all.
 # libcurl is picked up by configure anyway, so not needed here.
@@ -125,6 +126,7 @@ endif
 ifeq ($(PLATFORM), azbox)
 	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
 endif
+	install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)
