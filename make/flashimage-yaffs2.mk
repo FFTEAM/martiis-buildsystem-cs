@@ -17,7 +17,7 @@ local-install:
 		cp -a -v $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
 	fi
 
-flash-prepare: local-install
+flash-prepare: local-install $(HOSTPREFIX)/bin/mkyaffs2
 
 flash-build:
 	ln -sf /share/zoneinfo/CET $(BUILD_TMP)/install/etc/localtime # CET is the default in a fresh neutrino install
@@ -38,6 +38,9 @@ flashimage: system-pkgs flash-prepare flash-build
 
 # installed *on the host*, this is not a cross-build...
 #
+
+$(HOSTPREFIX)/bin/mkyaffs2: yaffs2utils-host
+
 yaffs2utils-host: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(HOSTPREFIX)/bin
 	$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz && \
 	cd $(BUILD_TMP) && \
