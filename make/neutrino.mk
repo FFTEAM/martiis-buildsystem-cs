@@ -39,8 +39,9 @@ endif
 ifeq ($(PLATFORM), spark)
 # this is a hack: stfbcontrol triggers include/linux/stmfb.h,
 # which is needed by framebuffer_spark
-NEUTRINO_DEPS2 += | stfbcontrol
+NEUTRINO_DEPS2 += $(TARGETPREFIX)/bin/stfbcontrol
 endif
+NEUTRINO_DEPS2 += $(TARGETPREFIX)/bin/fbshot
 
 # the original build script links against openssl, but it is not needed at all.
 # libcurl is picked up by configure anyway, so not needed here.
@@ -86,7 +87,7 @@ endif
 
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
 
-$(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2) fbshot
+$(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
