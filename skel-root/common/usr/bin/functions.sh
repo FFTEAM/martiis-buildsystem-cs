@@ -7,7 +7,7 @@ case $1 in
 	/etc/init.d/cam restart
 	;;
 2)
-	reboot
+	/bin/touch /tmp/.reboot ; reboot
 	;;
 *)
 	;;
