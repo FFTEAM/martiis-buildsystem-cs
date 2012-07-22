@@ -75,12 +75,12 @@ $(HOSTPREFIX)/bin/mkfs.jffs2: mtd-utils-host
 
 mtd-utils-host: $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 | $(HOSTPREFIX)/bin
 	if test ! -d $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host ; then \
-		set +e; mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-target ; set -e; \
+		set +e; mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-target 2>/dev/null; set -e; \
 		$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 && \
 			mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host ;\
-		set +e; mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-target $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) ; set -e; \
+		set +e; mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-target $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) 2>/dev/null; set -e; \
 	fi
-	cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) && \
+	cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host && \
 		$(MAKE) `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1 && \
 		mv mkfs.jffs2 sumtool $(HOSTPREFIX)/bin && \
 		rm -rf $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host && exit ; \
