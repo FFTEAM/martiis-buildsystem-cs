@@ -598,11 +598,14 @@ $(D)/libattr1: $(ARCHIVE)/attr-$(ATTR_VER).src.tar.gz
 	$(REWRITE_LIBTOOL)/libattr.la
 	touch $@
 
-$(D)/libdvbsi++: $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
+$(D)/libdvbsi++: $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2 \
+$(PATCHES)/libdvbsi++-src-time_date_section.cpp-fix-sectionLength-check.patch \
+$(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER)
 	$(UNTAR)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/libdvbsi++-$(LIBDVBSI_VER); \
-			patch -p1 <  $(PATCHES)/libdvbsi++-src-time_date_section.cpp-fix-sectionLength-check.patch; \
+			$(PATCH)/libdvbsi++-src-time_date_section.cpp-fix-sectionLength-check.patch; \
+			$(PATCH)/libdvbsi++-fix-unaligned-access-on-SuperH.patch; \
 			$(CONFIGURE) \
 				--prefix=$(TARGETPREFIX) \
 				--build=$(BUILD) \
@@ -614,7 +617,7 @@ $(D)/libdvbsi++: $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 	PKG_DEP=" " PKG_VER=$(LIBDVBSI_VER) PKG_VER=$(LIBDVBSI_VER) \
 	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
 	$(OPKG_SH) $(CONTROL_DIR)/libdvbsi++
-	rm -rf $(PKGPREFIX)
+	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER) $(PKGPREFIX)
 	touch $@
 
 PHONY += ncurses-prereq
