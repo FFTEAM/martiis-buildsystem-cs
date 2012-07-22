@@ -278,7 +278,7 @@ else
 endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
-		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff; \
+		echo $(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff; \
 		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
 		./configure \
 			--disable-encoders \
