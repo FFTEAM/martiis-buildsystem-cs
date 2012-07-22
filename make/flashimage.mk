@@ -4,7 +4,7 @@
 #
 # This is totally untested :-)
 #
-# the needed mkfs.jffs2 and sumtool are built with the mtd-utils target
+# the needed mkfs.jffs2 and sumtool are built with the mtd-utils-host target
 #
 
 TIME := $(shell date +%Y%m%d%H%M)
@@ -18,7 +18,7 @@ local-install:
 		cp -a -v $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
 	fi
 
-flash-prepare: local-install find-mkfs.jffs2 find-sumtool
+flash-prepare: local-install $(HOSTPREFIX)/bin/mkfs.jffs2
 
 flash-build: 
 	echo "/dev/console c 0644 0 0 5 1 0 0 0" > $(BUILD_TMP)/devtable
@@ -71,15 +71,20 @@ flashimage:
 	@echo flashimage is not a supported target for $(PLATFORM)
 endif
 
-#
-# mtd-utils build needs zlib-devel and lzo-devel packages
-# installed *on the host*, this is not a cross-build...
-#
+$(HOSTPREFIX)/bin/mkfs.jffs2: mtd-utils-host
+
 mtd-utils-host: $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 | $(HOSTPREFIX)/bin
-	$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER); \
-		$(MAKE) `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1; \
-		cp -a mkfs.jffs2 sumtool $(HOSTPREFIX)/bin
-	rm -rf $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)
+	if test ! -d $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host ; then \
+		set +e; mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-target ; set -e; \
+		$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 && \
+			mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host ;\
+		set +e; mv $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-target $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) ; set -e; \
+	fi
+	cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER) && \
+		$(MAKE) `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1 && \
+		mv mkfs.jffs2 sumtool $(HOSTPREFIX)/bin && \
+		rm -rf $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER)-host && exit ; \
+		echo; echo; echo "Compiling mtd-utils on the host failed. You'll probably need"; \
+		echo "to install the zlib- and/or lzo-devel packages first."
 
 PHONY += flashimage mtd-utils-host

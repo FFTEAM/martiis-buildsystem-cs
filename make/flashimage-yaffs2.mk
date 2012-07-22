@@ -2,9 +2,7 @@
 # the contents need to be in $(BUILD_TMP)/install
 # e.g. installed with "make minimal-system-pkgs"
 #
-# This is totally untested :-)
-#
-# the needed mkyaffs2 binary is build with the yaffs2utils target
+# the needed mkyaffs2 binary is build with the yaffs2utils-host target
 #
 
 TIME := $(shell date +%Y%m%d%H%M)
@@ -36,18 +34,16 @@ flashimage: system-pkgs flash-prepare flash-build
 		echo; echo "Copy this directory to an USB stick, boot SPARK"; \
 		echo "and run either upgrade_yaffs2.sh or install_yaffs2.sh"
 
-# installed *on the host*, this is not a cross-build...
-#
-
 $(HOSTPREFIX)/bin/mkyaffs2: yaffs2utils-host
 
 yaffs2utils-host: $(ARCHIVE)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz | $(HOSTPREFIX)/bin
-	$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz && \
-	cd $(BUILD_TMP) && \
-	mv $(YAFFS2UTILS-VER) yaffs2utils-$(YAFFS2UTILS-VER)-host ; \
-	cd yaffs2utils-$(YAFFS2UTILS-VER)-host && \
-	make all && cp mkyaffs2 unspare2 unyaffs2 $(HOSTPREFIX)/bin/ && \
-	cd $(BUILD_TMP) && \
-	rm -rf $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host
+	if test ! -d $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host ; then \
+		$(UNTAR)/yaffs2utils-$(YAFFS2UTILS-VER).tar.gz && \
+			mv $(BUILD_TMP)/$(YAFFS2UTILS-VER) $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host ;\
+	fi ; \
+	cd $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host && \
+		make all && cp mkyaffs2 unspare2 unyaffs2 $(HOSTPREFIX)/bin/ && \
+		cd $(BUILD_TMP) && \
+		rm -rf $(BUILD_TMP)/yaffs2utils-$(YAFFS2UTILS-VER)-host
 
 PHONY += flashimage yaffs2utils-host
