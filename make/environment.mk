@@ -172,5 +172,5 @@ TDT_SRC ?= $(SOURCE_DIR)/tdt
 #endif
 
 # either "default", or "yaffs2"
-ROOTFS_TYPE ?= yaffs2
+ROOTFS_TYPE ?= default
 
