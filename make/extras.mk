@@ -651,10 +651,10 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	$(UNTAR)/alsa-utils-$(ALSA_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
-		sed -ir -r "s/(alsamixer|amidi|aplay|iecset|speaker-test|seq|alsactl|alsaucm)//g" Makefile.am ;\
-		$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsatest --disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto ;\
-		$(MAKE); \
-		make install DESTDIR=$(PKGPREFIX)
+	cp $(PATCHES)/alsa-utils-1.0.25-Makefile.am  Makefile.am ; \
+	$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsatest --disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto ;\
+	$(MAKE); \
+	make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)/var $(PKGPREFIX)/share $(PKGPREFIX)/lib/pkgconfig
