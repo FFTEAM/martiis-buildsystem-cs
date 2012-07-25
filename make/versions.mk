@@ -159,7 +159,7 @@ FBSHOT-VER=0.3
 TCPDUMP-VER=4.2.0
 
 # timezone files
-TZ_VER = 2012b
+TZ_VER = 2012d
 
 # systemd; a system and service manager for Linux
 SYSTEMD-VER=19
