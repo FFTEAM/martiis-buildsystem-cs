@@ -26,6 +26,7 @@ printenv:
 	@echo "PATH:        `type -p fmt>/dev/null&&echo $(PATH)|sed 's/:/ /g' |fmt -65|sed 's/ /:/g; 2,$$s/^/             /;'||echo $(PATH)`"
 	@echo "N_HD_SOURCE: $(N_HD_SOURCE)"
 	@echo "BOXARCH:     $(BOXARCH)"
+	@echo "ROOTFS_TYPE: $(ROOTFS_TYPE)"
 	@echo "PLATFORM:    $(PLATFORM)"
 	@echo "MAINTAINER:  $(MAINTAINER)"
 	@echo '============================================================================== '
