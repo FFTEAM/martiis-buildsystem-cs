@@ -208,9 +208,9 @@ print-targets:
 		`ls -1 make/*.mk|grep -v make/unmaintained.mk` Makefile | \
 		sort | fmt -65
 
-$(BUILD_TMP)/Makefile.archivecheck: make/archives.mk make/versions.mk scripts/archivecheck.pl | $(BUILD_TMP)
+$(BUILD_TMP)/Makefile.archivecheck: | $(BUILD_TMP)
 	rm -f $@
-	scripts/archivecheck.pl > $@
+	BOXARCH=$(BOXARCH) scripts/archivecheck.pl > $@
 
 archivecheck: $(BUILD_TMP)/Makefile.archivecheck
 	make -f $(BUILD_TMP)/Makefile.archivecheck
@@ -224,6 +224,7 @@ archivecheck: $(BUILD_TMP)/Makefile.archivecheck
 .print-phony:
 	@echo $(PHONY)
 
+PHONY += $(BUILD_TMP)/Makefile.archivecheck
 PHONY += everything print-targets
 PHONY += all printenv .print-phony
 PHONY += update-svn update-svn-target update-neutrino update-self
