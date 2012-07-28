@@ -25,9 +25,10 @@ truncate -s $Z $U 2>/dev/null
 
 echo "Creating JFFS2 image ... please wait."
 echo "/dev/console c 0644 0 0 5 1 0 0 0" > devtable
-mkfs.jffs2 -e 0x20000 -p -U -D devtable -d $R -o tmp.img
-sumtool    -e 0x20000 -p -i tmp.img -o e2jffs2.img
-rm tmp.img
+mkdir jffs2
+mount --bind / $R
+mkfs.jffs2 -v -e 0x20000 -p -U -D devtable -d $R -o tmp.img
+sumtool    -v -e 0x20000 -p -i tmp.img -o e2jffs2.img
 
 rm devtable tmp.img
 
