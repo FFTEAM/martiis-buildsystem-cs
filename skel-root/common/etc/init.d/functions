@@ -3,9 +3,11 @@
 run_initscripts() {
 	if [ "x$1" == xstop ]; then
 		action="stop"
+		action_txt="stopping"
 		files="/opt/*/etc/init.d/K[0-9][0-9]* /etc/init.d/K[0-9][0-9]*"
 	else
 		action="start"
+		action_txt="starting"
 		files="/opt/*/etc/init.d/S[0-9][0-9]* /etc/init.d/S[0-9][0-9]*"
 	fi
 
@@ -15,7 +17,7 @@ run_initscripts() {
 		[ "${name:1}" = "[0-9][0-9]*" ] && continue # mis-globbed /opt/*/...
 		for file in /opt/*/etc/init.d/$name /etc/init.d/$name; do
 			if [ -x "$file"  ]; then
-				echo "${action}ing $file ..."
+				echo "$action_txt $file ..."
 				"$file" $action
 				break;
 				# only execute the first of a given name,
