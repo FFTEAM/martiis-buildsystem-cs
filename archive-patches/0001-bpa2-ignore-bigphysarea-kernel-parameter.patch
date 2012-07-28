@@ -1,0 +1,29 @@
+From 4fe74130d82e46236af9697ff3e6db9098dd603f Mon Sep 17 00:00:00 2001
+From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
+Date: Sun, 29 Jul 2012 00:35:39 +0200
+Subject: [PATCH] bpa2: ignore "bigphysarea=" kernel parameter
+
+The spark board setup creates a 32MB "bigphysarea" partition already,
+so the additional one from the command line just wastes memory.
+The parameter is default in U-Boot, so rename it to "bigphysarea2"
+to effectively disable it.
+---
+ mm/bpa2.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/mm/bpa2.c b/mm/bpa2.c
+index 8951668..4b2ae3c 100644
+--- a/mm/bpa2.c
++++ b/mm/bpa2.c
+@@ -350,7 +350,7 @@ static int __init bpa2_bigphys_setup(char *str)
+ 
+ 	return 1;
+ }
+-__setup("bigphysarea=", bpa2_bigphys_setup);
++__setup("bigphysarea2=", bpa2_bigphys_setup);
+ 
+ /*
+  * Create "bpa2parts"-defined partitions
+-- 
+1.7.7
+

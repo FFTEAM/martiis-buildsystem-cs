@@ -238,7 +238,8 @@ TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
 TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
 MY_KERNELPATCHES = \
-	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch
+	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch \
+	$(PATCHES)/0001-bpa2-ignore-bigphysarea-kernel-parameter.patch
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
