@@ -73,7 +73,7 @@ $(D)/tdkernel: $(TDK_DEPS) $(BUILD_TMP)/linux-2.6.12
 		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- all; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
-	$(MAKE) fuse-driver
+	$(MAKE) fuse-driver ramzswap-driver
 	touch $@
 
 # 2.7.5 is the last version which has a kernel module packaged...
@@ -87,6 +87,20 @@ fuse-driver: $(ARCHIVE)/fuse-2.7.5.tar.gz
 		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			DESTDIR=$(TARGETPREFIX)/mymodules install
 	$(REMOVE)/fuse-2.7.5
+
+ramzswap-driver: $(ARCHIVE)/compcache-0.6.2.tar.gz $(PATCHES)/compcache-0.6.2-backport-to-2.6.12.diff
+	$(REMOVE)/compcache-0.6.2
+	$(UNTAR)/compcache-0.6.2.tar.gz
+	set -e; cd $(BUILD_TMP)/compcache-0.6.2; \
+		$(PATCH)/compcache-0.6.2-backport-to-2.6.12.diff; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
+		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL); \
+		make -j1 ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+			INSTALL_MOD_DIR=kernel/drivers/extra \
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+	$(REMOVE)/compcache-0.6.2
 
 kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
