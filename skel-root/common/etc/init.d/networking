@@ -12,6 +12,8 @@ case "$1" in
     	touch /tmp/.init_networking
     	(
 		ifconfig eth0 down
+		ifup eth0
+		ifdown eth0
 		ifup -a
 		rm /tmp/.init_networking
 	) &
