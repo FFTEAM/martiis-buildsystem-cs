@@ -238,7 +238,8 @@ TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
 TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
 MY_KERNELPATCHES = \
-	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch
+	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch \
+	$(PATCHES)/0001-bpa2-ignore-bigphysarea-kernel-parameter.patch
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
@@ -293,6 +294,9 @@ $(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
+$(PATCHES)/sparkdrivers/0002-import-cec-from-pinky-s-git.patch \
+$(PATCHES)/sparkdrivers/0003-aotom-fix-include-file.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
