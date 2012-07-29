@@ -32,6 +32,6 @@ nandwrite -a -o /dev/mtd6 e2yaffs2.img
 
 #restore
 mount -t yaffs2 /dev/mtdblock6 $N
-tar -C backup -cf - . | tar -C $N -xf -
+tar -C $B -cf - . | tar -C $N -xf -
 umount $N
 
