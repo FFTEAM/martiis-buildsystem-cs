@@ -41,8 +41,8 @@ cat >> restore.sh <<EOT
 #!/bin/sh
 flash_eraseall /dev/mtd5
 nandwrite -a -p -m /dev/mtd5 uImage
-flash_eraseall /dev/mtd6
-nandwrite -a -p -o /dev/mtd6 e2jffs2.img
+flash_eraseall -j /dev/mtd6
+nandwrite -a -p -m /dev/mtd6 e2jffs2.img
 EOT
 
 chmod 755 restore.sh

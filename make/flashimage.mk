@@ -45,6 +45,8 @@ flashimage: system-pkgs flash-prepare flash-build
 		cd $(BUILD_TMP)/enigma2; \
 		cp -a $(BUILD_TMP)/uImage .; \
 		cp -a $(SUMIMG) e2jffs2.img; \
+		cp -a $(BASE_DIR)/misc/install_jffs2.sh $(BASE_DIR)/misc/upgrade_jffs2.sh .; \
+		chmod 755 install_jffs2.sh upgrade_jffs2.sh ; \
 		echo; echo; echo "SPARK flash image is in build_tmp/enigma2:"; ls -l *; \
 		echo; echo "copy this directory onto an USB stick and flash via the boot loader.";
 endif
