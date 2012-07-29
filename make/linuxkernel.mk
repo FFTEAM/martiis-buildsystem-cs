@@ -33,7 +33,8 @@ ifeq ($(PLATFORM), tripledragon)
 ############################################################
 K_GCC_PATH ?= $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
 
-$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
+$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 $(PATCHES)/kernel.config-td | $(TARGETPREFIX)
+	rm -rf $@ # clean up or patching will fail
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		tar xvpf $(TD_SVN)/ARMAS/linux-enviroment/kernel/td_patchset_2.6.12.tar.bz2; \
@@ -65,11 +66,11 @@ $(TARGET_MODULE)/extra/td-dvb-frontend.ko: td-dvb-wrapper
 ifeq ($(TD_COMPILER), new)
 TDK_DEPS = $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 endif
-$(D)/tdkernel: $(TDK_DEPS) | $(BUILD_TMP)/linux-2.6.12
+$(D)/tdkernel: $(TDK_DEPS) $(BUILD_TMP)/linux-2.6.12
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig; \
-		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- modules; \
+		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- all; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	$(MAKE) fuse-driver
