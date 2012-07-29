@@ -11,6 +11,7 @@ case "$1" in
 	ifup lo 2>/dev/null
     	touch /tmp/.init_networking
     	(
+		ifconfig eth0 down
 		ifup -a
 		rm /tmp/.init_networking
 	) &
