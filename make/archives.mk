@@ -14,6 +14,9 @@ $(ARCHIVE)/cddfs-0.2.tar.gz:
 $(ARCHIVE)/cdparanoia-III-10.2.src.tgz:
 	$(WGET) http://downloads.xiph.org/releases/cdparanoia/cdparanoia-III-10.2.src.tgz
 
+$(ARCHIVE)/compcache-0.6.2.tar.gz:
+	$(WGET) http://compcache.googlecode.com/files/compcache-0.6.2.tar.gz
+
 $(ARCHIVE)/crosstool-0.43.tar.gz:
 	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
 

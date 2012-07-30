@@ -33,7 +33,8 @@ ifeq ($(PLATFORM), tripledragon)
 ############################################################
 K_GCC_PATH ?= $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
 
-$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
+$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 $(PATCHES)/kernel.config-td | $(TARGETPREFIX)
+	rm -rf $@ # clean up or patching will fail
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		tar xvpf $(TD_SVN)/ARMAS/linux-enviroment/kernel/td_patchset_2.6.12.tar.bz2; \
@@ -65,14 +66,14 @@ $(TARGET_MODULE)/extra/td-dvb-frontend.ko: td-dvb-wrapper
 ifeq ($(TD_COMPILER), new)
 TDK_DEPS = $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 endif
-$(D)/tdkernel: $(TDK_DEPS) | $(BUILD_TMP)/linux-2.6.12
+$(D)/tdkernel: $(TDK_DEPS) $(BUILD_TMP)/linux-2.6.12
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig; \
-		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- modules; \
+		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- all; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
-	$(MAKE) fuse-driver
+	$(MAKE) fuse-driver ramzswap-driver
 	touch $@
 
 # 2.7.5 is the last version which has a kernel module packaged...
@@ -86,6 +87,20 @@ fuse-driver: $(ARCHIVE)/fuse-2.7.5.tar.gz
 		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			DESTDIR=$(TARGETPREFIX)/mymodules install
 	$(REMOVE)/fuse-2.7.5
+
+ramzswap-driver: $(ARCHIVE)/compcache-0.6.2.tar.gz $(PATCHES)/compcache-0.6.2-backport-to-2.6.12.diff
+	$(REMOVE)/compcache-0.6.2
+	$(UNTAR)/compcache-0.6.2.tar.gz
+	set -e; cd $(BUILD_TMP)/compcache-0.6.2; \
+		$(PATCH)/compcache-0.6.2-backport-to-2.6.12.diff; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
+		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL); \
+		make -j1 ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+			INSTALL_MOD_DIR=kernel/drivers/extra \
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+	$(REMOVE)/compcache-0.6.2
 
 kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
