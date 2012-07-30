@@ -127,6 +127,8 @@ ifeq ($(PLATFORM), azbox)
 	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
 endif
 	#install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
+	find $(PKGPREFIX)/share/tuxbox/neutrino/locale/ -type f \
+		! -name deutsch.locale ! -name english.locale | xargs rm
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
 	rm -rf $(PKGPREFIX)

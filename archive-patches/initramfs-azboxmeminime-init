@@ -8,11 +8,19 @@ export EM8XXX_SERVER=":0"
 MINIME=false
 APPEND=""
 
+blink() {
+	local A=0;
+	while echo $A > /proc/led; do
+		usleep 500000
+		A=$(((A+1)%2))
+	done
+}
+
 rescue_shell() {
     echo "Something went wrong. Dropping you to a shell." 
     # minime driver crashes on startrescue
     if $MINIME; then
-	echo 2 > /proc/led
+	blink &
     else
 	echo "1" > /proc/startrescue &
     fi
@@ -27,7 +35,7 @@ rescue_shell() {
     rm -f /boot/.rescue.tmp
     ifconfig eth0 add $tIP netmask 255.255.255.0    
     else
-    udhcpc -t 15 -q -s /bin/simple.script
+    udhcpc -b -t 15 -q -s /bin/simple.script
     fi
 
     /usr/sbin/telnetd
@@ -278,7 +286,7 @@ if $MINIME; then
 fi
 
 if [ $modesel = 2 ] ; then
-   mount -t jffs2 mtd4 /mnt/root
+   mount -t jffs2 $R2 /mnt/root
 elif [ $modesel = 3 ] ; then
    mount -t jffs2 mtd7 /mnt/root
 elif  [ $modesel = 0 ] ; then

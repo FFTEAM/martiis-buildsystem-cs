@@ -73,7 +73,7 @@ $(D)/tdkernel: $(TDK_DEPS) $(BUILD_TMP)/linux-2.6.12
 		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- all; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
-	$(MAKE) fuse-driver ramzswap-driver
+	$(MAKE) fuse-driver
 	touch $@
 
 # 2.7.5 is the last version which has a kernel module packaged...
