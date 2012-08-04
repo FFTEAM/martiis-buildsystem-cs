@@ -278,7 +278,7 @@ else
 endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
-		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
+		$(PATCH)/ffmpeg-$(FFMPEG_VER)-remove-buildtime.diff; \
 		./configure \
 			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
@@ -287,7 +287,7 @@ endif
 			--disable-devices --disable-mmx --disable-altivec \
 			--disable-protocols --enable-protocol=file \
 			--disable-zlib --enable-bzlib \
-			--disable-network --disable-ffprobe \
+			--disable-network \
 			--disable-static --enable-shared \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
