@@ -1,0 +1,13 @@
+--- a/cmdutils.c	2012-08-02 16:42:49.895997796 +0200
++++ b/cmdutils.c	2012-08-02 16:42:49.885998393 +0200
+@@ -567,8 +567,8 @@
+ {
+     fprintf(stderr, "%s version " FFMPEG_VERSION ", Copyright (c) %d-%d the FFmpeg developers\n",
+             program_name, program_birth_year, this_year);
+-    fprintf(stderr, "  built on %s %s with %s %s\n",
+-            __DATE__, __TIME__, CC_TYPE, CC_VERSION);
++    fprintf(stderr, "  built with %s %s\n",
++            CC_TYPE, CC_VERSION);
+     fprintf(stderr, "  configuration: " FFMPEG_CONFIGURATION "\n");
+     print_all_libs_info(stderr, INDENT|SHOW_CONFIG);
+     print_all_libs_info(stderr, INDENT|SHOW_VERSION);
