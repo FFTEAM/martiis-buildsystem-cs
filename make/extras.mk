@@ -644,7 +644,7 @@ $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/share/aclocal $(PKGPREFIX)/lib/alsa-lib $(PKGPREFIX)/share/alsa/cards $(PKGPREFIX)/share/alsa/pcm $(PKGPREFIX)/share/alsa/alsa.conf.d
 	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-lib
-	$(REMOVE)/alsa-lib-$(ALSA-VER) $(PKGPREFIX)
+	$(REMOVE)/alsa-lib-$(ALSA_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TARGETPREFIX)
@@ -659,6 +659,38 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)/var $(PKGPREFIX)/share $(PKGPREFIX)/lib/pkgconfig
 	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
-	$(REMOVE)/alsa-utils-$(ALSA-VER) $(PKGPREFIX)
+	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
 	touch $@
+
+$(D)/usb-modeswitch-data: $(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER) && \
+	make install DESTDIR=$(PKGPREFIX) && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	PKG_VER=$(USB_MODESWITCH_DATA_VER) $(OPKG_SH) $(CONTROL_DIR)/usb-modeswitch-data && \
+	$(REMOVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER) $(PKGPREFIX)
+	touch $@
+
+# Untested, experimental, requires some effort to work with mdev, see
+# http://pastebin.com/eU69figK and http://pastebin.com/1Rb1KdXB
+# for examples. I've no way to test this, and I don't know where those
+# scripts come from.
+# Requires http://www.sakis3g.org/versions/latest/sakis3g-source.tar.bz2
+# or similar.
+#   --martii
+$(D)/usb-modeswitch: $(ARCHIVE)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2 $(D)/usb-modeswitch-data | $(TARGETPREFIX)
+	$(UNTAR)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	cd $(BUILD_TMP)/usb-modeswitch-$(USB_MODESWITCH_VER) && \
+	sed -i -e "s/= gcc/= $(TARGET)-gcc/" -e "s/-l usb/-lusb -lusb-1.0 -lpthread -lrt/" -e "s/install -D -s/install -D --strip-program=$(TARGET)-strip -s/" Makefile &&  \
+	sed -i -e "s/^gcc /$(TARGET)-gcc /" -e "s/^strip /$(TARGET)-strip /" make_static_dispatcher.sh && \
+	sed -i -e "s/@CC@/$(TARGET)-gcc/g" jim/Makefile.in && \
+	$(BUILDENV) $(MAKE) DESTDIR=$(PKGPREFIX) install-static && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	PKG_VER=$(USB_MODESWITCH_VER) $(OPKG_SH) $(CONTROL_DIR)/usb-modeswitch && \
+	$(REMOVE)/usb-modeswitch-$(USB_MODESWITCH_VER) $(PKGPREFIX)
+	touch $@
+
+
 

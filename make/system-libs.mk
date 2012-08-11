@@ -317,6 +317,7 @@ $(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz | $(TARGETPREFIX)
 		$(MAKE); \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libass.la
+	$(REMOVE)/libass-$(LIBASS_VER)
 	touch $@
 
 $(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
@@ -631,7 +632,7 @@ $(D)/libnl: $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz
 	mkdir -p $(PKGPREFIX)/lib && \
 	cp -a $(TARGETPREFIX)/lib/libnl.so* $(PKGPREFIX)/lib && \
 	PKG_VER=$(LIBNL_VER) $(OPKG_SH) $(CONTROL_DIR)/libnl && \
-	$(REMOVE)/.remove $(PKGPREFIX) && \
+	$(REMOVE)/.remove $(PKGPREFIX) libnl-$(LIBNL_VER) && \
 	touch $@
 
 PHONY += ncurses-prereq

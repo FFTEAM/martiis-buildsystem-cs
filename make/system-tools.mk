@@ -559,7 +559,7 @@ $(D)/wireless_tools: $(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz | $(T
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/man && \
 	PKG_VER=$(WIRELESSTOOLS_VER) $(OPKG_SH) $(CONTROL_DIR)/wireless_tools && \
-	$(REMOVE)/wireless_tools-$(WPASUPP-VER) $(PKGPREFIX) && \
+	$(REMOVE)/wireless_tools.$(WIRELESSTOOLS_VER) $(PKGPREFIX) && \
 	touch $@
 
 $(D)/wpa_supplicant: libnl $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz | $(TARGETPREFIX)
@@ -573,7 +573,7 @@ $(D)/wpa_supplicant: libnl $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz | $(T
 	cp -a wpa_supplicant $(TARGETPREFIX)/sbin/ && \
 	cp -a wpa_supplicant $(PKGPREFIX)/sbin/ && \
 	PKG_VER=$(WPASUPP_VER) $(OPKG_SH) $(CONTROL_DIR)/wpa_supplicant && \
-	$(REMOVE)/wpa_supplicant-$(WPASUPP-VER) $(PKGPREFIX) && \
+	$(REMOVE)/wpa_supplicant-$(WPASUPP_VER) $(PKGPREFIX) && \
 	touch $@
 
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools

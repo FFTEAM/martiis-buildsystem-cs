@@ -308,6 +308,12 @@ $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz:
 $(ARCHIVE)/lzo-$(LZO_VER).tar.gz:
 	$(WGET) -O $@ http://www.oberhumer.com/opensource/lzo/download/lzo-$(LZO_VER).tar.gz
 
+$(ARCHIVE)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2:
+	$(WGET) http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2
+
+$(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2:
+	$(WGET) http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \
 $(ARCHIVE)/azbox%-mrua-3.11.tar.gz \

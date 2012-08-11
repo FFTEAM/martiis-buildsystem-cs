@@ -238,6 +238,10 @@ GRAPHLCD_VER = a39f265732d0bc28cb66b58b5ecf1964a130d02b
 # LZO Library
 LZO_VER = 2.06
 
+# USB ModeSwitch
+USB_MODESWITCH_VER=1.2.3
+USB_MODESWITCH_DATA_VER=20120531
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################
