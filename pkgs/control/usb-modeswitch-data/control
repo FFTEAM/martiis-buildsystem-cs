@@ -1,0 +1,10 @@
+Package: usb-modeswitch-data
+Version: @VER@-1
+Description: usb_modeswitch data
+Section: extras
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://http://www.draisberghof.de/usb_modeswitch
+Source:
+Provides: usb-modeswitch-data
