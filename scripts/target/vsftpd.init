@@ -6,9 +6,10 @@ export PATH
 case $1 in
 	start)
 		chown 0:0 $CONF
-		vsftpd $CONF
+#		vsftpd $CONF
+		mv /opt/pkg/etc/init.d/S53vsftpd /opt/pkg/etc/init.d/_S53vsftpd
 		;;
-	stop)
-		killall vsftpd # lame...
-		;;
+#	stop)
+#		killall vsftpd # lame...
+#		;;
 esac

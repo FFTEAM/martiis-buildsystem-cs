@@ -362,7 +362,7 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 	install -D -m 0755 $(SCRIPTS)/dropbear.init $(PKGPREFIX)/opt/pkg/etc/init.d/dropbear
 	install -d -m 0755 $(PKGPREFIX)/opt/pkg/etc/dropbear
 	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/S60dropbear
-	ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear
+	#ln -sf dropbear $(PKGPREFIX)/opt/pkg/etc/init.d/K60dropbear
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(OPKG_SH) $(CONTROL_DIR)/dropbear
 	$(REMOVE)/dropbear-$(DROPBEAR-VER) $(PKGPREFIX)

@@ -20,9 +20,10 @@ case $1 in
 		[ -f ${ETCDIR}/dropbear_dss_host_key ] ||
 			${R}/bin/dropbearkey -t dss -f ${ETCDIR}/dropbear_dss_host_key
 					
-		${R}/sbin/dropbear
+#		${R}/sbin/dropbear
+		mv /opt/pkg/etc/init.d/S60dropbear /opt/pkg/etc/init.d/_S60dropbear
 		;;
-	stop)	pid=$(cat /var/run/dropbear.pid 2>/dev/null)
-		test -n "$pid" && kill $pid || true
-		;;
+#	stop)	pid=$(cat /var/run/dropbear.pid 2>/dev/null)
+#		test -n "$pid" && kill $pid || true
+#		;;
 esac
