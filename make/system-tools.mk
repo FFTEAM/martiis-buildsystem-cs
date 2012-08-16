@@ -576,8 +576,8 @@ $(D)/wpa_supplicant: libnl $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz | $(T
 	$(REMOVE)/wpa_supplicant-$(WPASUPP_VER) $(PKGPREFIX) && \
 	touch $@
 
-system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools
-system-tools-opt: $(D)/samba2 $(D)/xfsprogs $(D)/vsftpd
+system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools $(D)/vsftpd
+system-tools-opt: $(D)/samba2 $(D)/ntfs-3g
 system-tools-all: system-tools system-tools-opt
 
 PHONY += system-tools system-tools-opt system-tools-all

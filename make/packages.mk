@@ -4,8 +4,8 @@ SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
 SYSTEM_OPKGS =
 
 # additional stuff which is useful on most systems
-SYSTEM_PKGS  += e2fsprogs xfsprogs dropbear alsa-utils wireless_tools wpa_supplicant
-SYSTEM_OPKGS += e2fsprogs xfsprogs dropbear alsa-utils wireless_tools wpa_supplicant
+SYSTEM_PKGS  += e2fsprogs dropbear alsa-utils wireless_tools wpa_supplicant vsftpd ntfs-3g
+SYSTEM_OPKGS += e2fsprogs dropbear alsa-utils wireless_tools wpa_supplicant vsftpd ntfs-3g
 
 ifeq ($(ROOTFS_TYPE), yaffs2)
 SYSTEM_PKGS  += yaffs2utils
