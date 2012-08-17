@@ -5,9 +5,9 @@ case $1 in
 	start)
 		touch /tmp/.init_lircd
 		(
-		read dummy dummy KVER dummy < /proc/version
-		grep -q uinput /lib/modules/${KVER}/modules.dep || depmod -a
-		modprobe uinput
+#		read dummy dummy KVER dummy < /proc/version
+#		grep -q uinput /lib/modules/${KVER}/modules.dep || depmod -a
+#		modprobe uinput
 		# if /var/run does not exist, we are screwed anyway...
 		mkdir /var/run/lirc 2>/dev/null
 		LIRCD_CONF=`sed 's#.*STB_ID=\(..:..:..\).*#/etc/lircd.conf.\1#' < /proc/cmdline | tr ':' '_'`
