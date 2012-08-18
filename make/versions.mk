@@ -242,6 +242,10 @@ LZO_VER = 2.06
 USB_MODESWITCH_VER=1.2.3
 USB_MODESWITCH_DATA_VER=20120531
 
+# PPP
+PPP_VER=2.4.5
+PPP_DIFF_VER=2.4.5-5.1	# from Debian
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

@@ -1,0 +1,11 @@
+Package: ppp
+Version: @VER@-1
+Description: ppp
+Section: extras
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://ppp.samba.org/
+Source:ftp://ftp.samba.org/pub/ppp/
+Depends:
+Provides: ppp

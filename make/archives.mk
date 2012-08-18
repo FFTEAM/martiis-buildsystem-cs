@@ -314,6 +314,9 @@ $(ARCHIVE)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2:
 $(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2:
 	$(WGET) http://www.draisberghof.de/usb_modeswitch/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2
 
+$(ARCHIVE)/ppp-$(PPP_VER).tar.gz:
+	$(WGET) ftp://ftp.samba.org/pub/ppp/ppp-$(PPP_VER).tar.gz
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \
 $(ARCHIVE)/azbox%-mrua-3.11.tar.gz \
