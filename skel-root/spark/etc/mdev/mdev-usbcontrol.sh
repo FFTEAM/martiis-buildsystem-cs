@@ -12,8 +12,8 @@ then
 fi
 case "$TYPE" in
 2/*)
-	rmmod usbserial
-	modprobe usbserial vendor=0x$VENDORID product=0x$PRODUCTID
+	modprobe -q usbserial
+	echo  $VENDORID $PRODUCTID >/sys/bus/usb-serial/drivers/generic/new_id
 	;;
 esac
 
