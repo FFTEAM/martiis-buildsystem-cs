@@ -666,28 +666,23 @@ $(D)/usb-modeswitch-data: $(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_V
 	$(UNTAR)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER) && \
+	sed -i -e "s#(DESTDIR)/usr#(DESTDIR)#" Makefile && \
 	make install DESTDIR=$(PKGPREFIX) && \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
 	PKG_VER=$(USB_MODESWITCH_DATA_VER) $(OPKG_SH) $(CONTROL_DIR)/usb-modeswitch-data && \
 	$(REMOVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER) $(PKGPREFIX)
 	touch $@
 
-# Untested, experimental, requires some effort to work with mdev, see
-# http://pastebin.com/eU69figK and http://pastebin.com/1Rb1KdXB
-# for examples. I've no way to test this, and I don't know where those
-# scripts come from.
-# Requires http://www.sakis3g.org/versions/latest/sakis3g-source.tar.bz2
-# or similar.
-#   --martii
 $(D)/usb-modeswitch: $(ARCHIVE)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2 $(D)/usb-modeswitch-data | $(TARGETPREFIX)
 	$(UNTAR)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	cd $(BUILD_TMP)/usb-modeswitch-$(USB_MODESWITCH_VER) && \
-	sed -i -e "s/= gcc/= $(TARGET)-gcc/" -e "s/-l usb/-lusb -lusb-1.0 -lpthread -lrt/" -e "s/install -D -s/install -D --strip-program=$(TARGET)-strip -s/" Makefile &&  \
+	sed -i -e "s/= gcc/= $(TARGET)-gcc/" -e "s/-l usb/-lusb -lusb-1.0 -lpthread -lrt/" -e "s/install -D -s/install -D --strip-program=$(TARGET)-strip -s/" -e "s#(DESTDIR)/usr#(DESTDIR)#" Makefile &&  \
 	sed -i -e "s/^gcc /$(TARGET)-gcc /" -e "s/^strip /$(TARGET)-strip /" make_static_dispatcher.sh && \
 	sed -i -e "s/@CC@/$(TARGET)-gcc/g" jim/Makefile.in && \
 	$(BUILDENV) $(MAKE) DESTDIR=$(PKGPREFIX) install-static && \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	rm  -rf $(PKGPREFIX)/lib/udev $(PKGPREFIX)/share && \
 	PKG_VER=$(USB_MODESWITCH_VER) $(OPKG_SH) $(CONTROL_DIR)/usb-modeswitch && \
 	$(REMOVE)/usb-modeswitch-$(USB_MODESWITCH_VER) $(PKGPREFIX)
 	touch $@
