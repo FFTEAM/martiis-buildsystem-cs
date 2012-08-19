@@ -1,65 +1,11 @@
 begin
-	button = USB
-	prog   = irexec
-	config = /usr/bin/functions.sh 0
-	mode   = mode_USB
-	repeat = 0
-	delay  = 0
-	flags  = mode 
-end
-
-begin
-	button = F3
-	prog   = irexec
-	config = /usr/bin/functions.sh 1
-	mode   = mode_F3
-	repeat = 0
-	delay  = 0
-	flags  = mode 
-end
-
-begin
-	button = OK
-	button = POWER
-	button = POWER
-	button = POWER
-	button = POWER
-	prog   = irexec
-	config = /usr/bin/functions.sh 2
-	mode   = mode_POWER              
-	repeat = 0    
-	delay  = 0   
-	flags  = mode
-end
-
-begin
-	button = KEY_CLOSE
-	prog   = irexec
-	config = /usr/bin/functions.sh 0
-	mode   = mode_USB
-	repeat = 0
-	delay  = 0
-	flags  = mode 
-end
-
-begin
-	button = KEY_NEXT
-	prog   = irexec
-	config = /usr/bin/functions.sh 1
-	mode   = mode_F3
-	repeat = 0
-	delay  = 0
-	flags  = mode 
-end
-
-begin
 	button = KEY_OK
 	button = KEY_POWER
 	button = KEY_POWER
 	button = KEY_POWER
 	button = KEY_POWER
 	prog   = irexec
-	config = /usr/bin/functions.sh 2
+	config = /bin/touch /tmp/.reboot ; reboot
 	mode   = mode_POWER              
 	repeat = 0    
 	delay  = 0   
