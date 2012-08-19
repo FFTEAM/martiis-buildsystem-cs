@@ -698,9 +698,11 @@ $(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz | $(TARGETPREFIX)
 	cd $(BUILD_TMP)/ppp-$(PPP_VER) && \
 	zcat $(PATCHES)/ppp-$(PPP_DIFF_VER).diff.gz | patch -p1 && \
 	for m in configure `find . -name Makefile\*` ; do echo $$m ; sed -i -e "s#/usr/local##g" -e "s#(INSTALL) -s#(INSTALL) --strip-program=$(TARGET)-strip -s#" $$m ; done ; \
-	$(BUILDENV) ./configure && make INSTROOT=$(TARGETPREFIX) CC=$(TARGET)-gcc all install && \
-	mkdir -p $(PKGPREFIX)/sbin && cp $(TARGETPREFIX)/sbin/pppd $(TARGETPREFIX)/sbin/pppstats $(TARGETPREFIX)/sbin/chat $(PKGPREFIX)/sbin && \
+	$(BUILDENV) ./configure && make INSTROOT=$(TARGETPREFIX) CC=$(TARGET)-gcc all install install-etcppp && \
+	mkdir -p $(PKGPREFIX)/{bin,sbin} && \
+	install -m 755 scripts/{pon,poff,plog} $(PKGPREFIX)/bin && \
+	install -m 755 $(TARGETPREFIX)/sbin/{pppd,pppstats,chat} $(PKGPREFIX)/sbin && \
 	PKG_VER=$(PPP_VER) $(OPKG_SH) $(CONTROL_DIR)/ppp && \
-	$(REMOVE)/ppp-$(PPP_VER) $(PKGPREFIX) \
+	$(REMOVE)/ppp-$(PPP_VER) $(PKGPREFIX)
 	touch $@
 
