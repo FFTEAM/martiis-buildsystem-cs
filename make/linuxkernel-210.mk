@@ -315,7 +315,7 @@ $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	cp -a $(BUILD_TMP)/driver/frontcontroller/aotom/aotom_main.h $(TARGETPREFIX)/include
 	# disable wireless build
-	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
+	# sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
 	# disable led and button - it's not for spark
 	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
 
