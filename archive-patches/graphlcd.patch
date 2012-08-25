@@ -668,3 +668,14 @@
  
  uninstall:
  	rm -f $(BINDIR)/$(PRGNAME)
+--- graphlcd-base/glcddrivers/ax206dpf.c.org	2012-03-11 18:58:39.000000000 +0100
++++ graphlcd-base/glcddrivers/ax206dpf.c	2012-08-25 15:46:21.820210928 +0200
+@@ -212,7 +212,7 @@
+     {
+         dh[di]->dpfh = NULL;
+         dh[di]->attached = false;
+-        return 0;
++        return error;
+     }
+     dh[di]->attached = true;
+     struct usb_device *dev = usb_device(dh[di]->dpfh->dev.udev);
