@@ -244,7 +244,8 @@ USB_MODESWITCH_DATA_VER=20120815
 
 # PPP
 PPP_VER=2.4.5
-PPP_DIFF_VER=2.4.5-5.1	# from Debian
+# from Debian:
+PPP_DIFF_VER=2.4.5-5.1
 
 ##################################
 # devel-tools; make/devel-tools.mk

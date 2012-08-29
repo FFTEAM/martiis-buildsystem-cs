@@ -687,11 +687,11 @@ $(D)/usb-modeswitch: $(ARCHIVE)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2 $(D
 	$(REMOVE)/usb-modeswitch-$(USB_MODESWITCH_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz | $(TARGETPREFIX)
+$(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/ppp-$(PPP_VER)
 	$(UNTAR)/ppp-$(PPP_VER).tar.gz
 	cd $(BUILD_TMP)/ppp-$(PPP_VER) && \
-	zcat $(PATCHES)/ppp-$(PPP_DIFF_VER).diff.gz | patch -p1 && \
+	zcat $(PATCHES)/ppp_$(PPP_DIFF_VER).diff.gz | patch -p1 && \
 	for m in configure `find . -name Makefile\*` ; do echo $$m ; sed -i -e "s#/usr/local##g" -e "s#(INSTALL) -s#(INSTALL) --strip-program=$(TARGET)-strip -s#" $$m ; done ; \
 	$(BUILDENV) ./configure && make INSTROOT=$(TARGETPREFIX) CC=$(TARGET)-gcc all install install-etcppp && \
 	mkdir -p $(PKGPREFIX)/{bin,sbin} && \
