@@ -47,9 +47,9 @@ fi
 
 # set mixer values to a reasonable level
 if wait_for_device /dev/snd/controlC1 20; then
-	for MIXER in Analog SPDIF HDMI ; do
-		amixer -c 1 set $MIXER playback '75%' unmute
-	done
+		amixer -c 1 set Analog playback '50%' unmute
+		amixer -c 1 set SPDIF playback '75%' unmute
+		amixer -c 1 set HDMI playback '75%' unmute
 fi >/dev/null 2>&1 &
 
 # /etc/profile sets up $PATH etc.
