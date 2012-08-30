@@ -638,7 +638,7 @@ $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/alsa-lib-$(ALSA_VER); \
 		$(CONFIGURE) --prefix= --mandir=/.remove --disable-aload --disable-rawmidi --disable-python --disable-old-symbols --disable-alisp --disable-ucm --disable-hwdep ;\
-		$(MAKE); \
+		$(BUILDENV) $(MAKE); \
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
@@ -651,9 +651,9 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	$(UNTAR)/alsa-utils-$(ALSA_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
-	cp $(PATCHES)/alsa-utils-1.0.25-Makefile.am  Makefile.am ; \
-	$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsatest --disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto ;\
-	$(MAKE); \
+	$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto ;\
+	sed -i -e "s/^DIST_SUBDIRS/DIST_SUBDIRS=include m4 amixer\nORIG_DIST_SUBDIRS/" -e "s/^SUBDIRS/SUBDIRS=include m4 amixer\nORIG_SUBDIRS/" Makefile ; \
+	$(BUILDENV) $(MAKE); \
 	make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
