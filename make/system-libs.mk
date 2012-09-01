@@ -496,20 +496,19 @@ endif
 	$(REMOVE)/fuse-$(FUSE_VER) $(PKGPREFIX)
 	touch $@
 
-# build only static lib - just needed by tcpdump
 $(D)/libpcap: $(ARCHIVE)/libpcap-$(LIBPCAP_VER).tar.gz
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/libpcap-$(LIBPCAP_VER).tar.gz
-	set -e; cd $(BUILD_TMP)/libpcap-$(LIBPCAP_VER); \
-		echo "ac_cv_linux_vers=2" >> config.cache; \
-		$(CONFIGURE) --with-pcap=linux --prefix= --mandir=/.remove -C; \
-		$(MAKE) all ; \
-		make install DESTDIR=$(TARGETPREFIX); \
-		: make install DESTDIR=$(PKGPREFIX)
-	rm -rf $(TARGETPREFIX)/.remove $(PKGPREFIX)/.remove \
-		$(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/lib/*.a
-	rm -rf $(TARGETPREFIX)/lib/libpcap.s*
-	$(REMOVE)/libpcap-$(LIBPCAP_VER)
+	$(UNTAR)/libpcap-$(LIBPCAP_VER).tar.gz && \
+	cd $(BUILD_TMP)/libpcap-$(LIBPCAP_VER) && \
+	echo "ac_cv_linux_vers=2" >> config.cache && \
+	$(CONFIGURE) --with-pcap=linux --prefix= --mandir=/.remove -C && \
+	$(MAKE) all && \
+	make install DESTDIR=$(PKGPREFIX) && \
+	rm -rf $(PKGPREFIX)/.remove && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	rm -rf $(PKGPREFIX)/{include,bin,lib/lib*.a} `find $(PKGPREFIX)/lib/ -type l` && \
+	PKG_VER=$(LIBPCAP_VER) $(OPKG_SH) $(CONTROL_DIR)/libpcap
+	$(REMOVE)/libpcap-$(LIBPCAP_VER) $(PKGPREFIX)
 	touch $@
 
 # timezone definitions. Package only those referenced by timezone.xml

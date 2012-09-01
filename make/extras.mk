@@ -687,12 +687,22 @@ $(D)/usb-modeswitch: $(ARCHIVE)/usb-modeswitch-$(USB_MODESWITCH_VER).tar.bz2 $(D
 	$(REMOVE)/usb-modeswitch-$(USB_MODESWITCH_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap | $(TARGETPREFIX)
+$(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap $(D)/libnl | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/ppp-$(PPP_VER)
 	$(UNTAR)/ppp-$(PPP_VER).tar.gz
 	cd $(BUILD_TMP)/ppp-$(PPP_VER) && \
 	zcat $(PATCHES)/ppp_$(PPP_DIFF_VER).diff.gz | patch -p1 && \
-	for m in configure `find . -name Makefile\*` ; do echo $$m ; sed -i -e "s#/usr/local##g" -e "s#(INSTALL) -s#(INSTALL) --strip-program=$(TARGET)-strip -s#" $$m ; done ; \
+	for m in configure `find . -name Makefile\*` ; do \
+		echo $$m ; \
+		sed -i -e "s#/usr/local##g" \
+			-e "s#(INSTALL) -s#(INSTALL) --strip-program=$(TARGET)-strip -s#" \
+			-e "s#wildcard /usr/include/crypt.h#wildcard $(CROSS_BASE)/target/usr/include/crypt.h#" \
+			-e "s#wildcard /usr/#wildcard $(TARGETPREFIX)/#" \
+			-e "s#INCLUDE_DIRS= -I#INCLUDE_DIRS= -I$(TARGETPREFIX)/include -I#" \
+			-e "s#= -lpcap#= -L$(TARGETPREFIX)/lib -lnl -lpcap#" \
+			-e "s#= -lcrypt#= -L$(TARGETPREFIX)/lib -lcrypt#" \
+			$$m ; \
+	done && \
 	$(BUILDENV) ./configure && make INSTROOT=$(TARGETPREFIX) CC=$(TARGET)-gcc all install install-etcppp && \
 	mkdir -p $(PKGPREFIX)/{bin,sbin} && \
 	install -m 755 scripts/{pon,poff,plog} $(PKGPREFIX)/bin && \

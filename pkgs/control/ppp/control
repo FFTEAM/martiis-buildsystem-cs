@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://ppp.samba.org/
 Source:ftp://ftp.samba.org/pub/ppp/
-Depends:
-Provides: ppp
+Depends: libpcap.so.1, libnl.so.1
+Provides: pppd
