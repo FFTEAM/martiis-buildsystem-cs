@@ -701,7 +701,7 @@ $(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap $(D)/libnl | $(TARGETPRE
 			-e "s#INCLUDE_DIRS= -I#INCLUDE_DIRS= -I$(TARGETPREFIX)/include -I#" \
 			-e "s#= -lpcap#= -L$(TARGETPREFIX)/lib -lnl -lpcap#" \
 			-e "s#= -lcrypt#= -L$(TARGETPREFIX)/lib -lcrypt#" \
-			-e "s#\(INSTALL.*\)\(\$(LIBDIR)\)#\1 $(TARGETPREFIX)\2#" \
+			-e "s#\(INSTALL.*\)\(\$$(LIBDIR)\)#\1 $(TARGETPREFIX)\2#" \
 			$$m ; \
 	done && \
 	$(BUILDENV) ./configure && make INSTROOT=$(TARGETPREFIX) CC=$(TARGET)-gcc all install install-etcppp && \
