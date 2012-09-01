@@ -437,7 +437,7 @@ $(D)/tcpdump: $(D)/libpcap $(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz | $(TARGETPR
 		$(PATCH)/tcpdump-noipv6.diff; \
 		cp -a $(PATCHES)/ppi.h .; \
 		echo "ac_cv_linux_vers=2" >> config.cache ; \
-		$(CONFIGURE) --prefix= --disable-ipv6 --disable-smb --without-crypto -C --mandir=/.remove; \
+		PCAP_CONFIG=$(TARGETPREFIX)/bin/pcap-config $(CONFIGURE) --prefix= --disable-ipv6 --disable-smb --without-crypto -C --mandir=/.remove; \
 		$(MAKE) all; \
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(PKGPREFIX)/sbin/tcpdump.*

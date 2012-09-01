@@ -505,6 +505,7 @@ $(D)/libpcap: $(ARCHIVE)/libpcap-$(LIBPCAP_VER).tar.gz
 	$(MAKE) all && \
 	make install DESTDIR=$(PKGPREFIX) && \
 	rm -rf $(PKGPREFIX)/.remove && \
+	sed -i -e "s#^prefix=\"\"#prefix=\"$(TARGETPREFIX)/\"#" $(PKGPREFIX)/bin/pcap-config && \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
 	rm -rf $(PKGPREFIX)/{include,bin,lib/lib*.a} `find $(PKGPREFIX)/lib/ -type l` && \
 	PKG_VER=$(LIBPCAP_VER) $(OPKG_SH) $(CONTROL_DIR)/libpcap
