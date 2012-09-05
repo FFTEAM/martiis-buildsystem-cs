@@ -42,6 +42,7 @@ N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
 NEUTRINO_DEPS2 = libstb-hal
 endif
 ifeq ($(PLATFORM), spark)
+NEUTRINO_DEPS += alsa-lib
 # this is a hack: stfbcontrol triggers include/linux/stmfb.h,
 # which is needed by framebuffer_spark
 NEUTRINO_DEPS2 += $(TARGETPREFIX)/bin/stfbcontrol

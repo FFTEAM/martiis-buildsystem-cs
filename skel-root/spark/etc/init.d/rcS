@@ -45,13 +45,6 @@ if [ ! -e /etc/ld.so.cache ] || [ /etc/ld.so.conf -nt /etc/ld.so.cache ]; then
 	ldconfig 2>/dev/null
 fi
 
-# set mixer values to a reasonable level
-if wait_for_device /dev/snd/controlC1 20; then
-		amixer -c 1 set Analog playback '50%' unmute
-		amixer -c 1 set SPDIF playback '75%' unmute
-		amixer -c 1 set HDMI playback '75%' unmute
-fi >/dev/null 2>&1 &
-
 # /etc/profile sets up $PATH etc.
 . /etc/profile
 
