@@ -256,15 +256,23 @@ MY_KERNELPATCHES = \
 	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch \
 	$(PATCHES)/0001-bpa2-ignore-bigphysarea-kernel-parameter.patch
 
+# this is ugly, but easier than changing the way the tdt patches are applied.
+# The reason for this patch is, that the spark_setup and spark7162_setup patches
+# can not both be applied, because they overlap in a single file. The spark7162
+# patch has everything that's needed in this file, so I partly revert the former...
+$(TDT_PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch: \
+		$(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch
+	ln -sf $(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch $(TDT_PATCHES)
+
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
 		$(MY_KERNELPATCHES) \
 		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
-		$(PATCHES)/kernel.config-spark
+		$(PATCHES)/kernel.config-spark$(PLATFORM_SUB)
 	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
 	rm -fr $(TMP_KDIR)
-	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2; \
+	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2
 	set -e; cd $(TMP_KDIR); \
 		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.46.patch.bz2 | patch -p1 ;\
 		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.46_stm24_sh4_0209.patch.bz2 | patch -p1; \
@@ -276,7 +284,7 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			echo "==> Applying Patch: $(subst $(PATCHES)/,'',$$i)"; \
 			patch -p1 -i $$i; \
 		done; \
-		cp $(PATCHES)/kernel.config-spark .config; \
+		cp $(PATCHES)/kernel.config-spark$(PLATFORM_SUB) .config; \
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config; \
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
 	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
@@ -348,7 +356,7 @@ sparkdriver: $(BUILD_TMP)/driver | $(BUILD_TMP)/linux-$(KVERSION_FULL)
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
 		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
 		M=$(firstword $^) \
-		SPARK=spark \
+		SPARK$(PLATFORM_SUB)=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
 	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
@@ -356,7 +364,7 @@ sparkdriver: $(BUILD_TMP)/driver | $(BUILD_TMP)/linux-$(KVERSION_FULL)
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
 		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
 		M=$(firstword $^) \
-		SPARK=spark \
+		SPARK$(PLATFORM_SUB)=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)- \
 		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install

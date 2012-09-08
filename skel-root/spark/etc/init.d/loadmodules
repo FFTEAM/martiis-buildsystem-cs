@@ -39,6 +39,16 @@ get_vidmode()
 
 case $1 in
 start)
+	SPARK7162=false
+	read a b BOARD < /proc/cpuinfo
+	test "$BOARD"=hdk7105 && SPARK7162=true
+	if $SPARK7162; then
+		STMCORE_DISP=stmcore-display-sti7105
+		FRONTEND_MOD=spark7162
+	else
+		STMCORE_DISP=stmcore-display-sti7111
+		FRONTEND_MOD=stv090x
+	fi
 	read dummy dummy KVER dummy < /proc/version
 	grep -q uinput /lib/modules/${KVER}/modules.dep || depmod -a
 	# set all "option foo ..." as OPT_foo="..." variables
@@ -51,7 +61,7 @@ start)
 	im aotom
 	im uinput
 	im e2_proc
-	im stmcore_display_sti7111
+	im $STMCORE_DISP
 	MEMSIZE=12m	# neutrino now needs 12m for FB scaling backbuffer
 	VM=$(get_vidmode)
 	im stmfb.ko display0=$VM:$MEMSIZE:pal:yuv:yuv
@@ -71,7 +81,7 @@ start)
 	im stmvout
 	im stmvbi
 	im pseudocard
-	im stv090x
+	im $FRONTEND_MOD
 	im pti waitMS=20 videoMem=4096
 	im stm_monitor
 	im stmsysfs
