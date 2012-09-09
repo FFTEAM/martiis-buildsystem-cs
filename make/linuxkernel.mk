@@ -264,11 +264,20 @@ $(TDT_PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch: \
 		$(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch
 	ln -sf $(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch $(TDT_PATCHES)
 
+# if you only want to build for one version, set SPARK_ONLY=1 or SPARK7162_ONLY=1 in config
+SPARKKERNELDEPS =
+ifeq ($(SPARK7162_ONLY), )
+SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark
+endif
+ifeq ($(SPARK_ONLY), )
+SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162
+endif
+
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
 		$(MY_KERNELPATCHES) \
 		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
-		$(PATCHES)/kernel.config-spark$(PLATFORM_SUB)
+		$(SPARKKERNELDEPS)
 	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
 	rm -fr $(TMP_KDIR)
@@ -284,25 +293,39 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			echo "==> Applying Patch: $(subst $(PATCHES)/,'',$$i)"; \
 			patch -p1 -i $$i; \
 		done; \
-		cp $(PATCHES)/kernel.config-spark$(PLATFORM_SUB) .config; \
-		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config; \
-	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
-	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
-	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/linux/version.h
-	rm -fr $@
+		cp $(PATCHES)/kernel.config-spark     .config-spark; \
+		cp $(PATCHES)/kernel.config-spark7162 .config-7162; \
+		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config-*;
+	rm -fr $@ $@-7162
 	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
+	cp -al $@ $@-7162 # hardlinked tree
+	mv $@/.config-spark $@/.config
+	mv $@-7162/.config-7162 $@-7162/.config
+	$(MAKE) -C $@ ARCH=sh oldconfig
+	$(MAKE) -C $@ ARCH=sh include/asm
+	$(MAKE) -C $@ ARCH=sh include/linux/version.h
+	$(MAKE) -C $@-7162 ARCH=sh oldconfig
+	$(MAKE) -C $@-7162 ARCH=sh include/asm
+	$(MAKE) -C $@-7162 ARCH=sh include/linux/version.h
 
-kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
 	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
 
-sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
-	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL); \
+_sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
+	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA); \
 		export PATH=$(CROSS_BASE)/host/bin:$(PATH); \
 		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules; \
 		make    ARCH=sh CROSS_COMPILE=$(TARGET)- \
-			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install; \
-		cp -L arch/sh/boot/uImage $(BUILD_TMP)/
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install; \
+		cp -L arch/sh/boot/uImage $(BUILD_TMP)/uImage$(K_EXTRA)
 
+sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+ifeq ($(SPARK7162_ONLY), )
+	$(MAKE) _sparkkernel
+endif
+ifeq ($(SPARK_ONLY), )
+	$(MAKE) _sparkkernel K_EXTRA=-7162
+endif
 
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
@@ -349,32 +372,39 @@ $(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
 	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
 	# disable led and button - it's not for spark
 	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
+	cp -al $@ $@-7162
 
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
 # host system includes are used and that might be fatal.
-sparkdriver: $(BUILD_TMP)/driver | $(BUILD_TMP)/linux-$(KVERSION_FULL)
-	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+_sparkdriver: $(BUILD_TMP)/driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
+	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
-		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
-		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/driver$(K_EXTRA) \
 		M=$(firstword $^) \
-		SPARK$(PLATFORM_SUB)=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
-	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
-		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
-		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/driver$(K_EXTRA) \
 		M=$(firstword $^) \
-		SPARK$(PLATFORM_SUB)=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)- \
-		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install
+
+sparkdriver:
+ifeq ($(SPARK7162_ONLY), )
+	$(MAKE) _sparkdriver SPARK=1
+endif
+ifeq ($(SPARK_ONLY), )
+	$(MAKE) _sparkdriver SPARK7162=1 K_EXTRA=-7162
+endif
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
-	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules \
-		$^
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules $^
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules-7162 $^
 
 endif
 
