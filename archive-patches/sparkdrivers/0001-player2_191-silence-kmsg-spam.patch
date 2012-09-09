@@ -1,7 +1,7 @@
-From 91eea35f600e01c7c5fd58a3dcb1c0593cac74aa Mon Sep 17 00:00:00 2001
+From 4f64e7eec845fba523103533303138fe5c3ada75 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sat, 18 Feb 2012 21:55:34 +0100
-Subject: [PATCH 1/5] player2_191: silence kmsg spam
+Subject: [PATCH 1/6] player2_191: silence kmsg spam
 
 ---
  .../drivers/media/dvb/stm/backend/player_module.c  |    1 +
@@ -1264,10 +1264,10 @@ index fe28a0e..4480106 100644
  		}
  		
 diff --git a/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c b/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
-index 11ff86b..640e6d6 100644
+index 5f0fe4e..9ac8f2e 100644
 --- a/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
 +++ b/player2_191/linux/drivers/media/dvb/stm/dvb/st-pti.c
-@@ -108,11 +108,11 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -110,11 +110,11 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
           ((pSession->source == DMX_SOURCE_DVR0) && swts)))
      return -1;
  
@@ -1281,7 +1281,7 @@ index 11ff86b..640e6d6 100644
    switch ( dvbdmxfeed->type )
    {
    case DMX_TYPE_TS:
-@@ -151,10 +151,12 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -153,10 +153,12 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
        return -EINVAL;
      }
    }
@@ -1294,7 +1294,7 @@ index 11ff86b..640e6d6 100644
  
    if (dvbdmxfeed->type == DMX_TYPE_SEC)
    	my_pes_type = 99;
-@@ -184,13 +186,16 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -186,13 +188,16 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
  	       int err;
  	       if ((err = pti_hal_descrambler_link(pSession->session, pSession->descramblers[pSession->descramblerindex[vLoop]], pSession->slots[vLoop])) != 0)
  	         printk("Error linking slot %d to descrambler %d, err = %d\n", pSession->slots[vLoop], pSession->descramblers[pSession->descramblerindex[vLoop]], err);
@@ -1312,7 +1312,7 @@ index 11ff86b..640e6d6 100644
        return 0;
      }
    }
-@@ -208,9 +213,9 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -210,9 +215,9 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
  							    pes_type, demux , NULL, NULL);
  
    pSession->descramblerindex[pSession->num_pids]= pSession->descramblerForPid[dvbdmxfeed->pid];
@@ -1324,7 +1324,7 @@ index 11ff86b..640e6d6 100644
    if(pti_hal_slot_link_buffer ( pSession->session,
                               pSession->slots[pSession->num_pids],
  			     bufType) != 0)
-@@ -236,8 +241,10 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -238,8 +243,10 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
  	      printk("Error linking slot %d to descrambler %d, err = %d\n",
                  pSession->slots[pSession->num_pids],
                  pSession->descramblers[pSession->descramblerindex[pSession->num_pids]], err);
@@ -1335,7 +1335,7 @@ index 11ff86b..640e6d6 100644
      }
    }
  
-@@ -252,7 +259,7 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -254,7 +261,7 @@ int stpti_start_feed ( struct dvb_demux_feed *dvbdmxfeed,
    dprintk ( "%s: pid = %d, num_pids = %d \n", __FUNCTION__, dvbdmxfeed->pid,
  	   pSession->num_pids );
  
@@ -1344,8 +1344,8 @@ index 11ff86b..640e6d6 100644
    printk ( "#  pid t pt ref\n");
    for ( vLoop = 0; vLoop < ( pSession->num_pids ); vLoop++ )
    {
-@@ -286,8 +293,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
-          (pSession->source < DMX_SOURCE_FRONT2)) ||
+@@ -288,8 +295,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
+          (pSession->source <= DMX_SOURCE_FRONT2)) ||
           ((pSession->source == DMX_SOURCE_DVR0) && swts)))
      return -1;
 -
@@ -1355,7 +1355,7 @@ index 11ff86b..640e6d6 100644
    //printk ( "%s(): demux = %p, context = %p, sesison = %p, pid = %d, type = %d, pes_type = %d>", __FUNCTION__, dvbdmxfeed->demux, pContext, pSession, dvbdmxfeed->pid, dvbdmxfeed->type, dvbdmxfeed->pes_type );
  
    if (dvbdmxfeed->type == DMX_TYPE_SEC)
-@@ -303,9 +311,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -305,9 +313,9 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
      if (( pSession->pidtable[vLoop] == dvbdmxfeed->pid ) )
      {
        pSession->references[vLoop]--;
@@ -1367,7 +1367,7 @@ index 11ff86b..640e6d6 100644
        haveFound = 1;
  
        if (pSession->references[vLoop] == 0)
-@@ -336,7 +344,7 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
+@@ -338,7 +346,7 @@ int stpti_stop_feed ( struct dvb_demux_feed *dvbdmxfeed,
  
  	pSession->num_pids--;
  
@@ -1376,7 +1376,7 @@ index 11ff86b..640e6d6 100644
  	if(dvbdmxfeed->pes_type == DMX_TS_PES_VIDEO)
  	{
            /* reset the DMA threshold to 1 to allow low rate TS
-@@ -533,9 +541,9 @@ int SetSource (struct dmx_demux* demux, const dmx_source_t *src)
+@@ -539,9 +547,9 @@ int SetSource (struct dmx_demux* demux, const dmx_source_t *src)
             __func__, pContext, pContext->pPtiSession, src);
      return -EINVAL;
    }
