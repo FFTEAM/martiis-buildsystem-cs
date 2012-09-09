@@ -319,8 +319,10 @@ $(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0006-frontends-spark7162-silence-kmsg-spam.patch \
-$(PATCHES)/sparkdrivers/0002-import-cec-from-pinky-s-git.patch \
-$(PATCHES)/sparkdrivers/0003-aotom-fix-include-file.patch \
+$(PATCHES)/sparkdrivers/0001-import-cec-from-pinky-s-git.patch \
+$(PATCHES)/sparkdrivers/0002-aotom-fix-include-file.patch \
+$(PATCHES)/sparkdrivers/0003-aotom-add-VFDGETVERSION-ioctl-to-find-FP-type.patch \
+$(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \

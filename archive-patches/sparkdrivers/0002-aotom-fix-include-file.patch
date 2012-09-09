@@ -1,14 +1,14 @@
-From 6c26e67624cc308c14de631b4a6785200f4ffd32 Mon Sep 17 00:00:00 2001
+From d07baed3307f3688abcfd97ac770ceaf6110d961 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sat, 28 Jul 2012 21:18:47 +0200
-Subject: [PATCH 3/3] aotom: fix include file
+Subject: [PATCH 2/4] aotom: fix include file
 
 ---
- frontcontroller/aotom/aotom_main.h |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+ frontcontroller/aotom/aotom_main.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/frontcontroller/aotom/aotom_main.h b/frontcontroller/aotom/aotom_main.h
-index c82e36c..0d8c0e4 100644
+index cf425e6..91921b0 100644
 --- a/frontcontroller/aotom/aotom_main.h
 +++ b/frontcontroller/aotom/aotom_main.h
 @@ -11,9 +11,12 @@ typedef unsigned short u16;
@@ -22,8 +22,8 @@ index c82e36c..0d8c0e4 100644
  #endif
 +#endif
  
- #define VFD_MAJOR				147
+ #define VFD_MAJOR             147
  
 -- 
-1.7.7
+1.7.11.5
 

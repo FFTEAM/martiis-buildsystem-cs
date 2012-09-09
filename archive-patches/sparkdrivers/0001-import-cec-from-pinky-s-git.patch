@@ -1,23 +1,23 @@
-From 5eba0883ad517d39c069a5567d1d602bb9cb989e Mon Sep 17 00:00:00 2001
+From 60c3e867cf02922acc925dc73a13aae05dbcd2d8 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Fri, 6 Jul 2012 14:50:02 +0200
-Subject: [PATCH 2/2] import cec from pinky's git
+Subject: [PATCH 1/4] import cec from pinky's git
 
 git://gitorious.org/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
 commit 6d6486c89a5e4c0828ed0502f45b2b9c5b5f53ce
 ---
- Makefile               |    1 +
- cec/Makefile           |    5 ++++
- cec/cec_dev.c          |    3 ++
- cec/cec_main.c         |   15 ++++++++++++
- cec/cec_opcodes.c      |   58 +++++++++++++++++++++++++++++++++++++++++++++++-
- cec/cec_opcodes_def.h  |   11 +++++++++
- cec/cec_rc.c           |   14 +++++++++++
- e2_proc/e2_proc_main.c |    2 +-
+ Makefile               |  1 +
+ cec/Makefile           |  5 +++++
+ cec/cec_dev.c          |  3 +++
+ cec/cec_main.c         | 15 +++++++++++++
+ cec/cec_opcodes.c      | 58 +++++++++++++++++++++++++++++++++++++++++++++++++-
+ cec/cec_opcodes_def.h  | 11 ++++++++++
+ cec/cec_rc.c           | 14 ++++++++++++
+ e2_proc/e2_proc_main.c |  2 +-
  8 files changed, 107 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 971061d..1db160b 100644
+index 7f939b8..3edb889 100644
 --- a/Makefile
 +++ b/Makefile
 @@ -221,6 +221,7 @@ endif
@@ -284,7 +284,7 @@ index cc6359d..33e4d87 100644
  	}
  
 diff --git a/e2_proc/e2_proc_main.c b/e2_proc/e2_proc_main.c
-index 728bb6a..cab9799 100644
+index b0a45dc..9f9b584 100644
 --- a/e2_proc/e2_proc_main.c
 +++ b/e2_proc/e2_proc_main.c
 @@ -623,7 +623,7 @@ struct ProcStructure_s e2Proc[] =
@@ -297,5 +297,5 @@ index 728bb6a..cab9799 100644
  	{cProcEntry, "stb/cec/state_activesource"   	               , NULL, NULL, NULL, NULL, ""},
  	{cProcEntry, "stb/cec/state_standby"   	               , NULL, NULL, NULL, NULL, ""},
 -- 
-1.7.7
+1.7.11.5
 
