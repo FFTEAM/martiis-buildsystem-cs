@@ -98,7 +98,11 @@ endif
 	@echo
 
 ifeq ($(BOXARCH), sh4)
+ifdef $(PLATFORM_SUB)
+include make/stlinux.mk
+else
 include make/stlinux-210.mk
+endif
 endif
 # define package versions first...
 include make/versions.mk
@@ -112,7 +116,11 @@ include make/devel-tools.mk
 include make/neutrino.mk
 include make/cleantargets.mk
 ifeq ($(BOXARCH), sh4)
+ifdef $(PLATFORM_SUB)
+include make/linuxkernel.mk
+else
 include make/linuxkernel-210.mk
+endif
 else
 include make/linuxkernel.mk
 endif
