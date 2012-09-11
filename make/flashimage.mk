@@ -17,6 +17,14 @@ local-install:
 	@if test -d $(BASE_DIR)/local/flash/; then \
 		cp -a -v $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
 	fi
+ifeq ($(PLATFORM), spark)
+ifeq ($(SPARK_ONLY), )
+	# copy over the newest spark7162-drivers package,it will be installed on first boot
+	if test x"`ls $(PACKAGE_DIR)/spark7162-drivers* 2>/dev/null`" != x""; then \
+		cp -a `ls -1t $(PACKAGE_DIR)/spark7162-drivers*|head -1` $(BUILD_TMP)/install; \
+	fi
+endif
+endif
 
 flash-prepare: local-install find-mkfs.jffs2 find-sumtool
 
@@ -47,6 +55,12 @@ flashimage: flash-prepare flash-build
 		cp -a $(SUMIMG) e2jffs2.img; \
 		echo; echo; echo "SPARK flash image is in build_tmp/enigma2:"; ls -l *; \
 		echo; echo "copy this directory onto an USB stick and flash via the boot loader.";
+	@set -e; rm -rf $(BUILD_TMP)/enigma2-7162; mkdir $(BUILD_TMP)/enigma2-7162; \
+		cd $(BUILD_TMP)/enigma2-7162; \
+		cp -a $(BUILD_TMP)/uImage-7162 uImage; \
+		cp -a $(SUMIMG) e2jffs2.img; \
+		echo; echo "SPARK7162 flash image is in build_tmp/enigma2-7162:"; ls -l *; \
+		echo; echo "copy this directory onto an USB stick as 'enigma' and flash via the boot loader.";
 endif
 ifeq ($(PLATFORM), azbox)
 flashimage: flash-prepare flash-build
