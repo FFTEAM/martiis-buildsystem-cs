@@ -3,10 +3,6 @@
 # default (if empty) is "tripledragon"
 #PLATFORM=tripledragon
 
-# sub-platform, right now only used with "spark" and just if you
-# want to build for spark7162 boxes
-#PLATFORM_SUB=7162
-
 # for the tripledragon platform: the version of the compiler to build
 # "old" => build gcc 3.4.5 / glibc 2.3.6 with crosstool-0.43
 # "new" => build gcc 4.5.2 / eglibc 2.12 with crosstool-ng 1.10.0

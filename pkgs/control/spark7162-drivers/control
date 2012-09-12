@@ -1,0 +1,11 @@
+Package: spark7162-drivers
+Version: @VER@-1
+Description: Kernel modules for fulan spark7162 Settopbox
+Section: base/drivers
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage:
+Source:
+Depends: depmod
+Provides: @MODULE_PROV@
