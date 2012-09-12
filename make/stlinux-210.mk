@@ -100,7 +100,6 @@ COMMONPATCHES_24 = \
 		linux-sh4-lzma-fix_stm24$(PATCH_STR).patch \
 		linux-tune_stm24.patch
 
-
 SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
 	linux-sh4-stmmac_stm24$(PATCH_STR).patch \
 	linux-sh4-lmb_stm24$(PATCH_STR).patch \
@@ -127,21 +126,6 @@ stlinux-dfb: \
 			rm $$i; \
 		done
 
-$(STL_ARCHIVE)/stlinux24-host-u-boot-source-sh4-1.3.1_stm24_0047-47.src.rpm:
-	wget -O $@ http://ftp.stlinux.com/pub/stlinux/2.4/SRPMS/stlinux24-host-u-boot-source-sh4-1.3.1_stm24_0047-47.src.rpm
-
-# currently broken
-#u-boot: $(STL_ARCHIVE)/stlinux24-host-u-boot-source-sh4-1.3.1_stm24_0047-47.src.rpm
-#	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/u-boot $^ ; \
-#	set -e; cd $(BUILD_TMP)/u-boot ; \
-#                tar xvpf u-boot-2010.03.tar.bz2 ; \
-#		cd u-boot-2010.03 ; \
-#                patch -p1 < ../u-boot-2010.03_spear-single-patch-for-u-boot.patch ; \
-#                patch -p1 < ../u-boot-2010.03_spear-beta-release.patch ; \
-#		cd u-boot-2010.03/tools/env ;\
-#		
-
-
 TDT_TOOLS ?= $(BUILD_TMP)/tdt-tools
 $(TDT_TOOLS)/config.status:
 	test -d $(TDT_TOOLS)|| mkdir $(TDT_TOOLS)
@@ -157,17 +141,17 @@ $(TDT_TOOLS)/config.status:
 			--enable-silent-rules --enable-maintainer-mode \
 			;
 
-mhwepg: $(TARGETPREFIX)/bin/mhwepg
 ustslave: $(TARGETPREFIX)/bin/ustslave
 fp_control: $(TARGETPREFIX)/bin/fp_control
-# BUILD_TMP/driver "provides" include/linux/stmfb.h
-stfbcontrol: | $(BUILD_TMP)/driver
-	$(MAKE) $(TARGETPREFIX)/bin/stfbcontrol
+stfbcontrol: $(TARGETPREFIX)/bin/stfbcontrol
+mhwepg: $(TARGETPREFIX)/bin/mhwepg
 
+# BUILD_TMP/driver "provides" include/linux/stmfb.h
 $(TARGETPREFIX)/bin/mhwepg \
 $(TARGETPREFIX)/bin/ustslave \
 $(TARGETPREFIX)/bin/fp_control \
 $(TARGETPREFIX)/bin/stfbcontrol: \
-	$(TDT_TOOLS)/config.status
+	$(TDT_TOOLS)/config.status \
+	| $(BUILD_TMP)/driver
 	$(MAKE) -C $(TDT_TOOLS) install \
 		SUBDIRS=$(lastword $(subst /, ,$@)) DESTDIR=$(TARGETPREFIX)

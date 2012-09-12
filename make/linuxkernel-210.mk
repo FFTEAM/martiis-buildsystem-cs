@@ -33,7 +33,8 @@ ifeq ($(PLATFORM), tripledragon)
 ############################################################
 K_GCC_PATH ?= $(CROSS_BASE)/gcc-3.4.1-glibc-2.3.2/powerpc-405-linux-gnu/bin
 
-$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 | $(TARGETPREFIX)
+$(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 $(PATCHES)/kernel.config-td | $(TARGETPREFIX)
+	rm -rf $@ # clean up or patching will fail
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-2.6.12.tar.bz2
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		tar xvpf $(TD_SVN)/ARMAS/linux-enviroment/kernel/td_patchset_2.6.12.tar.bz2; \
@@ -65,11 +66,11 @@ $(TARGET_MODULE)/extra/td-dvb-frontend.ko: td-dvb-wrapper
 ifeq ($(TD_COMPILER), new)
 TDK_DEPS = $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 endif
-$(D)/tdkernel: $(TDK_DEPS) | $(BUILD_TMP)/linux-2.6.12
+$(D)/tdkernel: $(TDK_DEPS) $(BUILD_TMP)/linux-2.6.12
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- oldconfig; \
-		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- modules; \
+		$(MAKE)	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- all; \
 		make	ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	$(MAKE) fuse-driver
@@ -86,6 +87,20 @@ fuse-driver: $(ARCHIVE)/fuse-2.7.5.tar.gz
 		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
 			DESTDIR=$(TARGETPREFIX)/mymodules install
 	$(REMOVE)/fuse-2.7.5
+
+ramzswap-driver: $(ARCHIVE)/compcache-0.6.2.tar.gz $(PATCHES)/compcache-0.6.2-backport-to-2.6.12.diff
+	$(REMOVE)/compcache-0.6.2
+	$(UNTAR)/compcache-0.6.2.tar.gz
+	set -e; cd $(BUILD_TMP)/compcache-0.6.2; \
+		$(PATCH)/compcache-0.6.2-backport-to-2.6.12.diff; \
+		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
+		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL); \
+		make -j1 ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+			INSTALL_MOD_DIR=kernel/drivers/extra \
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+	$(REMOVE)/compcache-0.6.2
 
 kernelmenuconfig: $(BUILD_TMP)/linux-2.6.12 $(TDK_DEPS)
 	set -e; cd $(BUILD_TMP)/linux-2.6.12; \
@@ -239,15 +254,32 @@ TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
 MY_KERNELPATCHES = 
 
+# this is ugly, but easier than changing the way the tdt patches are applied.
+# The reason for this patch is, that the spark_setup and spark7162_setup patches
+# can not both be applied, because they overlap in a single file. The spark7162
+# patch has everything that's needed in this file, so I partly revert the former...
+$(TDT_PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch: \
+		$(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch
+	ln -sf $(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch $(TDT_PATCHES)
+
+# if you only want to build for one version, set SPARK_ONLY=1 or SPARK7162_ONLY=1 in config
+SPARKKERNELDEPS =
+ifeq ($(SPARK7162_ONLY), )
+SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark
+endif
+ifeq ($(SPARK_ONLY), )
+SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162
+endif
+
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.57_stm24_0210-210.src.rpm \
 		$(MY_KERNELPATCHES) \
 		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
-		$(PATCHES)/kernel.config-spark
+		$(SPARKKERNELDEPS)
 	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.57_stm24_0210-210.src.rpm
 	rm -fr $(TMP_KDIR)
-	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2; \
+	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2
 	set -e; cd $(TMP_KDIR); \
 		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.57.patch.bz2 | patch -p1 ;\
 		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.57_stm24_sh4_0210.patch.bz2 | patch -p1; \
@@ -259,25 +291,39 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			echo "==> Applying Patch: $(subst $(PATCHES)/,'',$$i)"; \
 			patch -p1 -i $$i; \
 		done; \
-		cp $(PATCHES)/kernel.config-spark .config; \
-		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config; \
-	$(MAKE) -C $(TMP_KDIR) ARCH=sh oldconfig
-	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/asm
-	$(MAKE) -C $(TMP_KDIR) ARCH=sh include/linux/version.h
-	rm -fr $@
+		cp $(PATCHES)/kernel.config-spark     .config-spark; \
+		cp $(PATCHES)/kernel.config-spark7162 .config-7162; \
+		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config-*;
+	rm -fr $@ $@-7162
 	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
+	cp -al $@ $@-7162 # hardlinked tree
+	mv $@/.config-spark $@/.config
+	mv $@-7162/.config-7162 $@-7162/.config
+	$(MAKE) -C $@ ARCH=sh oldconfig
+	$(MAKE) -C $@ ARCH=sh include/asm
+	$(MAKE) -C $@ ARCH=sh include/linux/version.h
+	$(MAKE) -C $@-7162 ARCH=sh oldconfig
+	$(MAKE) -C $@-7162 ARCH=sh include/asm
+	$(MAKE) -C $@-7162 ARCH=sh include/linux/version.h
 
-kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
 	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
 
-sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
-	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL); \
+_sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
+	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA); \
 		export PATH=$(CROSS_BASE)/host/bin:$(PATH); \
 		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules; \
 		make    ARCH=sh CROSS_COMPILE=$(TARGET)- \
-			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install; \
-		cp -L arch/sh/boot/uImage $(BUILD_TMP)/
+			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install; \
+		cp -L arch/sh/boot/uImage $(BUILD_TMP)/uImage$(K_EXTRA)
 
+sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+ifeq ($(SPARK7162_ONLY), )
+	$(MAKE) _sparkkernel
+endif
+ifeq ($(SPARK_ONLY), )
+	$(MAKE) _sparkkernel K_EXTRA=-7162
+endif
 
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
@@ -285,6 +331,7 @@ $(TARGETPREFIX)/include/linux/dvb:
 # disabled, merged upstream:
 # $(PATCHES)/sparkdrivers/0006-stmdvb-reinit-TS-merger-when-demux-is-idle.patch \
 # $(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
+# $(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
 #
 $(BUILD_TMP)/driver: \
 $(PATCHES)/sparkdrivers/0001-player2_191-silence-kmsg-spam.patch \
@@ -292,6 +339,7 @@ $(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
+$(PATCHES)/sparkdrivers/0006-frontends-spark7162-silence-kmsg-spam.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
@@ -318,32 +366,39 @@ $(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
 	# sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
 	# disable led and button - it's not for spark
 	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
+	cp -al $@ $@-7162
 
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
 # host system includes are used and that might be fatal.
-sparkdriver: $(BUILD_TMP)/driver | $(BUILD_TMP)/linux-$(KVERSION_FULL)
-	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+_sparkdriver: $(BUILD_TMP)/driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
+	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
-		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
-		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/driver$(K_EXTRA) \
 		M=$(firstword $^) \
-		SPARK=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
-	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL) ARCH=sh \
+	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
-		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
-		DRIVER_TOPDIR=$(BUILD_TMP)/driver \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/driver$(K_EXTRA) \
 		M=$(firstword $^) \
-		SPARK=spark \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)- \
-		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
+		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install
+
+sparkdriver:
+ifeq ($(SPARK7162_ONLY), )
+	$(MAKE) _sparkdriver SPARK=1
+endif
+ifeq ($(SPARK_ONLY), )
+	$(MAKE) _sparkdriver SPARK7162=1 K_EXTRA=-7162
+endif
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
-	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules \
-		$^
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules $^
+	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules-7162 $^
 
 endif
 
@@ -355,10 +410,29 @@ $(SOURCE_DIR)/genzbf:
 		wget -O genzbf.c 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/genzbf.c;hb=HEAD'; \
 		wget -O zboot.h  'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/zboot.h;hb=HEAD'
 
-$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs: $(ARCHIVE)/initramfs-azboxme-29062012.tar.bz2 $(PATCHES)/initramfs-azboxme-fix-usbboot.diff
-	tar -C $(BUILD_TMP) -xf $(firstword $^)
-	set -e; cd $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER); \
-		$(PATCH)/initramfs-azboxme-fix-usbboot.diff
+$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs: \
+$(ARCHIVE)/initramfs-azboxme-29062012.tar.bz2 \
+$(ARCHIVE)/initramfs-azboxminime-29062012.tar.bz2 \
+$(PATCHES)/initramfs-azboxmeminime-init
+	rm -rf $(BUILD_TMP)/minime $(BUILD_TMP)/me
+	mkdir $(BUILD_TMP)/minime $(BUILD_TMP)/me
+	tar -C $(BUILD_TMP)/me -xf $(firstword $^)
+	tar -C $(BUILD_TMP)/minime -xf $(subst azboxme,azboxminime,$(firstword $^))
+	rm -rf $@
+	cp -a $(BUILD_TMP)/me/linux-$(LINUX_AZBOX_VER)/initramfs $@
+	set -e; cd $(BUILD_TMP)/minime/linux-3.3.1/initramfs/lib/modules/3.3.1-opensat/kernel/drivers; \
+		cp -a nand_wr.ko $@/lib/modules/3.3.1-opensat/kernel/drivers/nand_wrminime.ko; \
+		cp -a irvfdminime.ko $@/lib/modules/3.3.1-opensat/kernel/drivers/; \
+		cp -a xload-38x/audio_*_dts52.xload $@/lib/modules/3.3.1-opensat/kernel/drivers/xload-38x
+	set -e; cd $(BUILD_TMP)/minime/linux-3.3.1/initramfs/usr/bin; \
+		cp -a progmicom_minime* $@/usr/bin; \
+		cp -a webinterface $@/usr/bin/webinterfaceminime;
+	set -e; cd $@/lib/modules/3.3.1-opensat/kernel/drivers; \
+		mv nand_wr.ko nand_wrme.ko; \
+		ln -s nand_wrme.ko nand_wr.ko
+	cp -a $(lastword $^) $@/init
+	chmod 755 $@/init
+	sed -i 's/^root:.*/root::10933:0:99999:7:::/' $@/etc/shadow # empty rootpassword for rescue
 
 $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER): $(PATCHES)/kernel.config-azbox $(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff $(PATCHES)/linux-azbox-3.3.1-azboxhd.diff $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
 	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2

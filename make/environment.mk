@@ -174,3 +174,6 @@ TDT_SRC ?= $(SOURCE_DIR)/tdt
 # either "default", or "yaffs2"
 ROOTFS_TYPE ?= default
 
+# The 7162 build is currently plain broken. I don't see why I should care. --martii
+SPARK_ONLY=1
+
