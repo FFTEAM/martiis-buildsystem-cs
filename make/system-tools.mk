@@ -546,7 +546,7 @@ $(D)/mtd-utils: $(D)/zlib $(D)/lzo $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2
 	$(UNTAR)/mtd-utils-$(MTD_UTILS_VER).tar.bz2 ; \
 	set -e; cd $(BUILD_TMP)/mtd-utils-$(MTD_UTILS_VER); \
 		$(BUILDENV) $(MAKE) PREFIX= CC=${TARGET}-gcc LD=${TARGET}-ld STRIP=${TARGET}-strip `pwd`/mkfs.jffs2 `pwd`/sumtool BUILDDIR=`pwd` WITHOUT_XATTR=1 DESTDIR=$(TARGETPREFIX) install ; \
-	cp -a $(TARGETPREFIX)/sbin/{mkfs.jffs2,sumtool} $(PKGPREFIX)/sbin ; \
+	cp -a $(TARGETPREFIX)/sbin/{mkfs.jffs2,sumtool,nandwrite} $(PKGPREFIX)/sbin ; \
 	PKG_VER=$(MTD_UTILS_VER) $(OPKG_SH) $(CONTROL_DIR)/mtd-utils ; \
 	$(REMOVE)/mtd-utils-$(MTD_UTILS_VER) $(PKGPREFIX) ; \
 	touch $@

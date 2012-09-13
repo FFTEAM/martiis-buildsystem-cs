@@ -10,10 +10,10 @@ SYSTEM_OPKGS += e2fsprogs dropbear wireless_tools wpa_supplicant vsftpd ntfs-3g 
 ifeq ($(ROOTFS_TYPE), yaffs2)
 SYSTEM_PKGS  += yaffs2utils
 SYSTEM_OPKGS += yaffs2utils
-else
+endif
+
 SYSTEM_PKGS  += mtd-utils
 SYSTEM_OPKGS += mtd-utils
-endif
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
