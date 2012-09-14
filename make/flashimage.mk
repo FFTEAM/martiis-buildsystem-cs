@@ -57,12 +57,14 @@ flashimage: system-pkgs flash-prepare flash-build
 		chmod 755 install_jffs2.sh upgrade_jffs2.sh ; \
 		echo; echo; echo "SPARK flash image is in build_tmp/enigma2:"; ls -l *; \
 		echo; echo "copy this directory onto an USB stick and flash via the boot loader.";
+ifeq ($(SPARK_ONLY), )
 	@set -e; rm -rf $(BUILD_TMP)/enigma2-7162; mkdir $(BUILD_TMP)/enigma2-7162; \
 		cd $(BUILD_TMP)/enigma2-7162; \
 		cp -a $(BUILD_TMP)/uImage-7162 uImage; \
 		cp -a $(SUMIMG) e2jffs2.img; \
 		echo; echo "SPARK7162 flash image is in build_tmp/enigma2-7162:"; ls -l *; \
 		echo; echo "copy this directory onto an USB stick as 'enigma' and flash via the boot loader.";
+endif
 endif
 ifeq ($(PLATFORM), azbox)
 flashimage: flash-prepare flash-build
