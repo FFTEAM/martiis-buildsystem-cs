@@ -196,6 +196,9 @@ begin remote
 	name		SPARK(rc05)(HOF-54M15)
 	bits		16
 	flags		SPACE_ENC|CONST_LENGTH
+	eps		30
+	aeps		100
+
 	header		9103	4361
 	one		688	1551
 	zero		688	437
