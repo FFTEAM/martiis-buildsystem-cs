@@ -124,7 +124,7 @@ ifeq ($(PLATFORM), azbox)
 endif
 	install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	find $(PKGPREFIX)/share/tuxbox/neutrino/locale/ -type f \
-		! -name deutsch.locale ! -name english.locale | xargs rm
+		! -name deutsch.locale ! -name english.locale | xargs --no-run-if-empty rm
 	# ignore the .version file for package  comparison
 	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-control
 	rm -rf $(PKGPREFIX)
