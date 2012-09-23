@@ -65,7 +65,8 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				$(N_CONFIG_OPTS) \
 				INSTALL="`which install` -p"; \
-		test -e src/gui/svn_version.h || echo '#define BUILT_DATE "error - not set"' > src/gui/svn_version.h
+		test -e src/gui/svn_version.h || echo '#define BUILT_DATE "error - not set"' > src/gui/svn_version.h; \
+		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h
 
 
 $(PKGPREFIX)/.version \
@@ -73,7 +74,7 @@ $(TARGETPREFIX)/.version:
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
 	echo "creator=$(MAINTAINER)"		>> $@
 	echo "imagename=HD-Neutrino"		>> $@
-	A=$(FLAVOUR); F=$${A#neutrino-hd}; \
+	A=$(FLAVOUR); F=$${A#neutrino-??}; \
 		B=`cd $(N_HD_SOURCE); git describe --always --dirty`; \
 		C=$${B%-dirty}; D=$${B#$$C}; \
 		E=`cd $(N_HD_SOURCE); git tag --contains $$C`; \
@@ -95,37 +96,37 @@ $(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	: touch $@
 
 neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
-	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-hd-control
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-control
 	$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 skel-root/common/etc/init.d/start_neutrino $(PKGPREFIX)/etc/init.d/start_neutrino
 	make $(PKGPREFIX)/.version
-	cp -a $(CONTROL_DIR)/neutrino-hd $(BUILD_TMP)/neutrino-hd-control
+	cp -a $(CONTROL_DIR)/$(NEUTRINO_PKG) $(BUILD_TMP)/neutrino-control
 ifeq ($(PLATFORM), tripledragon)
 	grep -q /dev/dvb/adapter%d/frontend%d $(PKGPREFIX)/bin/neutrino && \
-		sed -i "s/\(@DEP@\)/td-dvb-frontend.ko, uinput.ko, evdev.ko, \1/" $(BUILD_TMP)/neutrino-hd-control/control
+		sed -i "s/\(@DEP@\)/td-dvb-frontend.ko, uinput.ko, evdev.ko, \1/" $(BUILD_TMP)/neutrino-control/control
 endif
 	DEP=`$(TARGET)-objdump -p $(PKGPREFIX)/bin/neutrino | awk '/NEEDED/{print $$2}' | sort` && \
 		DEP=`echo $$DEP` && \
 		DEP="$${DEP// /, }" && \
-		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-hd-control/control
+		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-control/control
 ifeq ($(PLATFORM), coolstream)
-	if grep -q libcoolstream-mt.so $(BUILD_TMP)/neutrino-hd-control/control; then \
-		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1984), cs-drivers (>= 1861)/' $(BUILD_TMP)/neutrino-hd-control/control; \
+	if grep -q libcoolstream-mt.so $(BUILD_TMP)/neutrino-control/control; then \
+		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1984), cs-drivers (>= 1861)/' $(BUILD_TMP)/neutrino-control/control; \
 	else \
-		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134), cs-drivers/' $(BUILD_TMP)/neutrino-hd-control/control; \
+		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134), cs-drivers/' $(BUILD_TMP)/neutrino-control/control; \
 	fi
 endif
 ifeq ($(PLATFORM), azbox)
-	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-hd-control/control
+	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-control/control
 endif
 	install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	find $(PKGPREFIX)/share/tuxbox/neutrino/locale/ -type f \
 		! -name deutsch.locale ! -name english.locale | xargs rm
 	# ignore the .version file for package  comparison
-	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-hd-control
+	CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-control
 	rm -rf $(PKGPREFIX)
 
 neutrino-clean:

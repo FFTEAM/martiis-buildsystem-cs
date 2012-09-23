@@ -287,7 +287,7 @@ system-pkgs: $(SYSTEM_PKGS)
 	+make pkg-index
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
-		neutrino-hd $(SYSTEM_OPKGS)
+		$(NEUTRINO_PKG) $(SYSTEM_OPKGS)
 	@echo
 	@echo "List of installed packages in $(subst $(BASE_DIR)/,,$(BUILD_TMP))/install:"
 	@opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install list-installed | \

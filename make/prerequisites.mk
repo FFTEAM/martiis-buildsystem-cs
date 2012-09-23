@@ -5,7 +5,7 @@ TOOLCHECK += find-makeinfo find-automake find-gcc find-libtool
 TOOLCHECK += find-yacc find-flex find-tic find-pkg-config
 TOOLCHECK += find-cmake
 
-PREQS = download neutrino-hd-source $(D)
+PREQS = download neutrino-source $(D)
 ifeq ($(PLATFORM), tripledragon)
 PREQS += tdsvn
 endif
@@ -41,6 +41,14 @@ $(SOURCE_DIR)/neutrino-hd:
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
 		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd.git neutrino-hd
+
+$(SOURCE_DIR)/neutrino-mp:
+	@echo ' ============================================================================== '
+	@echo "                  Cloning neutrino-mp git repo"
+	@echo ' ============================================================================== '
+	mkdir -p $(SOURCE_DIR)
+	cd $(SOURCE_DIR) && \
+		git clone $(GITORIOUS)/neutrino-mp/neutrino-mp.git neutrino-mp
 
 $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
@@ -99,7 +107,7 @@ toolcheck: $(TOOLCHECK)
 		echo; \
 	fi
 
-neutrino-hd-source: $(N_HD_SOURCE)
+neutrino-source: $(N_HD_SOURCE)
 cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 # TRIPLEDRAGON stuff...
