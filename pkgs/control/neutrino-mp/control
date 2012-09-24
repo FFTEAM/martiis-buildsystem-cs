@@ -1,0 +1,10 @@
+Package: neutrino-mp
+Version: 1.0-1
+Description: The Multiplatform Neutrino STB GUI
+Section: extras/servers
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gitorious.org/neutrino-mp
+Source:
+Depends: @DEP@

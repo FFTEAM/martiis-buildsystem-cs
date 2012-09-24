@@ -167,8 +167,8 @@ update-svn:
 	@echo "update-svn is not useful on $(PLATFORM)"
 endif
 
-ifeq ("$(FLAVOUR)", "neutrino-hd-tripledragon")
-NOW = $(shell date +%Y%m%d-%H%M%S)
+ifneq ("$(FLAVOUR)", "neutrino-hd")
+NOW := $(shell date +%Y%m%d-%H%M%S)
 N_HD_SOURCE_S = $(subst $(BASE_DIR)/,"",$(N_HD_SOURCE))
 
 update-neutrino:

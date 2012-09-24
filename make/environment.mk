@@ -100,8 +100,10 @@ VPATH = $(D)
 
 ifeq ("$(FLAVOUR)", "neutrino-hd-tripledragon")
 N_HD_SOURCE ?= $(SOURCE_DIR)/neutrino-hd-td
+NEUTRINO_PKG = neutrino-hd
 else
-N_HD_SOURCE ?= $(SOURCE_DIR)/neutrino-hd
+N_HD_SOURCE ?= $(SOURCE_DIR)/$(FLAVOUR)
+NEUTRINO_PKG = $(FLAVOUR)
 endif
 
 # append */sbin for those not having sbin in their path. We need it.

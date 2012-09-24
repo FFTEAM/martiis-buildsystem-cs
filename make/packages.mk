@@ -300,8 +300,8 @@ minimal-system-pkgs: glibc-pkg aaa_base-pkg busybox procps opkg prepare-pkginsta
 system-pkgs: $(SYSTEM_PKGS)
 	+make pkg-index
 	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install update
-	opkg-cl -V4 -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
-		neutrino-hd $(SYSTEM_OPKGS)
+	opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install install \
+		$(NEUTRINO_PKG) $(SYSTEM_OPKGS)
 	@echo
 	@echo "List of installed packages in $(subst $(BASE_DIR)/,,$(BUILD_TMP))/install:"
 	@opkg-cl -f $(BUILD_TMP)/opkg.conf -o $(BUILD_TMP)/install list-installed | \

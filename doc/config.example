@@ -27,6 +27,7 @@
 # set the flavour of neutrino you want to build
 # "neutrino-hd":              use master branch of git://gitorious.org/neutrino-hd/neutrino-hd.git
 # "neutrino-hd-tripledragon": use git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git
+# "neutrino-mp":              use git://gitorious.org/neutrino-mp/neutrino-mp.git
 # empty: choose one of the above depending on PLATFORM
 #FLAVOUR=neutrino-hd-tripledragon
 
