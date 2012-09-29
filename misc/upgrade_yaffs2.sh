@@ -5,33 +5,28 @@ if [ ! -f /proc/sparkid ] ; then
 	exit 1
 fi
 
+FSTYPE=yaffs2
+OPT_FLASHERASEALL=
+OPT_NANDWRITE="-o"
+
 #backup
 N=/mnt/neutrino
 mkdir -p $N 2>/dev/null
-mount -t yaffs2 /dev/mtdblock6 $N
+mount -t $FSTYPE /dev/mtdblock6 $N
 B=backup
 mkdir $B
-W=""
-[ -f /root/neutrino-backup-files ] && W=`grep -v ^# /root/neutrino-backup-files`
-W="$W
-root
-var/tuxbox/config
-opt/pkg/etc/dropbear
-etc/network/interfaces
-etc/resolv.conf
-etc/modules.extra
-"
+W=`sed -e "s/#.*//" -e "s/^\///" -e "/^ *$/ d"< $N/var/tuxbox/config/tobackup.conf`
 tar -C $N -cf - $W | tar -C $B -xf -
 umount $N
 
 #install
 flash_eraseall /dev/mtd5
 nandwrite -a -p -m /dev/mtd5 uImage
-flash_eraseall /dev/mtd6
-nandwrite -a -o /dev/mtd6 e2yaffs2.img
+flash_eraseall $OPT_FLASHERASEALL /dev/mtd6
+nandwrite -a $OPT_NANDWRITE /dev/mtd6 e2$FSTYPE.img
 
 #restore
-mount -t yaffs2 /dev/mtdblock6 $N
+mount -t $FSTYPE /dev/mtdblock6 $N
 tar -C $B -cf - . | tar -C $N -xf -
 umount $N
 
