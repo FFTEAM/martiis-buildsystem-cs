@@ -22,7 +22,7 @@ flash-build:
 	mkyaffs2 --all-root -v -o $(BASE_DIR)/misc/oob-spark.img $(BUILD_TMP)/install $(FLASHIMG)
 
 
-flashimage: system-pkgs flash-prepare flash-build
+flashimage: system-pkgs plugins flash-prepare flash-build
 	rm -fr $(BUILD_TMP)/install
 	@set -e; rm -rf $(BUILD_TMP)/enigma2; mkdir $(BUILD_TMP)/enigma2; \
 		cd $(BUILD_TMP)/enigma2; \

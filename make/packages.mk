@@ -12,8 +12,10 @@ SYSTEM_PKGS  += yaffs2utils
 SYSTEM_OPKGS += yaffs2utils
 endif
 
-SYSTEM_PKGS  += mtd-utils
-SYSTEM_OPKGS += mtd-utils
+tuxcom: plugins
+
+SYSTEM_PKGS  += mtd-utils tuxcom
+SYSTEM_OPKGS += mtd-utils tuxcom
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
