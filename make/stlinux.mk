@@ -73,7 +73,7 @@ $(STL_ARCHIVE)/%.i386.rpm \
 $(STL_ARCHIVE)/%.noarch.rpm:
 	$(STL_GET) $(STL_FTP_UPD_SH4)/$(subst $(STL_ARCHIVE)/,"",$@)
 
-PATCH_STR = _0209
+PATCH_STR = _0210
 
 ## rpm versions of packages on the STM server
 # binutils 2.21.51-* segfault on linking the kernel
@@ -98,8 +98,12 @@ COMMONPATCHES_24 = \
 		bpa2_procfs_stm24$(PATCH_STR).patch \
 		linux-ftdi_sio.c_stm24$(PATCH_STR).patch \
 		linux-sh4-lzma-fix_stm24$(PATCH_STR).patch \
-		linux-sh4-dwmac_stm24_0209.patch \
 		linux-tune_stm24.patch
+
+ifeq ($(PATCH_STR),"_0209")
+COMMONPATCHES_24 +=
+		linux-sh4-dwmac_stm24_0209.patch
+endif
 
 SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
 	linux-sh4-stmmac_stm24$(PATCH_STR).patch \
