@@ -400,6 +400,8 @@ ifeq ($(SPARK7162_ONLY), )
 endif
 ifeq ($(SPARK_ONLY), )
 	$(MAKE) _sparkdriver SPARK7162=1 K_EXTRA=-7162
+	find $(TARGETPREFIX)/mymodules-7162 -name stmcore-display-sti7106.ko | \
+		xargs -r rm # we don't have a 7106 chip
 endif
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
