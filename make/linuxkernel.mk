@@ -405,6 +405,10 @@ endif
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules $^
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules-7162 $^
+	ln -sf component_7111_mb618.fw	 $(TARGETPREFIX)/mymodules/lib/firmware/component.fw
+	ln -sf component_7105_hdk7105.fw $(TARGETPREFIX)/mymodules-7162/lib/firmware/component.fw
+	ln -sf fdvo0_7105.fw		 $(TARGETPREFIX)/mymodules-7162/lib/firmware/fdvo0.fw
+
 
 endif
 
