@@ -310,7 +310,7 @@ endif
 	$(REMOVE)/ffmpeg-$(FFMPEG_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz | $(TARGETPREFIX)
+$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype| $(TARGETPREFIX)
 	$(UNTAR)/libass-$(LIBASS_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libass-$(LIBASS_VER); \
 		$(CONFIGURE) --disable-fontconfig --prefix= --disable-shared; \

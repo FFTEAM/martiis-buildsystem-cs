@@ -1,0 +1,40 @@
+diff --git a/util-linux/mdev.c b/util-linux/mdev.c
+index e0a527e..c20327a 100644
+--- a/util-linux/mdev.c
++++ b/util-linux/mdev.c
+@@ -495,14 +495,23 @@ static void load_firmware(const char *firmware, const char *sysfs_path)
+ 	int firmware_fd, loading_fd, data_fd;
+ 
+ 	/* check for /lib/firmware/$FIRMWARE */
+-	xchdir("/lib/firmware");
++	if (chdir("/lib/firmware")) {
++		/* don't die -- might need to write mdev.seq */
++		bb_perror_msg("chdir(/lib/firmware)");
++		return;
++	}
+ 	firmware_fd = xopen(firmware, O_RDONLY);
+ 
+ 	/* in case we goto out ... */
+ 	data_fd = -1;
++	loading_fd = -1;
+ 
+ 	/* check for /sys/$DEVPATH/loading ... give 30 seconds to appear */
+-	xchdir(sysfs_path);
++	if (chdir(sysfs_path)) {
++		bb_perror_msg("chdir(%s)", sysfs_path); /* crappy driver... */
++		goto out;
++	}
++
+ 	for (cnt = 0; cnt < 30; ++cnt) {
+ 		loading_fd = open("loading", O_WRONLY);
+ 		if (loading_fd != -1)
+@@ -642,7 +651,8 @@ int mdev_main(int argc UNUSED_PARAM, char **argv)
+ 		}
+ 
+ 		if (seq) {
+-			xopen_xwrite_close("mdev.seq", utoa(xatou(seq) + 1));
++			/* load_firmware chdir()'s away from /dev, so full path is needed */
++			xopen_xwrite_close("/dev/mdev.seq", utoa(xatou(seq) + 1));
+ 		}
+ 	}
+ 

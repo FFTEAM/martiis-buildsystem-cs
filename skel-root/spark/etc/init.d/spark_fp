@@ -31,12 +31,9 @@ start)
 	REASON=$?
 	echo "wakeup reason: $REASON ($WAKEUP)"
 	test $REASON = 3 && touch /tmp/.timer_wakeup
-	# 1 == poweron, no valid time there...
-	if test $REASON != 1; then
-		TIME=$(spark_fp -t)
-		echo -n "setting time from FP time: "
-		date -s @$TIME
-	fi
+	TIME=$(spark_fp -t)
+	echo -n "setting time from FP time: "
+	date -s @$TIME
 	;;
 stop)
 	if [ -e /tmp/.reboot ]

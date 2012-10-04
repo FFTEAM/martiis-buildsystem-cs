@@ -21,7 +21,7 @@ KVERSION_FULL = $(KVERSION)-nevis
 K_DEP = $(D)/cskernel
 endif
 ifeq ($(PLATFORM), spark)
-KVERSION = 2.6.32.46
+KVERSION = 2.6.32.57
 KVERSION_FULL = $(KVERSION)_stm24$(PATCH_STR)
 endif
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
@@ -252,9 +252,10 @@ ifeq ($(PLATFORM), spark)
 TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
 TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
-MY_KERNELPATCHES = \
-	$(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch \
-	$(PATCHES)/0001-bpa2-ignore-bigphysarea-kernel-parameter.patch
+MY_KERNELPATCHES = $(PATCHES)/0001-bpa2-ignore-bigphysarea-kernel-parameter.patch
+ifeq ($(PATCH_STR),"_0209")
+MY_KERNELPATCHES += $(PATCHES)/0001-spark-fix-buffer-overflow-in-lirc_stm.patch
+endif
 
 # this is ugly, but easier than changing the way the tdt patches are applied.
 # The reason for this patch is, that the spark_setup and spark7162_setup patches
@@ -274,17 +275,16 @@ SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162
 endif
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
-		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm \
+		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-$(KVERSION_FULL)-$(subst _0,,$(PATCH_STR)).src.rpm \
 		$(MY_KERNELPATCHES) \
 		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
 		$(SPARKKERNELDEPS)
-	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
-		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.46_stm24_0209-209.src.rpm
+	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc $<
 	rm -fr $(TMP_KDIR)
 	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2
 	set -e; cd $(TMP_KDIR); \
-		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.46.patch.bz2 | patch -p1 ;\
-		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.46_stm24_sh4_0209.patch.bz2 | patch -p1; \
+		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION).patch.bz2 | patch -p1 ;\
+		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION)_stm24_sh4$(PATCH_STR).patch.bz2 | patch -p1; \
 		for i in $(SPARK_PATCHES_24); do \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
@@ -301,6 +301,9 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 	cp -al $@ $@-7162 # hardlinked tree
 	mv $@/.config-spark $@/.config
 	mv $@-7162/.config-7162 $@-7162/.config
+	# this allows to compile old 0209 kernel with 0210 config without questions...
+	echo "CONFIG_HW_GLITCH_WIDTH=1" >> $@/.config
+	echo "CONFIG_HW_GLITCH_WIDTH=1" >> $@-7162/.config
 	$(MAKE) -C $@ ARCH=sh oldconfig
 	$(MAKE) -C $@ ARCH=sh include/asm
 	$(MAKE) -C $@ ARCH=sh include/linux/version.h
@@ -400,11 +403,17 @@ ifeq ($(SPARK7162_ONLY), )
 endif
 ifeq ($(SPARK_ONLY), )
 	$(MAKE) _sparkdriver SPARK7162=1 K_EXTRA=-7162
+	find $(TARGETPREFIX)/mymodules-7162 -name stmcore-display-sti7106.ko | \
+		xargs -r rm # we don't have a 7106 chip
 endif
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules $^
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules-7162 $^
+	ln -sf component_7111_mb618.fw	 $(TARGETPREFIX)/mymodules/lib/firmware/component.fw
+	ln -sf component_7105_hdk7105.fw $(TARGETPREFIX)/mymodules-7162/lib/firmware/component.fw
+	ln -sf fdvo0_7105.fw		 $(TARGETPREFIX)/mymodules-7162/lib/firmware/fdvo0.fw
+
 
 endif
 
