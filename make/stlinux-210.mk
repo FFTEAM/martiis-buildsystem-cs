@@ -77,10 +77,10 @@ PATCH_STR = _0210
 
 ## rpm versions of packages on the STM server
 # binutils 2.21.51-* segfault on linking the kernel
-BINUTILS_VER	= 2.20.51.0.7-48
-GCC_VER		= 4.5.3-97
+BINUTILS_VER	= 2.22-61
+GCC_VER		= 4.6.3-109
 STMKERNEL_VER	= 2.6.32.46-45
-LIBGCC_VER	= 4.5.3-100
+LIBGCC_VER	= 4.6.3-113
 GLIBC_VER	= 2.10.2-34
 
 
