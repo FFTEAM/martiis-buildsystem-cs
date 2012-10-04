@@ -272,17 +272,16 @@ SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162
 endif
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
-		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.57_stm24_0210-210.src.rpm \
+		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-$(KVERSION_FULL)-$(subst _0,,$(PATCH_STR)).src.rpm \
 		$(MY_KERNELPATCHES) \
 		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
 		$(SPARKKERNELDEPS)
-	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc \
-		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-2.6.32.57_stm24_0210-210.src.rpm
+	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc $<
 	rm -fr $(TMP_KDIR)
 	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2
 	set -e; cd $(TMP_KDIR); \
-		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.57.patch.bz2 | patch -p1 ;\
-		bzcat $(BUILD_TMP)/ksrc/linux-2.6.32.57_stm24_sh4_0210.patch.bz2 | patch -p1; \
+		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION).patch.bz2 | patch -p1 ;\
+		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION)_stm24_sh4$(PATCH_STR).patch.bz2 | patch -p1; \
 		for i in $(SPARK_PATCHES_24); do \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
@@ -394,11 +393,17 @@ ifeq ($(SPARK7162_ONLY), )
 endif
 ifeq ($(SPARK_ONLY), )
 	$(MAKE) _sparkdriver SPARK7162=1 K_EXTRA=-7162
+	find $(TARGETPREFIX)/mymodules-7162 -name stmcore-display-sti7106.ko | \
+		xargs -r rm # we don't have a 7106 chip
 endif
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules $^
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules-7162 $^
+	ln -sf component_7111_mb618.fw	 $(TARGETPREFIX)/mymodules/lib/firmware/component.fw
+	ln -sf component_7105_hdk7105.fw $(TARGETPREFIX)/mymodules-7162/lib/firmware/component.fw
+	ln -sf fdvo0_7105.fw		 $(TARGETPREFIX)/mymodules-7162/lib/firmware/fdvo0.fw
+
 
 endif
 
