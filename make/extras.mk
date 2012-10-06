@@ -605,18 +605,6 @@ $(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(AR
 	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
 	touch $@
 
-GRAPHLCD_OBJDIR=$(BUILD_TMP)/graphlcd-base-touchcol
-GRAPHLCD_ARCHIVE=$(ARCHIVE)/graphlcd-base-touchcol.tar.gz
-
-#$(ARCHIVE)/graphlcd-base-touchcol.tar.gz:
-#	cd $(BUILD_TMP) && \
-#	rm -rf graphlcd-base-touchcol && \
-#	git clone git://projects.vdr-developer.org/graphlcd-base.git -b touchcol graphlcd-base-touchcol && \
-#	cd graphlcd-base-touchcol && \
-#	git checkout a39f265732d0bc28cb66b58b5ecf1964a130d02b && \
-#	tar -C $(BUILD_TMP) -zcf $@ graphlcd-base-touchcol && \
-#	$(PATCH)/graphlcd.patch
-
 $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz libusb-compat | $(TARGETPREFIX)
 	-$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX)
 	set -e ; $(UNTAR)/graphlcd-base-$(GRAPHLCD_VER).tar.gz ;\

@@ -668,9 +668,33 @@
  
  uninstall:
  	rm -f $(BINDIR)/$(PRGNAME)
---- graphlcd-base/glcddrivers/ax206dpf.c.org	2012-03-11 18:58:39.000000000 +0100
-+++ graphlcd-base/glcddrivers/ax206dpf.c	2012-08-25 15:46:21.820210928 +0200
-@@ -212,7 +212,7 @@
+--- graphlcd-base/glcddrivers/ax206dpf.h	2012-03-11 18:58:39.000000000 +0100
++++ graphlcd-base/glcddrivers/ax206dpf.h	2012-10-06 18:50:16.332478678 +0200
+@@ -53,10 +53,12 @@
+     bool isPortrait;
+     bool rotate90;
+     bool flip;
++    bool justCleared;
+     int minx, maxx;
+     int miny, maxy;
+     LIBDPF::DPFContext *dpfh;
+     unsigned char * LCD;
++    unsigned char * PRE;
+ } DISPLAYHANDLE;
+ 
+ 
+--- graphlcd-base/glcddrivers/ax206dpf.c	2012-03-11 18:58:39.000000000 +0100
++++ graphlcd-base/glcddrivers/ax206dpf.c	2012-10-06 19:30:07.512771427 +0200
+@@ -76,6 +76,8 @@
+         dh[i]->address[0] = 0;
+         dh[i]->dpfh = NULL;
+         dh[i]->LCD = NULL;
++        dh[i]->PRE = NULL;
++	dh[i]->justCleared = false;
+     }
+ 
+     lastbrightness = config->brightness ? config->brightness : 100;
+@@ -212,7 +214,7 @@
      {
          dh[di]->dpfh = NULL;
          dh[di]->attached = false;
@@ -679,3 +703,120 @@
      }
      dh[di]->attached = true;
      struct usb_device *dev = usb_device(dh[di]->dpfh->dev.udev);
+@@ -250,6 +252,7 @@
+     }
+     // setup physical lcd arrays
+     dh[di]->LCD = (unsigned char *) malloc(dh[di]->dpfh->height * dh[di]->dpfh->width * dh[di]->dpfh->bpp);
++    dh[di]->PRE= (unsigned char *) malloc(dh[di]->dpfh->height * dh[di]->dpfh->width * dh[di]->dpfh->bpp);
+     ClearSingleDisplay(di);
+ 
+     // Set Display Brightness
+@@ -257,7 +260,7 @@
+ 
+ 
+     // Reorder displays
+-    bool changed = false;
++//  bool changed = false;
+     for (unsigned int i = 0; i < MAX_DPFS - 1; i++)
+     {
+         for (unsigned int j = i + 1; j < MAX_DPFS; j++)
+@@ -267,7 +270,7 @@
+                 DISPLAYHANDLE *h = dh[i];
+                 dh[i] = dh[j];
+                 dh[j] = h;
+-                changed = true;
++//              changed = true;
+             }
+         }
+     }
+@@ -291,6 +294,10 @@
+     if (dh[di]->LCD != NULL)
+         free(dh[di]->LCD);
+     dh[di]->LCD = NULL;
++
++    if (dh[di]->PRE != NULL)
++        free(dh[di]->PRE);
++    dh[di]->PRE = NULL;
+     
+     dh[di]->attached = false;
+     dh[di]->address[0] = 0;
+@@ -353,7 +360,9 @@
+ {
+     if (dh[di]->attached)
+     {
++	dh[di]->justCleared = true;
+         memset(dh[di]->LCD, 0, dh[di]->dpfh->width * dh[di]->dpfh->height * dh[di]->dpfh->bpp);       //Black
++        memset(dh[di]->PRE, 1, dh[di]->dpfh->width * dh[di]->dpfh->height * dh[di]->dpfh->bpp);       //whatever
+         dh[di]->minx = 0;
+         dh[di]->maxx = dh[di]->dpfh->width - 1;
+         dh[di]->miny = 0;
+@@ -479,7 +488,60 @@
+         {
+             dh[di]->minx = 0; dh[di]->miny = 0;
+             dh[di]->maxx = dh[di]->dpfh->width - 1; dh[di]->maxy = dh[di]->dpfh->height - 1;
+-        }
++        } else if (dh[di]->justCleared) {
++	    dh[di]->justCleared = false;
++
++	    int height = dh[di]->dpfh->height;
++	    int width =  dh[di]->dpfh->width;
++	    int y_min = height;
++
++	    uint16_t *b0 = (uint16_t *) dh[di]->LCD;
++	    uint16_t *b1 = (uint16_t *) dh[di]->PRE;
++	    for (int y = 0; y < height && y_min == height; y++)
++		for (int x = 0; x < width; x++, b0++, b1++)
++		    if (b0 != b1) {
++			y_min = y;
++			break;
++		    }
++
++	    int y_max = y_min;
++	    b1 = (uint16_t *) dh[di]->LCD + height * width - 1;
++	    b0 = (uint16_t *) dh[di]->PRE + height * width - 1;
++	    for (int y = height - 1; y_min < y && y_max == y_min; y--)
++		for (int x = 0; x < width; x++, b0--, b1--)
++		    if (b0 != b1) {
++			y_max = y;
++			break;
++		    }
++
++	    int x_min = width;
++	    for (int x = 0; x < width && x_min == width; x++) {
++	        b0 = (uint16_t *) dh[di]->LCD + x + y_min * width;
++	        b1 = (uint16_t *) dh[di]->PRE + x + y_min * width;
++	        for (int y = y_min; y < y_max; y++, b0 += width, b1 += width)
++		    if (*b0 != *b1) {
++			x_min = x;
++			break;
++		    }
++	    }
++
++	    int x_max = x_min;
++	    for (int x = width - 1; x_min < x && x_max == x_min; x--) {
++		b0 = (uint16_t *) dh[di]->LCD + x + y_min * width;
++		b1 = (uint16_t *) dh[di]->PRE + x + y_min * width;
++		for (int y = y_min; y < y_max; y++, b0 += width, b1 += width)
++		    if (*b0 != *b1) {
++			x_max = x;
++			break;
++		    }
++	    }
++
++	    dh[di]->minx;
++	    dh[di]->miny;
++	    dh[di]->minx = x_min;
++	    dh[di]->maxx = x_max;
++	}
++
+         //fprintf(stderr, "%d: (%d,%d)-(%d,%d) ", di, dh[di]->minx, dh[di]->miny, dh[di]->maxx, dh[di]->maxy);
+         if (dh[di]->minx > dh[di]->maxx || dh[di]->miny > dh[di]->maxy)
+             continue;
+@@ -506,6 +568,7 @@
+             RescanUSB();
+             lastscan = time(NULL);
+         }
++	memcpy(dh[di]->PRE, dh[di]->LCD, dh[di]->dpfh->height * dh[di]->dpfh->width * dh[di]->dpfh->bpp);
+     }
+     
+     ResetMinMax();
