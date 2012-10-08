@@ -1,0 +1,73 @@
+####################################################
+# Makefile for building native neutrino / libstb-hal
+# (C) 2012 Stefan Seyfried
+#
+# prerequisite packages need to be installed,
+# no checking is done for that
+####################################################
+
+SOURCE = $(PWD)/source
+OBJ = $(PWD)/obj
+DEST = $(PWD)/root
+
+LH_SRC = $(SOURCE)/libstb-hal
+LH_OBJ = $(OBJ)/libstb-hal
+N_SRC  = $(SOURCE)/neutrino-mp
+N_OBJ  = $(OBJ)/neutirno-mp
+
+CFLAGS = -funsigned-char -g -W -Wall
+CXXFLAGS = $(CFLAGS)
+
+export CFLAGS CXXFLAGS
+
+# first target is default...
+run: neutrino
+	gdb -ex run $(DEST)/bin/neutrino
+
+neutrino: $(N_OBJ)/config.status
+	$(MAKE) -C $(N_OBJ) all
+	$(MAKE) -C $(N_OBJ) install
+
+$(LH_OBJ)/libstb-hal.a: libstb-hal
+libstb-hal: $(LH_OBJ)/config.status
+	$(MAKE) -C $(LH_OBJ) all
+
+$(LH_OBJ)/config.status: | $(LH_OBJ) $(LH_SRC)
+	$(LH_SRC)/autogen.sh
+	set -e; cd $(LH_OBJ); \
+		$(LH_SRC)/configure --enable-maintainer-mode
+
+$(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
+	$(N_SRC)/autogen.sh
+	set -e; cd $(N_OBJ); \
+		$(N_SRC)/configure --enable-maintainer-mode \
+			--prefix=$(DEST) \
+			--with-datadir=$(DEST)/share/tuxbox \
+			--with-fontdir="$(DEST)/share/fonts" \
+			--with-themesdir="$(DEST)/share/tuxbox/neutrino/themes" \
+			--enable-silent-rules --enable-mdev \
+			--with-target=native --with-boxtype=generic \
+			--with-stb-hal-includes=$(LH_SRC)/include \
+			--with-stb-hal-build=$(LH_OBJ) \
+			; \
+		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h
+
+$(OBJ):
+	mkdir $(OBJ)
+$(OBJ)/neutrino-mp \
+$(OBJ)/libstb-hal: | $(OBJ)
+	mkdir $@
+$(SOURCE):
+	mkdir $@
+$(LH_SRC): | $(SOURCE)
+	cd $(SOURCE) && git clone git://gitorious.org/neutrino-hd/libstb-hal.git
+$(N_SRC): | $(SOURCE)
+	cd $(SOURCE) && git clone git://gitorious.org/neutrino-mp/neutrino-mp.git
+checkout: $(SOURCE)/libstb-hal $(SOURCE)/neutrino-mp
+clean:
+	-$(MAKE) -C $(N_OBJ) clean
+	-$(MAKE) -C $(LH_OBJ) clean
+	rm -rf $(N_OBJ) $(LH_OBJ)
+
+PHONY = checkout
+.PHONY: $(PHONY)
