@@ -261,7 +261,7 @@ $(ARCHIVE)/vsftpd-$(VSFTPD-VER).tar.gz:
 	$(WGET) https://security.appspot.com/downloads/vsftpd-$(VSFTPD-VER).tar.gz
 
 $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
-	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
+	$(WGET) http://ftp.gwdg.de/pub/linux/misc/xfs/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
 
 $(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/$(ZLIB_VER)/zlib-$(ZLIB_VER).tar.bz2
