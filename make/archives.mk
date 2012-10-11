@@ -197,7 +197,7 @@ $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz:
 	$(WGET) http://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIG_VER).tar.gz
 
 $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz:
-	$(WGET) http://neil.brown.name/portmap/portmap-$(PORTMAP-VER).tgz
+	$(WGET) http://ftp.lfs-matrix.net/pub/blfs/svn/p/portmap-$(PORTMAP-VER).tgz
 
 $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz:
 	$(WGET) http://procps.sourceforge.net/procps-$(PROCPS-VER).tar.gz
