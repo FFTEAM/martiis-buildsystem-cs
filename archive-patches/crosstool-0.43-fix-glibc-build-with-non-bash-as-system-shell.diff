@@ -1,0 +1,13 @@
+--- a/crosstool.sh	2012-09-02 22:27:10.000000000 +0200
++++ b/crosstool.sh	2012-09-02 22:26:58.000000000 +0200
+@@ -560,8 +560,8 @@
+ # The following architectures are known to need kernel .config: alpha, arm, ia64, s390, sh, sparc
+ # Note: LD and RANLIB needed by glibc-2.1.3's c_stub directory, at least on macosx
+ # No need for PARALLELMFLAGS here, Makefile already reads this environment variable
+-make LD=${TARGET}-ld RANLIB=${TARGET}-ranlib $GLIBC_INITIAL_BUILD_RULE
+-make install_root=${SYSROOT} $GLIBC_SYSROOT_ARG $GLIBC_INITIAL_INSTALL_RULE
++make LD=${TARGET}-ld RANLIB=${TARGET}-ranlib $GLIBC_INITIAL_BUILD_RULE SHELL=/bin/bash
++make install_root=${SYSROOT} $GLIBC_SYSROOT_ARG $GLIBC_INITIAL_INSTALL_RULE SHELL=/bin/bash
+ 
+ # This doesn't seem to work when building a crosscompiler,
+ # as it tries to execute localedef using the just-built ld.so!?
