@@ -4,6 +4,7 @@ crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 
 $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
 	make $(BUILD_TMP)
+	$(REMOVE)/crosstool-ng-1.15.2
 	$(UNTAR)/crosstool-ng-1.15.2.tar.bz2
 	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.15.2; \
 		$(PATCH)/crosstool-ng-1.15.2-don_t-build-nconf.diff; \

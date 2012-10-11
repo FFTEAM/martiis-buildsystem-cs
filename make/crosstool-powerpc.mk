@@ -31,6 +31,7 @@ else
 # $(TD_COMPILER) == new
 $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2
 	make $(BUILD_TMP)
+	$(REMOVE)/crosstool-ng-1.10.0
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
 	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
 	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm
