@@ -151,11 +151,11 @@ ustslave: $(TARGETPREFIX)/bin/ustslave
 fp_control: $(TARGETPREFIX)/bin/fp_control
 stfbcontrol: $(TARGETPREFIX)/bin/stfbcontrol
 
-# BUILD_TMP/driver "provides" include/linux/stmfb.h
+# BUILD_TMP/tdt-driver "provides" include/linux/stmfb.h
 $(TARGETPREFIX)/bin/ustslave \
 $(TARGETPREFIX)/bin/fp_control \
 $(TARGETPREFIX)/bin/stfbcontrol: \
 	$(TDT_TOOLS)/config.status \
-	| $(BUILD_TMP)/driver
+	| $(BUILD_TMP)/tdt-driver
 	$(MAKE) -C $(TDT_TOOLS) install \
 		SUBDIRS=$(lastword $(subst /, ,$@)) DESTDIR=$(TARGETPREFIX)
