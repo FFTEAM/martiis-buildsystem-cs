@@ -113,8 +113,6 @@ kernelgcc: $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 
 # powerpc-405-linux-gnu-gcc is the "marker file" for crosstool
 $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
-	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
-		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
 	cp $(PATCHES)/glibc-2.3.3-allow-gcc-4.0-configure.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
 	cp $(PATCHES)/glibc-2.3.6-new_make.patch                $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.2
@@ -124,6 +122,7 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 		test $$NUM_CPUS -gt $$MEM_512M && NUM_CPUS=$$MEM_512M; \
 		test $$NUM_CPUS = 0 && NUM_CPUS=1; \
 		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
+		$(PATCH)/crosstool-0.43-fix-glibc-build-with-non-bash-as-system-shell.diff; \
 		export TARBALLS_DIR=$(ARCHIVE); \
 		export RESULT_TOP=$(CROSS_BASE); \
 		export GCC_LANGUAGES="c"; \
@@ -338,7 +337,9 @@ $(TARGETPREFIX)/include/linux/dvb:
 # $(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
 # $(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
 #
-$(BUILD_TMP)/driver: \
+# the dependency on .../tdt-driver/.git should trigger on updated git...
+$(BUILD_TMP)/tdt-driver: \
+$(SOURCE_DIR)/tdt-driver/.git \
 $(PATCHES)/sparkdrivers/0001-player2_191-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
 $(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
@@ -350,9 +351,10 @@ $(PATCHES)/sparkdrivers/0002-aotom-fix-include-file.patch \
 $(PATCHES)/sparkdrivers/0003-aotom-add-VFDGETVERSION-ioctl-to-find-FP-type.patch \
 $(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
 | $(TARGETPREFIX)/include/linux/dvb
-	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
-	set -e; cd $(BUILD_TMP)/driver; \
+	cp -a $(SOURCE_DIR)/tdt-driver $(BUILD_TMP)
+	set -e; cd $@; \
 		for i in $^; do \
+			test -d $$i && continue; \
 			echo "==> Applying Patch: $${i#$(PATCHES)/}"; \
 			patch -p1 -i $$i; done; \
 		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
@@ -370,28 +372,28 @@ $(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
 		rm -f stmfb; \
 		ln -s stmfb-3.1_stm24_0102 stmfb; \
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
-	cp -a $(BUILD_TMP)/driver/frontcontroller/aotom/aotom_main.h $(TARGETPREFIX)/include
+	cp -a $@/frontcontroller/aotom/aotom_main.h $(TARGETPREFIX)/include
 	# disable wireless build
-	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
+	sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $@/Makefile
 	# disable led and button - it's not for spark
-	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
+	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $@/Makefile
 	cp -al $@ $@-7162
 
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
 # host system includes are used and that might be fatal.
-_sparkdriver: $(BUILD_TMP)/driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
+_sparkdriver: $(BUILD_TMP)/tdt-driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
 	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
-		DRIVER_TOPDIR=$(BUILD_TMP)/driver$(K_EXTRA) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/tdt-driver$(K_EXTRA) \
 		M=$(firstword $^) \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
 	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
 		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
-		DRIVER_TOPDIR=$(BUILD_TMP)/driver$(K_EXTRA) \
+		DRIVER_TOPDIR=$(BUILD_TMP)/tdt-driver$(K_EXTRA) \
 		M=$(firstword $^) \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)- \

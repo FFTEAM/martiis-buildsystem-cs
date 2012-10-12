@@ -8,13 +8,12 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	@echo "                       Preparing to Build crosstool"
 	@echo ' ============================================================================== '
 	@echo ' '
-	@if test "$(shell basename $(shell readlink /bin/sh))" != bash; then \
-		echo "crosstool needs bash as /bin/sh!. Please fix."; false; fi
 	tar -C $(BUILD_TMP) -xzf $(ARCHIVE)/crosstool-0.43.tar.gz
 	cp $(PATCHES)/glibc-2.3.6-allow-binutils-2.20+.patch $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
 	cp $(PATCHES)/glibc-2.3.6-new_make.patch             $(BUILD_TMP)/crosstool-0.43/patches/glibc-2.3.6
 	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-0.43; \
 		$(PATCH)/crosstool-0.43-fix-build-with-FORTIFY_SOURCE-default.diff; \
+		$(PATCH)/crosstool-0.43-fix-glibc-build-with-non-bash-as-system-shell.diff; \
 		export TARBALLS_DIR=$(ARCHIVE); \
 		export RESULT_TOP=$(CROSS_BASE); \
 		export GCC_LANGUAGES="c,c++"; \
@@ -32,6 +31,7 @@ else
 # $(TD_COMPILER) == new
 $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2
 	make $(BUILD_TMP)
+	$(REMOVE)/crosstool-ng-1.10.0
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
 	$(UNTAR)/linux-libc-headers-2.6.12.0.tar.bz2
 	ln -sf asm-ppc $(BUILD_TMP)//linux-libc-headers-2.6.12.0/include/asm

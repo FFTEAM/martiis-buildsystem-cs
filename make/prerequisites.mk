@@ -14,6 +14,8 @@ PREQS += cs-svn
 endif
 ifeq ($(PLATFORM), spark)
 PREQS += $(TDT_SRC)
+# don't pull this for my build --martii
+#PREQS += $(SOURCE_DIR)/tdt-driver
 endif
 ifeq ($(USE_STB_HAL), yes)
 PREQS += $(SOURCE_DIR)/libstb-hal
@@ -120,6 +122,13 @@ $(TD_SVN):
 		lzma -dc $(PATCHES)/tripledragon/tdsvn-essential.tar.lzma | tar xv
 
 tdsvn: $(TD_SVN)
+
+# to automatically pull it in for sparkdriver target
+$(SOURCE_DIR)/tdt-driver/.git: | $(SOURCE_DIR)/tdt-driver
+
+$(SOURCE_DIR)/tdt-driver:
+	set -e; cd $(SOURCE_DIR); \
+		git clone $(GITORIOUS)/neutrino-mp/tdt-driver.git
 
 $(TDT_SRC):
 	set -e; cd $(SOURCE_DIR); \

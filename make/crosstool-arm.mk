@@ -36,6 +36,7 @@ crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_D
 
 crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.tar.bz2
 	make $(BUILD_TMP)
+	$(REMOVE)/crosstool-ng-1.10.0
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
 	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
 		$(PATCH)/crosstool-ng-1.10.0-new-file.patch; \

@@ -200,7 +200,7 @@ $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz:
 	$(WGET) http://pkgconfig.freedesktop.org/releases/pkg-config-$(PKGCONFIG_VER).tar.gz
 
 $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz:
-	$(WGET) http://neil.brown.name/portmap/portmap-$(PORTMAP-VER).tgz
+	$(WGET) http://ftp.lfs-matrix.net/pub/blfs/svn/p/portmap-$(PORTMAP-VER).tgz
 
 $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz:
 	$(WGET) http://procps.sourceforge.net/procps-$(PROCPS-VER).tar.gz
@@ -264,7 +264,7 @@ $(ARCHIVE)/vsftpd-$(VSFTPD_VER).tar.gz:
 	$(WGET) --no-check-certificate https://security.appspot.com/downloads/vsftpd-$(VSFTPD_VER).tar.gz
 
 $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
-	$(WGET) ftp://oss.sgi.com/projects/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
+	$(WGET) http://ftp.gwdg.de/pub/linux/misc/xfs/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
 
 $(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libpng/zlib/$(ZLIB_VER)/zlib-$(ZLIB_VER).tar.bz2
