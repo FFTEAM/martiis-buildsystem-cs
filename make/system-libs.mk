@@ -620,4 +620,40 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	tar -C $(PKGPREFIX)/lib -xf $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
+	export PKG_DEP_=`opkg-find-requires.sh $(PKGPREFIX)`; \
+		export PKG_PROV=`cd $(PKGPREFIX)/lib; echo *|sort|sed "s/ /, /g"`; \
+		set -x; \
+		PKG_DEP=""; \
+		for i in $$PKG_DEP_; do \
+			FOUND=false; \
+			for j in $$PKG_PROV; do \
+				if test $$j = $$i; then \
+					FOUND=true; \
+					break; \
+				fi; \
+			done; \
+			$$FOUND || PKG_DEP="$$PKG_DEP $$i"; \
+		done; \
+		export PKG_DEP; \
+		PKG_VER=3.11 \
+		$(OPKG_SH) $(CONTROL_DIR)/mrua-libs
+	rm -rf $(PKGPREFIX)
+	touch $@
+
+$(TARGETPREFIX)/bin/rmfp_player: | $(TARGETPREFIX)/bin
+	wget -O $@ 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'
+	chmod 755 $@
+
+$(D)/rmfp_player: $(TARGETPREFIX)/bin/rmfp_player
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/bin
+	cp -p $(TARGETPREFIX)/bin/rmfp_player $(PKGPREFIX)/bin
+	PKG_VER=0.0 PKG_AUTOREQPROV=1 $(OPKG_SH) $(CONTROL_DIR)/rmfp_player
+	rm -rf $(PKGPREFIX)
+	touch $@
+
 PHONY += ncurses-prereq
