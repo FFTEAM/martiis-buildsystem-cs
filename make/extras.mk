@@ -605,6 +605,42 @@ $(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(AR
 	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
 	touch $@
 
+$(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/alsa-lib-$(ALSA_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	set -e; cd $(BUILD_TMP)/alsa-lib-$(ALSA_VER); \
+		$(CONFIGURE) --prefix= --mandir=/.remove --disable-aload --disable-rawmidi \
+			--disable-python --disable-old-symbols \
+			--disable-alisp --disable-ucm --disable-hwdep; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)/{bin,include,lib/alsa-lib,lib/pkgconfig} \
+		$(PKGPREFIX)/share/alsa/{pcm,cards,smixer.conf} \
+		$(PKGPREFIX)/share/aclocal
+	rm $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/lib/*.la
+	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-lib
+	$(REMOVE)/alsa-lib-$(ALSA_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TARGETPREFIX)
+	$(UNTAR)/alsa-utils-$(ALSA_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
+		sed -ir -r "s/(alsamixer|amidi|aplay|iecset|speaker-test|seq|alsactl|alsaucm)//g" Makefile.am ;\
+		autoreconf -fi; \
+		$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsatest \
+			--disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)/var $(PKGPREFIX)/share $(PKGPREFIX)/lib/pkgconfig
+	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
+	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
+	touch $@
+
 $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz libusb-compat | $(TARGETPREFIX)
 	-$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX)
 	set -e ; $(UNTAR)/graphlcd-base-$(GRAPHLCD_VER).tar.gz ;\
@@ -620,35 +656,6 @@ $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz lib
 	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/graphlcd-base-touchcol ;\
 	$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX) ;\
 	touch $(D)/graphlcd-base-touchcol
-
-$(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/alsa-lib-$(ALSA_VER).tar.bz2
-	rm -rf $(PKGPREFIX)
-	set -e; cd $(BUILD_TMP)/alsa-lib-$(ALSA_VER); \
-		$(CONFIGURE) --prefix= --mandir=/.remove --disable-aload --disable-rawmidi --disable-python --disable-old-symbols --disable-alisp --disable-ucm --disable-hwdep ;\
-		$(BUILDENV) $(MAKE); \
-		make install DESTDIR=$(PKGPREFIX)
-	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
-	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	rm -rf $(PKGPREFIX)/bin $(PKGPREFIX)/include $(PKGPREFIX)/share/aclocal $(PKGPREFIX)/lib/alsa-lib $(PKGPREFIX)/share/alsa/cards $(PKGPREFIX)/share/alsa/pcm $(PKGPREFIX)/share/alsa/alsa.conf.d
-	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-lib
-	$(REMOVE)/alsa-lib-$(ALSA_VER) $(PKGPREFIX)
-	touch $@
-
-$(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TARGETPREFIX)
-	$(UNTAR)/alsa-utils-$(ALSA_VER).tar.bz2
-	rm -rf $(PKGPREFIX)
-	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
-	$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto ;\
-	sed -i -e "s/^DIST_SUBDIRS/DIST_SUBDIRS=include m4 amixer\nORIG_DIST_SUBDIRS/" -e "s/^SUBDIRS/SUBDIRS=include m4 amixer\nORIG_SUBDIRS/" Makefile ; \
-	$(BUILDENV) $(MAKE); \
-	make install DESTDIR=$(PKGPREFIX)
-	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
-	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	rm -rf $(PKGPREFIX)/var $(PKGPREFIX)/share $(PKGPREFIX)/lib/pkgconfig
-	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
-	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
-	touch $@
 
 $(D)/usb-modeswitch-data: $(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2

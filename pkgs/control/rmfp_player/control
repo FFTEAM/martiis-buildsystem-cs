@@ -1,0 +1,10 @@
+Package: rmfp_player
+Version: @VER@-1
+Description: Mediaplayer Application for AZbox me/minime
+Section: base
+Priority: optional
+Maintainer: unknown
+Architecture: @ARCH@
+Homepage:
+Source:
+Depends: @DEP@

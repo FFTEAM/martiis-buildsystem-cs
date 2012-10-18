@@ -8,5 +8,5 @@ Architecture: @ARCH@
 Homepage: http://www.openssl.org/
 Source:
 Depends:
-Provides: libcrypto.so.0.9.8 libssl.so.0.9.8
+Provides: libcrypto.so.0.9.8, libssl.so.0.9.8
 

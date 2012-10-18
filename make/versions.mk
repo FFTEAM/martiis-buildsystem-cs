@@ -11,7 +11,7 @@
 ###########################
 
 # azbox-dvb-modules
-AZBOX_DVB_M_VER=20120629
+AZBOX_DVB_M_VER=20120905-1
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1

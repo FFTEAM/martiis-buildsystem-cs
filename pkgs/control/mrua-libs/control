@@ -1,0 +1,11 @@
+Package: mrua-libs
+Version: @VER@-1
+Description: Hardware user space libraries for AZbox me/minime
+Section: base/libraries
+Priority: standard
+Maintainer: unknown
+Architecture: @ARCH@
+Homepage: https://code.google.com/p/azbox-enigma2-project/downloads/list
+Source:
+Depends: @DEP@
+Provides: @PROV@

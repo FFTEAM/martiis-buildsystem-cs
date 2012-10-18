@@ -288,11 +288,9 @@ $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2:
 	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 
 $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2:
-	$(WGET) ftp://ftp.alsa-project.org/pub/lib/alsa-lib-$(ALSA_VER).tar.bz2 || \
 	$(WGET) ftp://gd.tuwien.ac.at/opsys/linux/alsa/lib/alsa-lib-$(ALSA_VER).tar.bz2
 
 $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
-	$(WGET) ftp://ftp.alsa-project.org/pub/utils/alsa-utils-$(ALSA_VER).tar.bz2 || \
 	$(WGET) ftp://gd.tuwien.ac.at/opsys/linux/alsa/utils/alsa-utils-$(ALSA_VER).tar.bz2
 
 $(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz:
