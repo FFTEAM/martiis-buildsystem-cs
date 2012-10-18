@@ -1,0 +1,11 @@
+Package: alsa-utils
+Version: @VER@-1
+Description: ALSA Utilities
+Section: extras
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.alsa-project.org
+Source:
+Depends: libasound.so.2
+Provides: amixer
