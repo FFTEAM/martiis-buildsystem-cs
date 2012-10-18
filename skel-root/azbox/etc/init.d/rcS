@@ -27,12 +27,14 @@ ln -s /tmp/media /	# /media points to /tmp/media/
 #
 # make mdev try to process the events in sequential order
 echo >/dev/mdev.seq
-# start up mdev with coldplugging
-mdev -s
+
 # manually create nodes for crappy drivers
 /sbin/mknodes
 # register mdev as hotplug handler
 echo $(which mdev) > /proc/sys/kernel/hotplug
+
+# start up mdev with coldplugging
+mdev -s
 
 dmesg -n 4
 # update library cache before running init scripts
