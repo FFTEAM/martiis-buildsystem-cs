@@ -303,9 +303,9 @@ begin remote
 		KEY_POWER	0x7887	# POWER
 
 		KEY_MODE	0xD02F	# V.Format
-		KEY_T		0xAA55	# TMS
+		KEY_T		0xAA55	# TMS, might be wrong
 		KEY_F1		0xEA15	# F1
-		KEY_TIME	0x9A65	# TIME
+		KEY_TIME	0x28D7	# unlabeled, might be wrong
 
 		KEY_1		0x58A7	# 1
 		KEY_2		0xF807	# 2
@@ -343,6 +343,8 @@ begin remote
 		KEY_EXIT	0x06F9	# EXIT
 		KEY_EPG		0xBA45	# EDV
 
+#		KEY_SWITCHRC	0xDA25  # RC1/RC2
+
 		KEY_REWIND	0x807F	# REWIND
 		KEY_FORWARD	0xCA35	# FORWARD
 
@@ -354,15 +356,15 @@ begin remote
 		KEY_FAVORITES	0xC23D # FAV
 		KEY_SAT		0xF20D # SAT
 		KEY_FIND	0x3AC5 # FIND
-#		KEY_ZOOM	?????? # ZOOM
+#		KEY_ZOOM	?????? # ZOOM, missing
 
 		KEY_ARCHIVE	0x9867 # FOLDER
-#		KEY_PRESENTATION ???? # PP
+#		KEY_PRESENTATION ????  # PiP, missing
 		KEY_P		0x4AB5 # PLAYMODE
 		KEY_CLOSE	0x20DF # USB
 
-#		KEY_PAGEDOWN	??????	# PAGE-
-#		KEY_PAGEUP 	??????	# PAGE+
+		KEY_PAGEDOWN	0x807F	# PAGE-
+		KEY_PAGEUP 	0xCA35	# PAGE+
 		KEY_SLOW	0x847B	# SLOW-
 		KEY_FASTFORWARD	0x18E7	# SLOW+
 
