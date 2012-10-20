@@ -629,7 +629,7 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/alsa-utils-$(ALSA_VER); \
 		sed -ir -r "s/(alsamixer|amidi|aplay|iecset|speaker-test|seq|alsactl|alsaucm)//g" Makefile.am ;\
-		autoreconf -fi; \
+		autoreconf -fi -I $(TARGETPREFIX)/share/aclocal; \
 		$(CONFIGURE) --prefix= --mandir=/.remove --disable-nls --disable-alsatest \
 			--disable-alsaconf --disable-alsaloop --disable-alsamixer --disable-xmlto; \
 		$(MAKE); \
