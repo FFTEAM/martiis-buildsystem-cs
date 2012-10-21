@@ -351,6 +351,7 @@ $(PATCHES)/sparkdrivers/0002-aotom-fix-include-file.patch \
 $(PATCHES)/sparkdrivers/0003-aotom-add-VFDGETVERSION-ioctl-to-find-FP-type.patch \
 $(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
 | $(TARGETPREFIX)/include/linux/dvb
+	rm -fr $@ $@-7162
 	cp -a $(SOURCE_DIR)/tdt-driver $(BUILD_TMP)
 	set -e; cd $@; \
 		for i in $^; do \
