@@ -45,7 +45,7 @@ start)
 	if $SPARK7162; then
 		STMCORE_DISP=stmcore-display-sti7105
 		FRONTEND_MOD=spark7162
-		AVS_PARAM="type=avs_none"
+		AVS_PARAM="type=avs_pio"
 	else
 		STMCORE_DISP=stmcore-display-sti7111
 		FRONTEND_MOD=stv090x

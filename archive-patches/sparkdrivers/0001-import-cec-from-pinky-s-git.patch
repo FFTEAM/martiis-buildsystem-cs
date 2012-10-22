@@ -1,4 +1,4 @@
-From 60c3e867cf02922acc925dc73a13aae05dbcd2d8 Mon Sep 17 00:00:00 2001
+From 5cb5c9170731968d3d474ddde0ee25f8558884ad Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Fri, 6 Jul 2012 14:50:02 +0200
 Subject: [PATCH 1/4] import cec from pinky's git
@@ -6,21 +6,21 @@ Subject: [PATCH 1/4] import cec from pinky's git
 git://gitorious.org/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
 commit 6d6486c89a5e4c0828ed0502f45b2b9c5b5f53ce
 ---
- Makefile               |  1 +
- cec/Makefile           |  5 +++++
- cec/cec_dev.c          |  3 +++
- cec/cec_main.c         | 15 +++++++++++++
- cec/cec_opcodes.c      | 58 +++++++++++++++++++++++++++++++++++++++++++++++++-
- cec/cec_opcodes_def.h  | 11 ++++++++++
- cec/cec_rc.c           | 14 ++++++++++++
- e2_proc/e2_proc_main.c |  2 +-
+ Makefile               |    1 +
+ cec/Makefile           |    5 ++++
+ cec/cec_dev.c          |    3 ++
+ cec/cec_main.c         |   15 ++++++++++++
+ cec/cec_opcodes.c      |   58 +++++++++++++++++++++++++++++++++++++++++++++++-
+ cec/cec_opcodes_def.h  |   11 +++++++++
+ cec/cec_rc.c           |   14 +++++++++++
+ e2_proc/e2_proc_main.c |    2 +-
  8 files changed, 107 insertions(+), 2 deletions(-)
 
 diff --git a/Makefile b/Makefile
-index 7f939b8..3edb889 100644
+index 7e84c93..3aa63a9 100644
 --- a/Makefile
 +++ b/Makefile
-@@ -221,6 +221,7 @@ endif
+@@ -223,6 +223,7 @@ endif
  ifdef SPARK
  obj-y	+= smartcard/
  obj-y	+= cpu_frequ/
@@ -29,7 +29,7 @@ index 7f939b8..3edb889 100644
  
  ifdef SPARK7162
 diff --git a/cec/Makefile b/cec/Makefile
-index bc7a170..514409b 100644
+index 5741f23..c1b37a8 100644
 --- a/cec/Makefile
 +++ b/cec/Makefile
 @@ -6,6 +6,7 @@ obj-m           += cec.o
@@ -284,18 +284,18 @@ index cc6359d..33e4d87 100644
  	}
  
 diff --git a/e2_proc/e2_proc_main.c b/e2_proc/e2_proc_main.c
-index b0a45dc..9f9b584 100644
+index d733b07..4cac021 100644
 --- a/e2_proc/e2_proc_main.c
 +++ b/e2_proc/e2_proc_main.c
 @@ -623,7 +623,7 @@ struct ProcStructure_s e2Proc[] =
- 	{cProcEntry, "stb/video/plane/psi_contrast"    , NULL, NULL, NULL, NULL, "psi_contrast"},
- 	{cProcEntry, "stb/video/plane/psi_tint"        , NULL, NULL, NULL, NULL, "psi_tint"},
- 	{cProcEntry, "stb/video/plane/psi_apply"        , NULL, NULL, NULL, NULL, "psi_apply"},
+ 	{cProcEntry, "stb/video/plane/psi_contrast"                                     , NULL, NULL, NULL, NULL, "psi_contrast"},
+ 	{cProcEntry, "stb/video/plane/psi_tint"                                         , NULL, NULL, NULL, NULL, "psi_tint"},
+ 	{cProcEntry, "stb/video/plane/psi_apply"                                        , NULL, NULL, NULL, NULL, "psi_apply"},
 -#if defined(UFS912) || defined(UFS913) || defined(ATEVIO7500)
 +#if defined(UFS912) || defined(UFS913) || defined(ATEVIO7500) || defined(SPARK)
- 	{cProcDir  , "stb/cec"   	                   , NULL, NULL, NULL, NULL, ""},
- 	{cProcEntry, "stb/cec/state_activesource"   	               , NULL, NULL, NULL, NULL, ""},
- 	{cProcEntry, "stb/cec/state_standby"   	               , NULL, NULL, NULL, NULL, ""},
+ 	{cProcDir  , "stb/cec"                                                          , NULL, NULL, NULL, NULL, ""},
+ 	{cProcEntry, "stb/cec/state_activesource"                                       , NULL, NULL, NULL, NULL, ""},
+ 	{cProcEntry, "stb/cec/state_standby"                                            , NULL, NULL, NULL, NULL, ""},
 -- 
-1.7.11.5
+1.7.7
 
