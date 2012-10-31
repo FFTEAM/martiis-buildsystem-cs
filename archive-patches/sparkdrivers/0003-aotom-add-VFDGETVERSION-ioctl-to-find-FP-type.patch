@@ -1,18 +1,18 @@
-From 5f375108322a503962f3f41782803f172fefb215 Mon Sep 17 00:00:00 2001
+From 811925918c90eb1cea80cac555b43b2fe3dbaa25 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sun, 9 Sep 2012 16:07:16 +0200
 Subject: [PATCH 3/4] aotom: add VFDGETVERSION ioctl to find FP type
 
 ---
- frontcontroller/aotom/aotom_main.c | 8 ++++++++
- frontcontroller/aotom/aotom_main.h | 1 +
- 2 files changed, 9 insertions(+)
+ frontcontroller/aotom/aotom_main.c |    8 ++++++++
+ frontcontroller/aotom/aotom_main.h |    1 +
+ 2 files changed, 9 insertions(+), 0 deletions(-)
 
 diff --git a/frontcontroller/aotom/aotom_main.c b/frontcontroller/aotom/aotom_main.c
-index 87ea416..003aa7c 100644
+index 7768a05..7859ecf 100644
 --- a/frontcontroller/aotom/aotom_main.c
 +++ b/frontcontroller/aotom/aotom_main.c
-@@ -673,6 +673,14 @@ static int AOTOMdev_ioctl(struct inode *Inode, struct file *File, unsigned int c
+@@ -706,6 +706,14 @@ static int AOTOMdev_ioctl(struct inode *Inode, struct file *File, unsigned int c
  			res = put_user(State, (int *) arg);
  		break;
  	}
@@ -40,5 +40,5 @@ index 91921b0..a90ac32 100644
  #define VFDGETWAKEUPMODE      0xc0425af9
  #define VFDGETTIME            0xc0425afa
 -- 
-1.7.11.5
+1.7.7
 
