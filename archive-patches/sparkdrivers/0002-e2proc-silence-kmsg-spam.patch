@@ -1,14 +1,14 @@
-From 9803c9147c24dc69282ee4bae9d9ce90856c4c77 Mon Sep 17 00:00:00 2001
+From a0a550a5308885fb0ec29aac41953159ef547b7f Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sun, 19 Feb 2012 16:45:49 +0100
 Subject: [PATCH 2/6] e2proc: silence kmsg spam
 
 ---
- e2_proc/e2_proc_main.c |   29 ++++++++++++++++-------------
- 1 files changed, 16 insertions(+), 13 deletions(-)
+ e2_proc/e2_proc_main.c |   31 +++++++++++++++++--------------
+ 1 files changed, 17 insertions(+), 14 deletions(-)
 
 diff --git a/e2_proc/e2_proc_main.c b/e2_proc/e2_proc_main.c
-index 97c0258..b0a45dc 100644
+index 27bbbdf..b95704f 100644
 --- a/e2_proc/e2_proc_main.c
 +++ b/e2_proc/e2_proc_main.c
 @@ -316,9 +316,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
@@ -21,7 +21,7 @@ index 97c0258..b0a45dc 100644
 -
 +#endif
  	page = (char *)__get_free_page(GFP_KERNEL);
- 	if (page) 
+ 	if (page)
  	{
 @@ -328,9 +328,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
  
@@ -30,7 +30,7 @@ index 97c0258..b0a45dc 100644
 -
 +#ifdef VERY_VERBOSE
  		printk("%s\n", myString);
--		
+-
 +#endif
  		if (strncmp("sbs", myString, 3) == 0 || strncmp("sidebyside", myString, 10) == 0)
  		{
@@ -45,7 +45,7 @@ index 97c0258..b0a45dc 100644
 -
 +#endif
  	page = (char *)__get_free_page(GFP_KERNEL);
- 	if (page) 
+ 	if (page)
  	{
 @@ -390,9 +390,9 @@ static int wakeup_time_write(struct file *file, const char __user *buf,
  
@@ -54,22 +54,22 @@ index 97c0258..b0a45dc 100644
 -
 +#ifdef VERY_VERBOSE
  		printk("%s\n", myString);
--		
+-
 +#endif
  		if(wakeup_time != NULL) kfree(wakeup_time);
  		wakeup_time = myString;
- 		
+ 
 @@ -416,9 +416,9 @@ int proc_misc_12V_output_write(struct file *file, const char __user *buf,
  	char 		*page;
  	ssize_t 	ret = -ENOMEM;
      char        *myString;
--	
+-
 +#ifdef VERY_VERBOSE
  	printk("%s %ld\n", __FUNCTION__, count);
 -
 +#endif
  	page = (char *)__get_free_page(GFP_KERNEL);
- 	if (page) 
+ 	if (page)
  	{
 @@ -456,8 +456,9 @@ int proc_misc_12V_output_read (char *page, char **start, off_t off, int count,
  			  int *eof, void *data_unused)
@@ -82,7 +82,7 @@ index 97c0258..b0a45dc 100644
  	if(_12v_isON)
  		len = sprintf(page, "on\n");
  	else
-@@ -808,9 +809,9 @@ EXPORT_SYMBOL(install_e2_procs);
+@@ -814,9 +815,9 @@ EXPORT_SYMBOL(install_e2_procs);
  int cpp_install_e2_procs(const char *path, read_proc_t *read_func, write_proc_t *write_func, void* instance)
  {
    int i;
@@ -94,17 +94,24 @@ index 97c0258..b0a45dc 100644
    /* find the entry */
    for(i = 0; i < sizeof(e2Proc) / sizeof(e2Proc[0]); i++)
    {
-@@ -914,8 +915,10 @@ int cpp_remove_e2_procs(const char *path, read_proc_t *read_func, write_proc_t *
- 	if(e2Proc[i].read_proc == read_func)
- 	{
- 	  e2Proc[i].read_proc = NULL;
+@@ -921,8 +922,10 @@ int cpp_remove_e2_procs(const char *path, read_proc_t *read_func, write_proc_t *
+         if(e2Proc[i].read_proc == read_func)
+         {
+           e2Proc[i].read_proc = NULL;
 +#ifdef VERY_VERBOSE
- 	  printk("%s(): removed '%s, %s' (%p, %p)\n",
+           printk("%s(): removed '%s, %s' (%p, %p)\n",
                   __func__, path, e2Proc[i].name, e2Proc[i].read_proc, read_func);
 +#endif
          }
- 	else
- 	  printk("%s(): different read_procs '%s, %s' (%p, %p)\n",
+         else
+           printk("%s(): different read_procs '%s, %s' (%p, %p)\n",
+@@ -1016,4 +1019,4 @@ module_exit(e2_proc_cleanup_module);
+ 
+ MODULE_DESCRIPTION("procfs module with enigma2 support");
+ MODULE_AUTHOR("Team Ducktales");
+-MODULE_LICENSE("GPL");
+\ No newline at end of file
++MODULE_LICENSE("GPL");
 -- 
 1.7.7
 
