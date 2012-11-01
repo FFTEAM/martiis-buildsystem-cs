@@ -331,19 +331,20 @@ $(TARGETPREFIX)/include/linux/dvb:
 # $(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
 # $(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
 #
+
+# martii: pre-applied:
+#$(PATCHES)/sparkdrivers/0001-player2_191-silence-kmsg-spam.patch \
+#$(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
+#$(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
+#$(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
+#$(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
+#$(PATCHES)/sparkdrivers/0006-frontends-spark7162-silence-kmsg-spam.patch \
+#
+
 $(BUILD_TMP)/driver: \
-$(PATCHES)/sparkdrivers/0001-player2_191-silence-kmsg-spam.patch \
-$(PATCHES)/sparkdrivers/0002-e2proc-silence-kmsg-spam.patch \
-$(PATCHES)/sparkdrivers/0003-pti-silence-kmsg-spam.patch \
-$(PATCHES)/sparkdrivers/0004-stmfb-silence-kmsg-spam.patch \
-$(PATCHES)/sparkdrivers/0005-frontends-spark_dvbapi5-silence-kmsg-spam.patch \
-$(PATCHES)/sparkdrivers/0006-frontends-spark7162-silence-kmsg-spam.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	cp -a $(TDT_SRC)/tdt/cvs/driver $(BUILD_TMP)
 	set -e; cd $(BUILD_TMP)/driver; \
-		for i in $^; do \
-			echo "==> Applying Patch: $${i#$(PATCHES)/}"; \
-			patch -p1 -i $$i; done; \
 		cp -a bpamem/bpamem.h $(TARGETPREFIX)/include; \
 		rm -f player2 multicom; \
 		ln -s player2_191 player2; \
