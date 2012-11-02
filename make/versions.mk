@@ -248,7 +248,8 @@ PPP_VER=2.4.5
 PPP_DIFF_VER=2.4.5-5.1
 
 # mtd-utils
-MTD_UTILS_VER = 1.3.1
+#MTD_UTILS_VER = 1.3.1
+MTD_UTILS_VER = 1.5.0
 
 ##################################
 # devel-tools; make/devel-tools.mk
@@ -258,5 +259,6 @@ MTD_UTILS_VER = 1.3.1
 GDB_VER=7.3
 
 # mtd-utils for the host...
-MTD_UTILS_VER_HOST = 1.4.9
+#MTD_UTILS_VER_HOST = 1.4.9
+MTD_UTILS_VER_HOST = 1.5.0
 

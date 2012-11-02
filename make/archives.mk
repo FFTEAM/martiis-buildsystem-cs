@@ -158,10 +158,12 @@ $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz:
 	$(WGET) ftp://xmlsoft.org/libxml2/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
-	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2
+	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || \
+	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
 
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER_HOST).tar.bz2:
-	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER_HOST).tar.bz2
+	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || \
+	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
 
 $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES_VER).tar.gz
