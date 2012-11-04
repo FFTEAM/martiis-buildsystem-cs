@@ -310,7 +310,17 @@ endif
 	$(REMOVE)/ffmpeg-$(FFMPEG_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype| $(TARGETPREFIX)
+$(D)/fribidi: $(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2
+	$(UNTAR)/fribidi-$(FRIBIDI_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/fribidi-$(FRIBIDI_VER); \
+		$(CONFIGURE) --prefix= --disable-shared; \
+		$(MAKE); \
+		make install DESTDIR=$(TARGETPREFIX)
+	$(REWRITE_LIBTOOL)/libfribidi.la
+	$(REMOVE)/libass-$(LIBFRIBIDI_VER)
+	touch $@
+
+$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi| $(TARGETPREFIX)
 	$(UNTAR)/libass-$(LIBASS_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libass-$(LIBASS_VER); \
 		$(CONFIGURE) --disable-fontconfig --prefix= --disable-shared; \

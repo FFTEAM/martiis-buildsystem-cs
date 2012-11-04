@@ -161,9 +161,11 @@ $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
 	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || \
 	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
 
+ifneq ($(MTD_UTILS_VER),$(MTD_UTILS_VER_HOST))
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER_HOST).tar.bz2:
 	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || \
 	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
+endif
 
 $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES_VER).tar.gz
@@ -321,6 +323,9 @@ $(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2:
 
 $(ARCHIVE)/ppp-$(PPP_VER).tar.gz:
 	$(WGET) ftp://ftp.samba.org/pub/ppp/ppp-$(PPP_VER).tar.gz
+
+$(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2:
+	$(WGET) http://fribidi.org/download/fribidi-$(FRIBIDI_VER).tar.bz2
 
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \

@@ -68,7 +68,8 @@ OGG_VER=1.1.4
 VORBIS_VER=1.2.3
 
 # libass: ass / ssa subtitle renderer
-LIBASS_VER=0.9.11
+#LIBASS_VER=0.9.11
+LIBASS_VER=0.10.1
 
 # azbox kernel
 LINUX_AZBOX_VER=3.3.1
@@ -249,7 +250,10 @@ PPP_DIFF_VER=2.4.5-5.1
 
 # mtd-utils
 #MTD_UTILS_VER = 1.3.1
-MTD_UTILS_VER = 1.5.0
+MTD_UTILS_VER=1.5.0
+
+# GNU FriBidi
+FRIBIDI_VER=0.19.4
 
 ##################################
 # devel-tools; make/devel-tools.mk
