@@ -16,6 +16,10 @@ create_symlinks() {
 	MODEL=${MODEL// /_} # replace ' ' with '_'
 	OLDPWD=$PWD
 	cd $MOUNTBASE
+	# this is a hack and will break with kernel updates, but so might DEVPATH :-(
+	# and DEVPATH is not available at runtime, only at hotplug
+	DEV_P=$(readlink /sys/block/$DEVBASE) # ../devices/...
+	DEV_P=${DEV_P:2} # strip off '..'
 	if which blkid > /dev/null; then
 		BLKID=$(blkid /dev/$MDEV)
 		eval ${BLKID#*:}
@@ -36,15 +40,16 @@ create_symlinks() {
 	fi
 	BUS=""
 	PORT=""
-	P=$DEVPATH
+	P=$DEV_P
 	case "$P" in
 	/devices/platform/stm-usb.?/stm-ehci.?/usb?/?-?/?-?.?/?-?.?:?.?/host*) # hub
-		PORT=${P#*.*.}	# strip off /devices/platform/cx2450x-ehci.?/usb?/?-?/?-?
+		PORT=${P#*.*.*.}	# strip off /devices/platform/stm-usb.?/stm-ehci.?/usb?/?-?/?-?
 		PORT=${PORT%%/*}	# strip off /?-?.?:?.?/host*, leaving the port
-		BUS="usb-${P:31:1}-hub-${PORT}"
+		BUS="usb-${P:37:1}-hub-${PORT}"
 		;;
 	/devices/platform/stm-usb.?/stm-ehci.?/usb?/?-?/?-?:?.?/host*) # no hub
-		BUS="usb-${P:31:1}"
+		#############################^37
+		BUS="usb-${P:37:1}"
 		;;
 	*)
 		# BUS="unknown" # ignored for now
