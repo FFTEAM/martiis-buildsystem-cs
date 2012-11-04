@@ -350,6 +350,8 @@ $(PATCHES)/sparkdrivers/0001-import-cec-from-pinky-s-git.patch \
 $(PATCHES)/sparkdrivers/0002-aotom-fix-include-file.patch \
 $(PATCHES)/sparkdrivers/0003-aotom-add-VFDGETVERSION-ioctl-to-find-FP-type.patch \
 $(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
+$(PATCHES)/sparkdrivers/0005-aotom-speed-up-softi2c-lowering-CPU-load-of-aotom-dr.patch \
+$(PATCHES)/sparkdrivers/0006-aotom-add-additional-chars-for-VFD-fix-missing-chars.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	rm -fr $@ $@-7162
 	cp -a $(SOURCE_DIR)/tdt-driver $(BUILD_TMP)
