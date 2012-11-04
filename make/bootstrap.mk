@@ -153,11 +153,11 @@ endif
 
 # helper target to create ccache links (make sure to have ccache installed in /usr/bin ;)
 ccache: $(HOSTPREFIX)/bin
-	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/cc
-	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/gcc
-	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/g++
-	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-gcc
-	ln -s /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-g++
+	ln -sf /usr/bin/ccache $(HOSTPREFIX)/bin/cc
+	ln -sf /usr/bin/ccache $(HOSTPREFIX)/bin/gcc
+	ln -sf /usr/bin/ccache $(HOSTPREFIX)/bin/g++
+	ln -sf /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-gcc
+	ln -sf /usr/bin/ccache $(HOSTPREFIX)/bin/$(TARGET)-g++
 
 ldconfig: $(TARGETPREFIX)/sbin/ldconfig
 $(TARGETPREFIX)/sbin/ldconfig: | $(TARGETPREFIX)
