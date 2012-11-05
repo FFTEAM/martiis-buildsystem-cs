@@ -8,6 +8,10 @@ ROOTDEV=$(readlink /dev/root)
 
 # do not add or remove root device again...
 [ "$ROOTDEV" = "$MDEV" ] && exit 0
+if [ -e /tmp/.nomdevmount ]; then
+	$LOG "no action on $MDEV -- /tmp/.nomdevmount exists"
+	exit 0
+fi
 
 create_symlinks() {
 	DEVBASE=${MDEV:0:3} # first 3 characters
