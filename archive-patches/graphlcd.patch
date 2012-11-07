@@ -684,17 +684,29 @@
  
  
 --- graphlcd-base/glcddrivers/ax206dpf.c	2012-03-11 18:58:39.000000000 +0100
-+++ graphlcd-base/glcddrivers/ax206dpf.c	2012-10-06 19:30:07.512771427 +0200
++++ graphlcd-base/glcddrivers/ax206dpf.c	2012-11-07 08:21:19.777524368 +0100
 @@ -76,6 +76,8 @@
          dh[i]->address[0] = 0;
          dh[i]->dpfh = NULL;
          dh[i]->LCD = NULL;
-+        dh[i]->PRE = NULL;
++	dh[i]->PRE = NULL;
 +	dh[i]->justCleared = false;
      }
  
      lastbrightness = config->brightness ? config->brightness : 100;
-@@ -212,7 +214,7 @@
+@@ -154,8 +156,10 @@
+         height /= zoom;
+         width /= zoom;
+     }
+-    
++
++#if 0    
+     ResetMinMax();
++#endif
+ 
+     *oldConfig = *config;
+ 
+@@ -212,7 +216,7 @@
      {
          dh[di]->dpfh = NULL;
          dh[di]->attached = false;
@@ -703,7 +715,7 @@
      }
      dh[di]->attached = true;
      struct usb_device *dev = usb_device(dh[di]->dpfh->dev.udev);
-@@ -250,6 +252,7 @@
+@@ -250,6 +254,7 @@
      }
      // setup physical lcd arrays
      dh[di]->LCD = (unsigned char *) malloc(dh[di]->dpfh->height * dh[di]->dpfh->width * dh[di]->dpfh->bpp);
@@ -711,25 +723,27 @@
      ClearSingleDisplay(di);
  
      // Set Display Brightness
-@@ -257,7 +260,7 @@
+@@ -257,7 +262,9 @@
  
  
      // Reorder displays
--    bool changed = false;
-+//  bool changed = false;
++#if 0
+     bool changed = false;
++#endif
      for (unsigned int i = 0; i < MAX_DPFS - 1; i++)
      {
          for (unsigned int j = i + 1; j < MAX_DPFS; j++)
-@@ -267,7 +270,7 @@
+@@ -267,7 +274,9 @@
                  DISPLAYHANDLE *h = dh[i];
                  dh[i] = dh[j];
                  dh[j] = h;
--                changed = true;
-+//              changed = true;
++#if 0
+                 changed = true;
++#endif
              }
          }
      }
-@@ -291,6 +294,10 @@
+@@ -291,6 +300,10 @@
      if (dh[di]->LCD != NULL)
          free(dh[di]->LCD);
      dh[di]->LCD = NULL;
@@ -740,7 +754,7 @@
      
      dh[di]->attached = false;
      dh[di]->address[0] = 0;
-@@ -353,7 +360,9 @@
+@@ -353,7 +366,9 @@
  {
      if (dh[di]->attached)
      {
@@ -750,7 +764,64 @@
          dh[di]->minx = 0;
          dh[di]->maxx = dh[di]->dpfh->width - 1;
          dh[di]->miny = 0;
-@@ -479,7 +488,60 @@
+@@ -374,7 +389,9 @@
+ 
+ void cDriverAX206DPF::SetPixel(int x, int y, uint32_t data)
+ {
++#if 0
+     bool changed = false;
++#endif
+     
+     if (config->upsideDown)
+     {
+@@ -419,12 +436,16 @@
+     if (zoom == 1)
+     {
+         unsigned int i = (ly * dh[di]->dpfh->width + lx) * dh[di]->dpfh->bpp;
++#if 0
+         if (dh[di]->LCD[i] != c1 || dh[di]->LCD[i+1] != c2)
+         {
++#endif
+             dh[di]->LCD[i]   = c1;
+             dh[di]->LCD[i+1] = c2;
++#if 0
+             changed = true;
+         }
++#endif
+     }
+     else
+     {
+@@ -433,16 +454,21 @@
+             unsigned int i = ((ly + dy) * dh[di]->dpfh->width + lx) * dh[di]->dpfh->bpp;
+             for (int dx = 0; dx < zoom * dh[di]->dpfh->bpp; dx += dh[di]->dpfh->bpp)
+             {
++#if 0
+                 if (dh[di]->LCD[i+dx] != c1 || dh[di]->LCD[i+dx+1] != c2)
+                 {
++#endif
+                     dh[di]->LCD[i+dx]   = c1;
+                     dh[di]->LCD[i+dx+1] = c2;
++#if 0
+                     changed = true;
+                 }
++#endif
+             }
+         }
+     }
+ 
++#if 0
+     if (changed)
+     {
+         if (lx < dh[di]->minx) dh[di]->minx = lx;
+@@ -450,6 +476,7 @@
+         if (ly < dh[di]->miny) dh[di]->miny = ly;
+         if (ly > dh[di]->maxy) dh[di]->maxy = ly;
+     }
++#endif
+ }
+ 
+ void cDriverAX206DPF::Refresh(bool refreshAll)
+@@ -479,7 +506,60 @@
          {
              dh[di]->minx = 0; dh[di]->miny = 0;
              dh[di]->maxx = dh[di]->dpfh->width - 1; dh[di]->maxy = dh[di]->dpfh->height - 1;
@@ -803,20 +874,26 @@
 +		    }
 +	    }
 +
-+	    dh[di]->minx;
-+	    dh[di]->miny;
 +	    dh[di]->minx = x_min;
 +	    dh[di]->maxx = x_max;
++	    dh[di]->miny = y_min;
++	    dh[di]->maxy = y_max;
 +	}
 +
          //fprintf(stderr, "%d: (%d,%d)-(%d,%d) ", di, dh[di]->minx, dh[di]->miny, dh[di]->maxx, dh[di]->maxy);
          if (dh[di]->minx > dh[di]->maxx || dh[di]->miny > dh[di]->maxy)
              continue;
-@@ -506,6 +568,7 @@
+@@ -506,9 +586,12 @@
              RescanUSB();
              lastscan = time(NULL);
          }
 +	memcpy(dh[di]->PRE, dh[di]->LCD, dh[di]->dpfh->height * dh[di]->dpfh->width * dh[di]->dpfh->bpp);
      }
-     
+-    
++
++#if 0    
      ResetMinMax();
++#endif
+     //fprintf(stderr, "\n");
+ }
+ 
