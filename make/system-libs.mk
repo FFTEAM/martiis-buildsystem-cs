@@ -285,9 +285,7 @@ endif
 			$(FFMPEG_CONFIGURE) \
 			--enable-decoder=dvbsub --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec \
-			--disable-protocols --enable-protocol=file \
 			--disable-zlib --enable-bzlib \
-			--disable-network \
 			--disable-static --enable-shared \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
