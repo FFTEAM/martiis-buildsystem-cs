@@ -24,7 +24,7 @@ endif
 # uses libtremor, static usage does not really hurt and is compatible
 # with the "original" image
 #N_CONFIG_OPTS = --with-tremor-static
-N_CONFIG_OPTS = --with-tremor --disable-upnp
+N_CONFIG_OPTS = --with-tremor
 NEUTRINO_DEPS += libvorbisidec
 
 # enable FLAC decoder in neutrino
