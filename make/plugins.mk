@@ -22,6 +22,7 @@ plugins: $(PLUGIN_DIR)/configure $(BUILD_TMP)/neutrino-hd-plugins
 		make -j1 -C $(BUILD_TMP)/neutrino-hd-plugins install SUBDIRS="$$i" DESTDIR=$(PKGPREFIX); \
 		cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/; \
 		$(OPKG_SH) $(CONTROL_DIR)/plugins/$$i; \
+		rm -rf $(PKGPREFIX); \
 	done
 
 PHONY += plugins
