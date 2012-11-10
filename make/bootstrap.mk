@@ -14,7 +14,8 @@ endif
 ifeq ($(PLATFORM), coolstream)
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
-PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
+PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
+# PLAT_LIBS += $(TARGETPREFIX)/lib/libcoolstream.so
 PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
 endif
 ifeq ($(PLATFORM), spark)
@@ -67,11 +68,11 @@ $(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream/* $@/
 
-$(TARGETPREFIX)/lib/libnxp.so: $(SVN_TP_LIBS)/libnxp/libnxp.so | $(TARGETPREFIX)
-	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $@
+$(TARGETPREFIX)/lib/libnxp.so: $(UNCOOL_LIBNXP) | $(TARGETPREFIX)
+	cp -a $(UNCOOL_LIBNXP) $@
 
-$(TARGETPREFIX)/lib/libcoolstream%.so: $(SVN_TP_LIBS)/libcs/libcoolstream%.so | $(TARGETPREFIX)
-	cp -a $(SVN_TP_LIBS)/libcs/$(shell basename $@) $@
+$(TARGETPREFIX)/lib/libcoolstream%.so: $(UNCOOL_LIBCS) | $(TARGETPREFIX)
+	cp -a $(UNCOOL_LIBCS) $@
 
 $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	mkdir -p $@
@@ -79,7 +80,7 @@ $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 
 $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
 	mkdir -p $@
-	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
+	cp -a $(UNCOOL_DRIVER)/* $@/
 
 $(PKGPREFIX)/lib/modules/2.6.12 \
 $(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX) $(TD_SVN)/ARMAS

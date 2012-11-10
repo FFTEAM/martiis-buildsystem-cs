@@ -10,7 +10,7 @@ ifeq ($(PLATFORM), tripledragon)
 PREQS += tdsvn
 endif
 ifeq ($(PLATFORM), coolstream)
-PREQS += cs-svn
+PREQS += cs-sources
 endif
 ifeq ($(PLATFORM), spark)
 PREQS += $(TDT_SRC)
@@ -81,6 +81,16 @@ $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/CROSSENVIROMENT/$(shell basename $@)
 
+ifeq ($(UNCOOL_SOURCE), git)
+$(UNCOOL_LIBCS) \
+$(UNCOOL_LIBNXP) \
+$(UNCOOL_DRIVER): | $(UNCOOL_GIT)/cst-public-drivers
+else
+$(UNCOOL_LIBCS):  | $(SVN_TP_LIBS)/libcs
+$(UNCOOL_LIBNXP): | $(SVN_TP_LIBS)/libnxp
+$(UNCOOL_DRIVER): | $(SOURCE_DIR)/svn/COOLSTREAM
+endif
+
 $(SVN_TP_LIBS)/libcs \
 $(SVN_TP_LIBS)/libnxp:
 	mkdir -p $(shell dirname $@)
@@ -93,6 +103,10 @@ $(SOURCE_DIR)/svn/THIRDPARTY/lib:
 $(SOURCE_DIR)/svn/THIRDPARTY/kernel:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/kernel
+
+$(SOURCE_DIR)/uncool/cst-public-drivers:
+	mkdir -p $(shell dirname $@)
+	cd $(shell dirname $@) && git clone git://coolstreamtech.de/cst-public-drivers.git
 
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \
@@ -109,7 +123,7 @@ toolcheck: $(TOOLCHECK)
 	fi
 
 neutrino-source: $(N_HD_SOURCE)
-cs-svn: $(SVN_TP_LIBS)/libcs $(SVN_TP_LIBS)/libnxp $(SOURCE_DIR)/svn/COOLSTREAM $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
+cs-sources: $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_DRIVER) $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 # TRIPLEDRAGON stuff...
 $(TD_SVN):

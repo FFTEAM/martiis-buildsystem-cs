@@ -159,6 +159,19 @@ OPKG_SH_ENV += SOURCE=$(PKGPREFIX)
 OPKG_SH_ENV += BUILD_TMP=$(BUILD_TMP)
 OPKG_SH = $(OPKG_SH_ENV) opkg.sh
 
+UNCOOL_GIT    = $(SOURCE_DIR)/uncool
+UNCOOL_KVER ?= 2.6.26.8
+ifeq ($(UNCOOL_SOURCE), git)
+UNCOOL_LIBCS  = $(UNCOOL_GIT)/cst-public-drivers/libs/libcoolstream-mt.so
+UNCOOL_LIBNXP = $(UNCOOL_GIT)/cst-public-drivers/libs/libnxp.so
+UNCOOL_DRIVER = $(UNCOOL_GIT)/cst-public-drivers/drivers/$(UNCOOL_KVER)-nevis
+else
+UNCOOL_LIBCS  = $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
+UNCOOL_LIBNXP = $(SVN_TP_LIBS)/libnxp/libnxp.so
+UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER)-nevis
+endif
+UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP)
+
 ## for spark TDT git repos...
 ifeq ($(TDT_REPO), "pinky")
 # this one seems to be more recent, but is a bit "chaotic" ...
