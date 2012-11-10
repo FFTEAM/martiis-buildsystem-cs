@@ -20,11 +20,8 @@ $(ARCHIVE)/compcache-0.6.2.tar.gz:
 $(ARCHIVE)/crosstool-0.43.tar.gz:
 	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
 
-$(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2:
-	$(WGET) http://ymorin.is-a-geek.org/download/crosstool-ng/crosstool-ng-1.10.0.tar.bz2
-
-$(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2:
-	$(WGET) http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.15.2.tar.bz2
+$(ARCHIVE)/crosstool-ng-%.bz2:
+	$(WGET) http://crosstool-ng.org/download/crosstool-ng/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/DirectFB_$(DIRECTFB_VER).tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB_VER).tar.gz

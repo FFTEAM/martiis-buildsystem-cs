@@ -3,17 +3,7 @@
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 
 $(CROSS_DIR)/bin/$(TARGET)-gcc:
-	@echo
-	@echo "====================================================="
-	@echo "old crosstool is hard to maintain and likely to break"
-	@echo " consider using 'make crosstool-new' which also gets"
-	@echo "  you a shiny new(er) gcc 4.5.2 and eglibc 2.12 ;-)"
-	@echo "====================================================="
-	@echo
-	@echo "sleeping for 10 seconds before continuing..."
-	@echo
-	@sleep 10
-	$(MAKE) crosstool-old
+	$(MAKE) crosstool-new
 
 crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs $(ARCHIVE)/linux-2.6.26.8.tar.bz2 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2
 	make $(BUILD_TMP)
@@ -34,13 +24,13 @@ crosstool-old: | $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-1.3.2 $(SOURCE_D
 		./configure --local; make; chmod 0755 ct-ng; \
 		./ct-ng oldconfig; ./ct-ng build.2
 
-crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.tar.bz2
+UNCOOL_CT_VER = 1.16.0
+crosstool-new: $(ARCHIVE)/crosstool-ng-$(UNCOOL_CT_VER).tar.bz2 $(ARCHIVE)/linux-2.6.26.8.tar.bz2
 	make $(BUILD_TMP)
-	$(REMOVE)/crosstool-ng-1.10.0
-	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.10.0; \
-		$(PATCH)/crosstool-ng-1.10.0-new-file.patch; \
-		cp $(PATCHES)/111-ppl-0_10_2-fix-CXXFLAGS-for-gcc-4_7.patch patches/ppl/0.10.2/; \
+	$(REMOVE)/crosstool-ng-$(UNCOOL_CT_VER)
+	$(UNTAR)/crosstool-ng-$(UNCOOL_CT_VER).tar.bz2
+	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-$(UNCOOL_CT_VER); \
+		cp $(PATCHES)/999-ppl-0_11_2-fix-configure-for-64bit-host.patch patches/ppl/0.11.2; \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
 				scripts/build/libc/eglibc.sh || \
@@ -60,9 +50,9 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-2.6.26.8.
 		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
 		export TD_BASE_DIR=$(BASE_DIR); \
 		export TD_BUILD_TMP=$(BUILD_TMP); \
-		./configure --local; make; chmod 0755 ct-ng; \
+		./configure --enable-local; MAKELEVEL=0 make; chmod 0755 ct-ng; \
 		./ct-ng oldconfig; \
 		./ct-ng build
 	ln -sf sys-root/lib $(CROSS_BASE)/$(TARGET)/
-	$(REMOVE)/crosstool-ng-1.10.0
+	$(REMOVE)/crosstool-ng-$(UNCOOL_CT_VER)
 
