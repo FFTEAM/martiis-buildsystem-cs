@@ -144,7 +144,7 @@ foreach $file (sort(keys %data)) {
 		}
 	} else {
 		$url =~ s/\|\|.*$//;
-		print "\t\@$cmd --spider $url\n";
+		print "\t\@$cmd --spider $url || echo failed\n";
 	}
 	print "\n";
 	$targets .= " $file";
