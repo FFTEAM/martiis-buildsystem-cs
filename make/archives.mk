@@ -158,13 +158,11 @@ $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz:
 	$(WGET) ftp://xmlsoft.org/libxml2/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER).tar.bz2:
-	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || \
-	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
+	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || $(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
 
 ifneq ($(MTD_UTILS_VER),$(MTD_UTILS_VER_HOST))
 $(ARCHIVE)/mtd-utils-$(MTD_UTILS_VER_HOST).tar.bz2:
-	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || \
-	$(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
+	$(WGET) ftp://ftp.infradead.org/pub/mtd-utils/mtd-utils-$(MTD_UTILS_VER).tar.bz2 || $(WGET) -O $@ ftp://ftp.de.debian.org/debian/pool/main/m/mtd-utils/mtd-utils_$(MTD_UTILS_VER).orig.tar.gz
 endif
 
 $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz:
@@ -292,10 +290,7 @@ $(ARCHIVE)/ntp-$(NTP_VER).tar.gz:
 	$(WGET) http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-$(NTP_VER).tar.gz
 
 $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2:
-	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2 || \
-	git clone git://git.opendreambox.org/git/obi/libdvbsi++.git $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER) && \
-	cd $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER) && git checkout $(LIBDVBSI_VER) && cd $(ARCHIVE) && \
-	tar -cjf $@ libdvbsi++-$(LIBDVBSI_VER) && rm -rf libdvbsi++-$(LIBDVBSI_VER)
+	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2 || git clone git://git.opendreambox.org/git/obi/libdvbsi++.git $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER) && cd $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER) && git checkout $(LIBDVBSI_VER) && cd $(ARCHIVE) && tar -cjf $@ libdvbsi++-$(LIBDVBSI_VER) && rm -rf libdvbsi++-$(LIBDVBSI_VER)
 
 $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2:
 	$(WGET) ftp://gd.tuwien.ac.at/opsys/linux/alsa/lib/alsa-lib-$(ALSA_VER).tar.bz2

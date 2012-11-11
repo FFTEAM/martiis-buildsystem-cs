@@ -143,6 +143,7 @@ foreach $file (sort(keys %data)) {
 			print "\t\@echo \"skipping googlecode URL. Use 'make archivecheck G=1' to include\"\n";
 		}
 	} else {
+		$url =~ s/\|\|.*$//;
 		print "\t\@$cmd --spider $url\n";
 	}
 	print "\n";
