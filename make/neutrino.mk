@@ -104,6 +104,9 @@ neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 skel-root/common/etc/init.d/start_neutrino $(PKGPREFIX)/etc/init.d/start_neutrino
 	make $(PKGPREFIX)/.version
+ifeq ($(USE_STB_HAL), yes)
+	cp -a $(TARGETPREFIX)/bin/pic2m2v $(PKGPREFIX)/bin/
+endif
 	cp -a $(CONTROL_DIR)/$(NEUTRINO_PKG) $(BUILD_TMP)/neutrino-control
 ifeq ($(PLATFORM), tripledragon)
 	grep -q /dev/dvb/adapter%d/frontend%d $(PKGPREFIX)/bin/neutrino && \
