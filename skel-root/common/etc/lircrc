@@ -12,3 +12,17 @@ begin
 	flags  = mode
 end
 
+begin
+	button = KEY_OK
+	button = KEY_POWER
+	button = KEY_POWER
+	button = KEY_POWER
+	button = KEY_OK
+	prog   = irexec
+	config = kill -9 $(pidof neutrino)
+	mode   = mode_POWER              
+	repeat = 0    
+	delay  = 0   
+	flags  = mode
+end
+
