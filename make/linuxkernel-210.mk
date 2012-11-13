@@ -294,15 +294,21 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config-*;
 	rm -fr $@ $@-7162
 	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
+ifeq ($(SPARK_ONLY), )
 	cp -al $@ $@-7162 # hardlinked tree
+endif
 	mv $@/.config-spark $@/.config
+ifeq ($(SPARK_ONLY), )
 	mv $@-7162/.config-7162 $@-7162/.config
+endif
 	$(MAKE) -C $@ ARCH=sh oldconfig
 	$(MAKE) -C $@ ARCH=sh include/asm
 	$(MAKE) -C $@ ARCH=sh include/linux/version.h
+ifeq ($(SPARK_ONLY), )
 	$(MAKE) -C $@-7162 ARCH=sh oldconfig
 	$(MAKE) -C $@-7162 ARCH=sh include/asm
 	$(MAKE) -C $@-7162 ARCH=sh include/linux/version.h
+endif
 
 kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
 	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
@@ -365,7 +371,9 @@ $(BUILD_TMP)/driver: \
 	# sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
 	# disable led and button - it's not for spark
 	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
+ifeq ($(SPARK_ONLY), )
 	cp -al $@ $@-7162
+endif
 
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
