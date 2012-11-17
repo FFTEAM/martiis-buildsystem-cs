@@ -454,13 +454,17 @@ $(PATCHES)/initramfs-azboxmeminime-init
 	chmod 755 $@/init
 	sed -i 's/^root:.*/root::10933:0:99999:7:::/' $@/etc/shadow # empty rootpassword for rescue
 
-$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER): $(PATCHES)/kernel.config-azbox $(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff $(PATCHES)/linux-azbox-3.3.1-azboxhd.diff $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
+$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER): \
+$(PATCHES)/kernel.config-azbox-$(LINUX_AZBOX_VER) \
+$(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff \
+$(PATCHES)/linux-azbox-3.3.1-azboxhd.diff \
+$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
 	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
 	set -e; cd $@; \
 		$(PATCH)/linux-azbox-3.3.1-azboxhd.diff; \
 		$(PATCH)/linux-azbox-allow-rebuild-after-failed-genromfs.diff; \
 		sed -i 's/ -static//' scripts/Makefile.host; \
-		cp $(PATCHES)/kernel.config-azbox .config; \
+		cp $(PATCHES)/kernel.config-azbox-$(LINUX_AZBOX_VER) .config; \
 		make ARCH=mips oldconfig
 
 $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/arch/mips/boot/genzbf: $(SOURCE_DIR)/genzbf
