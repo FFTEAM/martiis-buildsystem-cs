@@ -648,12 +648,13 @@ $(TARGETPREFIX)/bin/rmfp_player: | $(TARGETPREFIX)/bin
 	wget -O $@ 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'
 	chmod 755 $@
 
-$(D)/rmfp_player: $(TARGETPREFIX)/bin/rmfp_player
+rmfp_player: find-w3m
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/bin
-	cp -p $(TARGETPREFIX)/bin/rmfp_player $(PKGPREFIX)/bin
-	PKG_VER=0.0 PKG_AUTOREQPROV=1 $(OPKG_SH) $(CONTROL_DIR)/rmfp_player
+	wget -O $(PKGPREFIX)/bin/rmfp_player 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'; \
+	set -e; V=`$(BASE_DIR)/scripts/get-sf-git-binary-timestamp.pl \
+			azboxopenpli/openembedded recipes/azbox/azbox-azplayer/bin/rmfp_player`; \
+		PKG_VER=$$V PKG_AUTOREQPROV=1 $(OPKG_SH) $(CONTROL_DIR)/rmfp_player; \
 	rm -rf $(PKGPREFIX)
-	touch $@
 
-PHONY += ncurses-prereq
+PHONY += ncurses-prereq rmfp_player
