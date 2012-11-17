@@ -620,10 +620,10 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
+$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-fix.tar.gz
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	tar -C $(PKGPREFIX)/lib -xf $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
+	tar -C $(PKGPREFIX)/lib -xf $(ARCHIVE)/azboxme-mrua-3.11-fix.tar.gz
 	export PKG_DEP_=`opkg-find-requires.sh $(PKGPREFIX)`; \
 		export PKG_PROV=`cd $(PKGPREFIX)/lib; echo *|sort|sed "s/ /, /g"`; \
 		set -x; \
@@ -639,7 +639,7 @@ $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
 			$$FOUND || PKG_DEP="$$PKG_DEP $$i"; \
 		done; \
 		export PKG_DEP; \
-		PKG_VER=3.11 \
+		PKG_VER=3.11.1 \
 		$(OPKG_SH) $(CONTROL_DIR)/mrua-libs
 	rm -rf $(PKGPREFIX)
 	touch $@

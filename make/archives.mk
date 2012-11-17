@@ -290,6 +290,7 @@ $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azbox%.tar.bz2 \
 $(ARCHIVE)/azbox%-mrua-3.11.tar.gz \
+$(ARCHIVE)/azbox%-mrua-3.11-fix.tar.gz \
 $(ARCHIVE)/azbox%-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz:
 	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))
 
