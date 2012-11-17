@@ -431,8 +431,8 @@ $(SOURCE_DIR)/genzbf:
 		wget -O zboot.h  'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/zboot.h;hb=HEAD'
 
 $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs: \
-$(ARCHIVE)/initramfs-azboxme-29062012.tar.bz2 \
-$(ARCHIVE)/initramfs-azboxminime-29062012.tar.bz2 \
+$(ARCHIVE)/initramfs-azboxme-08102012.tar.bz2 \
+$(ARCHIVE)/initramfs-azboxminime-08102012.tar.bz2 \
 $(PATCHES)/initramfs-azboxmeminime-init
 	rm -rf $(BUILD_TMP)/minime $(BUILD_TMP)/me
 	mkdir $(BUILD_TMP)/minime $(BUILD_TMP)/me
@@ -440,14 +440,14 @@ $(PATCHES)/initramfs-azboxmeminime-init
 	tar -C $(BUILD_TMP)/minime -xf $(subst azboxme,azboxminime,$(firstword $^))
 	rm -rf $@
 	cp -a $(BUILD_TMP)/me/linux-$(LINUX_AZBOX_VER)/initramfs $@
-	set -e; cd $(BUILD_TMP)/minime/linux-3.3.1/initramfs/lib/modules/3.3.1-opensat/kernel/drivers; \
-		cp -a nand_wr.ko $@/lib/modules/3.3.1-opensat/kernel/drivers/nand_wrminime.ko; \
-		cp -a irvfdminime.ko $@/lib/modules/3.3.1-opensat/kernel/drivers/; \
-		cp -a xload-38x/audio_*_dts52.xload $@/lib/modules/3.3.1-opensat/kernel/drivers/xload-38x
-	set -e; cd $(BUILD_TMP)/minime/linux-3.3.1/initramfs/usr/bin; \
+	set -e; cd $(BUILD_TMP)/minime/linux-$(LINUX_AZBOX_VER)/initramfs/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers; \
+		cp -a nand_wr.ko $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers/nand_wrminime.ko; \
+		cp -a irvfdminime.ko $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers/; \
+		cp -a xload-38x/audio_*_dts52.xload $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers/xload-38x
+	set -e; cd $(BUILD_TMP)/minime/linux-$(LINUX_AZBOX_VER)/initramfs/usr/bin; \
 		cp -a progmicom_minime* $@/usr/bin; \
 		cp -a webinterface $@/usr/bin/webinterfaceminime;
-	set -e; cd $@/lib/modules/3.3.1-opensat/kernel/drivers; \
+	set -e; cd $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers; \
 		mv nand_wr.ko nand_wrme.ko; \
 		ln -s nand_wrme.ko nand_wr.ko
 	cp -a $(lastword $^) $@/init
@@ -457,11 +457,9 @@ $(PATCHES)/initramfs-azboxmeminime-init
 $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER): \
 $(PATCHES)/kernel.config-azbox-$(LINUX_AZBOX_VER) \
 $(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff \
-$(PATCHES)/linux-azbox-3.3.1-azboxhd.diff \
 $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
 	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
 	set -e; cd $@; \
-		$(PATCH)/linux-azbox-3.3.1-azboxhd.diff; \
 		$(PATCH)/linux-azbox-allow-rebuild-after-failed-genromfs.diff; \
 		sed -i 's/ -static//' scripts/Makefile.host; \
 		cp $(PATCHES)/kernel.config-azbox-$(LINUX_AZBOX_VER) .config; \
@@ -495,7 +493,7 @@ azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_D
 		install -d lib/firmware; \
 		mv *.fw lib/firmware; \
 		mv *.ko lib/modules/$(LINUX_AZBOX_VER)-opensat/extra; \
-		rm staticdevices.tar.gz.install
+		rm -f staticdevices.tar.gz.install
 	install -d $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
 	mv $(BUILD_TMP)/azboxme-dvb-modules/* $(PKGPREFIX)
