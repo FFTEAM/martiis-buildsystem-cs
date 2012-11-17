@@ -35,6 +35,10 @@ ifeq ($(USE_STB_HAL), yes)
 N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
 	--with-stb-hal-build=$(LH_OBJDIR)
 NEUTRINO_DEPS2 = libstb-hal
+ifeq ($(PLATFORM), azbox)
+# needed for forkpty() in libstb-hal/azbox/playback.cpp
+N_CFLAGS += -lutil
+endif
 endif
 ifeq ($(PLATFORM), spark)
 # this is a hack: stfbcontrol triggers include/linux/stmfb.h,
