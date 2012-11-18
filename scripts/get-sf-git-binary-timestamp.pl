@@ -9,21 +9,12 @@ $url = "http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=$repo;f=$path";
 
 $hurl = $url . ";a=history";
 # print "hurl: '$hurl'\n";
-@w3m = `w3m -dump -cols 100 \"$hurl\"`;
-chomp @w3m;
-$ret = 1;
-foreach $line (@w3m)
+@html = `curl \"$hurl\"`;
+chomp @html;
+$content = join(" ", @html);
+if ($content =~ /.*<td title=".*?(\d\d\d\d)-(\d\d)-(\d\d).*?>commitdiff<\/a><\/td>/)
 {
-	if ($line =~ /commitdiff$/)
-	{
-		$date = substr($line, 0, 11);
-		# print "'$date'\n";
-		$timestamp = `date +%Y%m%d -d \"$date\"`;
-		chomp $timestamp;
-		$ret = 0;
-		last;
-	}
+	print "$1$2$3\n";
+	exit 0;
 }
-# print "ts: '$timestamp'\n";
-print "$timestamp\n";
-exit $ret;
+exit 1;

@@ -648,7 +648,7 @@ $(TARGETPREFIX)/bin/rmfp_player: | $(TARGETPREFIX)/bin
 	wget -O $@ 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'
 	chmod 755 $@
 
-rmfp_player: find-w3m
+rmfp_player:
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/bin
 	wget -O $(PKGPREFIX)/bin/rmfp_player 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'; \
