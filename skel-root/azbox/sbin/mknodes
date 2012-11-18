@@ -36,10 +36,4 @@ done < /proc/bus/input/devices
 # lame, better fix the neutrino code instead :-)
 ln -s /proc/vfd /dev/vfd
 
-for i in mum0 em8xxx0; do
-	eval `cat /sys/devices/virtual/$i/$i/uevent`
-	mknod /dev/$i c $MAJOR $MINOR
-	chmod 0660 /dev/$i
-done
-
 /bin/echo "done $0"
