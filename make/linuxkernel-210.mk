@@ -359,12 +359,12 @@ $(BUILD_TMP)/driver: \
 		cp player2/linux/include/linux/dvb/stm_ioctls.h $(TARGETPREFIX)/include/linux/dvb; \
 		cd include; \
 		rm -f stmfb player2 multicom; \
-		ln -s stmfb-3.1_stm24_0102 stmfb; \
+		ln -s stmfb-3.1_stm24_0104 stmfb; \
 		ln -s player2_179 player2; \
 		ln -s ../multicom-3.2.4/include multicom; \
 		cd ../stgfb; \
 		rm -f stmfb; \
-		ln -s stmfb-3.1_stm24_0102 stmfb; \
+		ln -s stmfb-3.1_stm24_0104 stmfb; \
 		cp -a stmfb/linux/drivers/video/stmfb.h $(TARGETPREFIX)/include/linux
 	cp -a $(BUILD_TMP)/driver/frontcontroller/aotom/aotom_main.h $(TARGETPREFIX)/include
 	# disable wireless build
