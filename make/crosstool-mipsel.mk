@@ -24,6 +24,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHI
 		sed -i "s@^CT_PARALLEL_JOBS=.*@CT_PARALLEL_JOBS=$$NUM_CPUS@" .config; \
 		export TD_BASE_DIR=$(BASE_DIR); \
 		export TD_BUILD_TMP=$(BUILD_TMP); \
+		export KVER=$(LINUX_AZBOX_VER); \
 		./configure --enable-local; \
 		MAKELEVEL=0 make; \
 		./ct-ng oldconfig; \
