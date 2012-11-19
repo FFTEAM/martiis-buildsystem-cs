@@ -166,6 +166,9 @@ DBUS-VER=1.4.6
 # ntp; synchronize system clock over a network
 NTP_VER=4.2.6p5
 
+# valgrind debugging and profiling tool suite
+VALGRIND_VER = 3.8.1
+
 #########################
 # extras; make/extras.mk
 ########################

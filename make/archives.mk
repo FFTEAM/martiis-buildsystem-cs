@@ -248,11 +248,8 @@ $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz:
 $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2:
 	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux/v$(UTIL_LINUX_NG_VER)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2
 
-$(ARCHIVE)/valgrind-3.3.1.tar.bz2:
-	$(WGET) http://valgrind.org/downloads/valgrind-3.3.1.tar.bz2
-
-$(ARCHIVE)/valgrind-3.7.0.tar.bz2:
-	$(WGET) http://valgrind.org/downloads/valgrind-3.7.0.tar.bz2
+$(ARCHIVE)/valgrind-%.tar.bz2:
+	$(WGET) http://valgrind.org/downloads/$(notdir $@)
 
 $(ARCHIVE)/vsftpd-$(VSFTPD_VER).tar.gz:
 	$(WGET) https://security.appspot.com/downloads/vsftpd-$(VSFTPD_VER).tar.gz
