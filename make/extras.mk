@@ -636,6 +636,11 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	set -e; cd $(SCRIPTS); \
+		install -m 755 -D amixer.init $(PKGPREFIX)/etc/init.d/amixer; \
+		ln -s amixer $(PKGPREFIX)/etc/init.d/S70amixer; \
+		test -e asound.conf.$(PLATFORM) && cp asound.conf.$(PLATFORM) $(PKGPREFIX)/etc/asound.conf; \
+		test -e amixer.conf.$(PLATFORM) && cp amixer.conf.$(PLATFORM) $(PKGPREFIX)/etc/amixer.conf
 	rm -rf $(PKGPREFIX)/var $(PKGPREFIX)/share $(PKGPREFIX)/lib/pkgconfig
 	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
 	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
