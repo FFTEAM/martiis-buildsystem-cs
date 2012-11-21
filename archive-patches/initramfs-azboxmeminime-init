@@ -217,6 +217,7 @@ fi
 
 echo "" > /proc/vfd
 echo "CHK BOOT SEL" > /proc/vfd
+echo 2 > /proc/led # red
 
 mount -t jffs2 mtd2 /mnt/root
 
@@ -230,6 +231,7 @@ fi
 
 
 modesel=`cat /proc/rescue`
+echo 1 > /proc/led # blue
 
 if [ "$modesel" -ne 255 ]; then	
 	keypressed=true
