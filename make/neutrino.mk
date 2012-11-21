@@ -2,6 +2,7 @@
 
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg libdvbsi++
 NEUTRINO_DEPS += openthreads
+NEUTRINO_PKG_DEPS =
 
 N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
@@ -38,6 +39,7 @@ NEUTRINO_DEPS2 = libstb-hal
 ifeq ($(PLATFORM), azbox)
 # needed for forkpty() in libstb-hal/azbox/playback.cpp
 N_CFLAGS += -lutil
+NEUTRINO_PKG_DEPS += rmfp_player
 endif
 endif
 ifeq ($(PLATFORM), spark)
@@ -100,7 +102,7 @@ $(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	+make $(TARGETPREFIX)/.version
 	: touch $@
 
-neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
+neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2) $(NEUTRINO_PKG_DEPS)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-control
 	$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
@@ -128,7 +130,7 @@ ifeq ($(PLATFORM), coolstream)
 	fi
 endif
 ifeq ($(PLATFORM), azbox)
-	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-control/control
+	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers, rmfp_player/' $(BUILD_TMP)/neutrino-control/control
 endif
 	install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	find $(PKGPREFIX)/share/tuxbox/neutrino/locale/ -type f \
