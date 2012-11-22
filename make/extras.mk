@@ -407,8 +407,30 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+######
+# build glib-tools for the host, for build systems that don't have those
+# installed already.
+# TODO: check if we this built glib-genmarshal is new enough for the glib
+#       version we're trying to build
+######
+$(HOSTPREFIX)/bin/glib-genmarshal: | $(HOSTPREFIX)/bin
+	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
+		export PKG_CONFIG=/usr/bin/pkg-config; \
+		./configure \
+			--disable-gtk-doc \
+			--disable-gtk-doc-html \
+			--enable-static=yes \
+			--enable-shared=no \
+			--prefix=`pwd`/out \
+			; \
+		$(MAKE) install ; \
+		cp -a out/bin/glib-* $(HOSTPREFIX)/bin
+	$(REMOVE)/glib-$(GLIB-VER)
+
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
 $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+	type -p glib-genmarshal || $(MAKE) $(HOSTPREFIX)/bin/glib-genmarshal
 	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
 		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache; \
