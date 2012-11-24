@@ -256,13 +256,21 @@ umount /mnt/root
 if ! $keypressed; then
 	for disk in sdb sdb1 sda sda1; do
 		echo "try $disk" > /proc/vfd
+		echo "===================> trying to boot from /dev/$disk"
 		# Mount the root filesystem on USB1.
 		mount -o rw /dev/$disk /mnt/root
 		if [ $? = 0 ]; then
+			if [ -e /mnt/root/noboot ]; then
+				echo "===================> noboot file exists, not booting"
+				umount /mnt/root
+				continue
+			fi
 			if [ -L "/mnt/root/sbin/init" ]; then
 				# Unmount all other mounts so that the ram used by
 				# the initramfs can be cleared after switch_root
 				rmmod scsi_wait_scan
+				rmmod em8xxx
+				rmmod llad
 				umount /sys /proc
 				# Switch to the new root and execute init
 				exec switch_root /mnt/root /sbin/init
@@ -282,12 +290,15 @@ if [ $modesel = 1 ] ; then
 elif [ $modesel = 2 ] ; then
    echo "" > /proc/vfd
    echo "BOOT [1]" > /proc/vfd
+   echo "===================> BOOT 1"
 elif [ $modesel = 3 ] ; then
    echo "" > /proc/vfd
    echo "BOOT [2]" > /proc/vfd
+   echo "===================> BOOT 2"
 elif  [ $modesel = 0 ] ; then
    echo "" > /proc/vfd
    echo "BOOT [0]" > /proc/vfd
+   echo "===================> BOOT 0"
 fi
 
 # Do your stuff here.
