@@ -16,22 +16,26 @@ KVERSION = 2.6.12
 KVERSION_FULL = $(KVERSION)
 KVERSION_SRC = $(KVERSION)
 K_DEP = $(D)/tdkernel
+K_OBJ = $(BUILD_TMP)/linux-$(KVERSION_SRC)
 endif
 ifeq ($(PLATFORM), coolstream)
 KVERSION = 2.6.26.8
 KVERSION_FULL = $(KVERSION)-nevis
 KVERSION_SRC = $(KVERSION)
 K_DEP = $(D)/cskernel
+K_OBJ = $(BUILD_TMP)/kobj
 endif
 ifeq ($(PLATFORM), spark)
 KVERSION = 2.6.32.57
 KVERSION_FULL = $(KVERSION)_stm24$(PATCH_STR)
 KVERSION_SRC = $(KVERSION_FULL)
+K_OBJ = $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA)
 endif
 ifeq ($(PLATFORM), azbox)
 KVERSION = $(LINUX_AZBOX_VER)
 KVERSION_FULL = $(KVERSION)-opensat
 KVERSION_SRC = $(KVERSION)
+K_OBJ = $(BUILD_TMP)/linux-$(KVERSION_SRC)
 endif
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
 TARGET_MODULE = $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)
@@ -192,7 +196,6 @@ $(BUILD_TMP)/linux-$(KVERSION_SRC): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 $(HOSTPREFIX)/bin/mkimage: cs-uboot
 
 K_SRCDIR ?= $(SOURCE_DIR)/linux
-K_OBJ = $(BUILD_TMP)/kobj
 
 $(K_SRCDIR):
 	@echo

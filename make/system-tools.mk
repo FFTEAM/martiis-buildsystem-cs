@@ -205,7 +205,8 @@ $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/$(PLATFORM)/* $(TARGETPREFIX)/
 
 $(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
-	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
+	if ! grep -q CONFIG_AUTOFS4_FS=y $(K_OBJ)/.config; then \
+		$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko; fi
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/autofs-$(AUTOFS-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/autofs-$(AUTOFS-VER); \
@@ -216,8 +217,10 @@ $(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
 	install -m 0755 -D $(SCRIPTS)/autofs.init $(PKGPREFIX)/etc/init.d/autofs
 	ln -sf autofs $(PKGPREFIX)/etc/init.d/S60autofs
 	ln -sf autofs $(PKGPREFIX)/etc/init.d/K40autofs
-	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4
-	cp -a $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/
+	if ! grep -q CONFIG_AUTOFS4_FS=y $(K_OBJ)/.config; then \
+		mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4; \
+		cp -a $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/; \
+	fi
 	cp -a --remove-destination $(PKGPREFIX)/* $(TARGETPREFIX)/
 	$(OPKG_SH) $(CONTROL_DIR)/autofs
 	rm -rf $(PKGPREFIX)
