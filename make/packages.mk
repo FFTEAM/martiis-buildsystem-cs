@@ -216,6 +216,17 @@ spark-directfb-pkg: \
 endif
 ifeq ($(PLATFORM), azbox)
 SYSTEM_PKGS += azboxdriver
+
+addon-drivers-pkg: azboxkernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
+	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
+		cp -a $(SOURCE_MODULE)/kernel/* ./; \
+		rm -fr fs/autofs4 # is in autofs (and builtin on azbox...)
+	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)
+	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/addon-drivers/control
+	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
 endif
 
 AAA_BASE_DEPS =
