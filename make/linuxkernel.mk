@@ -12,17 +12,26 @@
 ###############################################################
 
 ifeq ($(PLATFORM), tripledragon)
-KVERSION_FULL = 2.6.12
+KVERSION = 2.6.12
+KVERSION_FULL = $(KVERSION)
+KVERSION_SRC = $(KVERSION)
 K_DEP = $(D)/tdkernel
 endif
 ifeq ($(PLATFORM), coolstream)
 KVERSION = 2.6.26.8
 KVERSION_FULL = $(KVERSION)-nevis
+KVERSION_SRC = $(KVERSION)
 K_DEP = $(D)/cskernel
 endif
 ifeq ($(PLATFORM), spark)
 KVERSION = 2.6.32.57
 KVERSION_FULL = $(KVERSION)_stm24$(PATCH_STR)
+KVERSION_SRC = $(KVERSION_FULL)
+endif
+ifeq ($(PLATFORM), azbox)
+KVERSION = $(LINUX_AZBOX_VER)
+KVERSION_FULL = $(KVERSION)-opensat
+KVERSION_SRC = $(KVERSION)
 endif
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
 TARGET_MODULE = $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)
@@ -95,9 +104,9 @@ ramzswap-driver: $(ARCHIVE)/compcache-0.6.2.tar.gz $(PATCHES)/compcache-0.6.2-ba
 		$(PATCH)/compcache-0.6.2-backport-to-2.6.12.diff; \
 		export PATH=$(BASE_DIR)/ccache:$(K_GCC_PATH):$(PATH); \
 		$(MAKE) ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
-			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL); \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION); \
 		make -j1 ARCH=ppc CROSS_COMPILE=powerpc-405-linux-gnu- \
-			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION_FULL) \
+			KERNEL_BUILD_PATH=$(BUILD_TMP)/linux-$(KVERSION) \
 			INSTALL_MOD_DIR=kernel/drivers/extra \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	$(REMOVE)/compcache-0.6.2
@@ -133,7 +142,7 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 endif
 
 ifeq ($(PLATFORM), coolstream)
-$(BUILD_TMP)/linux-$(KVERSION): $(PATCHES)/linux-2.6.26.8-new-make.patch \
+$(BUILD_TMP)/linux-$(KVERSION_SRC): $(PATCHES)/linux-2.6.26.8-new-make.patch \
 			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
 	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
 	set -e; cd $@ ; \
@@ -273,7 +282,7 @@ ifeq ($(SPARK_ONLY), )
 SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162
 endif
 
-$(BUILD_TMP)/linux-$(KVERSION_FULL): \
+$(BUILD_TMP)/linux-$(KVERSION_SRC): \
 		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-$(KVERSION_FULL)-$(subst _0,,$(PATCH_STR)).src.rpm \
 		$(MY_KERNELPATCHES) \
 		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%) \
@@ -296,7 +305,7 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 		cp $(PATCHES)/kernel.config-spark7162 .config-7162; \
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config-*;
 	rm -fr $@ $@-7162
-	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
+	mv $(BUILD_TMP)/linux-2.6.32 $@
 	cp -al $@ $@-7162 # hardlinked tree
 	mv $@/.config-spark $@/.config
 	mv $@-7162/.config-7162 $@-7162/.config
@@ -310,18 +319,18 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 	$(MAKE) -C $@-7162 ARCH=sh include/asm
 	$(MAKE) -C $@-7162 ARCH=sh include/linux/version.h
 
-kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
+kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA)
 	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
 
-_sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
-	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA); \
+_sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA)
+	set -e; cd $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA); \
 		export PATH=$(CROSS_BASE)/host/bin:$(PATH); \
 		$(MAKE) ARCH=sh CROSS_COMPILE=$(TARGET)- uImage modules; \
 		make    ARCH=sh CROSS_COMPILE=$(TARGET)- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install; \
 		cp -L arch/sh/boot/uImage $(BUILD_TMP)/uImage$(K_EXTRA)
 
-sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_SRC)
 ifeq ($(SPARK7162_ONLY), )
 	$(MAKE) _sparkkernel
 endif
@@ -385,17 +394,17 @@ $(PATCHES)/sparkdrivers/0006-aotom-add-additional-chars-for-VFD-fix-missing-char
 # CONFIG_MODULES_PATH= is needed because the Makefile contains
 # "-I$(CONFIG_MODULES_PATH)/usr/include". With CONFIG_MODULES_PATH unset,
 # host system includes are used and that might be fatal.
-_sparkdriver: $(BUILD_TMP)/tdt-driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
-	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
+_sparkdriver: $(BUILD_TMP)/tdt-driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA)
+	$(MAKE) -C $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
-		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA) \
 		DRIVER_TOPDIR=$(BUILD_TMP)/tdt-driver$(K_EXTRA) \
 		M=$(firstword $^) \
 		PLAYER191=player191 \
 		CROSS_COMPILE=$(TARGET)-
-	make    -C $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) ARCH=sh \
+	make    -C $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA) ARCH=sh \
 		CONFIG_MODULES_PATH=$(CROSS_DIR)/target \
-		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA) \
+		KERNEL_LOCATION=$(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA) \
 		DRIVER_TOPDIR=$(BUILD_TMP)/tdt-driver$(K_EXTRA) \
 		M=$(firstword $^) \
 		PLAYER191=player191 \
@@ -430,7 +439,7 @@ $(SOURCE_DIR)/genzbf:
 		wget -O genzbf.c 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/genzbf.c;hb=HEAD'; \
 		wget -O zboot.h  'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/zboot.h;hb=HEAD'
 
-$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs: \
+$(BUILD_TMP)/linux-$(KVERSION_SRC)/initramfs: \
 $(ARCHIVE)/initramfs-azboxme-08102012.tar.bz2 \
 $(ARCHIVE)/initramfs-azboxminime-08102012.tar.bz2 \
 $(PATCHES)/initramfs-azboxmeminime-init
@@ -439,67 +448,67 @@ $(PATCHES)/initramfs-azboxmeminime-init
 	tar -C $(BUILD_TMP)/me -xf $(firstword $^)
 	tar -C $(BUILD_TMP)/minime -xf $(subst azboxme,azboxminime,$(firstword $^))
 	rm -rf $@
-	cp -a $(BUILD_TMP)/me/linux-$(LINUX_AZBOX_VER)/initramfs $@
-	set -e; cd $(BUILD_TMP)/minime/linux-$(LINUX_AZBOX_VER)/initramfs/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers; \
-		cp -a nand_wr.ko $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers/nand_wrminime.ko; \
-		cp -a irvfdminime.ko $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers/; \
-		cp -a xload-38x/audio_*_dts52.xload $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers/xload-38x
-	set -e; cd $(BUILD_TMP)/minime/linux-$(LINUX_AZBOX_VER)/initramfs/usr/bin; \
+	cp -a $(BUILD_TMP)/me/linux-$(KVERSION)/initramfs $@
+	set -e; cd $(BUILD_TMP)/minime/linux-$(KVERSION)/initramfs/lib/modules/$(KVERSION_FULL)/kernel/drivers; \
+		cp -a nand_wr.ko $@/lib/modules/$(KVERSION_FULL)/kernel/drivers/nand_wrminime.ko; \
+		cp -a irvfdminime.ko $@/lib/modules/$(KVERSION_FULL)/kernel/drivers/; \
+		cp -a xload-38x/audio_*_dts52.xload $@/lib/modules/$(KVERSION_FULL)/kernel/drivers/xload-38x
+	set -e; cd $(BUILD_TMP)/minime/linux-$(KVERSION)/initramfs/usr/bin; \
 		cp -a progmicom_minime* $@/usr/bin; \
 		cp -a webinterface $@/usr/bin/webinterfaceminime;
-	set -e; cd $@/lib/modules/$(LINUX_AZBOX_VER)-opensat/kernel/drivers; \
+	set -e; cd $@/lib/modules/$(KVERSION_FULL)/kernel/drivers; \
 		mv nand_wr.ko nand_wrme.ko; \
 		ln -s nand_wrme.ko nand_wr.ko
 	cp -a $(lastword $^) $@/init
 	chmod 755 $@/init
 	sed -i 's/^root:.*/root::10933:0:99999:7:::/' $@/etc/shadow # empty rootpassword for rescue
 
-$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER): \
-$(PATCHES)/kernel.config-azbox-$(LINUX_AZBOX_VER) \
+$(BUILD_TMP)/linux-$(KVERSION_SRC): \
+$(PATCHES)/kernel.config-azbox-$(KVERSION) \
 $(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff \
-$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
-	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
+$(ARCHIVE)/linux-azbox-$(KVERSION).tar.bz2
+	$(UNTAR)/linux-azbox-$(KVERSION).tar.bz2
 	set -e; cd $@; \
 		$(PATCH)/linux-azbox-allow-rebuild-after-failed-genromfs.diff; \
 		sed -i 's/ -static//' scripts/Makefile.host; \
-		cp $(PATCHES)/kernel.config-azbox-$(LINUX_AZBOX_VER) .config; \
+		cp $(PATCHES)/kernel.config-azbox-$(KVERSION) .config; \
 		make ARCH=mips oldconfig
 
-$(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/arch/mips/boot/genzbf: $(SOURCE_DIR)/genzbf
+$(BUILD_TMP)/linux-$(KVERSION_SRC)/arch/mips/boot/genzbf: $(SOURCE_DIR)/genzbf
 	set -e; cd $(SOURCE_DIR)/genzbf; \
 		gcc -W -Wall -O2 -o $@ genzbf.c
 
 # genromfs is e.g in a package called.... "genromfs"! (openSUSE)
-azboxkernel: $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER) $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/initramfs $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER)/arch/mips/boot/genzbf find-genromfs
-	set -e;cd $(BUILD_TMP)/linux-$(LINUX_AZBOX_VER); \
+azboxkernel: $(BUILD_TMP)/linux-$(KVERSION_SRC) $(BUILD_TMP)/linux-$(KVERSION_SRC)/initramfs $(BUILD_TMP)/linux-$(KVERSION_SRC)/arch/mips/boot/genzbf find-genromfs
+	set -e;cd $(BUILD_TMP)/linux-$(KVERSION_SRC); \
 		$(MAKE) ARCH=mips CROSS_COMPILE=$(TARGET)- zbimage-linux-xload; \
 		$(MAKE) ARCH=mips CROSS_COMPILE=$(TARGET)- modules; \
 		$(MAKE) ARCH=mips CROSS_COMPILE=$(TARGET)- \
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules modules_install
 	set -e; cd $(BUILD_TMP); \
 		rm -f azboxkernel.tar; \
-		tar -cvpf azboxkernel.tar -C linux-$(LINUX_AZBOX_VER) zbimage-linux-xload
+		tar -cvpf azboxkernel.tar -C linux-$(KVERSION_SRC) zbimage-linux-xload
 
-azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz
+azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(KVERSION)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(KVERSION)-opensat-$(AZBOX_DVB_M_VER).tar.gz
 	$(REMOVE)/azboxme-dvb-modules $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers
 	set -e; cd $(BUILD_TMP); \
 		mkdir azboxme-dvb-modules; \
 		cd azboxme-dvb-modules; \
 		for i in me minime; do \
-			tar -xf $(ARCHIVE)/azbox$${i}-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz; \
+			tar -xf $(ARCHIVE)/azbox$${i}-dvb-modules-$(KVERSION)-opensat-$(AZBOX_DVB_M_VER).tar.gz; \
 			mv sci.ko sci$${i}.ko; \
 		done; \
-		install -d lib/modules/$(LINUX_AZBOX_VER)-opensat/extra; \
+		install -d lib/modules/$(KVERSION_FULL)/extra; \
 		install -d lib/firmware; \
 		mv *.fw lib/firmware; \
-		mv *.ko lib/modules/$(LINUX_AZBOX_VER)-opensat/extra; \
+		mv *.ko lib/modules/$(KVERSION_FULL)/extra; \
 		rm -f staticdevices.tar.gz.install
 	install -d $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
 	mv $(BUILD_TMP)/azboxme-dvb-modules/* $(PKGPREFIX)
 	cp -a $(CONTROL_DIR)/azboxme-dvb-drivers $(BUILD_TMP)
 	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers/control
-	DONT_STRIP=1 PKG_VER=$(LINUX_AZBOX_VER).$(AZBOX_DVB_M_VER) $(OPKG_SH) $(BUILD_TMP)/azboxme-dvb-drivers
+	DONT_STRIP=1 PKG_VER=$(KVERSION).$(AZBOX_DVB_M_VER) $(OPKG_SH) $(BUILD_TMP)/azboxme-dvb-drivers
 endif
 
 
