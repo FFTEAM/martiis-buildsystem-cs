@@ -57,14 +57,14 @@
  #include <syslog.h>
  #include <unistd.h>
  #include <termios.h>
-+#ifndef __sh__
++#if defined(i386) || defined(__x86_64__)
  #include <sys/io.h>
 +#endif
  #include <sys/ioctl.h>
  #include <linux/ppdev.h>
  #include <linux/parport.h>
  
-+#ifdef __sh__
++#if !defined(i386) && !defined(__x86_64__)
  
 +/* konfetti: those are currently only dummy. not tested, not really
 + * thinking on it. it needs revise for the params etc. also we need
@@ -93,7 +93,7 @@
  static inline int port_in(int port)
  {
      unsigned char value;
-+#ifndef __sh__
++#if defined(i386) || defined(__x86_64__)
      __asm__ volatile ("inb %1,%0"
                        : "=a" (value)
                        : "d" ((unsigned short) port));
@@ -103,7 +103,7 @@
  
  static inline void port_out(unsigned short int port, unsigned char val)
  {
-+#ifndef __sh__
++#if defined(i386) || defined(__x86_64__)
      __asm__ volatile ("outb %0,%1\n"
                        :
                        : "a" (val), "d" (port));
