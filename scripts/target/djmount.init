@@ -1,8 +1,14 @@
 #!/bin/sh
 
 case $1 in
-	start)	test -d /media/upnp || mkdir /media/upnp
-		djmount -o iocharset=utf-8 /media/upnp ;;
+	start)
+	(
+		test -d /media/upnp || mkdir /media/upnp
+		while [ -f /tmp/.init_networking ] ; do
+			usleep 100000 # 100ms
+		done
+		djmount -o iocharset=utf-8 /media/upnp
+	) & ;;
 	stop)	fusermount -u /media/upnp ;;
 	restart) $0 stop; $0 start ;;
 esac

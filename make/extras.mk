@@ -55,6 +55,7 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/djmount-0.71.tar.gz
 	set -e; cd $(BUILD_TMP)/djmount-0.71; \
+		$(PATCH)/djmount-0.71.diff; \
 		$(CONFIGURE) -C \
 			--host=$(TARGET) \
 			--build=$(BUILD) \
