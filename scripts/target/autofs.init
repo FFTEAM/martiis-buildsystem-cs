@@ -5,7 +5,6 @@
 # load the module if necessary
 module_load() {
 	if ! grep -q autofs /proc/filesystems; then # the kernel does not know it
-		MODULE=/lib/modules/$(uname_r)/kernel/fs/autofs4/autofs4.ko
 		if ! modprobe autofs4 > /dev/null 2>&1; then # module loading failed
 			echo "autofs4 module not available"
 			exit 1;
