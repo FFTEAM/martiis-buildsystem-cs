@@ -37,6 +37,19 @@ get_vidmode()
 	echo "1280x720-32@50"
 }
 
+get_cpufreq()
+{
+	F=$(grep ^cpufreq= /var/tuxbox/config/neutrino.conf)
+	if [ -z "$F" ]; then
+		return
+	fi
+	F=${F#*=}
+	if [ x$F = x0 ]; then
+		return
+	fi
+	echo initial_pll0_ndiv_mdiv=$(($F/10 * 256 + 3))
+}
+
 case $1 in
 start)
 	SPARK7162=false
@@ -60,6 +73,13 @@ start)
 		s/^\(\S\+\)-/\1_/g;
 		s/^\(\S\+\)-/\1_/g;
 		p }" /etc/modprobe.conf)
+	touch /tmp/.init_loading_firmware
+	(
+		ustslave /dev/st231-1 /boot/audio.elf
+		ustslave /dev/st231-0 /boot/video.elf
+		rm /tmp/.init_loading_firmware
+	) &
+	im cpu_frequ $(get_cpufreq)
 	im aotom
 	echo loading > /dev/vfd
 	im uinput
@@ -68,19 +88,11 @@ start)
 	MEMSIZE=12m	# neutrino now needs 12m for FB scaling backbuffer
 	VM=$(get_vidmode)
 	im stmfb.ko display0=$VM:$MEMSIZE:pal:yuv:yuv
-	touch /tmp/.init_loading_firmware
-	(
-		ustslave /dev/st231-1 /boot/audio.elf
-		ustslave /dev/st231-0 /boot/video.elf
-		rm /tmp/.init_loading_firmware
-	) &
-	im cpu_frequ
 	im embxshell
 	im embxmailbox mailbox0=0xfe211000:136:set2 mailbox1=0xfe212000:0
 	im embxshm mailbox0=shm:0:7:0x60000000:0:256:256:0:512:0x40000000:0x10000000
 	im mme_host transport0=shm
 	im avs $AVS_PARAM
-	read PLAYER < /proc/stb/player/version
 	im mmelog
 	im ksound
 	im p2div64
