@@ -369,8 +369,8 @@ $(BUILD_TMP)/driver: \
 	cp -a $(BUILD_TMP)/driver/frontcontroller/aotom/aotom_main.h $(TARGETPREFIX)/include
 	# disable wireless build
 	# sed -i 's/^\(obj-y.*+= wireless\)/# \1/' $(BUILD_TMP)/driver/Makefile
-	# disable led and button - it's not for spark
-	sed -i 's@^\(obj-y.*+= \(led\|button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
+	# disable led, button, boxtype and simu_button - these either aren't for spark or unneeded
+	sed -i 's@^\(obj-y.*+= \(led\|button\|boxtype\|simu_button\)/\)@# \1@' $(BUILD_TMP)/driver/Makefile
 ifeq ($(SPARK_ONLY), )
 	cp -al $@ $@-7162
 endif
