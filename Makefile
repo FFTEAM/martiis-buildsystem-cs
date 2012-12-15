@@ -101,7 +101,7 @@ ifeq ($(BOXARCH), sh4)
 ifdef $(PLATFORM_SUB)
 include make/stlinux.mk
 else
-include make/stlinux-210.mk
+include make/stlinux-211.mk
 endif
 endif
 # define package versions first...
@@ -119,7 +119,7 @@ ifeq ($(BOXARCH), sh4)
 ifdef $(PLATFORM_SUB)
 include make/linuxkernel.mk
 else
-include make/linuxkernel-210.mk
+include make/linuxkernel-211.mk
 endif
 else
 include make/linuxkernel.mk
