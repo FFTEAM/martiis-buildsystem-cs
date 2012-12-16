@@ -16,10 +16,11 @@ plugins: $(PLUGIN_DIR)/configure $(BUILD_TMP)/neutrino-hd-plugins
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS)" \
 		$(PLUGIN_DIR)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 			--enable-maintainer-mode --with-boxtype=$(PLATFORM) --with-target=cdk; \
-		$(MAKE) SUBDIRS="$(PLUGINS_TO_BUILD)"
+		$(MAKE)
 	set -e; for i in $(PLUGINS_TO_BUILD); do \
 		rm -rf $(PKGPREFIX); \
-		make -j1 -C $(BUILD_TMP)/neutrino-hd-plugins install SUBDIRS="$$i" DESTDIR=$(PKGPREFIX); \
+		mkdir -p $(PKGPREFIX); \
+		make -j1 -C $(BUILD_TMP)/neutrino-hd-plugins/$$i install DESTDIR=$(PKGPREFIX); \
 		cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/; \
 		$(OPKG_SH) $(CONTROL_DIR)/plugins/$$i; \
 		rm -rf $(PKGPREFIX); \
