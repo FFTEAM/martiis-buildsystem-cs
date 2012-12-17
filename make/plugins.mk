@@ -7,7 +7,7 @@ $(PLUGIN_DIR)/configure: $(PLUGIN_DIR)/configure.ac
 $(BUILD_TMP)/neutrino-hd-plugins:
 	mkdir $@
 
-PLUGINS_TO_BUILD = tuxcom
+PLUGINS_TO_BUILD = tuxcom tuxwetter
 
 plugins: $(PLUGIN_DIR)/configure $(BUILD_TMP)/neutrino-hd-plugins
 	set -e; cd $(BUILD_TMP)/neutrino-hd-plugins; \

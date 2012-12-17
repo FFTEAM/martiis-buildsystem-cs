@@ -13,6 +13,7 @@ SYSTEM_OPKGS += yaffs2utils
 endif
 
 tuxcom: plugins
+tuxwetter: plugins
 
 SYSTEM_PKGS  += mtd-utils tuxcom
 SYSTEM_OPKGS += mtd-utils tuxcom
