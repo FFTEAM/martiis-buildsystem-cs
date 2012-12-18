@@ -179,6 +179,8 @@ update-neutrino:
 	@if test -d $(SOURCE_DIR)/tdt; then \
 		cd $(SOURCE_DIR)/tdt; git branch "before-update-$(NOW)"; \
 		echo "=== updating tdt git ==="; git pull; fi
+	@if test -d $(SOURCE_DIR)/neutrino-hd-plugins; then \
+		cd $(SOURCE_DIR)/neutrino-hd-plugins; echo "=== updating neutrino-hd-plugins ==="; git pull; fi
 	@cd $(N_HD_SOURCE) && { \
 		echo "=== updating neutrino git ==="; \
 		git branch "before-update-$(NOW)"; git stash save "before update $(NOW)"; \
