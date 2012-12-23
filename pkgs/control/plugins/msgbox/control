@@ -1,0 +1,10 @@
+Package: msgbox
+Version: 1.12-1
+Description: msgbox
+Section: extras
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gitorious.org/neutrino-hd/neutrino-hd-plugins
+Source:
+Depends: libfreetype.so.6

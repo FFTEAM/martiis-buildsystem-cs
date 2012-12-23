@@ -14,9 +14,10 @@ endif
 
 tuxcom: plugins
 tuxwetter: plugins
+msgbox: plugins
 
-SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter
-SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter
+SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox
+SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
