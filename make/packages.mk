@@ -16,9 +16,10 @@ tuxcom: plugins
 tuxwetter: plugins
 msgbox: plugins
 input: plugins
+getrc: plugins
 
-SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input
-SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input
+SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc
+SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
