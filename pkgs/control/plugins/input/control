@@ -1,6 +1,6 @@
-Package: msgbox
-Version: 1.12-1
-Description: msgbox
+Package: input
+Version: 1.08-1
+Description: input
 Section: extras
 Priority: optional
 Maintainer: @MAINT@
