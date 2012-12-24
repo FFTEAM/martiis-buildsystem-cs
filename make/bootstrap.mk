@@ -79,7 +79,7 @@ $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/* $@/
 
-$(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
+$(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(UNCOOL_DRIVER)/* $@/
 
@@ -110,7 +110,7 @@ $(TD_SVN)/ARMAS:
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 
 ifeq ($(PLATFORM), coolstream)
-cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
+cs-modules: $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
 endif
 
 ifeq ($(PLATFORM), tripledragon)
@@ -196,7 +196,7 @@ $(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz | $(
 	$(REMOVE)/pkg-config-$(PKGCONFIG_VER)
 
 # hack to make sure they are always copied
-PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
+PHONY += $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
 PHONY += $(TARGETPREFIX)/include/coolstream
 PHONY += $(TARGETPREFIX)/lib/libnxp.so
 PHONY += $(TARGETPREFIX)/lib/libcoolstream.so

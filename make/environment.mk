@@ -160,7 +160,7 @@ OPKG_SH_ENV += BUILD_TMP=$(BUILD_TMP)
 OPKG_SH = $(OPKG_SH_ENV) opkg.sh
 
 UNCOOL_GIT    = $(SOURCE_DIR)/uncool
-UNCOOL_KVER ?= 2.6.26.8
+UNCOOL_KVER  ?= 2.6.34.13
 ifneq ($(UNCOOL_SOURCE), git)
 UNCOOL_LIBCS  = $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 UNCOOL_LIBNXP = $(SVN_TP_LIBS)/libnxp/libnxp.so

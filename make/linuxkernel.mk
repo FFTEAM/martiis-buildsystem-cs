@@ -19,7 +19,7 @@ K_DEP = $(D)/tdkernel
 K_OBJ = $(BUILD_TMP)/linux-$(KVERSION_SRC)
 endif
 ifeq ($(PLATFORM), coolstream)
-KVERSION = 2.6.26.8
+KVERSION = $(UNCOOL_KVER)
 KVERSION_FULL = $(KVERSION)-nevis
 KVERSION_SRC = $(KVERSION)
 K_DEP = $(D)/cskernel
@@ -146,7 +146,13 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 endif
 
 ifeq ($(PLATFORM), coolstream)
+ifeq ($(KVERSION), 2.6.26.8)
 K_EXT = bz2
+K_ADDR = 0x17048000
+else
+K_EXT = xz
+K_ADDR = 0x048000
+endif
 KPATCHDEPS = $(wildcard $(PATCHES)/cskernel/$(KVERSION)/*)
 KPATCHDEPS += $(wildcard $(PATCHES)/cskernel-extra/$(KVERSION)/*)
 $(BUILD_TMP)/linux-$(KVERSION_SRC): $(ARCHIVE)/linux-$(KVERSION).tar.$(K_EXT) $(KPATCHDEPS)
@@ -244,10 +250,10 @@ endif
 		make ARCH=arm CROSS_COMPILE=$(TARGET)- INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules \
 			modules_install O=$(K_OBJ)/
 	cd $(BUILD_TMP) && \
-		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
+		mkimage -A arm -O linux -T kernel -a $(K_ADDR) -e $(K_ADDR) -C none \
 			-n "Coolstream HDx Kernel (zImage)" -d $(K_OBJ)/arch/arm/boot/zImage zImage.img
 	cd $(BUILD_TMP) && \
-		mkimage -A arm -O linux -T kernel -a 0x17048000 -e 0x17048000 -C none \
+		mkimage -A arm -O linux -T kernel -a $(K_ADDR) -e $(K_ADDR) -C none \
 			-n "Coolstream HDx Kernel" -d $(K_OBJ)/arch/arm/boot/Image Image.img
 	: touch $@
 

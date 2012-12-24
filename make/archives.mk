@@ -175,6 +175,9 @@ $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2:
 $(ARCHIVE)/linux-2.6.26.8.tar.bz2:
 	$(WGET) http://www.dbox2world.net/download/linux-2.6.26.8.tar.bz2
 
+$(ARCHIVE)/linux-2.6.34.13.tar.xz:
+	$(WGET) http://www.kernel.org/pub/linux/kernel/v2.6/longterm/v2.6.34/linux-2.6.34.13.tar.xz
+
 $(ARCHIVE)/mc-$(MC-VER).tar.gz:
 	$(WGET) http://midnight-commander.org/downloads/mc-$(MC-VER).tar.gz
 

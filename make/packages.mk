@@ -47,7 +47,7 @@ cs-drivers-pkg:
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-drivers $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
+	mkdir -p $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
 	mkdir    $(PKGPREFIX)/lib/firmware
 ifneq ($(UNCOOL_SOURCE), git)
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
@@ -58,9 +58,9 @@ ifneq ($(UNCOOL_SOURCE), git)
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
 else
 	set -e; cd $(UNCOOL_GIT)/cst-public-drivers; \
-		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/2.6.26.8-nevis firmware; \
-		cp -a drivers/2.6.26.8-nevis $(PKGPREFIX)/lib/modules/2.6.26.8-nevis; \
-		cp -a firmware/*             $(PKGPREFIX)/lib/firmware
+		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/$(UNCOOL_KVER)-nevis firmware; \
+		cp -a drivers/$(UNCOOL_KVER)-nevis $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis; \
+		cp -a firmware/*                   $(PKGPREFIX)/lib/firmware
 endif
 	mkdir -p $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
