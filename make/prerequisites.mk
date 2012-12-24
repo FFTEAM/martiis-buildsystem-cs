@@ -104,9 +104,9 @@ $(SOURCE_DIR)/svn/THIRDPARTY/kernel:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/kernel
 
-$(SOURCE_DIR)/uncool/cst-public-drivers:
+$(SOURCE_DIR)/uncool/%:
 	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && git clone git://coolstreamtech.de/cst-public-drivers.git
+	cd $(shell dirname $@) && git clone git://coolstreamtech.de/$(notdir $@).git
 
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \

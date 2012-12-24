@@ -146,17 +146,17 @@ $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc: | $(ARCHIVE)/crosstool-0.43.tar.gz
 endif
 
 ifeq ($(PLATFORM), coolstream)
-$(BUILD_TMP)/linux-$(KVERSION_SRC): $(PATCHES)/linux-2.6.26.8-new-make.patch \
-			$(PATCHES)/coolstream/linux-2.6.26.8-cnxt.diff
-	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.bz2
+K_EXT = bz2
+KPATCHDEPS = $(wildcard $(PATCHES)/cskernel/$(KVERSION)/*)
+KPATCHDEPS += $(wildcard $(PATCHES)/cskernel-extra/$(KVERSION)/*)
+$(BUILD_TMP)/linux-$(KVERSION_SRC): $(ARCHIVE)/linux-$(KVERSION).tar.$(K_EXT) $(KPATCHDEPS)
+	rm -rf $@
+	tar -C $(BUILD_TMP) -xf $(ARCHIVE)/linux-$(KVERSION).tar.$(K_EXT)
 	set -e; cd $@ ; \
-		$(PATCH)/coolstream/linux-2.6.26.8-cnxt.diff ; \
-		for i in $(PATCHES)/cskernel/*; do \
-			echo "applying $$i..." ;patch -p4 -i $$i; \
+		for i in $(PATCHES)/cskernel/$(KVERSION)/* $(PATCHES)/cskernel-extra/$(KVERSION)/*; do \
+			test -e $$i || continue; \
+			echo "applying $${i#$(PATCHES)/}..." ;patch -p1 -i $$i; \
 		done ; \
-		for i in $(PATCHES)/cskernel-extra/*; do \
-			echo "applying $$i..." ;patch -p1 -i $$i; \
-		done
 
 # this would be a way to build custom configs, but it is not nice, so not used yet.
 # CS_K_Y = CONFIG_HID_SUPPORT
@@ -201,25 +201,36 @@ $(K_SRCDIR):
 	@echo
 	@echo "you need to create "$(subst $(BASE_DIR)/,"",$(K_SRCDIR))" first."
 	@echo "there are several ways to do this:"
-	@echo "* 'make kernel-svn'   downloads the kernel from the Coolstream SVN"
+	@echo "* 'make kernel-git'   downloads the kernel from the Coolstream SVN"
 	@echo "                      and creates a symlink"
 	@echo "* 'make kernel-patch' extracts a tarball and patches it with the"
 	@echo "                      patches from archive-patches"
-	@echo "note that kernel-svn is usually safer and more current."
+	@echo "note that kernel-git is usually safer and more current, but takes"
+	@echo "longer and uses more download bandwidth."
 	@echo
 	@false
 
-kernel-svn: $(SOURCE_DIR)/svn/THIRDPARTY/kernel
+kernel-git: $(UNCOOL_GIT)/cst-public-linux-kernel
+	cd $(UNCOOL_GIT)/cst-public-linux-kernel && \
+		git branch -r | while read b; do \
+			if git branch | grep -q " $${b##*/}$$"; then \
+				git branch --set-upstream $${b##*/} $$b; \
+			else \
+				git branch --track $${b##*/} $$b; \
+			fi; \
+		done
+	cd $(SOURCE_DIR) && git clone $(UNCOOL_GIT)/cst-public-linux-kernel linux-$(KVERSION)-cnxt
+	cd $(SOURCE_DIR)/linux-$(KVERSION)-cnxt && git checkout $(KVERSION)-cnxt
 	rm -f $(SOURCE_DIR)/linux
-	ln -s svn/THIRDPARTY/kernel/linux-2.6.26.8-cnxt $(SOURCE_DIR)/linux
+	ln -s linux-$(KVERSION)-cnxt $(SOURCE_DIR)/linux
 
 kernel-patch: $(BUILD_TMP)/linux-$(KVERSION)
 	rm -f $(SOURCE_DIR)/linux
 	ln -s $(BUILD_TMP)/linux-$(KVERSION) $(SOURCE_DIR)/linux
 
-$(K_OBJ)/.config: $(PATCHES)/kernel.config
+$(K_OBJ)/.config: $(PATCHES)/cskernel-$(KVERSION).config
 	mkdir -p $(K_OBJ)
-	cp $(PATCHES)/kernel.config $@
+	cp $< $@
 
 $(D)/cskernel: $(K_SRCDIR) $(K_OBJ)/.config | $(HOSTPREFIX)/bin/mkimage
 ifeq ($(K_SRCDIR), $(SOURCE_DIR)/linux)
