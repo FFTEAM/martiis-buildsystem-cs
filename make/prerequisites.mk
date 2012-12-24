@@ -81,14 +81,14 @@ $(SOURCE_DIR)/svn/CROSSENVIROMENT/crosstool-ng-configs:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/CROSSENVIROMENT/$(shell basename $@)
 
-ifeq ($(UNCOOL_SOURCE), git)
-$(UNCOOL_LIBCS) \
-$(UNCOOL_LIBNXP) \
-$(UNCOOL_DRIVER): | $(UNCOOL_GIT)/cst-public-drivers
-else
+ifneq ($(UNCOOL_SOURCE), git)
 $(UNCOOL_LIBCS):  | $(SVN_TP_LIBS)/libcs
 $(UNCOOL_LIBNXP): | $(SVN_TP_LIBS)/libnxp
 $(UNCOOL_DRIVER): | $(SOURCE_DIR)/svn/COOLSTREAM
+else
+$(UNCOOL_LIBCS) \
+$(UNCOOL_LIBNXP) \
+$(UNCOOL_DRIVER): | $(UNCOOL_GIT)/cst-public-drivers
 endif
 
 $(SVN_TP_LIBS)/libcs \

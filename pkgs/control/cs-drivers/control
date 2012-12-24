@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://coolstreamtech.com/
 Source:
-Depends: cs-libs (>= 941)
+Depends: cs-libs
 Conflicts: cs-beta-drivers

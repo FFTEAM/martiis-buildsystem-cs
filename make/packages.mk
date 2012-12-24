@@ -46,15 +46,22 @@ cs-drivers-pkg:
 	# we have two directories packed, the newer one determines the package version
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-drivers $(BUILD_TMP)/tmp-ctrl
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
+	mkdir    $(PKGPREFIX)/lib/firmware
+ifneq ($(UNCOOL_SOURCE), git)
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
 		$(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
-	rm -rf $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
-	mkdir    $(PKGPREFIX)/lib/firmware
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
+else
+	set -e; cd $(UNCOOL_GIT)/cst-public-drivers; \
+		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/2.6.26.8-nevis firmware; \
+		cp -a drivers/2.6.26.8-nevis $(PKGPREFIX)/lib/modules/2.6.26.8-nevis; \
+		cp -a firmware/*             $(PKGPREFIX)/lib/firmware
+endif
 	mkdir -p $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
@@ -78,9 +85,10 @@ cs-beta-drivers-pkg:
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
-cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
+cs-libs-pkg: $(UNCOOL_LIBS)
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-libs $(BUILD_TMP)/tmp-ctrl
+ifneq ($(UNCOOL_SOURCE), git)
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
 		$(SVN_TP_LIBS)/libnxp/libnxp.so \
 		$(SVN_TP_LIBS)/libcs/libcoolstream.so \
@@ -88,10 +96,14 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libnxp/libnxp.so || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream.so || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
+else
+	opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control $(UNCOOL_GIT)/cst-public-drivers/libs
+endif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream*.so $(PKGPREFIX)/lib
-	$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
+	cp -a $(UNCOOL_LIBS) $(PKGPREFIX)/lib
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
 usb-driver-pkg: cskernel
