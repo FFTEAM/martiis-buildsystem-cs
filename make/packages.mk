@@ -58,9 +58,12 @@ ifneq ($(UNCOOL_SOURCE), git)
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
 else
 	set -e; cd $(UNCOOL_GIT)/cst-public-drivers; \
+		sed -i 's/^Package:.*$$/Package: cs-drivers_$(subst .,_,$(UNCOOL_KVER))/' \
+			$(BUILD_TMP)/tmp-ctrl/control; \
 		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/$(UNCOOL_KVER)-nevis firmware; \
-		cp -a drivers/$(UNCOOL_KVER)-nevis $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis; \
+		cp -a drivers/$(UNCOOL_KVER)-nevis $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis/extra; \
 		cp -a firmware/*                   $(PKGPREFIX)/lib/firmware
+	rm $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis/extra/cifs.ko # we build our own...
 endif
 	mkdir -p $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
@@ -121,7 +124,9 @@ addon-drivers-pkg: cskernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
 	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
 		cp -a $(SOURCE_MODULE)/kernel/* ./; \
-		rm -fr drivers/usb fs/autofs4 # is in usb-driver-pkg and autofs
+		rm -fr drivers/usb fs/autofs4 drivers/media/dvb # is in usb-driver-pkg and autofs
+		# self compiled dvb-core does not work with the cs-drivers -- probably their version
+		# has some unknown patch...
 	depmod -n -ae -E $(K_OBJ)/Module.symvers -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
 		| grep WARNING; test $$? != 0 # invert return code
 	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)

@@ -19,6 +19,8 @@ im()
 case $1 in
 start)
 	read dummy dummy KVER dummy < /proc/version
+	NEWKERNEL=true
+	test $KVER = 2.6.26.8-nevis && NEWKERNEL=false
 	# set all "option foo ..." as OPT_foo="..." variables
 	eval $(sed -n "/^options\s/{
 		s/^options\s\(\S\+\)\s\(.*\)\$/OPT_\1=\"\2\"/;
@@ -27,23 +29,25 @@ start)
 		s/^\(\S\+\)-/\1_/g;
 		p }" /etc/modprobe.conf)
 	im cs_frontpanel
-	im cifs
-	im usbserial
-	im ftdi_sio
-	im cnxt_i2c
 	im cnxt_kal
-	im cnxt_base init=0
+	im cnxt_base init=$($NEWKERNEL && echo 1 || echo 0)
 	im cnxt_fb cnxtfb_standalone=1 cnxtfb_width=1280 cnxtfb_height=720
 	im cnxt_lnx
 	im cnxt_alsa
-	im cs_control
+	im cs_control hdd_power=1
+	im cnxt_i2c
+	im cnxt_sata_drv
 	im stv6110 verbose=0
 	im stv090x verbose=0
 	im tda10023
 	im avl2108
 	im max2112
+	im cs_frontend_prop
 	im dvb-core
 	im cs_frontend
-	im cnxt_sata_drv
+	im md4
+	im cifs
+	im usbserial
+	im ftdi_sio
 	;;
 esac
