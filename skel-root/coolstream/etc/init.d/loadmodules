@@ -19,6 +19,8 @@ im()
 case $1 in
 start)
 	read dummy dummy KVER dummy < /proc/version
+	# make sure that modules.dep exists
+	test -e /lib/modules/${KVER}/modules.dep || depmod -a
 	NEWKERNEL=true
 	test $KVER = 2.6.26.8-nevis && NEWKERNEL=false
 	# set all "option foo ..." as OPT_foo="..." variables
