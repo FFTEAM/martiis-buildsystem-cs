@@ -1,0 +1,10 @@
+Package: getrc
+Version: 1.0-1
+Description: getrc
+Section: extras
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://gitorious.org/~martii/neutrino-hd/martiis-neutrino-hd-plugins
+Source:
+Depends: 
