@@ -80,8 +80,8 @@ $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/* $@/
 
 $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis: | $(TARGETPREFIX)
-	mkdir -p $@
-	cp -a $(UNCOOL_DRIVER)/* $@/
+	mkdir -p $@/extra
+	cp -a $(UNCOOL_DRIVER)/* $@/extra/
 
 $(PKGPREFIX)/lib/modules/2.6.12 \
 $(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX) $(TD_SVN)/ARMAS
