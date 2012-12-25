@@ -161,6 +161,8 @@ OPKG_SH = $(OPKG_SH_ENV) opkg.sh
 
 UNCOOL_GIT    = $(SOURCE_DIR)/uncool
 UNCOOL_KVER  ?= 2.6.34.13
+# svn to check out from obsolete SVN
+UNCOOL_SOURCE?= git
 ifneq ($(UNCOOL_SOURCE), git)
 UNCOOL_LIBCS  = $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 UNCOOL_LIBNXP = $(SVN_TP_LIBS)/libnxp/libnxp.so
