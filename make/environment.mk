@@ -41,7 +41,7 @@ endif
 else  # coolstream
 USE_STB_HAL ?= no
 TARGET      ?= arm-cx2450x-linux-gnueabi
-FLAVOUR     ?= neutrino-hd
+FLAVOUR     ?= neutrino-mp
 BOXARCH     ?= arm
 endif
 

@@ -28,7 +28,7 @@
 # "neutrino-hd":              use master branch of git://gitorious.org/neutrino-hd/neutrino-hd.git
 # "neutrino-hd-tripledragon": use git://gitorious.org/neutrino-hd/neutrino-hd-tripledragon.git
 # "neutrino-mp":              use git://gitorious.org/neutrino-mp/neutrino-mp.git
-# empty: choose one of the above depending on PLATFORM (neutrino-mp except on coolstream)
+# default: neutrino-mp
 #FLAVOUR=neutrino-mp
 
 #
