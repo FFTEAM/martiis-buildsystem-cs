@@ -130,7 +130,10 @@ addon-drivers-pkg: cskernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	depmod -n -ae -E $(K_OBJ)/Module.symvers -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
 		| grep WARNING; test $$? != 0 # invert return code
 	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)
+	sed -i 's/^Package:.*$$/Package: addon-drivers_$(subst .,_,$(UNCOOL_KVER))/' \
+		$(BUILD_TMP)/addon-drivers/control; \
 	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/addon-drivers/control
+	sed -i 's/^Provides: /Provides: addon-drivers, /' $(BUILD_TMP)/addon-drivers/control
 	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 
