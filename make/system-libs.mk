@@ -268,8 +268,8 @@ FFMPEG_CONFIGURE += --disable-bsfs
 endif
 $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
-	if ! test -d $(SOURCE_DIR)/cst-public-libraries-ffmpeg; then \
-		cd $(SOURCE_DIR) && git clone git://c00lstreamtech.de/cst-public-libraries-ffmpeg.git; \
+	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
+		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg/; \
 	fi
 	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 	cp -a $(SOURCE_DIR)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)

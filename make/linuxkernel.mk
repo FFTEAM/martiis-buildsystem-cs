@@ -216,7 +216,7 @@ $(K_SRCDIR):
 	@echo
 	@false
 
-kernel-git: $(UNCOOL_GIT)/cst-public-linux-kernel
+kernel-git: $(UNCOOL_GIT)/cst-public-linux-kernel/
 	cd $(UNCOOL_GIT)/cst-public-linux-kernel && \
 		git branch -r | while read b; do \
 			if git branch | grep -q " $${b##*/}$$"; then \

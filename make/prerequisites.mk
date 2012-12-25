@@ -88,7 +88,7 @@ $(UNCOOL_DRIVER): | $(SOURCE_DIR)/svn/COOLSTREAM
 else
 $(UNCOOL_LIBCS) \
 $(UNCOOL_LIBNXP) \
-$(UNCOOL_DRIVER): | $(UNCOOL_GIT)/cst-public-drivers
+$(UNCOOL_DRIVER): | $(UNCOOL_GIT)/cst-public-drivers/
 endif
 
 $(SVN_TP_LIBS)/libcs \
@@ -104,9 +104,9 @@ $(SOURCE_DIR)/svn/THIRDPARTY/kernel:
 	mkdir -p $(shell dirname $@)
 	cd $(shell dirname $@) && $(SVNCO)/THIRDPARTY/kernel
 
-$(SOURCE_DIR)/uncool/%:
-	mkdir -p $(shell dirname $@)
-	cd $(shell dirname $@) && git clone git://coolstreamtech.de/$(notdir $@).git
+$(UNCOOL_GIT)/%/:
+	mkdir -p $(dir $(@:/=))
+	cd $(dir $(@:/=)) && git clone git://coolstreamtech.de/$(notdir $(@:/=)).git
 
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \
