@@ -76,18 +76,25 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
 
 
+ifneq ($(FLAVOUR), neutrino-mp)
+HOMEPAGE = "http://gitorious.org/neutrino-hd"
+IMGNAME  = "HD-Neutrino"
+else
+HOMEPAGE = "http://gitorious.org/neutrino-mp"
+IMGNAME  = "Neutrino-MP"
+endif
 $(PKGPREFIX)/.version \
 $(TARGETPREFIX)/.version:
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
 	echo "creator=$(MAINTAINER)"		>> $@
-	echo "imagename=HD-Neutrino"		>> $@
+	echo "imagename=$(IMGNAME)"		>> $@
 	A=$(FLAVOUR); F=$${A#neutrino-??}; \
 		B=`cd $(N_HD_SOURCE); git describe --always --dirty`; \
 		C=$${B%-dirty}; D=$${B#$$C}; \
 		E=`cd $(N_HD_SOURCE); git tag --contains $$C`; \
 		test -n "$$E" && C="$$E"; \
 		echo "builddate=$$C$$D $${F:1}" >> $@
-	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
+	echo "homepage=$(HOMEPAGE)"		>> $@
 ifeq ($(USE_STB_HAL), yes)
 	A=`cd $(LH_SRC); git describe --always --dirty`; \
 		echo "libstbhalver=$$A" >> $@
