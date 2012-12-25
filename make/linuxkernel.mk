@@ -251,10 +251,10 @@ endif
 			modules_install O=$(K_OBJ)/
 	cd $(BUILD_TMP) && \
 		mkimage -A arm -O linux -T kernel -a $(K_ADDR) -e $(K_ADDR) -C none \
-			-n "Coolstream HDx Kernel (zImage)" -d $(K_OBJ)/arch/arm/boot/zImage zImage.img
+			-n "CS HDx Kernel $(UNCOOL_KVER) (zImage)" -d $(K_OBJ)/arch/arm/boot/zImage zImage.img
 	cd $(BUILD_TMP) && \
 		mkimage -A arm -O linux -T kernel -a $(K_ADDR) -e $(K_ADDR) -C none \
-			-n "Coolstream HDx Kernel" -d $(K_OBJ)/arch/arm/boot/Image Image.img
+			-n "CS HDx Kernel $(UNCOOL_KVER)" -d $(K_OBJ)/arch/arm/boot/Image Image.img
 	: touch $@
 
 kernelmenuconfig: $(K_SRCDIR) $(K_OBJ)/.config
