@@ -269,7 +269,7 @@ endif
 $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
-		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg/; \
+		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
 	fi
 	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 	cp -a $(SOURCE_DIR)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
