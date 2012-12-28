@@ -291,11 +291,15 @@ $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
 	$(WGET) ftp://gd.tuwien.ac.at/opsys/linux/alsa/utils/alsa-utils-$(ALSA_VER).tar.bz2
 
 # openazbox.org stuff
-$(ARCHIVE)/initramfs-azbox%.tar.bz2 \
-$(ARCHIVE)/azbox%-mrua-3.11.tar.gz \
-$(ARCHIVE)/azbox%-mrua-3.11-fix.tar.gz \
-$(ARCHIVE)/azbox%-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz:
-	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))
+$(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
+$(ARCHIVE)/azboxme-mrua-%.tar.gz \
+$(ARCHIVE)/azboxme-dvb-modules-%.tar.gz:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)
+# separate me and minime to work around make weirdness with implicit rules
+$(ARCHIVE)/initramfs-azboxminime%.tar.bz2 \
+$(ARCHIVE)/azboxminime-mrua-%.tar.gz \
+$(ARCHIVE)/azboxminime-dvb-modules-%.tar.gz:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)
 
-$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2:
-	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))
+$(ARCHIVE)/linux-azbox-%.tar.bz2:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)

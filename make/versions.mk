@@ -11,7 +11,7 @@
 ###########################
 
 # azbox-dvb-modules
-AZBOX_DVB_M_VER=20121115-2
+AZBOX_DVB_M_VER=20121207
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1
@@ -73,7 +73,7 @@ VORBIS_VER=1.3.3
 LIBASS_VER=0.9.11
 
 # azbox kernel
-LINUX_AZBOX_VER=3.5.5
+LINUX_AZBOX_VER=3.3.1
 
 # LIRC: linux infrared control
 LIRC_VER=0.9.0
