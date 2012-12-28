@@ -347,17 +347,17 @@ $(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype| $(TARGETPREFI
 $(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libogg-$(OGG_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libogg-$(OGG_VER); \
-		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff; \
 		$(CONFIGURE) --prefix= --enable-shared; \
 		$(MAKE); \
-		make install DESTDIR=$(TARGETPREFIX)
+		make install DESTDIR=$(PKGPREFIX)
+	rm -r $(PKGPREFIX)/share/doc
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
 	$(REWRITE_LIBTOOL)/libogg.la
+	set -e; cd $(PKGPREFIX); rm -rf share include lib/pkgconfig; rm lib/*a lib/*.so
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		PKG_VER=$(OGG_VER) $(OPKG_SH) $(CONTROL_DIR)/libogg
 	$(REMOVE)/libogg-$(OGG_VER) $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libogg.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libogg
-	rm -rf $(PKGPREFIX)
 	touch $@
 
 # for some reason, libvorbis does not work with "--prefix=/"

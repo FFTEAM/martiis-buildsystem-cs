@@ -64,7 +64,7 @@ OPENSSL_SUBVER=q
 FFMPEG_VER=0.10
 
 # libogg; encoding, decoding of the ogg file format
-OGG_VER=1.1.4
+OGG_VER=1.3.0
 
 # libvorbis; encoding, decoding fixed or variable bitrates of ogg vorbis formats
 VORBIS_VER=1.2.3
