@@ -509,13 +509,13 @@ azboxkernel: $(BUILD_TMP)/linux-$(KVERSION_SRC) $(BUILD_TMP)/linux-$(KVERSION_SR
 		rm -f azboxkernel.tar; \
 		tar -cvpf azboxkernel.tar -C linux-$(KVERSION_SRC) zbimage-linux-xload
 
-azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(KVERSION)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(KVERSION)-opensat-$(AZBOX_DVB_M_VER).tar.gz
+azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz
 	$(REMOVE)/azboxme-dvb-modules $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers
 	set -e; cd $(BUILD_TMP); \
 		mkdir azboxme-dvb-modules; \
 		cd azboxme-dvb-modules; \
 		for i in me minime; do \
-			tar -xf $(ARCHIVE)/azbox$${i}-dvb-modules-$(KVERSION)-opensat-$(AZBOX_DVB_M_VER).tar.gz; \
+			tar -xf $(ARCHIVE)/azbox$${i}-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz; \
 			mv sci.ko sci$${i}.ko; \
 		done; \
 		install -d lib/modules/$(KVERSION_FULL)/extra; \
