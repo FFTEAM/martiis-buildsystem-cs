@@ -148,8 +148,8 @@ $(ARCHIVE)/gst-%.tar.bz2:
 $(ARCHIVE)/libogg-$(OGG_VER).tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VER).tar.gz
 
-$(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.bz2:
-	$(WGET) http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VER).tar.bz2
+$(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.xz:
+	$(WGET) http://downloads.xiph.org/releases/vorbis/$(notdir $@)
 
 $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz:
 	$(WGET) ftp://xmlsoft.org/libxml2/$(lastword $(subst /, ,$@))

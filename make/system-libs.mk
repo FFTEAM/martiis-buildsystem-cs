@@ -360,24 +360,25 @@ $(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libogg-$(OGG_VER) $(PKGPREFIX)
 	touch $@
 
-# for some reason, libvorbis does not work with "--prefix=/"
-$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libvorbis-$(VORBIS_VER).tar.bz2
+$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.xz | $(TARGETPREFIX)
+	$(UNTAR)/libvorbis-$(VORBIS_VER).tar.xz
 	set -e; cd $(BUILD_TMP)/libvorbis-$(VORBIS_VER); \
-		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff; \
-		patch -p1 < $(PATCHES)/libvorbis-1.2.3-smaller-chunksize.diff; \
-		$(CONFIGURE) --enable-shared --prefix=$(TARGETPREFIX) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)"; \
+		$(CONFIGURE) --enable-shared --prefix= LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" CFLAGS="$(TARGET_CFLAGS)"; \
 		$(MAKE); \
-		make install
-	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbis.pc
-	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisenc.pc
-	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisfile.pc
+		make install DESTDIR=$(PKGPREFIX)
+	rm -r $(PKGPREFIX)/share/doc
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/vorbis.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/vorbisenc.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/vorbisfile.pc
+	$(REWRITE_LIBTOOL)/libvorbis.la
+	$(REWRITE_LIBTOOL)/libvorbisenc.la
+	$(REWRITE_LIBTOOL)/libvorbisfile.la
+	sed -i '/^dependency_libs=/{ s# /lib# $(TARGETPREFIX)/lib#g }' $(TARGETPREFIX)/lib/libvorbis*.la
+	set -e; cd $(PKGPREFIX); rm -rf share include lib/pkgconfig; rm lib/*a lib/*.so
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		PKG_VER=$(VORBIS_VER) $(OPKG_SH) $(CONTROL_DIR)/libvorbis
 	$(REMOVE)/libvorbis-$(VORBIS_VER) $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libvorbis.so.* $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libvorbisfile.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libvorbis
-	rm -rf $(PKGPREFIX)
 	touch $@
 
 ncurses-prereq:
