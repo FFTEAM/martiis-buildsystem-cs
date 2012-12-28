@@ -32,6 +32,11 @@ echo >/dev/mdev.seq
 /sbin/mknodes
 # register mdev as hotplug handler
 echo $(which mdev) > /proc/sys/kernel/hotplug
+# hack, because first event has higher SEQNUM than next...
+# this is racy, but it seems to help here.
+read SEQNUM < /sys/kernel/uevent_seqnum
+echo -n $((SEQNUM+1)) > /dev/mdev.seq
+# echo "SEQNUM: $SEQNUM"
 
 # start up mdev with coldplugging
 mdev -s
