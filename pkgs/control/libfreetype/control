@@ -1,5 +1,5 @@
 Package: libfreetype
-Version: 2.3.12-1
+Version: @VER@-1
 Description: A Free, High-Quality, and Portable Font Engine
 Section: base/libraries
 Priority: standard
@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://www.freetype.org/
 Source:
-Depends: libz.so.1
-Provides: libfreetype.so.6
+Depends: @DEP@
+Provides: @PROV@

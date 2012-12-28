@@ -42,7 +42,7 @@ CURL_VER=7.26.0
 PNG_VER=1.2.50
 
 # freetype; free, high-quality and portable Font engine
-FREETYPE_VER=2.3.12
+FREETYPE_VER=2.4.11
 
 # libjpeg-turbo; a derivative of libjpeg for x86 and x86-64 processors which uses SIMD instructions (MMX, SSE2, etc.) to accelerate baseline JPEG compression and decompression
 JPEG_TURBO_VER=1.1.1
