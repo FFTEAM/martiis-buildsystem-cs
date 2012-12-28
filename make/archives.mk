@@ -74,8 +74,8 @@ $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2:
 $(ARCHIVE)/curl-$(CURL_VER).tar.bz2:
 	$(WGET) http://curl.haxx.se/download/$(lastword $(subst /, ,$@))
 
-$(ARCHIVE)/libpng-$(PNG-VER).tar.bz2:
-	$(WGET) http://sourceforge.net/projects/libpng/files/libpng12/older-releases/$(PNG-VER)/libpng-$(PNG-VER).tar.bz2
+$(ARCHIVE)/libpng-$(PNG_VER).tar.xz:
+	$(WGET) http://download.sourceforge.net/libpng/$(notdir $@)
 
 $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2:
 	$(WGET) http://sourceforge.net/projects/lirc/files/LIRC/0.9.0/lirc-0.9.0.tar.bz2

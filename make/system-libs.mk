@@ -139,16 +139,17 @@ $(D)/libFLAC: $(ARCHIVE)/flac-1.2.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/flac-1.2.1
 	touch $@
 
-$(D)/libpng: $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
-	$(UNTAR)/libpng-$(PNG-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/libpng-$(PNG-VER); \
+$(D)/libpng: $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
+	$(UNTAR)/libpng-$(PNG_VER).tar.xz
+	set -e; cd $(BUILD_TMP)/libpng-$(PNG_VER); \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman; \
 		ECHO=echo $(MAKE) all; \
+		rm -f $(TARGETPREFIX)/lib/libpng.so* $(TARGETPREFIX)/lib/libpng12.so*; \
 		make install
 	$(REMOVE)/libpng-$(PNG-VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libpng12
+	PKG_VER=$(PNG_VER) $(OPKG_SH) $(CONTROL_DIR)/libpng12
 	rm -rf $(PKGPREFIX)
 	touch $@
 
