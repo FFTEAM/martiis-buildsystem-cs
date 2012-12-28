@@ -89,7 +89,8 @@ DIRECTFB_VER=1.4.3
 DVDCSS_VER=1.2.12
 
 # libvorbisidec;  libvorbisidec is an Ogg Vorbis audio decoder (also known as "tremor") with no floating point arithmatic
-VORBISIDEC_VER=1.0.2+svn16259
+VORBISIDEC_SVN=18153
+VORBISIDEC_VER=1.0.2+svn$(VORBISIDEC_SVN)
 VORBISIDEC_VER_APPEND=.orig
 
 # libpcap; system-independent interface for user-level packet capture
