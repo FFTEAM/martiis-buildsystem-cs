@@ -236,8 +236,8 @@ $(ARCHIVE)/samba-3.3.9.tar.gz:
 $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2:
 	$(WGET) http://sg.danny.cz/sg/p/sg3_utils-$(SG3_UTILS-VER).tar.bz2
 
-$(ARCHIVE)/strace-4.5.20.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.20/strace-4.5.20.tar.bz2
+$(ARCHIVE)/strace-$(STRACE_VER).tar.xz:
+	$(WGET) http://downloads.sourceforge.net/project/strace/strace/$(STRACE_VER)/$(notdir $@)
 
 $(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/tcpdump-$(TCPDUMP-VER).tar.gz

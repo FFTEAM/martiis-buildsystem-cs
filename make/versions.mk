@@ -145,6 +145,8 @@ AUTOFS-VER=4.1.4
 SAMBA2-VER=2.2.12
 SAMBA3-VER=
 
+STRACE_VER=4.7
+
 # portmap; an ONC RPC service that runs on network nodes that provide other ONC RPC services
 PORTMAP-VER=6.0
 
