@@ -66,6 +66,7 @@ $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 		$(PATCH)/busybox-1.18-hack-init-s-console.patch; \
 		$(PATCH)/busybox-1.19.4-revert-broken-sighandling.patch; \
 		$(PATCH)/busybox-1.19.4-mdev-firmware-loading.diff; \
+		$(PATCH)/busybox-1.19.4-mdev-increase-timeout.diff; \
 		test -e $(PATCHES)/busybox-1.19.config.$(PLATFORM) && \
 			cp $(PATCHES)/busybox-1.19.config.$(PLATFORM) .config || \
 			cp $(PATCHES)/busybox-1.19.config .config; \
