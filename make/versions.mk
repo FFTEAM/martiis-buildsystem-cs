@@ -23,6 +23,9 @@ MAD_VER=0.15.1b
 # libungif; converting images
 UNGIF_VER=4.1.4
 
+# giflib: replaces libungif
+GIFLIB_VER=5.0.2
+
 # libiconv; converting encodings
 ICONV-VER=1.14
 

@@ -1,6 +1,6 @@
 #Makefile to build NEUTRINO
 
-NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg libdvbsi++
+NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg giflib ffmpeg libdvbsi++
 NEUTRINO_DEPS += openthreads
 NEUTRINO_PKG_DEPS =
 
@@ -67,7 +67,7 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
 		LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
-				--enable-silent-rules --enable-mdev \
+				--enable-silent-rules --enable-mdev --enable-giflib \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				$(N_CONFIG_OPTS) \
 				INSTALL="`which install` -p"; \

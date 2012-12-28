@@ -99,6 +99,24 @@ $(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+$(D)/giflib: $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/giflib-$(GIFLIB_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/giflib-$(GIFLIB_VER); \
+		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove; \
+		$(MAKE) all; \
+		make install DESTDIR=$(TARGETPREFIX); \
+	$(REWRITE_LIBTOOL)/libgif.la
+	rm -rf $(TARGETPREFIX)/.remove
+	$(REMOVE)/giflib-$(GIFLIB_VER) $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libgif.so.* $(PKGPREFIX)/lib
+	PKG_VER=$(GIFLIB_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/giflib
+	rm -rf $(PKGPREFIX)
+	touch $@
+
 $(D)/libcurl: $(ARCHIVE)/curl-$(CURL_VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/curl-$(CURL_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/curl-$(CURL_VER); \

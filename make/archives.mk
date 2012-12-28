@@ -62,6 +62,9 @@ $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz:
 $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif-4.x/libungif-$(UNGIF_VER)/libungif-$(UNGIF_VER).tar.bz2
 
+$(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2:
+	$(WGET) http://sourceforge.net/projects/giflib/files/giflib-5.x/$(notdir $@)
+
 $(ARCHIVE)/libupnp-$(LIBUPNP_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP_VER)/libupnp-$(LIBUPNP_VER).tar.bz2
 
