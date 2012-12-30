@@ -76,7 +76,7 @@ td-dvb-wrapper: $(SOURCE_DIR)/td-dvb-wrapper $(D)/tdkernel
 $(TARGET_MODULE)/extra/td-dvb-frontend.ko: td-dvb-wrapper
 	install -m 644 -D $(SOURCE_MODULE)/extra/td-dvb-frontend.ko $@
 
-ifeq ($(TD_COMPILER), new)
+ifneq ($(TD_COMPILER), old)
 TDK_DEPS = $(K_GCC_PATH)/powerpc-405-linux-gnu-gcc
 endif
 $(D)/tdkernel: $(TDK_DEPS) $(BUILD_TMP)/linux-2.6.12

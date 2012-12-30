@@ -18,12 +18,13 @@ USE_STB_HAL ?= yes
 FLAVOUR     ?= neutrino-mp
 
 ifeq ($(PLATFORM), tripledragon)
-ifneq ($(TD_COMPILER), new)
-TD_COMPILER ?= old
-TARGET      ?= powerpc-405-linux-gnu
-else
+ifneq ($(TD_COMPILER), old)
 # name it differently to avoid subtleties...
 TARGET      ?= powerpc-405n-linux-gnu
+TD_COMPILER ?= new
+else
+# TD_COMPILER == old
+TARGET      ?= powerpc-405-linux-gnu
 endif
 BOXARCH     ?= powerpc
 endif # tripledragon

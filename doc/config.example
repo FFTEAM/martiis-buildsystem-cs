@@ -6,7 +6,7 @@
 # for the tripledragon platform: the version of the compiler to build
 # "old" => build gcc 3.4.5 / glibc 2.3.6 with crosstool-0.43
 # "new" => build gcc 4.5.2 / eglibc 2.12 with crosstool-ng 1.10.0
-# defaults to "old" for now, but I'd recommend people to try out "new" too
+# defaults to "new". Do not use "old".
 #TD_COMPILER=new
 
 # if you want to use your precompiled toolchain, define those variables:
