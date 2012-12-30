@@ -483,7 +483,7 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_A
 	$(UNTAR)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
 	set -e; cd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC_VER); \
 		patch -p1 < $(PATCHES)/tremor.diff; \
-		./autogen.sh; \
+		autoreconf -fi -B $(TARGETPREFIX)/share/aclocal; \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET); \
 		make all; \
 		perl -pi -e "s,^prefix=.*$$,prefix=$(TARGETPREFIX)," vorbisidec.pc; \
