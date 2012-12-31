@@ -1,0 +1,10 @@
+Package: shellexec
+Version: 1.19-1
+Description: shellexec
+Section: extras
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://gitorious.org/~martii/neutrino-hd/martiis-neutrino-hd-plugins
+Source:
+Depends: libfreetype.so.6
