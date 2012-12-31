@@ -3,7 +3,7 @@
 # USB Stick boot enabler for Coolstream HD1 with old U-Boot
 # HD1, HD1 BSE and HD1 C
 #
-# (C) 2011 Stefan Seyfried
+# (C) 2011-2012 Stefan Seyfried
 #     License: GPL v2
 #
 # create a U-Boot autoscript that can boot from USB
@@ -46,7 +46,7 @@ if ! test -e $IN; then
 fi
 
 # find out the payload size of the kernel image...
-KSIZE=$(dd if=$IN bs=4 skip=3 count=1 2>/dev/null|hexdump -e '4 1 "%x"')
+KSIZE=$(dd if=$IN bs=4 skip=3 count=1 2>/dev/null|hexdump -e '4 1 "%02x"')
 KSIZE=$((0x$KSIZE + 64))
 echo "Kernel image size: $KSIZE"
 if test $KSIZE -gt $((4094*1024)); then
