@@ -260,6 +260,9 @@ $(ARCHIVE)/valgrind-%.tar.bz2:
 $(ARCHIVE)/vsftpd-$(VSFTPD_VER).tar.gz:
 	$(WGET) https://security.appspot.com/downloads/vsftpd-$(VSFTPD_VER).tar.gz
 
+$(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2:
+	$(WGET) http://vtuner.googlecode.com/files/$(notdir $@)
+
 $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
 	$(WGET) http://ftp.gwdg.de/pub/linux/misc/xfs/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
 

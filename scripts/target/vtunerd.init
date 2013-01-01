@@ -1,0 +1,28 @@
+#!/bin/sh
+#
+test -e /etc/vtunerd.conf && . /etc/vtunerd.conf
+
+case $1 in
+	start)
+		if test "$VTUNERD_START" = "yes"; then
+			vtunerd $VTUNERD_OPTS 2>/dev/null &
+			sleep 1
+		else
+			echo "VTUNERD_START not set in /etc/vtunerd.conf"
+		fi
+		;;
+	stop)
+		trap "" TERM # don't kill this script...
+		killall -TERM vtunerd
+		trap - TERM
+		;;
+	restart)
+		trap "" TERM # don't kill this script...
+		killall -TERM vtunerd
+		trap - TERM
+		$0 start ;;
+	*)
+		echo "usage: $0 [start|stop|restart]"
+		false
+		;;
+esac

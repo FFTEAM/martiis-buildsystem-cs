@@ -1,0 +1,10 @@
+Package: vtuner-apps
+Version: @VER@-1
+Description: Virtual DVB adapter server/client
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://code.google.com/p/vtuner/
+Source:
+Depends:

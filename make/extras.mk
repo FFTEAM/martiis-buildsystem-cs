@@ -667,3 +667,20 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
 	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
 	touch $@
+
+$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(PATCHES)/vtuner-2.1-debug.diff
+	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
+	$(UNTAR)/vtuner-apps-rel2.1.tar.bz2
+	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1; \
+		$(PATCH)/vtuner-2.1-debug.diff; \
+		echo "CC-$(BOXARCH)=$(TARGET)-gcc" > Make.config; \
+		make $(BOXARCH); \
+		install -m 755 -D dist/$(BOXARCH)/vtunerd.$(BOXARCH) $(PKGPREFIX)/bin/vtunerd; \
+		install -m 755 -D dist/$(BOXARCH)/vtunerc.$(BOXARCH) $(PKGPREFIX)/bin/vtunerc
+	set -e; cd $(SCRIPTS); \
+		install -m 755 -D vtunerd.init $(PKGPREFIX)/etc/init.d/vtunerd; \
+		ln -s vtunerd $(PKGPREFIX)/etc/init.d/S70vtunerd; \
+		cp vtunerd.conf $(PKGPREFIX)/etc/
+	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/vtuner-apps
+	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
+	touch $@
