@@ -6,6 +6,7 @@ $(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2 | $(TARGETPREFIX)
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared; \
 		$(MAKE); \
 		ln -sf /bin/true ldconfig; \
+		rm -f $(TARGETPREFIX)/lib/libz.so*; \
 		PATH=$(BUILD_TMP)/zlib-$(ZLIB_VER):$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
 	$(REMOVE)/zlib-$(ZLIB_VER) $(PKGPREFIX)
