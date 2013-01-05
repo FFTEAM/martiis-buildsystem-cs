@@ -166,7 +166,7 @@ $(D)/libpng: $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
 		ECHO=echo $(MAKE) all; \
 		rm -f $(TARGETPREFIX)/lib/libpng.so* $(TARGETPREFIX)/lib/libpng12.so*; \
 		make install
-	$(REMOVE)/libpng-$(PNG-VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
+	$(REMOVE)/libpng-$(PNG_VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
 	PKG_VER=$(PNG_VER) $(OPKG_SH) $(CONTROL_DIR)/libpng12
