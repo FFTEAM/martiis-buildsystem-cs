@@ -1,0 +1,10 @@
+Package: fx2
+Version: 1.0-1
+Description: Neutrino-HD FX2 Plugins
+Section: extras
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://gitorious.org/~martii/neutrino-hd/martiis-neutrino-hd-plugins.git
+Source:
+Depends: libcurl.so.4 libz.so.1

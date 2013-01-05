@@ -18,9 +18,10 @@ msgbox: plugins
 input: plugins
 getrc: plugins
 shellexec: plugins
+fx2: plugins
 
-SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec
-SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec
+SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2
+SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
