@@ -103,7 +103,8 @@ $(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2 | $(TARGETPREFIX)
 $(D)/giflib: $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/giflib-$(GIFLIB_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/giflib-$(GIFLIB_VER); \
-		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove; \
+		export ac_cv_prog_have_xmlto=no; \
+		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --bindir=/.remove; \
 		$(MAKE) all; \
 		make install DESTDIR=$(TARGETPREFIX); \
 	$(REWRITE_LIBTOOL)/libgif.la
