@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://streamripper.sourceforge.net/
 Source:
-Depends:libglib libogg libvorbis
+Depends: @DEP@
 

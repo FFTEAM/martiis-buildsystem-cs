@@ -538,10 +538,11 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/sg3_utils-$(SG3_UTILS-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/streamripper: $(ARCHIVE)/streamripper-1.64.6.tar.gz libglib libogg libvorbis | $(TARGETPREFIX)
+$(D)/streamripper: $(ARCHIVE)/streamripper-1.64.6.tar.gz libglib libogg libvorbisidec | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/streamripper-1.64.6.tar.gz
 	set -e; cd $(BUILD_TMP)/streamripper-1.64.6; \
+		$(PATCH)/streamripper-1.64.6-use-tremor.diff; \
 		$(CONFIGURE) \
 			--host=$(TARGET) \
 			--build=$(BUILD) \
@@ -552,7 +553,9 @@ $(D)/streamripper: $(ARCHIVE)/streamripper-1.64.6.tar.gz libglib libogg libvorbi
 		make install DESTDIR=$(PKGPREFIX)
 	rm -R $(PKGPREFIX)/share
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	PKG_VER=1.64.6 $(OPKG_SH) $(CONTROL_DIR)/streamripper
+	PKG_VER=1.64.6 \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/streamripper
 	$(REMOVE)/streamripper-1.64.6 $(PKGPREFIX)
 	touch $@
 
