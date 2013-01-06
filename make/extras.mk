@@ -330,7 +330,7 @@ $(ARCHIVE)/ushare-1.1a.r469.tar.bz2: | find-hg
 		tar cvpjf $@ --exclude='*/.hg' ushare-1.1a.r469
 	$(REMOVE)/ushare-hg
 
-$(D)/ushare: $(ARCHIVE)/ushare-1.1a.r469.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
+$(D)/ushare: $(ARCHIVE)/ushare-1.1a.r469.tar.bz2 libupnp | $(TARGETPREFIX)
 	$(UNTAR)/ushare-1.1a.r469.tar.bz2
 	set -e; cd $(BUILD_TMP)/ushare-1.1a.r469; \
 		$(PATCH)/ushare-new-upnp.diff; \
