@@ -538,6 +538,24 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/sg3_utils-$(SG3_UTILS-VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/streamripper: $(ARCHIVE)/streamripper-1.64.6.tar.gz libglib libogg libvorbis | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/streamripper-1.64.6.tar.gz
+	set -e; cd $(BUILD_TMP)/streamripper-1.64.6; \
+		$(CONFIGURE) \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix= \
+			--includedir=$(TARGETPREFIX)/include \
+			; \
+		$(MAKE)  ; \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -R $(PKGPREFIX)/share
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	PKG_VER=1.64.6 $(OPKG_SH) $(CONTROL_DIR)/streamripper
+	$(REMOVE)/streamripper-1.64.6 $(PKGPREFIX)
+	touch $@
+
 # the following libs are built static only for now, as they
 # have only one user (lcd4linux) yet => no opkg package yet, either.
 # libiconv libusb libusb-compat libgd2

@@ -1,0 +1,11 @@
+Package: streamripper
+Version: @VER@-1
+Description: record mp3 streams to hdd
+Section: 
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://streamripper.sourceforge.net/
+Source:
+Depends:libglib libogg libvorbis
+

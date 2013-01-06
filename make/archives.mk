@@ -239,6 +239,9 @@ $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2:
 $(ARCHIVE)/strace-$(STRACE_VER).tar.xz:
 	$(WGET) http://downloads.sourceforge.net/project/strace/strace/$(STRACE_VER)/$(notdir $@)
 
+$(ARCHIVE)/streamripper-1.64.6.tar.gz:
+	$(WGET) http://sourceforge.net/projects/streamripper/files/streamripper%20%28current%29/1.64.6/streamripper-1.64.6.tar.gz
+
 $(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/tcpdump-$(TCPDUMP-VER).tar.gz
 
