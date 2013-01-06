@@ -56,10 +56,11 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	$(UNTAR)/djmount-0.71.tar.gz
 	set -e; cd $(BUILD_TMP)/djmount-0.71; \
 		$(PATCH)/djmount-0.71.diff; \
-		$(CONFIGURE) -C \
+		./configure -C \
 			--host=$(TARGET) \
 			--build=$(BUILD) \
 			--prefix=/opt/pkg \
+			--with-fuse-prefix=$(TARGETPREFIX) \
 			; \
 		$(MAKE); \
 		make install DESTDIR=$(PKGPREFIX)
