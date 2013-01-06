@@ -222,7 +222,7 @@ MC-VER=4.6.2
 SG3_UTILS-VER=1.33
 
 # FUSE; filesystems in userspace
-FUSE_VER=2.8.5
+FUSE_VER=2.9.2
 
 # ALSA, the Advanced Linux Sound Architecture
 ALSA_VER=1.0.25
