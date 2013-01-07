@@ -654,7 +654,7 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz
+$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	tar -C $(PKGPREFIX)/lib -xf $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz
@@ -678,11 +678,11 @@ $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(TARGETPREFIX)/bin/rmfp_player: | $(TARGETPREFIX)/bin
+$(TARGETPREFIX)/bin/rmfp_player: mrua | $(TARGETPREFIX)/bin
 	wget -O $@ 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'
 	chmod 755 $@
 
-rmfp_player:
+rmfp_player: mrua
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/bin
 	wget -O $(PKGPREFIX)/bin/rmfp_player 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'; \
