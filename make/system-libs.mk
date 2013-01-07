@@ -85,19 +85,18 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2 | $(TARGETPREFIX)
+# obsoleted by giflib, but might still be needed by some 3rd party binaries
+# to make sure it is not used to build stuff, it is not installed in TARGETPREFIX
+$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/libungif-$(UNGIF_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/libungif-$(UNGIF_VER); \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove; \
 		$(MAKE) all; \
-		make install DESTDIR=$(TARGETPREFIX)
-	$(REWRITE_LIBTOOL)/libungif.la
-	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/libungif-$(UNGIF_VER) $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libungif.so.* $(PKGPREFIX)/lib
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(PKGPREFIX)/include $(PKGPREFIX)/lib/libungif.?? $(PKGPREFIX)/lib/libungif.a
 	$(OPKG_SH) $(CONTROL_DIR)/libungif
-	rm -rf $(PKGPREFIX)
+	$(REMOVE)/libungif-$(UNGIF_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/giflib: $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
