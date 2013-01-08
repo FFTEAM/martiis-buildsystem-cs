@@ -325,6 +325,27 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 	$(REMOVE)/libdlna-hg $(PKGPREFIX)
 	touch $@
 
+$(D)/nano: $(ARCHIVE)/nano-$(NANO_VER).tar.gz libncurses | $(TARGETPREFIX)
+	$(UNTAR)/nano-$(NANO_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/nano-$(NANO_VER); \
+		$(BUILDENV) ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix= ; \
+		$(MAKE) CPPFLAGS+="-I$(TARGETPREFIX)/include/ncurses" install DESTDIR=$(PKGPREFIX)
+	mv -v $(PKGPREFIX)/bin/$(TARGET)-nano $(PKGPREFIX)/bin/nano
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/; \
+	rm -rf $(PKGPREFIX)/share/man
+	rm -rf $(PKGPREFIX)/share/locale
+	rm -rf $(PKGPREFIX)/share/nano/man-html
+	rm -rf $(PKGPREFIX)/share/info
+	PKG_VER=$(NANO_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+	$(OPKG_SH) $(CONTROL_DIR)/nano
+	$(REMOVE)/nano-$(NANO_VER) $(PKGPREFIX)
+	touch $@
+
 $(ARCHIVE)/ushare-1.1a.r469.tar.bz2: | find-hg
 	set -e; cd $(BUILD_TMP); \
 		hg clone -u 469 http://hg.geexbox.org/ushare ushare-1.1a.r469; \

@@ -81,6 +81,9 @@ LIRC_VER=0.9.0
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 
+# nano; a simple editor for Linux
+NANO_VER=2.2.6
+
 # DirectFB; thin library that provides hardware graphics acceleration, input device handling and abstraction
 DIRECTFB_VER=1.4.3
 

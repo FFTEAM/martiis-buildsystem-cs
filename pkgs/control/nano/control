@@ -1,0 +1,11 @@
+Package: nano
+Version: @VER@-1
+Description: nano editor
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.nano-editor.org/
+Source:
+Depends: @DEP@
+
