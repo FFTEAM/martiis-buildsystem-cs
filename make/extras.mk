@@ -335,11 +335,11 @@ $(D)/nano: $(ARCHIVE)/nano-$(NANO_VER).tar.gz libncurses | $(TARGETPREFIX)
 			--prefix= ; \
 		$(MAKE) CPPFLAGS+="-I$(TARGETPREFIX)/include/ncurses" install DESTDIR=$(PKGPREFIX)
 	mv -v $(PKGPREFIX)/bin/$(TARGET)-nano $(PKGPREFIX)/bin/nano
-	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/; \
 	rm -rf $(PKGPREFIX)/share/man
 	rm -rf $(PKGPREFIX)/share/locale
 	rm -rf $(PKGPREFIX)/share/nano/man-html
 	rm -rf $(PKGPREFIX)/share/info
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/; \
 	PKG_VER=$(NANO_VER) \
 		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
 	$(OPKG_SH) $(CONTROL_DIR)/nano
