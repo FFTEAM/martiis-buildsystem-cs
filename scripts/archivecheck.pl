@@ -136,11 +136,13 @@ foreach $file (sort(keys %data)) {
 		print "\t\@echo \"skipping $url - cannot expand wildcards\"\n";
 	} elsif ($url =~ m#\.googlecode\.com/#) {
 		# googlecode does not work with --spider :-(
-		# only download those if called with "G=1"
+		# a HEAD request is always answered with 404
 		if ($ENV{G}) {
+			# dummy download those if called with "G=1"
 			print "\t\@$cmd -O /dev/null $url\n";
 		} else {
-			print "\t\@echo \"skipping googlecode URL. Use 'make archivecheck G=1' to include\"\n";
+			# ...or simulate "get Headers only" with curl...
+			print "\t\@( curl -v $url 2>&3 | dd of=/dev/full 2>/dev/null ) 3>&1|grep -q '^< HTTP/.*200 OK'"
 		}
 	} else {
 		print "\t\@$cmd --spider $url\n";
