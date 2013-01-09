@@ -226,7 +226,7 @@ $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz:
 		rm -rf opkg-$(OPKG_SVN_VER)
 
 $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz:
-	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-$(QT-VER).tar.gz
+	$(WGET) ftp://ftp.qt.nokia.com/qt/source/$(notdir $@)
 
 $(ARCHIVE)/samba-2.0.10.tar.gz:
 	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.0.10.tar.gz
