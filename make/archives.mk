@@ -33,7 +33,7 @@ $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 
 $(ARCHIVE)/dpfhack_pearl.zip:
-	$(WGET) -O $@ https://nodeload.github.com/makefu/dpfhack_pearl/zipball/master
+	$(WGET) -O $@ https://github.com/makefu/dpfhack_pearl/archive/master.zip
 
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2

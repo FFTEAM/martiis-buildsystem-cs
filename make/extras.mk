@@ -633,7 +633,7 @@ $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(AR
 	touch $@
 
 LCD4LINUXREV=1171
-DPFHACK_DIR=makefu-dpfhack_pearl-c66acd3
+DPFHACK_DIR=dpfhack_pearl-master
 $(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz:
 	set -e; cd $(BUILD_TMP); \
 		rm -rf lcd4linux-r$(LCD4LINUXREV); \
