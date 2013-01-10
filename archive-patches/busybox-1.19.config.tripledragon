@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Busybox version: 1.19.4
-# Wed Oct  3 19:17:06 2012
+# Thu Jan 10 16:22:24 2013
 #
 CONFIG_HAVE_DOT_CONFIG=y
 
@@ -366,7 +366,7 @@ CONFIG_FEATURE_VI_SET=y
 CONFIG_FEATURE_VI_WIN_RESIZE=y
 CONFIG_FEATURE_VI_ASK_TERMINAL=y
 CONFIG_FEATURE_VI_OPTIMIZE_CURSOR=y
-# CONFIG_AWK is not set
+CONFIG_AWK=y
 # CONFIG_FEATURE_AWK_LIBM is not set
 CONFIG_CMP=y
 CONFIG_DIFF=y
