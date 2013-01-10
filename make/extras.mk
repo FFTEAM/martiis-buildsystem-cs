@@ -621,7 +621,7 @@ $(D)/libusb-compat: $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2 $(D)/libusb | $(TARGE
 
 $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(ARCHIVE)/gd-2.0.35.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/gd-2.0.35.tar.gz
-	set -e; cd $(BUILD_TMP)/gd/2.0.35; \
+	set -e; cd $(BUILD_TMP)/gd-2.0.35; \
 		chmod 0755 configure; \
 		: autoreconf -fi; \
 		$(CONFIGURE) --prefix= --enable-static --disable-shared --bindir=/.remove; \
@@ -629,7 +629,7 @@ $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(AR
 		make install DESTDIR=$(TARGETPREFIX)
 	rm -rf $(TARGETPREFIX)/.remove
 	$(REWRITE_LIBTOOL)/libgd.la
-	$(REMOVE)/gd
+	$(REMOVE)/gd-2.0.35
 	touch $@
 
 LCD4LINUXREV=1171
