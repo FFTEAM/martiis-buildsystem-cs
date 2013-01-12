@@ -376,7 +376,7 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.7.0.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/valgrind-3.7.0 $(PKGPREFIX)
 	touch $@
 
-$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATCHES)/lircd_spark.conf $(wildcard $(PATCHES)/lircd_spark.conf.09_*)
+$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATCHES)/lircd_spark.conf $(wildcard $(PATCHES)/lircd_spark.conf.0?_*)
 	$(UNTAR)/lirc-$(LIRC_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/lirc-$(LIRC_VER); \
@@ -395,7 +395,7 @@ $(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATC
 		make install DESTDIR=$(PKGPREFIX); \
 		make install DESTDIR=$(TARGETPREFIX)
 	install -m 0644 -D $(PATCHES)/lircd_spark.conf $(PKGPREFIX)/etc/lircd.conf
-	for L in $(PATCHES)/lircd_spark.conf.09_* ; do install -m 0644 -D $$L $(PKGPREFIX)/etc/$${L/*_spark/lircd}; done
+	for L in $(PATCHES)/lircd_spark.conf.0?_* ; do install -m 0644 -D $$L $(PKGPREFIX)/etc/$${L/*_spark/lircd}; done
 	install -m 0755 -D $(SCRIPTS)/lircd.init $(PKGPREFIX)/etc/init.d/lircd
 	ln -sf lircd $(PKGPREFIX)/etc/init.d/S60lircd
 	ln -sf lircd $(PKGPREFIX)/etc/init.d/K40lircd
