@@ -5,7 +5,7 @@
 # (see neutrino rcinput code and linux/input.h)
 #
 # devices being controlled by this remote:
-# GoldenMedia Triplex 09:00:07
+# GoldenMedia Triplex 0C:00:07
 #
 
 begin remote
