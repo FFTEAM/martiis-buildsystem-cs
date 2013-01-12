@@ -376,9 +376,7 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.7.0.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/valgrind-3.7.0 $(PKGPREFIX)
 	touch $@
 
-# the exaudio driver seems to build no real driver and keeps the
-# binaries small. At least I hope so.
-$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_last_remote.diff $(PATCHES)/lirc-0.9.0-neutrino-uinput-hack.diff $(PATCHES)/lirc-0.9.0-uinput-spark.diff $(PATCHES)/lirc-0.9.0-uinput-repeat-fix.diff $(PATCHES)/lircd_spark.conf $(PATCHES)/lircd_spark.conf.09_00_07 $(PATCHES)/lircd_spark.conf.09_00_08 $(PATCHES)/lircd_spark.conf.09_00_0A $(PATCHES)/lircd_spark.conf.09_00_0B
+$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATCHES)/lircd_spark.conf $(wildcard $(PATCHES)/lircd_spark.conf.09_*)
 	$(UNTAR)/lirc-$(LIRC_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/lirc-$(LIRC_VER); \
@@ -397,10 +395,7 @@ $(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0-try_first_l
 		make install DESTDIR=$(PKGPREFIX); \
 		make install DESTDIR=$(TARGETPREFIX)
 	install -m 0644 -D $(PATCHES)/lircd_spark.conf $(PKGPREFIX)/etc/lircd.conf
-	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_07 $(PKGPREFIX)/etc/lircd.conf.09_00_07
-	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_08 $(PKGPREFIX)/etc/lircd.conf.09_00_08
-	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_0A $(PKGPREFIX)/etc/lircd.conf.09_00_0A
-	install -m 0644 -D $(PATCHES)/lircd_spark.conf.09_00_0B $(PKGPREFIX)/etc/lircd.conf.09_00_0B
+	for L in $(PATCHES)/lircd_spark.conf.09_* ; do install -m 0644 -D $$L $(PKGPREFIX)/etc/$${L/*_spark/lircd}; done
 	install -m 0755 -D $(SCRIPTS)/lircd.init $(PKGPREFIX)/etc/init.d/lircd
 	ln -sf lircd $(PKGPREFIX)/etc/init.d/S60lircd
 	ln -sf lircd $(PKGPREFIX)/etc/init.d/K40lircd
