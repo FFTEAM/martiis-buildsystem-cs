@@ -1,8 +1,17 @@
 Only in lirc-0.9.0: config.log
-diff -ur lirc-0.9.0.orig/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
---- lirc-0.9.0.orig/daemons/ir_remote.c	2011-03-25 23:28:18.000000000 +0100
-+++ lirc-0.9.0/daemons/ir_remote.c	2012-07-13 21:21:00.746944467 +0200
-@@ -506,9 +506,17 @@
+diff -ur lirc-0.9.0-original/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
+--- lirc-0.9.0-original/daemons/ir_remote.c	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/ir_remote.c	2013-01-13 16:06:39.124707767 +0100
+@@ -37,6 +37,8 @@
+ 
+ extern struct hardware hw;
+ 
++ir_code pre_data_locked = 0;
++
+ static inline lirc_t time_left(struct timeval *current, struct timeval *last, lirc_t gap)
+ {
+ 	unsigned long secs, diff;
+@@ -506,10 +508,22 @@
  	lirc_t min_remaining_gap, max_remaining_gap;
  	struct ir_remote *scan;
  	struct ir_ncode *scan_ncode;
@@ -19,9 +28,14 @@ diff -ur lirc-0.9.0.orig/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
 +	}
 +	
  	while (remote) {
++		if (pre_data_locked && (remote->pre_data != pre_data_locked)) {
++			remote = remote->next;
++			continue;
++		}
  		LOGPRINTF(1, "trying \"%s\" remote", remote->name);
  
-@@ -556,6 +564,11 @@
+ 		if (hw.decode_func(remote, &pre, &code, &post, &repeat_flag, &min_remaining_gap, &max_remaining_gap)
+@@ -556,6 +570,11 @@
  			}
  		} else {
  			LOGPRINTF(1, "failed \"%s\" remote", remote->name);
@@ -33,20 +47,32 @@ diff -ur lirc-0.9.0.orig/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
  		}
  		remote->toggle_mask_state = 0;
  		remote = remote->next;
-diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
---- lirc-0.9.0.orig/daemons/lircd.c	2011-03-25 23:28:18.000000000 +0100
-+++ lirc-0.9.0/daemons/lircd.c	2012-07-13 21:22:12.036943272 +0200
-@@ -60,6 +60,9 @@
+diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
+--- lirc-0.9.0-original/daemons/lircd.c	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/lircd.c	2013-01-13 16:07:14.274707780 +0100
+@@ -60,6 +60,12 @@
  #if defined(__linux__)
  #include <linux/input.h>
  #include <linux/uinput.h>
++
++extern __u64 pre_data_locked;
++
 +#ifdef SPARK
 +#include <aotom_main.h>
 +#endif
  #include "input_map.h"
  #endif
  
-@@ -386,6 +389,9 @@
+@@ -119,6 +125,8 @@
+ 	{"VERSION", version},
+ 	{"SET_TRANSMITTERS", set_transmitters},
+ 	{"SIMULATE", simulate},
++	{"PREDATA_LOCK", predata_lock},
++	{"PREDATA_UNLOCK", predata_unlock},
+ 	{NULL, NULL}
+ 	/*
+ 	   {"DEBUG",debug},
+@@ -386,6 +394,9 @@
  #endif
  
  	config();
@@ -56,7 +82,7 @@ diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  
  	for (i = 0; i < clin; i++) {
  		if (!
-@@ -432,7 +438,7 @@
+@@ -432,7 +443,7 @@
  		goto setup_error;
  	}
  
@@ -65,7 +91,66 @@ diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  		if (ioctl(fd, UI_SET_KEYBIT, key) != 0) {
  			goto setup_error;
  		}
-@@ -1786,18 +1792,41 @@
+@@ -833,6 +844,7 @@
+ 		end[0] = 0;
+ 		length = strlen(buffer);
+ 		LOGPRINTF(1, "received peer message: \"%s\"", buffer);
++
+ 		for (i = 0; i < clin; i++) {
+ 			/* don't relay messages to remote clients */
+ 			if (cli_type[i] == CT_REMOTE)
+@@ -1609,6 +1621,50 @@
+ 	return (1);
+ }
+ 
++static char *predata_lock_filename = "/etc/lircd_predata_lock";
++
++static void predata_read(void) {
++	pre_data_locked = 0;
++	int fn = open(predata_lock_filename, O_RDONLY);
++	if (fn > -1) {
++		read(fn, &pre_data_locked, sizeof(pre_data_locked));
++		close(fn);
++	}
++}
++
++static void predata_write(void) {
++	if (pre_data_locked) {
++		__u64 tmp = pre_data_locked;
++		predata_read();
++		if (pre_data_locked == tmp)
++			return;
++		pre_data_locked = tmp;
++		int fn = open(predata_lock_filename, O_CREAT | O_WRONLY, 0644);
++		if (fn > -1) {
++			write(fn, &pre_data_locked, sizeof(pre_data_locked));
++			close(fn);
++		}
++	} else
++		unlink(predata_lock_filename);
++}
++
++int predata_lock(int fd, char *message, char *arguments __attribute__((unused)))
++{
++	if (last_remote) {
++		pre_data_locked = last_remote->pre_data;
++		predata_write();
++	} else // startup
++		predata_read();
++	return (send_success(fd, message));
++}
++
++int predata_unlock(int fd, char *message, char *arguments __attribute__((unused)))
++{
++	pre_data_locked = 0;
++	predata_write();
++	return (send_success(fd, message));
++}
++
+ int get_command(int fd)
+ {
+ 	int length;
+@@ -1786,18 +1842,41 @@
  	if (uinputfd != -1) {
  		linux_input_code input_code;
  
@@ -108,7 +193,7 @@ diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  			/* Need to write sync event */
  			memset(&event, 0, sizeof(event));
  			event.type = EV_SYN;
-@@ -1807,6 +1836,7 @@
+@@ -1807,6 +1886,7 @@
  				logprintf(LOG_ERR, "writing EV_SYN to uinput failed");
  				logperror(LOG_ERR, NULL);
  			}
@@ -116,7 +201,7 @@ diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  		}
  	}
  #endif
-@@ -2233,6 +2263,10 @@
+@@ -2233,6 +2313,10 @@
  
  	signal(SIGPIPE, SIG_IGN);
  
@@ -127,7 +212,7 @@ diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  	start_server(permission, nodaemon);
  
  	act.sa_handler = sigterm;
-@@ -2246,8 +2280,10 @@
+@@ -2246,8 +2330,10 @@
  	act.sa_flags = SA_RESTART;	/* don't fiddle with EINTR */
  	sigaction(SIGALRM, &act, NULL);
  
@@ -138,3 +223,15 @@ diff -ur lirc-0.9.0.orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  
  	act.sa_handler = sighup;
  	sigemptyset(&act.sa_mask);
+diff -ur lirc-0.9.0-original/daemons/lircd.h lirc-0.9.0/daemons/lircd.h
+--- lirc-0.9.0-original/daemons/lircd.h	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/lircd.h	2013-01-13 16:06:39.124707767 +0100
+@@ -74,6 +74,8 @@
+ int send_stop(int fd, char *message, char *arguments);
+ int send_core(int fd, char *message, char *arguments, int once);
+ int version(int fd, char *message, char *arguments);
++int predata_lock(int fd, char *message, char *arguments);
++int predata_unlock(int fd, char *message, char *arguments);
+ int get_pid(int fd, char *message, char *arguments);
+ int get_command(int fd);
+ void input_message(const char *message, const char *remote_name, const char *button_name, int reps, int release);
