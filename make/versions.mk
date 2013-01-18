@@ -11,7 +11,9 @@
 ###########################
 
 # azbox-dvb-modules
-AZBOX_DVB_M_VER=20121207
+AZBOX_DVB_M_VER=20130108
+# not the most useful date format...
+AZBOX_INITRAMFS_VER=08012013
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1

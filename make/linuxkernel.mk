@@ -460,8 +460,8 @@ $(SOURCE_DIR)/genzbf:
 		wget -O zboot.h  'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/zboot.h;hb=HEAD'
 
 $(BUILD_TMP)/linux-$(KVERSION_SRC)/initramfs: \
-$(ARCHIVE)/initramfs-azboxme-07122012.tar.bz2 \
-$(ARCHIVE)/initramfs-azboxminime-07122012.tar.bz2 \
+$(ARCHIVE)/initramfs-azboxme-$(AZBOX_INITRAMFS_VER).tar.bz2 \
+$(ARCHIVE)/initramfs-azboxminime-$(AZBOX_INITRAMFS_VER).tar.bz2 \
 $(PATCHES)/initramfs-azboxmeminime-init
 	rm -rf $(BUILD_TMP)/minime $(BUILD_TMP)/me
 	mkdir $(BUILD_TMP)/minime $(BUILD_TMP)/me
@@ -486,8 +486,9 @@ $(PATCHES)/initramfs-azboxmeminime-init
 $(BUILD_TMP)/linux-$(KVERSION_SRC): \
 $(PATCHES)/kernel.config-azbox-$(KVERSION) \
 $(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff \
-$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER)-new-1.tar.bz2
-	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER)-new-1.tar.bz2
+$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER)-new-2.tar.bz2
+	rm -fr $@
+	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER)-new-2.tar.bz2
 	set -e; cd $@; \
 		$(PATCH)/linux-azbox-allow-rebuild-after-failed-genromfs.diff; \
 		sed -i 's/ -static//' scripts/Makefile.host; \
