@@ -11,7 +11,7 @@
 ###########################
 
 # azbox-dvb-modules
-AZBOX_DVB_M_VER=20130108
+AZBOX_DVB_M_VER=20130117
 # not the most useful date format...
 AZBOX_INITRAMFS_VER=08012013
 
