@@ -232,6 +232,9 @@ FUSE_VER=2.9.2
 # ALSA, the Advanced Linux Sound Architecture
 ALSA_VER=1.0.25
 
+# libusb; a C library that gives applications easy access to USB devices
+USB_VER=1.0.9
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

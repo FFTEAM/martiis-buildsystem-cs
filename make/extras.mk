@@ -596,15 +596,15 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-$(ICONV-VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libiconv-$(ICONV-VER)
 	touch $@
 
-$(D)/libusb: $(ARCHIVE)/libusb-1.0.8.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libusb-1.0.8.tar.bz2
-	set -e; cd $(BUILD_TMP)/libusb-1.0.8; \
+$(D)/libusb: $(ARCHIVE)/libusb-$(USB_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libusb-$(USB_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libusb-$(USB_VER); \
 		$(CONFIGURE) --prefix= --enable-static --disable-shared ; \
 		$(MAKE) ; \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libusb-1.0.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libusb-1.0.pc
-	$(REMOVE)/libusb-1.0.8
+	$(REMOVE)/libusb-$(USB_VER)
 	touch $@
 
 $(D)/libusb-compat: $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2 $(D)/libusb | $(TARGETPREFIX)

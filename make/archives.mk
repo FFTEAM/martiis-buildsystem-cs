@@ -68,8 +68,8 @@ $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2:
 $(ARCHIVE)/libupnp-$(LIBUPNP_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP_VER)/libupnp-$(LIBUPNP_VER).tar.bz2
 
-$(ARCHIVE)/libusb-1.0.8.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.8/libusb-1.0.8.tar.bz2
+$(ARCHIVE)/libusb-$(USB_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-$(USB_VER)/libusb-$(USB_VER).tar.bz2
 
 $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-0.1.3/libusb-compat-0.1.3.tar.bz2
