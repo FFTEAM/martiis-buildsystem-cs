@@ -298,6 +298,9 @@ ifeq ($(PLATFORM), coolstream)
 	fi
 	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 	cp -a $(UNCOOL_GIT)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
+	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
+		$(PATCH)/ffmpeg-lavf-compute-probe-buffer-size-more-reliably.patch; \
+		$(PATCH)/ffmpeg-avio-redesign-ffio_rewind_with_probe_data.patch
 else
 	$(UNTAR)/ffmpeg-$(FFMPEG_VER).tar.bz2
 endif
