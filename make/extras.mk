@@ -712,11 +712,22 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(PATCHES)/vtuner-2.1-debug.diff
-	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
-	$(UNTAR)/vtuner-apps-rel2.1.tar.bz2
-	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1; \
-		$(PATCH)/vtuner-2.1-debug.diff; \
+# hg rev 116
+$(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2:
+	$(REMOVE)/vtuner-apps-rel2.1.99.116
+	set -e; cd $(BUILD_TMP); \
+		wget --no-check-certificate https://apps.vtuner.googlecode.com/archive/b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0.zip; \
+		unzip b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0.zip; \
+		rm b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0.zip; \
+		mv apps.vtuner-b6fa0d2b133b vtuner-apps-rel2.1.99.116; \
+		tar -cvpjf $@ vtuner-apps-rel2.1.99.116
+
+$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2 $(PATCHES)/vtuner-2.1.99-debug.diff $(PATCHES)/vtuner-apps-compilerwarnings.diff
+	$(REMOVE)/vtuner-apps-rel2.1.99.116 $(PKGPREFIX)
+	$(UNTAR)/vtuner-apps-rel2.1.99.116.tar.bz2
+	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1.99.116; \
+		$(PATCH)/vtuner-apps-compilerwarnings.diff; \
+		$(PATCH)/vtuner-2.1.99-debug.diff; \
 		echo "CC-$(BOXARCH)=$(TARGET)-gcc" > Make.config; \
 		make $(BOXARCH); \
 		install -m 755 -D dist/$(BOXARCH)/vtunerd.$(BOXARCH) $(PKGPREFIX)/bin/vtunerd; \
@@ -725,6 +736,6 @@ $(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(PATCHES)/vtuner-2.1-debug.d
 		install -m 755 -D vtunerd.init $(PKGPREFIX)/etc/init.d/vtunerd; \
 		ln -s vtunerd $(PKGPREFIX)/etc/init.d/S70vtunerd; \
 		cp vtunerd.conf $(PKGPREFIX)/etc/
-	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/vtuner-apps
-	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
+	PKG_VER=2.1.99.116 $(OPKG_SH) $(CONTROL_DIR)/vtuner-apps
+	$(REMOVE)/vtuner-apps-rel2.1.99.116 $(PKGPREFIX)
 	touch $@

@@ -1,5 +1,5 @@
 diff --git a/vtuner-dvb-3.c b/vtuner-dvb-3.c
-index 7709de4..03fd903 100644
+index ec92e6d..78b2267 100644
 --- a/vtuner-dvb-3.c
 +++ b/vtuner-dvb-3.c
 @@ -41,11 +41,15 @@ int hw_init(vtuner_hw_t* hw, int adapter, int frontend, int demux, int dvr) {
@@ -28,10 +28,10 @@ index 7709de4..03fd903 100644
      memset(fe_params, 0, sizeof(struct dvb_frontend_parameters));
      ret = 0;
 diff --git a/vtuner-utils.h b/vtuner-utils.h
-index 43c6dd7..33b7e0e 100644
+index 73e1e65..e53c3d8 100644
 --- a/vtuner-utils.h
 +++ b/vtuner-utils.h
-@@ -23,10 +23,10 @@ extern int use_syslog;
+@@ -26,10 +26,10 @@ extern int use_syslog;
  #define MSG_INFO	3
  #define MSG_DEBUG	4
  
@@ -45,4 +45,4 @@ index 43c6dd7..33b7e0e 100644
 +#define DEBUG(mtype, msg, ...) write_message(mtype, MSG_DEBUG, "[%d %s:%u] debug: " msg, getpid(), __func__, __LINE__, ## __VA_ARGS__)
  
  void write_message(const unsigned int, const int, const char*, ...);
- #endif
+ int open_udplog(char *, int );
