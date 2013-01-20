@@ -646,43 +646,22 @@ $(D)/libdpf: $(ARCHIVE)/dpf-ax_r$(DPF-AXREV).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
 	touch $@
 
-LCD4LINUXREV=1171
-DPFHACK_DIR=dpfhack_pearl-master
-$(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz:
-	set -e; cd $(BUILD_TMP); \
-		rm -rf lcd4linux-r$(LCD4LINUXREV); \
-		svn co -r$(LCD4LINUXREV) https://ssl.bulix.org/svn/lcd4linux/trunk lcd4linux-r$(LCD4LINUXREV); \
-		tar cvpzf $@ lcd4linux-r$(LCD4LINUXREV)
-	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV)
-
-# ugly hack to build / link against libdpf, but installing into TARGETPREFIX
-# does not make sense as it is only linked statically anyway.
-$(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz| $(TARGETPREFIX)
-	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
-	$(UNTAR)/lcd4linux-r$(LCD4LINUXREV).tar.gz
-	unzip $(ARCHIVE)/dpfhack_pearl.zip -d $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)
-	ln -s $(DPFHACK_DIR)/dpflib $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/
-	set -e; cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/$(DPFHACK_DIR) ; \
-		$(PATCH)/dpflib-crossbuild.diff; \
-		cp -a include/* dpflib/ ; \
-		cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/dpflib ; \
-		$(BUILDENV) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB) -L$(TARGETLIB)" \
-			make CC=$(TARGET)-gcc; \
-		ln -s . libdpf; ln -s dpf.h libdpf.h; \
-	set -e; cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV); \
-		$(PATCH)/lcd4linux-svn1171-dpf.patch; \
-		$(BUILD_ENV) ./bootstrap; \
-		DPF_LDFLAGS="-L./dpflib" \
-		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -I./dpflib" ./configure $(CONFIGURE_OPTS) \
+$(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(D)/libdpf $(ARCHIVE)/lcd4linux_r$(LCD4LINUX_SVN).tar.gz | $(TARGETPREFIX)
+	$(REMOVE)/lcd4linux_r$(LCD4LINUX_SVN) $(PKGPREFIX)
+	$(UNTAR)/lcd4linux_r$(LCD4LINUX_SVN).tar.gz
+	set -e; cd $(BUILD_TMP)/lcd4linux_r$(LCD4LINUX_SVN); \
+		$(PATCH)/lcd4linux-svn1184-dpf.diff; \
+		$(BUILDENV) ./bootstrap; \
+		$(BUILDENV) ./configure $(CONFIGURE_OPTS) \
 			--prefix= \
 			--with-drivers='DPF' \
 			--with-plugins='all,!dbus,!mpris_dbus,!asterisk,!isdn,!pop3,!ppp,!seti,!huawei,!imon,!kvv,!sample,!w1retap,!wireless,!xmms,!gps,!mpd,!mysql,!qnaplog' \
 			--without-ncurses; \
-		$(MAKE) all; \
-		make install DESTDIR=$(PKGPREFIX)/opt/pkg
-	install -D -m 600 $(SCRIPTS)/lcd4linux.conf $(PKGPREFIX)/opt/pkg/etc/lcd4linux.conf
-	PKG_VER=0.10.9999.r$(LCD4LINUXREV) $(OPKG_SH) $(CONTROL_DIR)/lcd4linux
-	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
+	$(MAKE) all; \
+	make install DESTDIR=$(PKGPREFIX)/opt/pkg
+	install -D -m 0600 $(SCRIPTS)/lcd4linux.conf $(PKGPREFIX)/opt/pkg/etc/lcd4linux.conf
+	PKG_VER=$(LCD4LINUX_SVN_VER) $(OPKG_SH) $(CONTROL_DIR)/lcd4linux
+	$(REMOVE)/lcd4linux_r$(LCD4LINUX_SVN) $(PKGPREFIX)
 	touch $@
 
 $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)

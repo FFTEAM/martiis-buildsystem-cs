@@ -241,6 +241,11 @@ USBCMPT_VER=0.1.4
 #dpf-ax; an attempt to create a replacement firmware for AX206 based digital picture frames
 DPF-AXREV=40
 
+# LCD4Linux; a small program that grabs information from the kernel and some subsystems and displays it on an external liquid crystal display
+LCD4LINUX_VER=0.10.0
+LCD4LINUX_SVN=1184
+LCD4LINUX_SVN_VER=$(LCD4LINUX_VER)+svnr$(LCD4LINUX_SVN)
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

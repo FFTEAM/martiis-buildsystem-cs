@@ -1,13 +1,13 @@
 diff --git a/drivers.m4 b/drivers.m4
-index 754a48b..942e3ec 100644
+index a692bf2..b42db17 100644
 --- a/drivers.m4
 +++ b/drivers.m4
-@@ -369,7 +369,7 @@ if test "$DPF" = "yes"; then
+@@ -381,7 +381,7 @@ if test "$DPF" = "yes"; then
     if test "$has_libdpf" = "true"; then
        GRAPHIC="yes"
        DRIVERS="$DRIVERS drv_dpf.o"
 -      DRVLIBS="$DRVLIBS -Llibdpf -ldpf -lusb"
-+      DRVLIBS="$DRVLIBS $DPF_LDFLAGS -ldpf -lusb"
++      DRVLIBS="$DRVLIBS -ldpf -lusb"
        AC_DEFINE(WITH_DPF,1,[DPF driver])
     else
        AC_MSG_WARN(libdpf.h not found: DPF driver disabled)
@@ -68,7 +68,7 @@ index 39e1708..133f0cd 100644
  {
      int bl_on;
 diff --git a/lcd4linux.c b/lcd4linux.c
-index 842f653..b3485f7 100644
+index 45b02e9..6d83b58 100644
 --- a/lcd4linux.c
 +++ b/lcd4linux.c
 @@ -85,7 +85,7 @@ static void usage(void)
@@ -89,16 +89,3 @@ index 842f653..b3485f7 100644
      char *pidfile = PIDFILE;
      char *display, *driver, *layout;
      char section[32];
-diff --git a/plugins.m4 b/plugins.m4
-index 81c55aa..cb04f06 100644
---- a/plugins.m4
-+++ b/plugins.m4
-@@ -539,7 +539,7 @@ if test "$PLUGIN_PYTHON" = "yes"; then
-    if test "$with_python" != "yes"; then
-       AC_MSG_WARN(python support not enabled: python plugin disabled (use --with-python to enable))
-    else
--      if test -z "$python_path"; then
-+      if test -z "$PYTHON_CPPFLAGS"; then
-          AC_MSG_WARN(python headers not found: python plugin disabled)
-       else
-          PLUGINS="$PLUGINS plugin_python.o"

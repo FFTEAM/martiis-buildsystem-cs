@@ -32,9 +32,6 @@ $(ARCHIVE)/dvdreadfs.tar:
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
 
-$(ARCHIVE)/dpfhack_pearl.zip:
-	$(WGET) -O $@ https://github.com/makefu/dpfhack_pearl/archive/master.zip
-
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2
 
@@ -92,6 +89,14 @@ $(ARCHIVE)/dpf-ax_r$(DPF-AXREV).tar.gz:
 		svn co -r$(DPF-AXREV) https://dpf-ax.svn.sourceforge.net/svnroot/dpf-ax/trunk dpf-ax_r$(DPF-AXREV); \
 		tar cvpzf $@ dpf-ax_r$(DPF-AXREV)
 	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+
+$(ARCHIVE)/lcd4linux_r$(LCD4LINUX_SVN).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf lcd4linux_r$(LCD4LINUX_SVN); \
+		svn co -r$(LCD4LINUX_SVN) https://ssl.bulix.org/svn/lcd4linux/trunk lcd4linux_r$(LCD4LINUX_SVN); \
+		echo "#define SVN_VERSION \"$(LCD4LINUX_SVN)\"" > lcd4linux_r$(LCD4LINUX_SVN)/svn_version.h; \
+		tar cvpzf $@ lcd4linux_r$(LCD4LINUX_SVN)
+	$(REMOVE)/lcd4linux_r$(LCD4LINUX_SVN)
 
 $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-$(E2FSPROGS-VER).tar.gz
