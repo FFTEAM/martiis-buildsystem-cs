@@ -607,16 +607,16 @@ $(D)/libusb: $(ARCHIVE)/libusb-$(USB_VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/libusb-$(USB_VER)
 	touch $@
 
-$(D)/libusb-compat: $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2 $(D)/libusb | $(TARGETPREFIX)
-	$(UNTAR)/libusb-compat-0.1.3.tar.bz2
-	set -e; cd $(BUILD_TMP)/libusb-compat-0.1.3; \
+$(D)/libusb-compat: $(ARCHIVE)/libusb-compat-$(USBCMPT_VER).tar.bz2 $(D)/libusb | $(TARGETPREFIX)
+	$(UNTAR)/libusb-compat-$(USBCMPT_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libusb-compat-$(USBCMPT_VER); \
 		$(CONFIGURE) --prefix= --enable-static --disable-shared ; \
 		$(MAKE) ; \
 		make install DESTDIR=$(TARGETPREFIX)
 	rm -f $(TARGETPREFIX)/bin/libusb-config
 	$(REWRITE_LIBTOOL)/libusb.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libusb.pc
-	$(REMOVE)/libusb-compat-0.1.3
+	$(REMOVE)/libusb-compat-$(USBCMPT_VER)
 	touch $@
 
 $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(ARCHIVE)/gd-2.0.35.tar.gz | $(TARGETPREFIX)

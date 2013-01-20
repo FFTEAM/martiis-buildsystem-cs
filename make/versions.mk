@@ -235,6 +235,9 @@ ALSA_VER=1.0.25
 # libusb; a C library that gives applications easy access to USB devices
 USB_VER=1.0.9
 
+#libusb-compat; a replacement/wrapper for libusb-0.1
+USBCMPT_VER=0.1.4
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

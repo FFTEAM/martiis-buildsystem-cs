@@ -71,8 +71,8 @@ $(ARCHIVE)/libupnp-$(LIBUPNP_VER).tar.bz2:
 $(ARCHIVE)/libusb-$(USB_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-$(USB_VER)/libusb-$(USB_VER).tar.bz2
 
-$(ARCHIVE)/libusb-compat-0.1.3.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-0.1.3/libusb-compat-0.1.3.tar.bz2
+$(ARCHIVE)/libusb-compat-$(USBCMPT_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-$(USBCMPT_VER)/libusb-compat-$(USBCMPT_VER).tar.bz2
 
 $(ARCHIVE)/curl-$(CURL_VER).tar.bz2:
 	$(WGET) http://curl.haxx.se/download/$(lastword $(subst /, ,$@))
