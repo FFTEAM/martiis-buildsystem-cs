@@ -632,6 +632,20 @@ $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(AR
 	$(REMOVE)/gd-2.0.35
 	touch $@
 
+$(D)/libdpf: $(ARCHIVE)/dpf-ax_r$(DPF-AXREV).tar.gz | $(TARGETPREFIX)
+	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+	$(UNTAR)/dpf-ax_r$(DPF-AXREV).tar.gz
+	set -e; cd $(BUILD_TMP)/dpf-ax_r$(DPF-AXREV)/dpflib; \
+		$(PATCH)/libdpf-crossbuild.diff; \
+		make libdpf.a CC=$(TARGET)-gcc PREFIX=$(TARGETPREFIX); \
+		mkdir -p $(TARGETPREFIX)/include/libdpf; \
+		cp dpf.h $(TARGETPREFIX)/include/libdpf/libdpf.h; \
+		cp ../include/spiflash.h $(TARGETPREFIX)/include/libdpf/; \
+		cp ../include/usbuser.h $(TARGETPREFIX)/include/libdpf/; \
+		cp libdpf.a $(TARGETPREFIX)/lib/
+	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+	touch $@
+
 LCD4LINUXREV=1171
 DPFHACK_DIR=dpfhack_pearl-master
 $(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz:

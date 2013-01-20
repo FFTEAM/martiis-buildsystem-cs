@@ -238,6 +238,9 @@ USB_VER=1.0.9
 #libusb-compat; a replacement/wrapper for libusb-0.1
 USBCMPT_VER=0.1.4
 
+#dpf-ax; an attempt to create a replacement firmware for AX206 based digital picture frames
+DPF-AXREV=40
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

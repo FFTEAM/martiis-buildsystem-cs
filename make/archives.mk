@@ -86,6 +86,13 @@ $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2:
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2
 
+$(ARCHIVE)/dpf-ax_r$(DPF-AXREV).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf dpf-ax_r$(DPF-AXREV); \
+		svn co -r$(DPF-AXREV) https://dpf-ax.svn.sourceforge.net/svnroot/dpf-ax/trunk dpf-ax_r$(DPF-AXREV); \
+		tar cvpzf $@ dpf-ax_r$(DPF-AXREV)
+	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+
 $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-$(E2FSPROGS-VER).tar.gz
 
