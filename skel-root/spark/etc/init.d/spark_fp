@@ -44,12 +44,6 @@ stop)
 	echo shutdown > /dev/vfd
 	WAKEUP_TIME=1
 	test -e /tmp/.timer && read WAKEUP_TIME < /tmp/.timer
-	# hack: K99mount is never run since we never come out of spark_fp...
-	sync
-	/etc/init.d/mount stop
-	sync
-	sleep 1
-	echo > /dev/vfd
 	spark_fp -L 0 -L 1 -w $WAKEUP_TIME
 	;;
 esac
