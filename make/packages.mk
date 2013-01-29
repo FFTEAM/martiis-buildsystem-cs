@@ -241,7 +241,7 @@ endif
 
 AAA_BASE_DEPS = mhwepg
 ifeq ($(PLATFORM), spark)
-AAA_BASE_DEPS += stfbcontrol fp_control ustslave libstb-hal
+AAA_BASE_DEPS += stfbcontrol ustslave libstb-hal
 endif
 
 aaa_base-pkg: $(AAA_BASE_DEPS) timezone
@@ -252,7 +252,7 @@ aaa_base-pkg: $(AAA_BASE_DEPS) timezone
 	find $(PKGPREFIX) -name .gitignore | xargs rm
 ifeq ($(PLATFORM), spark)
 	test -d $(PKGPREFIX)/bin || mkdir $(PKGPREFIX)/bin
-	cp -a $(TARGETPREFIX)/bin/stfbcontrol $(TARGETPREFIX)/bin/fp_control \
+	cp -a $(TARGETPREFIX)/bin/stfbcontrol \
 		$(TARGETPREFIX)/bin/ustslave \
 		$(TARGETPREFIX)/bin/spark_fp \
 		$(PKGPREFIX)/bin
