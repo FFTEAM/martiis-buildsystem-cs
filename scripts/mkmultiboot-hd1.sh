@@ -3,7 +3,7 @@
 # USB Stick boot enabler for Coolstream HD1 with old U-Boot
 # HD1, HD1 BSE and HD1 C
 #
-# (C) 2011 Stefan Seyfried
+# (C) 2011-2012 Stefan Seyfried
 #     License: GPL v2
 #
 # create a U-Boot autoscript that can boot from USB
@@ -33,8 +33,12 @@
 # of slightly longer boot times if no stick is present:
 # HDx> setenv bootcmd autoscr 0xf047f800\; autoscr 0xf047f800\; bootm 0xf0080000
 
+# if present: first argument: temp dir, second argument: mkimage location
+D=${1:=build_tmp}
+MKIMAGE=${2:=host/bin/mkimage}
+
 IN=mtd1-hd1.img
-OUT=build_tmp/kernel-autoscr-mtd1.img
+OUT=${D}/kernel-autoscr-mtd1.img
 
 if ! test -e $IN; then
 	echo "no $IN, but we need it."
@@ -46,7 +50,7 @@ if ! test -e $IN; then
 fi
 
 # find out the payload size of the kernel image...
-KSIZE=$(dd if=$IN bs=4 skip=3 count=1 2>/dev/null|hexdump -e '4 1 "%x"')
+KSIZE=$(dd if=$IN bs=4 skip=3 count=1 2>/dev/null|hexdump -e '4 1 "%02x"')
 KSIZE=$((0x$KSIZE + 64))
 echo "Kernel image size: $KSIZE"
 if test $KSIZE -gt $((4094*1024)); then
@@ -56,15 +60,15 @@ if test $KSIZE -gt $((4094*1024)); then
 	exit 1
 fi
 
-rm -f build_tmp/script.img $OUT
+rm -f ${D}/script.img $OUT
 # conv=sync pads the output to ibs size
 dd bs=4094k conv=sync if=$IN of=$OUT count=1
 
 # create the u-boot autoscript
-rm -f build_tmp/script.scr
+rm -f ${D}/script.scr
 # reset the psychedelic u-boot colors early
-printf "setenv resetattr \033[0m\n" > build_tmp/script.scr
-cat >> build_tmp/script.scr << EOF
+printf "setenv resetattr \033[0m\n" > ${D}/script.scr
+cat >> ${D}/script.scr << EOF
 printenv resetattr
 usb start
 usb reset
@@ -74,13 +78,13 @@ bootm 0x08000000
 EOF
 
 # create the u-boot image
-host/bin/mkimage -A arm -O linux -T script -C none -a 0 -e 0 \
-	-n "autoscript" -d build_tmp/script.scr build_tmp/script.img
+$MKIMAGE -A arm -O linux -T script -C none -a 0 -e 0 \
+	-n "autoscript" -d ${D}/script.scr ${D}/script.img
 
 # append the script image to the splash.img
-dd bs=2k if=build_tmp/script.img conv=sync >> $OUT
+dd bs=2k if=${D}/script.img conv=sync >> $OUT
 
-rm build_tmp/script.img
+rm ${D}/script.img
 
 echo
 echo "image to flash:"

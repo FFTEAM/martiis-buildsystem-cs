@@ -1,0 +1,13 @@
+diff --git a/util-linux/mdev.c b/util-linux/mdev.c
+index c20327a..428a461 100644
+--- a/util-linux/mdev.c
++++ b/util-linux/mdev.c
+@@ -614,7 +614,7 @@ int mdev_main(int argc UNUSED_PARAM, char **argv)
+ 		 * in parallel, and we need to wait */
+ 		seq = getenv("SEQNUM");
+ 		if (seq) {
+-			int timeout = 2000 / 32; /* 2000 msec */
++			int timeout = 5000 / 32; /* 2000 msec */
+ 			do {
+ 				int seqlen;
+ 				char seqbuf[sizeof(int)*3 + 2];

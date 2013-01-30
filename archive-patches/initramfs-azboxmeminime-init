@@ -2,11 +2,16 @@
 
 
 FILE=/mnt/root/sbin/init
-export MRUAFW_PACKAGE_DIR=/lib/modules/3.3.1-opensat/kernel/drivers/xload-38x
-export EM8XXX_SERVER=":0"
 
 MINIME=false
 APPEND=""
+
+mkdev() {
+	# 249 mum0
+	local MAJ=$(sed -n "/ $1/{s/ .*//;p}" /proc/devices)
+	mknod /dev/$1 c $MAJ 0
+	chmod 0660 /dev/$1
+}
 
 blink() {
 	local A=0;
@@ -62,11 +67,15 @@ rescue_shell() {
 # Mount the /proc and /sys filesystems.
 mount -t proc proc /proc
 mount -t sysfs sys /sys
+KVER=$(uname -r)
+
+export MRUAFW_PACKAGE_DIR=/lib/modules/$KVER/kernel/drivers/xload-38x
+export EM8XXX_SERVER=":0"
 
 if grep "SMP8XXX Chip ID.*8653" /proc/cpuinfo; then
 	MINIME=true
 	mv /usr/bin/webinterfaceminime /usr/bin/webinterface
-	cd /lib/modules/3.3.1-opensat/kernel/drivers
+	cd /lib/modules/$KVER/kernel/drivers
 	ln -sf nand_wrminime.ko nand_wr.ko
 	cd /
 	APPEND=minime
@@ -77,13 +86,14 @@ mdev -s
 rescue_file=0;
 selected_boot=0;
 
-mknod /dev/mum0 c 126 0
-mknod /dev/em8xxx0 c 127 0
+#mknod /dev/mum0 c 126 0
+#mknod /dev/em8xxx0 c 127 0
 mknod /dev/micom c 75 0
 
-insmod /lib/modules/3.3.1-opensat/kernel/drivers/scsi_wait_scan.ko
-insmod /lib/modules/3.3.1-opensat/kernel/drivers/irvfd${APPEND}.ko
-insmod /lib/modules/3.3.1-opensat/kernel/drivers/llad.ko
+insmod /lib/modules/$KVER/kernel/drivers/scsi_wait_scan.ko
+insmod /lib/modules/$KVER/kernel/drivers/irvfd${APPEND}.ko
+insmod /lib/modules/$KVER/kernel/drivers/llad.ko
+mkdev mum0
 DA=$(rmmalloc 0 2340777)
 xkc xload 0xcafebbbb $MRUAFW_PACKAGE_DIR/video_*.xload $DA 0
 if $MINIME; then
@@ -98,8 +108,8 @@ xkc ustart 0xcafebbbb v
 xkc ustart 0xcafeaaaa a
 rmfree 0 $DA
 xkc xload 0xcafe0105 $MRUAFW_PACKAGE_DIR/ios.bin*.xload
-insmod /lib/modules/3.3.1-opensat/kernel/drivers/em8xxx.ko
-
+insmod /lib/modules/$KVER/kernel/drivers/em8xxx.ko
+mkdev em8xxx0
 
 mknod /dev/nblock3 b 254 3
 mknod /dev/nblock4 b 254 4
@@ -111,12 +121,14 @@ chmod a+rw /dev/nblock4
 chmod a+rw /dev/nblock5
 chmod a+rw /dev/nblock6
 
-insmod /lib/modules/3.3.1-opensat/kernel/drivers/smp8xxx_nand.ko
-insmod /lib/modules/3.3.1-opensat/kernel/drivers/nand_wr.ko
+insmod /lib/modules/$KVER/kernel/drivers/smp8xxx_nand.ko
+insmod /lib/modules/$KVER/kernel/drivers/nand_wr.ko
 
 HDMI_CHIP=""
+UPD_SLEEP=1
 if $MINIME; then
 	HDMI_CHIP="-hdmi_chip SLi13"
+	UPD_SLEEP=5
 fi
 
 if [ -d "/proc/scsi/usb-storage/" ]; then
@@ -136,7 +148,7 @@ if [ -d "/proc/scsi/usb-storage/" ]; then
 			  tar -xf /mnt/root/update.ext -C /mnt/root/
 			  export LD_LIBRARY_PATH=/mnt/root/update/lib:$LD_LIBRARY_PATH
 			  /mnt/root/update/example_display -o hdmi cav cvbs -hdcav $HDMI_CHIP -hdmi_rx f -hdmi 1 -hdmi_reset_gpio 14 -audio_engine 0 -sf 48000 &
-			  sleep 1;
+			  sleep $UPD_SLEEP;
 			  /mnt/root/update/gui_update &
 			  rescue_shell	
 		   else 
@@ -152,7 +164,7 @@ if [ -d "/proc/scsi/usb-storage/" ]; then
 			  tar -xf /mnt/root/update.ext -C /mnt/root/
 			  export LD_LIBRARY_PATH=/mnt/root/update/lib:$LD_LIBRARY_PATH
 			  /mnt/root/update/example_display -o hdmi cav cvbs -hdcav $HDMI_CHIP -hdmi_rx f -hdmi 1 -hdmi_reset_gpio 14 -audio_engine 0 -sf 48000 &
-			  sleep 1;
+			  sleep $UPD_SLEEP;
 			  /mnt/root/update/gui_update &
 			  rescue_shell		
 			else 
@@ -169,7 +181,7 @@ if [ -d "/proc/scsi/usb-storage/" ]; then
 			  tar -xf /mnt/root/update.ext -C /mnt/root/
 			  export LD_LIBRARY_PATH=/mnt/root/update/lib:$LD_LIBRARY_PATH
 			  /mnt/root/update/example_display -o hdmi cav cvbs -hdcav $HDMI_CHIP -hdmi_rx f -hdmi 1 -hdmi_reset_gpio 14 -audio_engine 0 -sf 48000 &
-			  sleep 1;
+			  sleep $UPD_SLEEP;
 			  /mnt/root/update/gui_update &
 			  rescue_shell				
 			else 
@@ -186,7 +198,7 @@ if [ -d "/proc/scsi/usb-storage/" ]; then
 			  tar -xf /mnt/root/update.ext -C /mnt/root/
 			  export LD_LIBRARY_PATH=/mnt/root/update/lib:$LD_LIBRARY_PATH
 			  /mnt/root/update/example_display -o hdmi cav cvbs -hdcav $HDMI_CHIP -hdmi_rx f -hdmi 1 -hdmi_reset_gpio 14 -audio_engine 0 -sf 48000 &
-			  sleep 1;
+			  sleep $UPD_SLEEP;
 			  /mnt/root/update/gui_update &
 			  rescue_shell			
 			else 
@@ -205,6 +217,7 @@ fi
 
 echo "" > /proc/vfd
 echo "CHK BOOT SEL" > /proc/vfd
+echo 2 > /proc/led # red
 
 mount -t jffs2 mtd2 /mnt/root
 
@@ -218,6 +231,7 @@ fi
 
 
 modesel=`cat /proc/rescue`
+echo 1 > /proc/led # blue
 
 if [ "$modesel" -ne 255 ]; then	
 	keypressed=true
@@ -242,13 +256,21 @@ umount /mnt/root
 if ! $keypressed; then
 	for disk in sdb sdb1 sda sda1; do
 		echo "try $disk" > /proc/vfd
+		echo "===================> trying to boot from /dev/$disk"
 		# Mount the root filesystem on USB1.
 		mount -o rw /dev/$disk /mnt/root
 		if [ $? = 0 ]; then
+			if [ -e /mnt/root/noboot ]; then
+				echo "===================> noboot file exists, not booting"
+				umount /mnt/root
+				continue
+			fi
 			if [ -L "/mnt/root/sbin/init" ]; then
 				# Unmount all other mounts so that the ram used by
 				# the initramfs can be cleared after switch_root
 				rmmod scsi_wait_scan
+				rmmod em8xxx
+				rmmod llad
 				umount /sys /proc
 				# Switch to the new root and execute init
 				exec switch_root /mnt/root /sbin/init
@@ -268,12 +290,15 @@ if [ $modesel = 1 ] ; then
 elif [ $modesel = 2 ] ; then
    echo "" > /proc/vfd
    echo "BOOT [1]" > /proc/vfd
+   echo "===================> BOOT 1"
 elif [ $modesel = 3 ] ; then
    echo "" > /proc/vfd
    echo "BOOT [2]" > /proc/vfd
+   echo "===================> BOOT 2"
 elif  [ $modesel = 0 ] ; then
    echo "" > /proc/vfd
    echo "BOOT [0]" > /proc/vfd
+   echo "===================> BOOT 0"
 fi
 
 # Do your stuff here.
@@ -286,11 +311,11 @@ if $MINIME; then
 fi
 
 if [ $modesel = 2 ] ; then
-   mount -t jffs2 $R2 /mnt/root
+   mount -t jffs2 $R2 /mnt/root -orw
 elif [ $modesel = 3 ] ; then
-   mount -t jffs2 mtd7 /mnt/root
+   mount -t jffs2 mtd7 /mnt/root -orw
 elif  [ $modesel = 0 ] ; then
-   mount -t jffs2 mtd3 /mnt/root
+   mount -t jffs2 mtd3 /mnt/root -orw
 fi
 
 if [ $? = 0 ] 
@@ -298,10 +323,13 @@ if [ $? = 0 ]
      if [ -L "/mnt/root/sbin/init" ]
 	 then
 
-
 	rmmod scsi_wait_scan
+	rmmod em8xxx
+	rmmod llad
+
 	umount /sys /proc
-	
+	sleep 1;
+
 	#Switch to the new root and execute init
 	exec switch_root /mnt/root /sbin/init
 

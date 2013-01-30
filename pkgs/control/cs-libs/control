@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://coolstreamtech.com/
 Source:
-Provides: libcoolstream.so, libcoolstream-mt.so, libnxp.so
+Provides: @PROV@
 Depends:

@@ -1,0 +1,8 @@
+#!/bin/sh
+#
+# if the tool is not installed, bail out
+which pic2m2v >/dev/null 2>&1 || exit 0
+#
+# neutrino icon path
+I=/share/tuxbox/neutrino/icons
+pic2m2v $I/mp3.jpg $I/radiomode.jpg $I/scan.jpg $I/shutdown.jpg $I/start.jpg

@@ -1,0 +1,30 @@
+diff --git a/configure b/configure
+index f6ee348..5ea8af3 100755
+--- a/configure
++++ b/configure
+@@ -8880,7 +8880,8 @@ fi
+     VORBIS_LIBS="-L$prefix/lib"
+   fi
+ 
+-  VORBIS_LIBS="$VORBIS_LIBS -lvorbis -lm"
++#  VORBIS_LIBS="$VORBIS_LIBS -lvorbis -lm"
++  VORBIS_LIBS="-lvorbisidec"
+   VORBISFILE_LIBS="-lvorbisfile"
+   VORBISENC_LIBS="-lvorbisenc"
+ 
+diff --git a/lib/ripogg.c b/lib/ripogg.c
+index 54f4e42..507929b 100644
+--- a/lib/ripogg.c
++++ b/lib/ripogg.c
+@@ -33,8 +33,11 @@
+ #include "mchar.h"
+ 
+ #if (HAVE_OGG_VORBIS)
++#if 0
+ #include <ogg/ogg.h>
+ #include <vorbis/codec.h>
++#endif
++#include <tremor/ivorbiscodec.h>
+ #include <locale.h>
+ 
+ 

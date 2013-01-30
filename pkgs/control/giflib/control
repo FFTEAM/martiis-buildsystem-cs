@@ -1,0 +1,11 @@
+Package: giflib
+Version: @VER@-1
+Description: Library for Processing GIF Images
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceforge.net/projects/giflib/
+Source:
+Depends: @DEP@
+Provides: @PROV@

@@ -40,10 +40,12 @@ flashimage: flash-prepare cskernel flash-build
 	$(REMOVE)/coolstream
 	mkdir $(BUILD_TMP)/coolstream
 	set -e;\
-		cp $(BUILD_TMP)/Image.img mtd1-hd1.img; scripts/mkmultiboot-hd1.sh; rm mtd1-hd1.img; \
 		cd $(BUILD_TMP); \
+		cp zImage.img mtd1-hd1.img; $(BASE_DIR)/scripts/mkmultiboot-hd1.sh . mkimage; rm mtd1-hd1.img; \
 		mv kernel-autoscr-mtd1.img coolstream/kernel.img; \
 		cp $(SUMIMG) coolstream/system.img
+	@echo; echo
+	ls -l $(BUILD_TMP)/coolstream
 endif
 ifeq ($(PLATFORM), spark)
 # you should probably "make system-pkgs" before...

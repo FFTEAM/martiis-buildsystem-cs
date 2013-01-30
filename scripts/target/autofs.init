@@ -2,18 +2,22 @@
 #
 # simple autofs init script
 
-uname_r() {
-	read dummy dummy uname dummy < /proc/version
-	echo $uname
-}
-
 # load the module if necessary
-if ! grep -q autofs /proc/filesystems; then # the kernel does not know it
-	MODULE=/lib/modules/$(uname_r)/kernel/fs/autofs4/autofs4.ko
-	if ! insmod $MODULE > /dev/null 2>&1; then # module loading failed
-		exit 1;
+module_load() {
+	if ! grep -q autofs /proc/filesystems; then # the kernel does not know it
+		if ! modprobe autofs4 > /dev/null 2>&1; then # module loading failed
+			echo "autofs4 module not available"
+			exit 1;
+		fi
 	fi
-fi
+	grep -q "^[^#].*fstype=nfs" $MAPFILE || return
+	if ! grep -q nfs /proc/filesystems; then
+		if ! modprobe nfs > /dev/null 2>&1; then
+			echo "nfs requested but module not available"
+			exit 1;
+		fi
+	fi
+}
 
 # the MAPFILE is the "configfile" for automount
 # first check for "auto.net-HOSTNAME", to make it easy to auto-deploy machines
@@ -49,6 +53,7 @@ case $1 in
 		read PID < $PIDFILE && kill -TERM $PID
 		;;
 	start)
+		module_load
 		# automount needs /var/lock or it will exit silently
 		[ ! -d /var/lock ] && mkdir -p /var/lock
 		echo "starting the automounter..."

@@ -16,16 +16,19 @@
 ### B: PROP=0
 ### B: EV=100003
 ### B: KEY=108fc312 2002041 0 0 0 0 18000 4110 800 1e16c0 0 0 ffc
+mkdir -p /dev/input
 FOUND=false
 while read A B; do
 	case $A in
 	N:)	if [ "$B" = 'Name="dreambox remote control (native)"' ]; then
 			FOUND=true
+		elif [ "$B" = 'Name="azbox remote control (native)"' ]; then
+			FOUND=true
 		else
 			FOUND=false
 		fi
 		;;
-	H:)	$found || continue
+	H:)	$FOUND || continue
 		C=${B#*=}
 		ln -sf $C /dev/input/nevis_ir
 		break

@@ -1,13 +1,13 @@
 #Makefile to build devel-tools
 
-$(D)/strace: $(ARCHIVE)/strace-4.5.20.tar.bz2 | $(TARGETPREFIX)
+$(D)/strace: $(ARCHIVE)/strace-$(STRACE_VER).tar.xz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/strace-4.5.20.tar.bz2
+	$(UNTAR)/strace-$(STRACE_VER).tar.xz
 ifeq ($(PLATFORM), tripledragon)
-	cd $(BUILD_TMP)/strace-4.5.20 && \
+	cd $(BUILD_TMP)/strace-$(STRACE_VER) && \
 		$(PATCH)/strace-add-TD-ioctls.diff
 endif
-	set -e; cd $(BUILD_TMP)/strace-4.5.20; \
+	set -e; cd $(BUILD_TMP)/strace-$(STRACE_VER); \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CPPFLAGS="-I$(TARGETPREFIX)/include" \
 		CXXFLAGS="$(TARGET_CXXFLAGS)" \
@@ -17,8 +17,8 @@ endif
 		make install prefix=$(PKGPREFIX)
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm $(PKGPREFIX)/bin/strace-graph
-	$(OPKG_SH) $(CONTROL_DIR)/strace
-	$(REMOVE)/strace-4.5.20 $(PKGPREFIX)
+	PKG_VER=$(STRACE_VER) $(OPKG_SH) $(CONTROL_DIR)/strace
+	$(REMOVE)/strace-$(STRACE_VER) $(PKGPREFIX)
 	$(REMOVE)/.remove
 	touch $@
 

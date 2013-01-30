@@ -201,7 +201,8 @@ $(D)/skeleton: | $(TARGETPREFIX)
 	cp --remove-destination -a skel-root/$(PLATFORM)/* $(TARGETPREFIX)/
 
 $(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
-	$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko
+	if ! grep -q CONFIG_AUTOFS4_FS=y $(K_OBJ)/.config; then \
+		$(MAKE) $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko; fi
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/autofs-$(AUTOFS-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/autofs-$(AUTOFS-VER); \
@@ -212,8 +213,10 @@ $(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
 	install -m 0755 -D $(SCRIPTS)/autofs.init $(PKGPREFIX)/etc/init.d/autofs
 	ln -sf autofs $(PKGPREFIX)/etc/init.d/S60autofs
 	ln -sf autofs $(PKGPREFIX)/etc/init.d/K40autofs
-	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4
-	cp -a $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/
+	if ! grep -q CONFIG_AUTOFS4_FS=y $(K_OBJ)/.config; then \
+		mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4; \
+		cp -a $(TARGETPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/autofs4.ko $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/fs/autofs4/; \
+	fi
 	cp -a --remove-destination $(PKGPREFIX)/* $(TARGETPREFIX)/
 	$(OPKG_SH) $(CONTROL_DIR)/autofs
 	rm -rf $(PKGPREFIX)
@@ -350,15 +353,10 @@ else
 VALGRIND_EXTRA_EXPORT = :
 endif
 # newer valgrind is probably only usable with external toolchain and newer glibc (posix threads)
-$(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.7.0.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/valgrind-3.7.0.tar.bz2
+$(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-$(VALGRIND_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/valgrind-$(VALGRIND_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
-	set -e; cd $(BUILD_TMP)/valgrind-3.7.0; \
-		$(PATCH)/valgrind-3.7.0-configurefix.diff; \
-		$(PATCH)/valgrind-3.7.0-rwx_fix.diff; \
-		rm -f uname; \
-		printf "#!/bin/sh\necho 2.6.26.8\n" > uname; chmod 0755 uname; \
-		export PATH=.:$$PATH; \
+	set -e; cd $(BUILD_TMP)/valgrind-$(VALGRIND_VER); \
 		export ac_cv_path_GDB=/opt/pkg/bin/gdb; \
 		$(VALGRIND_EXTRA_EXPORT); \
 		export AR=$(TARGET)-ar; \
@@ -372,8 +370,8 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-3.7.0.tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)/opt/pkg/include $(PKGPREFIX)/opt/pkg/lib/pkconfig
 	rm -rf $(PKGPREFIX)/opt/pkg/lib/valgrind/*.a
 	rm -rf $(PKGPREFIX)/opt/pkg/bin/{cg_*,callgrind_*,ms_print} # perl scripts - we don't have perl
-	PKG_VER=3.7.0 $(OPKG_SH) $(CONTROL_DIR)/valgrind
-	$(REMOVE)/valgrind-3.7.0 $(PKGPREFIX)
+	PKG_VER=$(VALGRIND_VER) $(OPKG_SH) $(CONTROL_DIR)/valgrind
+	$(REMOVE)/valgrind-$(VALGRIND_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATCHES)/lircd_spark.conf $(wildcard $(PATCHES)/lircd_spark.conf.0?_*)

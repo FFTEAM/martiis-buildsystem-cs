@@ -12,6 +12,22 @@ OLD=$1
 NEW=$2
 
 if test -z "$NEW"; then
+	NEW=$OLD
+	OLD=${OLD/\/opkg//opkg/.old}
+	CNT=${OLD%.opk}
+	CNT=${CNT##*-}
+	CNT=$((CNT-1))
+	OLD=${OLD%-*}
+	OLD=${OLD}-${CNT}.opk
+	if test -e $OLD; then
+		ls $OLD $NEW
+	else
+		echo "old package for $NEW doesn't seem to exist."; echo
+		NEW=
+	fi
+fi
+
+if test -z "$NEW"; then
 	echo "usage: $ME oldpackage.opk newpackage.opk"
 	echo
 	exit 1

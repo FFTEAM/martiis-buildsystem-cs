@@ -1,7 +1,8 @@
 #Makefile to build NEUTRINO
 
-NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg libungif ffmpeg libdvbsi++
+NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg giflib ffmpeg libdvbsi++
 NEUTRINO_DEPS += openthreads
+NEUTRINO_PKG_DEPS =
 
 N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL -DCPU_FREQ -DMARTII
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
@@ -40,6 +41,11 @@ ifeq ($(USE_STB_HAL), yes)
 N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
 	--with-stb-hal-build=$(LH_OBJDIR)
 NEUTRINO_DEPS2 = libstb-hal
+ifeq ($(PLATFORM), azbox)
+# needed for forkpty() in libstb-hal/azbox/playback.cpp
+N_CFLAGS += -lutil
+NEUTRINO_PKG_DEPS += rmfp_player
+endif
 endif
 ifeq ($(PLATFORM), spark)
 NEUTRINO_DEPS += alsa-lib
@@ -57,6 +63,9 @@ N_LDFLAGS += -Wl,-rpath-link,$(TARGETLIB)
 
 # finally we can build outside of the source directory
 N_OBJDIR = $(BUILD_TMP)/$(FLAVOUR)
+ifeq ($(FLAVOUR), neutrino-hd-td)
+N_OBJDIR = $(BUILD_TMP)/neutrino-hd
+endif
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(N_HD_SOURCE)
 
@@ -67,7 +76,8 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS)" CXXFLAGS="$(N_CFLAGS)" CPPFLAGS="$(N_CPPFLAGS)" \
 		LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
-				--enable-silent-rules --enable-mdev --enable-freesatepg \
+				--enable-silent-rules --enable-mdev --enable-giflib \
+				--enable-freesatepg \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				$(N_CONFIG_OPTS) \
 				INSTALL="`which install` -p"; \
@@ -76,18 +86,25 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
 
 
+ifneq ($(FLAVOUR), neutrino-mp)
+HOMEPAGE = "http://gitorious.org/neutrino-hd"
+IMGNAME  = "HD-Neutrino"
+else
+HOMEPAGE = "http://gitorious.org/neutrino-mp"
+IMGNAME  = "Neutrino-MP"
+endif
 $(PKGPREFIX)/.version \
 $(TARGETPREFIX)/.version:
 	echo "version=1200`date +%Y%m%d%H%M`"	 > $@
 	echo "creator=$(MAINTAINER)"		>> $@
-	echo "imagename=HD-Neutrino"		>> $@
+	echo "imagename=$(IMGNAME)"		>> $@
 	A=$(FLAVOUR); F=$${A#neutrino-??}; \
 		B=`cd $(N_HD_SOURCE); git describe --always --dirty`; \
 		C=$${B%-dirty}; D=$${B#$$C}; \
 		E=`cd $(N_HD_SOURCE); git tag --contains $$C`; \
 		test -n "$$E" && C="$$E"; \
 		echo "builddate=$$C$$D $${F:1}" >> $@
-	echo "homepage=http://gitorious.org/neutrino-hd"	>> $@
+	echo "homepage=$(HOMEPAGE)"		>> $@
 ifeq ($(USE_STB_HAL), yes)
 	A=`cd $(LH_SRC); git describe --always --dirty`; \
 		echo "libstbhalver=$$A" >> $@
@@ -102,7 +119,7 @@ $(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	+make $(TARGETPREFIX)/.version
 	: touch $@
 
-neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
+neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2) $(NEUTRINO_PKG_DEPS)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/neutrino-control
 	$(MAKE) -C $(N_OBJDIR) clean   DESTDIR=$(TARGETPREFIX)
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
@@ -110,6 +127,9 @@ neutrino-pkg: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(PKGPREFIX)
 	install -D -m 0755 skel-root/common/etc/init.d/start_neutrino $(PKGPREFIX)/etc/init.d/start_neutrino
 	make $(PKGPREFIX)/.version
+ifeq ($(USE_STB_HAL), yes)
+	cp -a $(TARGETPREFIX)/bin/pic2m2v $(PKGPREFIX)/bin/
+endif
 	cp -a $(CONTROL_DIR)/$(NEUTRINO_PKG) $(BUILD_TMP)/neutrino-control
 ifeq ($(PLATFORM), tripledragon)
 	grep -q /dev/dvb/adapter%d/frontend%d $(PKGPREFIX)/bin/neutrino && \
@@ -120,14 +140,10 @@ endif
 		DEP="$${DEP// /, }" && \
 		sed -i "s/@DEP@/$$DEP/" $(BUILD_TMP)/neutrino-control/control
 ifeq ($(PLATFORM), coolstream)
-	if grep -q libcoolstream-mt.so $(BUILD_TMP)/neutrino-control/control; then \
-		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1984), cs-drivers (>= 1861)/' $(BUILD_TMP)/neutrino-control/control; \
-	else \
-		sed -i 's/^\(Depends:.*\)$$/\1, cs-libs (>= 1134), cs-drivers/' $(BUILD_TMP)/neutrino-control/control; \
-	fi
+	sed -i 's/^\(Depends:.*\)$$/\1, cs-drivers/' $(BUILD_TMP)/neutrino-control/control
 endif
 ifeq ($(PLATFORM), azbox)
-	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers/' $(BUILD_TMP)/neutrino-control/control
+	sed -i 's/^\(Depends:.*\)$$/\1, azboxme-dvb-drivers, rmfp_player/' $(BUILD_TMP)/neutrino-control/control
 endif
 	#install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	find $(PKGPREFIX)/share/tuxbox/neutrino/locale/ -type f \
@@ -146,7 +162,7 @@ PHONY += neutrino-clean neutrino-system neutrino-system-seife
 
 LH_DEPS =
 ifeq ($(PLATFORM), spark)
-LH_DEPS += $(D)/libass | stfbcontrol
+LH_DEPS += libass ffmpeg | stfbcontrol
 endif
 LH_OBJDIR = $(BUILD_TMP)/libstb-hal
 LH_SRC = $(SOURCE_DIR)/libstb-hal

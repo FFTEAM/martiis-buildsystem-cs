@@ -1,0 +1,36 @@
+#!/bin/sh
+#
+# wait for devices to show up during boot before
+# finally starting neutrino
+
+# configure your own list in /etc/devwait.conf if you want / need
+if test -e /etc/devwait.conf; then
+	DEVICES=$(cat /etc/devwait.conf)
+else
+	# defaults. input/uinput is taken care of by lirc init script
+	DEVICES="/dev/dvb/adapter0/demux0 /dev/dvb/adapter0/video0
+		 /dev/dvb/adapter0/audio0 /dev/dvb/adapter0/frontend0
+		 /dev/fb/0"
+fi
+
+case $1 in
+start)
+	FAIL=false
+	echo "waiting for mandatory devices to show up"
+	C=0
+	read S x < /proc/uptime
+	for i in $DEVICES; do
+		# wait 5 seconds
+		/sbin/wait_for_device $i 5 || FAIL=true
+		C=$(($C + 1))
+	done
+	read E x < /proc/uptime
+	E=${E//.}
+	S=${S//.}
+	T=$(($E-$S-$C)) # ~10 ms for every call, even if the device is already there
+	$FAIL && echo "WARNING: at least one device seems to be missing."
+	test $T \> 0 && echo "...had to wait ${T}0ms for devices to show up"
+	$FAIL
+	;;
+esac
+

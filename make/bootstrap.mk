@@ -3,6 +3,7 @@
 BOOTSTRAP  = targetprefix $(BUILD_TMP) $(CROSS_BASE) $(HOSTPREFIX)/bin includes-and-libs
 BOOTSTRAP += $(TARGETPREFIX)/lib/libc.so.6
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
+BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-gitdescribe.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-find-requires.sh $(HOSTPREFIX)/bin/opkg-find-provides.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-module-deps.sh
 BOOTSTRAP += pkg-config
@@ -14,7 +15,8 @@ endif
 ifeq ($(PLATFORM), coolstream)
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
-PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
+PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
+# PLAT_LIBS += $(TARGETPREFIX)/lib/libcoolstream.so
 PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
 endif
 ifeq ($(PLATFORM), spark)
@@ -67,19 +69,19 @@ $(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream/* $@/
 
-$(TARGETPREFIX)/lib/libnxp.so: $(SVN_TP_LIBS)/libnxp/libnxp.so | $(TARGETPREFIX)
-	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $@
+$(TARGETPREFIX)/lib/libnxp.so: $(UNCOOL_LIBNXP) | $(TARGETPREFIX)
+	cp -a $(UNCOOL_LIBNXP) $@
 
-$(TARGETPREFIX)/lib/libcoolstream%.so: $(SVN_TP_LIBS)/libcs/libcoolstream%.so | $(TARGETPREFIX)
-	cp -a $(SVN_TP_LIBS)/libcs/$(shell basename $@) $@
+$(TARGETPREFIX)/lib/libcoolstream%.so: $(UNCOOL_LIBCS) | $(TARGETPREFIX)
+	cp -a $(UNCOOL_LIBCS) $@
 
 $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	mkdir -p $@
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/* $@/
 
-$(TARGETPREFIX)/lib/modules/2.6.26.8-nevis: | $(TARGETPREFIX)
-	mkdir -p $@
-	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $@/
+$(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis: | $(TARGETPREFIX)
+	mkdir -p $@/extra
+	cp -a $(UNCOOL_DRIVER)/* $@/extra/
 
 $(PKGPREFIX)/lib/modules/2.6.12 \
 $(TARGETPREFIX)/lib/modules/2.6.12: | $(TARGETPREFIX) $(TD_SVN)/ARMAS
@@ -112,7 +114,7 @@ $(TD_SVN)/ARMAS:
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 
 ifeq ($(PLATFORM), coolstream)
-cs-modules: $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
+cs-modules: $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
 endif
 
 ifeq ($(PLATFORM), tripledragon)
@@ -198,7 +200,7 @@ $(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz | $(
 	$(REMOVE)/pkg-config-$(PKGCONFIG_VER)
 
 # hack to make sure they are always copied
-PHONY += $(TARGETPREFIX)/lib/modules/2.6.26.8-nevis
+PHONY += $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
 PHONY += $(TARGETPREFIX)/include/coolstream
 PHONY += $(TARGETPREFIX)/lib/libnxp.so
 PHONY += $(TARGETPREFIX)/lib/libcoolstream.so

@@ -15,15 +15,17 @@ ifneq ($(PLATFORM), coolstream)
 # good platforms use the open sourced libstb-hal...
 USE_STB_HAL ?= yes
 # ...and the neutrino-multiplatform edition
-FLAVOUR     ?= neutrino-hd-tripledragon
+#FLAVOUR     ?= neutrino-mp
+FLAVOUR     ?= neutrino-hd-td
 
 ifeq ($(PLATFORM), tripledragon)
-ifneq ($(TD_COMPILER), new)
-TD_COMPILER ?= old
-TARGET      ?= powerpc-405-linux-gnu
-else
+ifneq ($(TD_COMPILER), old)
 # name it differently to avoid subtleties...
 TARGET      ?= powerpc-405n-linux-gnu
+TD_COMPILER ?= new
+else
+# TD_COMPILER == old
+TARGET      ?= powerpc-405-linux-gnu
 endif
 BOXARCH     ?= powerpc
 endif # tripledragon
@@ -41,7 +43,7 @@ endif
 else  # coolstream
 USE_STB_HAL ?= no
 TARGET      ?= arm-cx2450x-linux-gnueabi
-FLAVOUR     ?= neutrino-hd
+FLAVOUR     ?= neutrino-mp
 BOXARCH     ?= arm
 endif
 
@@ -160,6 +162,21 @@ OPKG_SH_ENV += ARCH=$(BOXARCH)
 OPKG_SH_ENV += SOURCE=$(PKGPREFIX)
 OPKG_SH_ENV += BUILD_TMP=$(BUILD_TMP)
 OPKG_SH = $(OPKG_SH_ENV) opkg.sh
+
+UNCOOL_GIT    = $(SOURCE_DIR)/uncool
+UNCOOL_KVER  ?= 2.6.34.13
+# svn to check out from obsolete SVN
+UNCOOL_SOURCE?= git
+ifneq ($(UNCOOL_SOURCE), git)
+UNCOOL_LIBCS  = $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
+UNCOOL_LIBNXP = $(SVN_TP_LIBS)/libnxp/libnxp.so
+UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER)-nevis
+else
+UNCOOL_LIBCS  = $(UNCOOL_GIT)/cst-public-drivers/libs/libcoolstream-mt.so
+UNCOOL_LIBNXP = $(UNCOOL_GIT)/cst-public-drivers/libs/libnxp.so
+UNCOOL_DRIVER = $(UNCOOL_GIT)/cst-public-drivers/drivers/$(UNCOOL_KVER)-nevis
+endif
+UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP)
 
 ## for spark TDT git repos...
 #ifeq ($(TDT_REPO), "pinky")

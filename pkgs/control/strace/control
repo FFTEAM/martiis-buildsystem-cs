@@ -1,5 +1,5 @@
 Package: strace
-Version: 4.5.20-1
+Version: @VER@-1
 Description: System Call Tracer
 Section: base
 Priority: optional

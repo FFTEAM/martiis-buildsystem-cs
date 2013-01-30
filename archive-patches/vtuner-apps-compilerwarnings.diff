@@ -1,0 +1,316 @@
+diff -r b6fa0d2b133b vtuner-dvb-3.c
+--- a/vtuner-dvb-3.c	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtuner-dvb-3.c	Fri Jan 04 10:05:56 2013 +0100
+@@ -95,7 +95,7 @@
+     if(hw->demux_fd[i] > 0) 
+       close(hw->demux_fd[i]);
+ 
+-cleanup_dvr:
++//cleanup_dvr:
+   close(hw->streaming_fd);
+ 
+ cleanup_fe:
+@@ -145,7 +145,7 @@
+ }
+ 
+ int hw_set_frontend(vtuner_hw_t* hw, struct dvb_frontend_parameters* fe_params) {
+-  int ret;
++  int ret = -1;
+   char msg[1024];
+   print_frontend_parameters(hw, fe_params, msg, sizeof(msg));
+   INFO(MSG_NET, "FE_SET_FRONTEND parameters: %s", msg);
+@@ -236,6 +236,7 @@
+ }
+ 
+ int hw_get_property(vtuner_hw_t* hw, struct dtv_property* prop) {
++  (void)hw;
+   WARN(MSG_HW, "FE_GET_PROPERTY: not implemented %d\n", prop->cmd);
+   return 0;
+ }
+diff -r b6fa0d2b133b vtuner-dvb-3.h
+--- a/vtuner-dvb-3.h	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtuner-dvb-3.h	Fri Jan 04 10:05:56 2013 +0100
+@@ -2,6 +2,8 @@
+ #define _VTUNER_DVB_3_H_
+ 
+ #include "vtuner-network.h"
++void init_message(const char* fmt, ... );
++void append_message(const char* fmt, ... );
+ 
+ #define DEBUGHW(msg, ...)  DEBUG(MSG_HW, msg, ## __VA_ARGS__)
+ #define DEBUGHWI(msg, ...) init_message("[%d %s:%u] debug: " msg, getpid(), __FILE__, __LINE__, ## __VA_ARGS__)
+diff -r b6fa0d2b133b vtuner-network.c
+--- a/vtuner-network.c	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtuner-network.c	Fri Jan 04 10:05:56 2013 +0100
+@@ -1,6 +1,7 @@
+ #include "vtuner-network.h"
+ #include <string.h>
+ #include <stdio.h>
++#include <arpa/inet.h>
+ 
+ #define NTOHB(host,net,field) host->field=net.field
+ #define NTOHS(host,net,field) host->field=ntohs(net.field)
+@@ -362,7 +363,7 @@
+ 
+ void print_vtuner_net_message(vtuner_net_message_t* netmsg) {
+   char* bytes;
+-  int i;
++  unsigned int i;
+   bytes=(char*)netmsg;
+   DEBUGNET(" (%d) ",sizeof(vtuner_net_message_t));
+   for(i=0; i<sizeof(vtuner_net_message_t); ++i) {
+diff -r b6fa0d2b133b vtuner-utils.c
+--- a/vtuner-utils.c	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtuner-utils.c	Fri Jan 04 10:05:56 2013 +0100
+@@ -28,7 +28,7 @@
+     va_start(ap, fmt);
+     vsnprintf(tn, sizeof(tn), fmt, ap);
+     va_end(ap);
+-    strncat(msg, tn, sizeof(msg));
++    strncat(msg, tn, sizeof(msg)-strlen(msg)-1);
+ 
+     if(use_syslog) {
+       int priority;
+@@ -65,7 +65,7 @@
+   vsnprintf(tn, sizeof(tn), fmt, ap);
+   va_end(ap);
+ 
+-  strncat(msg, tn, sizeof(msg));
++  strncat(msg, tn, sizeof(msg)-strlen(msg)-1);
+ }  
+ 
+ int open_udplog(char *ipaddr, int portnum) {
+diff -r b6fa0d2b133b vtuner-utils.h
+--- a/vtuner-utils.h	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtuner-utils.h	Fri Jan 04 10:05:56 2013 +0100
+@@ -1,6 +1,9 @@
+ #ifndef _VTUNERUTILS_H_
+ #define _VTUNERUTILS_H_
+ 
++#include <sys/types.h>
++#include <unistd.h>
++
+ extern int dbg_level;
+ extern unsigned int dbg_mask; // MSG_MAIN | MSG_NET | MSG_HW
+ extern int use_syslog;
+diff -r b6fa0d2b133b vtunerc.c
+--- a/vtunerc.c	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtunerc.c	Fri Jan 04 10:05:56 2013 +0100
+@@ -16,6 +16,7 @@
+ #include <linux/dvb/version.h>
+ #include <time.h>
+ #include <sys/param.h>
++#include <pthread.h>
+ 
+ #include "vtuner-network.h"
+ 
+@@ -189,6 +190,7 @@
+ 
+   ERROR(MSG_MAIN, "TS data copy thread terminated.\n");
+   data->status = DST_EXITING;
++  return NULL;
+ }
+ 
+ typedef enum discover_worker_status {
+@@ -208,7 +210,7 @@
+   unsigned short port;
+ } discover_worker_data_t;
+ 
+-int *discover_worker(void *d) {
++void *discover_worker(void *d) {
+   discover_worker_data_t* data = (discover_worker_data_t*)d;
+ 
+   INFO(MSG_MAIN, "starting discover thread\n");
+@@ -234,7 +236,7 @@
+   struct sockaddr_in  msg_addr;
+   msg_addr.sin_family = AF_INET;
+   if(data->direct_ip) {
+-    struct in_addr dirip;
++//    struct in_addr dirip;
+     if(!inet_aton(data->direct_ip, &msg_addr.sin_addr)) {
+       ERROR(MSG_MAIN, "can't parse direct ip: %s\n", data->direct_ip);
+       close(discover_fd);
+@@ -260,11 +262,11 @@
+     struct pollfd pfd[] = { { discover_fd, POLLIN, 0 } }; 
+     while( data->msg.u.discover.port == 0 &&
+            poll(pfd, 1, timeo) == 1 ) {
+-      int server_addrlen = sizeof(data->server_addr);
++      socklen_t server_addrlen = sizeof(data->server_addr);
+       recvfrom( discover_fd,  &data->msg, sizeof(data->msg), 0, (struct sockaddr *)&data->server_addr, &server_addrlen );
+     }
+     if( timeo < 10000) timeo *= 2;
+-  } while (data->msg.u.discover.port == 0); 
++  } while (/*data->msg.u.discover.port ==*/ 0); 
+ 
+   data->server_addr.sin_port = data->msg.u.discover.port; // no need for ntoh here
+   ntoh_vtuner_net_message(&data->msg, 0);
+@@ -274,6 +276,7 @@
+ 
+ discover_worker_end:
+   close(discover_fd);
++  return NULL;
+ }
+ 
+ typedef enum vtuner_status {
+@@ -350,10 +353,10 @@
+   char ctypes[MAX_NUM_VTUNER_MODES][32] = {"none", "none", "none"};
+   struct dvb_frontend_info* vtuner_info[MAX_NUM_VTUNER_MODES];
+   int types[MAX_NUM_VTUNER_MODES];
+-  char *pext, direct_ip[128];
++  char /* *pext,*/ direct_ip[128];
+   unsigned int groups = VTUNER_GROUPS_ALL;
+   unsigned int discover_port = VTUNER_DISCOVER_PORT;
+-  int argadd = 0;
++//  int argadd = 0;
+   int vtuner_control;
+   struct stat st;
+   char *ctrl_devname = VTUNER_CTRL_DEVNAME;
+@@ -571,11 +574,12 @@
+   vtuner_status_t vts = VTS_DISCONNECTED;
+   long values_received = 0;
+   vtuner_update_t values;
+-  int vfd;
++  int vfd = -1;
+ 
+   #define RECORDLEN 5
+   vtuner_net_message_t record[RECORDLEN]; // SET_TONE, SET_VOLTAGE, SEND_DISEQC_MSG, MSG_PIDLIST
+   memset(&record, 0, sizeof(vtuner_net_message_t)*RECORDLEN);
++  memset(&values, 0, sizeof(values));
+ 
+   while(dsd.status != DWS_FAILED) {
+     pthread_t dwt, dst;
+diff -r b6fa0d2b133b vtunerd-service.c
+--- a/vtunerd-service.c	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtunerd-service.c	Fri Jan 04 10:05:56 2013 +0100
+@@ -7,16 +7,18 @@
+ #include <sys/socket.h>
+ #include <fcntl.h>
+ #include <netinet/in.h>
++#include <arpa/inet.h>
+ #include <netinet/tcp.h>
+ #include <signal.h>
+ #include <time.h>
++#include <pthread.h>
+ 
+ #include "vtunerd-service.h"
+ 
+ #define xstr(s) str(s)
+ #define str(s) #s
+ 
+-static unsigned short discover_port = VTUNER_DISCOVER_PORT;
++//static unsigned short discover_port = VTUNER_DISCOVER_PORT;
+ static int discover_fd = 0;
+ 
+ static unsigned short listen_port = VTUNER_DISCOVER_PORT;
+@@ -32,10 +34,9 @@
+ 	}
+ 
+ 	if( ip && strlen(ip) ) {
+-		unsigned long nip;
+-  		inet_aton(ip, &nip);
+-		if( nip )
+-			listen_ip = ntohl(nip);
++		struct in_addr nip;
++		if (inet_aton(ip, &nip))
++			listen_ip = ntohl(nip.s_addr);
+ 	}
+ 	if( port )
+ 		listen_port = port;
+@@ -70,14 +71,14 @@
+   addr->sin_addr.s_addr = htonl(listen_ip);
+   addr->sin_port = 0;
+ 
+-  if( ret = bind(listen_fd, (struct sockaddr*)addr, *addrlen) < 0) {
++  if((ret = bind(listen_fd, (struct sockaddr*)addr, *addrlen)) < 0) {
+     ERROR(MSG_SRV, "failed to bind socket - %m\n");
+     goto cleanup_listen;
+   }
+ 
+   getsockname(listen_fd, (struct sockaddr*)addr, addrlen);
+ 
+-  if( ret = listen(listen_fd, 1) < 0 ) {
++  if((ret = listen(listen_fd, 1)) < 0 ) {
+     ERROR(MSG_SRV, "failed to listen on socket - %m\n");
+     goto cleanup_listen;
+   }
+@@ -192,7 +193,7 @@
+ 
+   while(data->status == DST_RUNNING) {
+     struct pollfd pfd[] = { {data->in, POLLIN, 0}, {out_fd, POLLOUT, 0} };
+-    int waiting = poll(pfd, 2, 10);
++    /*int waiting =*/ poll(pfd, 2, 10);
+ 
+     if(pfd[0].revents & POLLIN) {
+       int rmax = (sizeof(buffer) - bufptr);
+@@ -215,7 +216,9 @@
+     int w = bufptr - bufptr_write;
+     clock_gettime(CLOCK_MONOTONIC, &t);
+     now = (long long)t.tv_sec*1000 + (long long)t.tv_nsec/1000000;
++#if 0
+     long long delta = now - last_written;
++#endif
+ 
+     // 2010-04-04:
+     // send data in the same amount as received on the
+@@ -266,11 +269,12 @@
+   INFO(MSG_SRV, "TS data copy thread terminated.\n");
+   close(out_fd);
+   data->status = DST_ENDED;
++  return NULL;
+ }
+ 
+ int fetch_request(struct sockaddr_in *client_so, int *proto, int *tuner_type, int *tuner_group) {
+ 
+-	int clientlen = sizeof(*client_so);
++	socklen_t clientlen = sizeof(*client_so);
+ 	vtuner_net_message_t msg;
+ 
+ 	INFO(MSG_SRV, "waiting for autodiscover packet (groups 0x%04X) ...\n", *tuner_group);
+@@ -302,7 +306,7 @@
+ 	struct sockaddr_in ctrl_so, data_so;
+ 	socklen_t ctrllen = sizeof(ctrl_so), datalen = sizeof(data_so);
+ 
+-	int listen_fd, ctrl_fd;
++	int listen_fd, ctrl_fd = -1;
+ 	int ex = 0;
+ 
+ 	#if HAVE_DVB_API_VERSION < 3
+@@ -493,10 +497,10 @@
+ 		pthread_join(dwt, NULL);
+ 		DEBUGSRV("TS data copy thread terminated - %m\n");
+ 
+-	cleanup_ctrl:
++//	cleanup_ctrl:
+ 		close(ctrl_fd);
+ 
+-	cleanup_listen_data:
++//	cleanup_listen_data:
+ 		close(dwd.listen_fd);
+ 
+ 	cleanup_listen:
+@@ -505,7 +509,7 @@
+ 	cleanup_hw:
+ 		hw_free(&hw);
+ 
+-	error:
++//	error:
+ 		INFO(MSG_SRV, "control thread terminated.\n");
+ 
+ 	return ex;
+diff -r b6fa0d2b133b vtunerd.c
+--- a/vtunerd.c	Tue Feb 14 21:22:36 2012 +0100
++++ b/vtunerd.c	Fri Jan 04 10:05:56 2013 +0100
+@@ -38,6 +38,7 @@
+ 	  vtuner_session_t *session = (vtuner_session_t*)data;
+ 	  run_worker(session->adapter, session->frontend, session->demux, session->dvr, &session->client_so);
+ 	  session->status = SST_IDLE;
++	  return NULL;
+ }
+ 
+ int main(int argc, char **argv) {
+@@ -192,4 +193,5 @@
+ 		}
+ 	}
+ 
++	return 1;
+ }

@@ -11,7 +11,9 @@
 ###########################
 
 # azbox-dvb-modules
-AZBOX_DVB_M_VER=20120905-1
+AZBOX_DVB_M_VER=20130117
+# not the most useful date format...
+AZBOX_INITRAMFS_VER=08012013
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1
@@ -23,6 +25,9 @@ MAD_VER=0.15.1b
 # libungif; converting images
 UNGIF_VER=4.1.4
 
+# giflib: replaces libungif
+GIFLIB_VER=5.0.2
+
 # libiconv; converting encodings
 ICONV-VER=1.14
 
@@ -30,7 +35,7 @@ ICONV-VER=1.14
 IPERF-VER=2.0.5
 
 # zlib; compression an decompressin library
-ZLIB_VER=1.2.6
+ZLIB_VER=1.2.7
 
 # util-linux-ng; tools for filesystems, partitions, console und system messages
 UTIL_LINUX_NG_VER=2.18
@@ -39,17 +44,17 @@ UTIL_LINUX_NG_VER=2.18
 CURL_VER=7.26.0
 
 # libpng; reference library for reading and writing PNGs
-PNG-VER=1.2.44
+PNG_VER=1.2.50
 
 # freetype; free, high-quality and portable Font engine
-FREETYPE_VER=2.3.12
+FREETYPE_VER=2.4.11
 
 # libjpeg-turbo; a derivative of libjpeg for x86 and x86-64 processors which uses SIMD instructions (MMX, SSE2, etc.) to accelerate baseline JPEG compression and decompression
 JPEG_TURBO_VER=1.1.1
 
 # boost; portable C++ source library
 BOOST_MAJOR=1
-BOOST_MINOR=49
+BOOST_MINOR=52
 BOOST_MICRO=0
 BOOST_VER=$(BOOST_MAJOR)_$(BOOST_MINOR)_$(BOOST_MICRO)
 
@@ -62,10 +67,10 @@ OPENSSL_SUBVER=q
 FFMPEG_VER=0.8.12
 
 # libogg; encoding, decoding of the ogg file format
-OGG_VER=1.1.4
+OGG_VER=1.3.0
 
 # libvorbis; encoding, decoding fixed or variable bitrates of ogg vorbis formats
-VORBIS_VER=1.2.3
+VORBIS_VER=1.3.3
 
 # libass: ass / ssa subtitle renderer
 #LIBASS_VER=0.9.11
@@ -80,6 +85,9 @@ LIRC_VER=0.9.0
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 
+# nano; a simple editor for Linux
+NANO_VER=2.2.6
+
 # DirectFB; thin library that provides hardware graphics acceleration, input device handling and abstraction
 DIRECTFB_VER=1.4.3
 
@@ -88,7 +96,8 @@ DIRECTFB_VER=1.4.3
 DVDCSS_VER=1.2.12
 
 # libvorbisidec;  libvorbisidec is an Ogg Vorbis audio decoder (also known as "tremor") with no floating point arithmatic
-VORBISIDEC_VER=1.0.2+svn16259
+VORBISIDEC_SVN=18153
+VORBISIDEC_VER=1.0.2+svn$(VORBISIDEC_SVN)
 VORBISIDEC_VER_APPEND=.orig
 
 # libpcap; system-independent interface for user-level packet capture
@@ -148,6 +157,8 @@ AUTOFS-VER=4.1.4
 SAMBA2-VER=2.2.12
 SAMBA3-VER=
 
+STRACE_VER=4.7
+
 # portmap; an ONC RPC service that runs on network nodes that provide other ONC RPC services
 PORTMAP-VER=6.0
 
@@ -171,6 +182,9 @@ DBUS-VER=1.4.6
 
 # ntp; synchronize system clock over a network
 NTP_VER=4.2.6p5
+
+# valgrind debugging and profiling tool suite
+VALGRIND_VER = 3.8.1
 
 #########################
 # extras; make/extras.mk
@@ -219,7 +233,7 @@ MC-VER=4.6.2
 SG3_UTILS-VER=1.33
 
 # FUSE; filesystems in userspace
-FUSE_VER=2.8.5
+FUSE_VER=2.9.2
 
 # ALSA, the Advanced Linux Sound Architecture
 ALSA_VER=1.0.25
@@ -254,6 +268,20 @@ MTD_UTILS_VER=1.5.0
 
 # GNU FriBidi
 FRIBIDI_VER=0.19.4
+
+# libusb; a C library that gives applications easy access to USB devices
+USB_VER=1.0.9
+
+#libusb-compat; a replacement/wrapper for libusb-0.1
+USBCMPT_VER=0.1.4
+
+#dpf-ax; an attempt to create a replacement firmware for AX206 based digital picture frames
+DPF-AXREV=40
+
+# LCD4Linux; a small program that grabs information from the kernel and some subsystems and displays it on an external liquid crystal display
+LCD4LINUX_VER=0.10.0
+LCD4LINUX_SVN=1184
+LCD4LINUX_SVN_VER=$(LCD4LINUX_VER)+svnr$(LCD4LINUX_SVN)
 
 ##################################
 # devel-tools; make/devel-tools.mk

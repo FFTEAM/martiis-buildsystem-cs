@@ -27,9 +27,12 @@ rm -f build_tmp/usb.img
 dd if=/dev/zero of=build_tmp/usb.img bs=1 count=1 seek=$(($SIZE * 1000000 - 1))
 
 # add partitions
+# kernel partition's size in sectors (actually it's 1MB smaller due to
+# the 2048 sectors start offset for alignment)
+KPARTSIZE=$((16*1024*2))
 parted build_tmp/usb.img mklabel msdos
-parted -a none build_tmp/usb.img mkpart primary fat16 0 15
-parted -a none build_tmp/usb.img mkpart primary ext2 15 $SIZE
+parted -a none build_tmp/usb.img mkpart primary fat16 2048s ${KPARTSIZE}s
+parted -a none build_tmp/usb.img mkpart primary ext2 $(($KPARTSIZE + 1))s $SIZE
 
 mkdir -p build_tmp/usbstick/p1 build_tmp/usbstick/p2
 sudo bash << EOF

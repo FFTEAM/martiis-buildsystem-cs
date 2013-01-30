@@ -2,7 +2,7 @@
 
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 
-ifneq ($(TD_COMPILER), new)
+ifeq ($(TD_COMPILER), old)
 $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 	@echo ' ============================================================================== '
 	@echo "                       Preparing to Build crosstool"

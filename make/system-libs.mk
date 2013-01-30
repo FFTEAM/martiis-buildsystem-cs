@@ -6,6 +6,7 @@ $(D)/zlib: $(ARCHIVE)/zlib-$(ZLIB_VER).tar.bz2 | $(TARGETPREFIX)
 		CC=$(TARGET)-gcc mandir=$(BUILD_TMP)/.remove ./configure --prefix= --shared; \
 		$(MAKE); \
 		ln -sf /bin/true ldconfig; \
+		rm -f $(TARGETPREFIX)/lib/libz.so*; \
 		PATH=$(BUILD_TMP)/zlib-$(ZLIB_VER):$(PATH) make install prefix=$(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/zlib.pc
 	$(REMOVE)/zlib-$(ZLIB_VER) $(PKGPREFIX)
@@ -84,18 +85,36 @@ $(D)/libid3tag: $(D)/zlib $(ARCHIVE)/libid3tag-$(ID3TAG_VER)$(ID3TAG_SUBVER).tar
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2 | $(TARGETPREFIX)
+# obsoleted by giflib, but might still be needed by some 3rd party binaries
+# to make sure it is not used to build stuff, it is not installed in TARGETPREFIX
+$(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
 	$(UNTAR)/libungif-$(UNGIF_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/libungif-$(UNGIF_VER); \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --without-x --bindir=/.remove; \
 		$(MAKE) all; \
-		make install DESTDIR=$(TARGETPREFIX)
-	$(REWRITE_LIBTOOL)/libungif.la
-	rm -rf $(TARGETPREFIX)/.remove
-	$(REMOVE)/libungif-$(UNGIF_VER) $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libungif.so.* $(PKGPREFIX)/lib
+		make install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove $(PKGPREFIX)/include $(PKGPREFIX)/lib/libungif.?? $(PKGPREFIX)/lib/libungif.a
 	$(OPKG_SH) $(CONTROL_DIR)/libungif
+	$(REMOVE)/libungif-$(UNGIF_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/giflib: $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/giflib-$(GIFLIB_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/giflib-$(GIFLIB_VER); \
+		export ac_cv_prog_have_xmlto=no; \
+		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) --bindir=/.remove; \
+		$(MAKE) all; \
+		make install DESTDIR=$(TARGETPREFIX); \
+	$(REWRITE_LIBTOOL)/libgif.la
+	rm -rf $(TARGETPREFIX)/.remove
+	$(REMOVE)/giflib-$(GIFLIB_VER) $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libgif.so.* $(PKGPREFIX)/lib
+	PKG_VER=$(GIFLIB_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/giflib
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -139,27 +158,30 @@ $(D)/libFLAC: $(ARCHIVE)/flac-1.2.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/flac-1.2.1
 	touch $@
 
-$(D)/libpng: $(ARCHIVE)/libpng-$(PNG-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
-	$(UNTAR)/libpng-$(PNG-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/libpng-$(PNG-VER); \
+$(D)/libpng: $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
+	$(UNTAR)/libpng-$(PNG_VER).tar.xz
+	set -e; cd $(BUILD_TMP)/libpng-$(PNG_VER); \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman; \
 		ECHO=echo $(MAKE) all; \
+		rm -f $(TARGETPREFIX)/lib/libpng.so* $(TARGETPREFIX)/lib/libpng12.so*; \
 		make install
-	$(REMOVE)/libpng-$(PNG-VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
+	$(REMOVE)/libpng-$(PNG_VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libpng12
+	PKG_VER=$(PNG_VER) $(OPKG_SH) $(CONTROL_DIR)/libpng12
 	rm -rf $(PKGPREFIX)
 	touch $@
 
 $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/freetype-$(FREETYPE_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/freetype-$(FREETYPE_VER); \
-		patch -p1 < $(PATCHES)/freetype-2.3.9-coolstream.diff; \
+		sed -i '/#define FT_CONFIG_OPTION_OLD_INTERNALS/d' include/freetype/config/ftoption.h; \
+		sed -i '/^FONT_MODULES += \(type1\|cid\|pfr\|type42\|pcf\|bdf\)/d' modules.cfg; \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET); \
 		$(MAKE) all; \
 		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < builds/unix/freetype-config > $(HOSTPREFIX)/bin/freetype-config; \
 		chmod 755 $(HOSTPREFIX)/bin/freetype-config; \
+		rm -f $(TARGETPREFIX)/lib/libfreetype.so*; \
 		make install libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include bindir=$(TARGETPREFIX)/bin prefix=$(TARGETPREFIX)
 	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
@@ -167,7 +189,10 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGE
 	$(REMOVE)/freetype-$(FREETYPE_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libfreetype.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libfreetype
+	PKG_VER=$(FREETYPE_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/libfreetype
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -268,11 +293,14 @@ FFMPEG_CONFIGURE += --disable-bsfs
 endif
 $(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
-	if ! test -d $(SOURCE_DIR)/cst-public-libraries-ffmpeg; then \
-		cd $(SOURCE_DIR) && git clone git://c00lstreamtech.de/cst-public-libraries-ffmpeg.git; \
+	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
+		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
 	fi
 	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
-	cp -a $(SOURCE_DIR)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
+	cp -a $(UNCOOL_GIT)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
+	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
+		$(PATCH)/ffmpeg-lavf-compute-probe-buffer-size-more-reliably.patch; \
+		$(PATCH)/ffmpeg-avio-redesign-ffio_rewind_with_probe_data.patch
 else
 	$(UNTAR)/ffmpeg-$(FFMPEG_VER).tar.bz2
 endif
@@ -331,37 +359,38 @@ $(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi| 
 $(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libogg-$(OGG_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libogg-$(OGG_VER); \
-		patch -p1 < $(PATCHES)/libogg-1.1.4-nodoc.diff; \
 		$(CONFIGURE) --prefix= --enable-shared; \
 		$(MAKE); \
-		make install DESTDIR=$(TARGETPREFIX)
+		make install DESTDIR=$(PKGPREFIX)
+	rm -r $(PKGPREFIX)/share/doc
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ogg.pc
 	$(REWRITE_LIBTOOL)/libogg.la
+	set -e; cd $(PKGPREFIX); rm -rf share include lib/pkgconfig; rm lib/*a lib/*.so
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		PKG_VER=$(OGG_VER) $(OPKG_SH) $(CONTROL_DIR)/libogg
 	$(REMOVE)/libogg-$(OGG_VER) $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libogg.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libogg
-	rm -rf $(PKGPREFIX)
 	touch $@
 
-# for some reason, libvorbis does not work with "--prefix=/"
-$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libvorbis-$(VORBIS_VER).tar.bz2
+$(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.xz | $(TARGETPREFIX)
+	$(UNTAR)/libvorbis-$(VORBIS_VER).tar.xz
 	set -e; cd $(BUILD_TMP)/libvorbis-$(VORBIS_VER); \
-		patch -p1 < $(PATCHES)/libvorbis-1.2.3-nodoc.diff; \
-		patch -p1 < $(PATCHES)/libvorbis-1.2.3-smaller-chunksize.diff; \
-		$(CONFIGURE) --enable-shared --prefix=$(TARGETPREFIX) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)"; \
+		$(CONFIGURE) --enable-shared --prefix= LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" CFLAGS="$(TARGET_CFLAGS)"; \
 		$(MAKE); \
-		make install
-	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbis.pc
-	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisenc.pc
-	# $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libvorbisfile.pc
+		make install DESTDIR=$(PKGPREFIX)
+	rm -r $(PKGPREFIX)/share/doc
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/vorbis.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/vorbisenc.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/vorbisfile.pc
+	$(REWRITE_LIBTOOL)/libvorbis.la
+	$(REWRITE_LIBTOOL)/libvorbisenc.la
+	$(REWRITE_LIBTOOL)/libvorbisfile.la
+	sed -i '/^dependency_libs=/{ s# /lib# $(TARGETPREFIX)/lib#g }' $(TARGETPREFIX)/lib/libvorbis*.la
+	set -e; cd $(PKGPREFIX); rm -rf share include lib/pkgconfig; rm lib/*a lib/*.so
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		PKG_VER=$(VORBIS_VER) $(OPKG_SH) $(CONTROL_DIR)/libvorbis
 	$(REMOVE)/libvorbis-$(VORBIS_VER) $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libvorbis.so.* $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libvorbisfile.so.* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libvorbis
-	rm -rf $(PKGPREFIX)
 	touch $@
 
 ncurses-prereq:
@@ -462,24 +491,32 @@ $(D)/openthreads: | $(TARGETPREFIX) find-lzma
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
+$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz $(D)/libogg
 	$(UNTAR)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
 	set -e; cd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC_VER); \
 		patch -p1 < $(PATCHES)/tremor.diff; \
-		./autogen.sh; \
-		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET); \
+		ACLOCAL_FLAGS="-I . -I $(TARGETPREFIX)/share/aclocal" \
+		$(BUILDENV) ./autogen.sh $(CONFIGURE_OPTS) --prefix= ; \
 		make all; \
 		perl -pi -e "s,^prefix=.*$$,prefix=$(TARGETPREFIX)," vorbisidec.pc; \
 		make install DESTDIR=$(TARGETPREFIX); \
+		make install DESTDIR=$(PKGPREFIX); \
 		install -m644 vorbisidec.pc $(TARGETPREFIX)/lib/pkgconfig
-	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	$(REWRITE_LIBTOOL)/libvorbisidec.la
-	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libvorbisidec.so.1* $(PKGPREFIX)/lib
-	$(OPKG_SH) $(CONTROL_DIR)/libvorbisidec
-	rm -rf $(PKGPREFIX)
+	rm -r $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/include
+	rm $(PKGPREFIX)/lib/*a
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		PKG_VER=$(VORBISIDEC_SVN) $(OPKG_SH) $(CONTROL_DIR)/libvorbisidec
+	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	touch $@
 
+FUSE_NEEDS_KO = true;
+ifeq ($(PLATFORM), spark)
+FUSE_NEEDS_KO = false
+endif
+ifeq ($(PLATFORM), azbox)
+FUSE_NEEDS_KO = false
+endif
 $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/fuse-$(FUSE_VER).tar.gz
@@ -493,7 +530,7 @@ $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE_VER).tar.gz | $(TARGETPREFIX)
 	set -e; cd $(PKGPREFIX); \
 		rm -rf dev etc lib/pkgconfig include; \
 		rm lib/*.so lib/*.la lib/*.a
-ifneq ($(PLATFORM), spark)
+ifeq ($(FUSE_NEEDS_KO), true)
 	install -m 755 -D $(SCRIPTS)/load-fuse.init \
 		$(PKGPREFIX)/etc/init.d/load-fuse
 	ln -s load-fuse $(PKGPREFIX)/etc/init.d/S56load-fuse
@@ -628,10 +665,10 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
+$(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	tar -C $(PKGPREFIX)/lib -xf $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
+	tar -C $(PKGPREFIX)/lib -xf $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz
 	export PKG_DEP_=`opkg-find-requires.sh $(PKGPREFIX)`; \
 		export PKG_PROV=`cd $(PKGPREFIX)/lib; echo *|sort|sed "s/ /, /g"`; \
 		set -x; \
@@ -647,22 +684,23 @@ $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11.tar.gz
 			$$FOUND || PKG_DEP="$$PKG_DEP $$i"; \
 		done; \
 		export PKG_DEP; \
-		PKG_VER=3.11 \
+		PKG_VER=3.11.1 \
 		$(OPKG_SH) $(CONTROL_DIR)/mrua-libs
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(TARGETPREFIX)/bin/rmfp_player: | $(TARGETPREFIX)/bin
+$(TARGETPREFIX)/bin/rmfp_player: mrua | $(TARGETPREFIX)/bin
 	wget -O $@ 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'
 	chmod 755 $@
 
-$(D)/rmfp_player: $(TARGETPREFIX)/bin/rmfp_player
+rmfp_player: mrua
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/bin
-	cp -p $(TARGETPREFIX)/bin/rmfp_player $(PKGPREFIX)/bin
-	PKG_VER=0.0 PKG_AUTOREQPROV=1 $(OPKG_SH) $(CONTROL_DIR)/rmfp_player
+	wget -O $(PKGPREFIX)/bin/rmfp_player 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob;f=recipes/azbox/azbox-azplayer/bin/rmfp_player'; \
+	set -e; V=`$(BASE_DIR)/scripts/get-sf-git-binary-timestamp.pl \
+			azboxopenpli/openembedded recipes/azbox/azbox-azplayer/bin/rmfp_player`; \
+		PKG_VER=$$V PKG_AUTOREQPROV=1 $(OPKG_SH) $(CONTROL_DIR)/rmfp_player; \
 	rm -rf $(PKGPREFIX)
-	touch $@
 
 $(D)/libnl: $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz
 	$(REMOVE)/libnl-$(LIBNL_VER)
@@ -678,4 +716,4 @@ $(D)/libnl: $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz
 	$(REMOVE)/.remove $(PKGPREFIX) libnl-$(LIBNL_VER) && \
 	touch $@
 
-PHONY += ncurses-prereq
+PHONY += ncurses-prereq rmfp_player

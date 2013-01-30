@@ -20,11 +20,8 @@ $(ARCHIVE)/compcache-0.6.2.tar.gz:
 $(ARCHIVE)/crosstool-0.43.tar.gz:
 	$(WGET) http://kegel.com/crosstool/crosstool-0.43.tar.gz
 
-$(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2:
-	$(WGET) http://ymorin.is-a-geek.org/download/crosstool-ng/crosstool-ng-1.10.0.tar.bz2
-
-$(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2:
-	$(WGET) http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.15.2.tar.bz2
+$(ARCHIVE)/crosstool-ng-%.bz2:
+	$(WGET) http://crosstool-ng.org/download/crosstool-ng/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/DirectFB_$(DIRECTFB_VER).tar.gz:
 	$(WGET) http://directfb.org/downloads/Core/DirectFB-1.4/DirectFB-$(DIRECTFB_VER).tar.gz
@@ -34,9 +31,6 @@ $(ARCHIVE)/dvdreadfs.tar:
 
 $(ARCHIVE)/djmount-0.71.tar.gz:
 	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
-
-$(ARCHIVE)/dpfhack_pearl.zip:
-	$(WGET) -O $@ https://nodeload.github.com/makefu/dpfhack_pearl/zipball/master
 
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2
@@ -65,26 +59,44 @@ $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz:
 $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/giflib/libungif-4.x/libungif-$(UNGIF_VER)/libungif-$(UNGIF_VER).tar.bz2
 
+$(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2:
+	$(WGET) http://sourceforge.net/projects/giflib/files/giflib-5.x/$(notdir $@)
+
 $(ARCHIVE)/libupnp-$(LIBUPNP_VER).tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/pupnp/pupnp/libUPnP\ $(LIBUPNP_VER)/libupnp-$(LIBUPNP_VER).tar.bz2
 
-$(ARCHIVE)/libusb-1.0.8.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-1.0.8/libusb-1.0.8.tar.bz2
+$(ARCHIVE)/libusb-$(USB_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-1.0/libusb-$(USB_VER)/libusb-$(USB_VER).tar.bz2
 
-$(ARCHIVE)/libusb-compat-0.1.3.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-0.1.3/libusb-compat-0.1.3.tar.bz2
+$(ARCHIVE)/libusb-compat-$(USBCMPT_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/libusb/libusb-compat-0.1/libusb-compat-$(USBCMPT_VER)/libusb-compat-$(USBCMPT_VER).tar.bz2
 
 $(ARCHIVE)/curl-$(CURL_VER).tar.bz2:
 	$(WGET) http://curl.haxx.se/download/$(lastword $(subst /, ,$@))
 
-$(ARCHIVE)/libpng-$(PNG-VER).tar.bz2:
-	$(WGET) http://sourceforge.net/projects/libpng/files/libpng12/older-releases/$(PNG-VER)/libpng-$(PNG-VER).tar.bz2
+$(ARCHIVE)/libpng-$(PNG_VER).tar.xz:
+	$(WGET) http://download.sourceforge.net/libpng/$(notdir $@)
 
 $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2:
 	$(WGET) http://sourceforge.net/projects/lirc/files/LIRC/0.9.0/lirc-0.9.0.tar.bz2
 
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2
+
+$(ARCHIVE)/dpf-ax_r$(DPF-AXREV).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf dpf-ax_r$(DPF-AXREV); \
+		svn co -r$(DPF-AXREV) https://dpf-ax.svn.sourceforge.net/svnroot/dpf-ax/trunk dpf-ax_r$(DPF-AXREV); \
+		tar cvpzf $@ dpf-ax_r$(DPF-AXREV)
+	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+
+$(ARCHIVE)/lcd4linux_r$(LCD4LINUX_SVN).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf lcd4linux_r$(LCD4LINUX_SVN); \
+		svn co -r$(LCD4LINUX_SVN) https://ssl.bulix.org/svn/lcd4linux/trunk lcd4linux_r$(LCD4LINUX_SVN); \
+		echo "#define SVN_VERSION \"$(LCD4LINUX_SVN)\"" > lcd4linux_r$(LCD4LINUX_SVN)/svn_version.h; \
+		tar cvpzf $@ lcd4linux_r$(LCD4LINUX_SVN)
+	$(REMOVE)/lcd4linux_r$(LCD4LINUX_SVN)
 
 $(ARCHIVE)/e2fsprogs-$(E2FSPROGS-VER).tar.gz:
 	$(WGET) http://prdownloads.sourceforge.net/e2fsprogs/e2fsprogs-$(E2FSPROGS-VER).tar.gz
@@ -151,8 +163,8 @@ $(ARCHIVE)/gst-%.tar.bz2:
 $(ARCHIVE)/libogg-$(OGG_VER).tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VER).tar.gz
 
-$(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.bz2:
-	$(WGET) http://downloads.xiph.org/releases/vorbis/libvorbis-$(VORBIS_VER).tar.bz2
+$(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.xz:
+	$(WGET) http://downloads.xiph.org/releases/vorbis/$(notdir $@)
 
 $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz:
 	$(WGET) ftp://xmlsoft.org/libxml2/$(lastword $(subst /, ,$@))
@@ -167,6 +179,10 @@ endif
 
 $(ARCHIVE)/ncurses-$(NCURSES_VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/pub/gnu/ncurses/ncurses-$(NCURSES_VER).tar.gz
+
+$(ARCHIVE)/nano-$(NANO_VER).tar.gz:
+	$(WGET) http://www.nano-editor.org/dist/v2.2/nano-$(NANO_VER).tar.gz
+
 
 $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz:
 	$(WGET) http://ftp.de.debian.org/debian/pool/main/libv/libvorbisidec/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
@@ -185,6 +201,9 @@ $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2:
 
 $(ARCHIVE)/linux-2.6.26.8.tar.bz2:
 	$(WGET) http://www.dbox2world.net/download/linux-2.6.26.8.tar.bz2
+
+$(ARCHIVE)/linux-2.6.34.13.tar.xz:
+	$(WGET) http://www.kernel.org/pub/linux/kernel/v2.6/longterm/v2.6.34/linux-2.6.34.13.tar.xz
 
 $(ARCHIVE)/mc-$(MC-VER).tar.gz:
 	$(WGET) http://midnight-commander.org/downloads/mc-$(MC-VER).tar.gz
@@ -227,7 +246,7 @@ $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz:
 		rm -rf opkg-$(OPKG_SVN_VER)
 
 $(ARCHIVE)/qt-everywhere-opensource-src-$(QT-VER).tar.gz:
-	$(WGET) http://get.qt.nokia.com/qt/source/qt-everywhere-opensource-src-$(QT-VER).tar.gz
+	$(WGET) ftp://ftp.qt.nokia.com/qt/source/$(notdir $@)
 
 $(ARCHIVE)/samba-2.0.10.tar.gz:
 	$(WGET) http://samba.org/samba/ftp/old-versions/samba-2.0.10.tar.gz
@@ -241,8 +260,11 @@ $(ARCHIVE)/samba-3.3.9.tar.gz:
 $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2:
 	$(WGET) http://sg.danny.cz/sg/p/sg3_utils-$(SG3_UTILS-VER).tar.bz2
 
-$(ARCHIVE)/strace-4.5.20.tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/strace/strace/4.5.20/strace-4.5.20.tar.bz2
+$(ARCHIVE)/strace-$(STRACE_VER).tar.xz:
+	$(WGET) http://downloads.sourceforge.net/project/strace/strace/$(STRACE_VER)/$(notdir $@)
+
+$(ARCHIVE)/streamripper-1.64.6.tar.gz:
+	$(WGET) http://sourceforge.net/projects/streamripper/files/streamripper%20%28current%29/1.64.6/streamripper-1.64.6.tar.gz
 
 $(ARCHIVE)/tcpdump-$(TCPDUMP-VER).tar.gz:
 	$(WGET) http://www.tcpdump.org/release/tcpdump-$(TCPDUMP-VER).tar.gz
@@ -259,14 +281,14 @@ $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz:
 $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2:
 	$(WGET) ftp://ftp.kernel.org/pub/linux/utils/util-linux/v$(UTIL_LINUX_NG_VER)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2
 
-$(ARCHIVE)/valgrind-3.3.1.tar.bz2:
-	$(WGET) http://valgrind.org/downloads/valgrind-3.3.1.tar.bz2
-
-$(ARCHIVE)/valgrind-3.7.0.tar.bz2:
-	$(WGET) http://valgrind.org/downloads/valgrind-3.7.0.tar.bz2
+$(ARCHIVE)/valgrind-%.tar.bz2:
+	$(WGET) http://valgrind.org/downloads/$(notdir $@)
 
 $(ARCHIVE)/vsftpd-$(VSFTPD_VER).tar.gz:
 	$(WGET) --no-check-certificate https://security.appspot.com/downloads/vsftpd-$(VSFTPD_VER).tar.gz
+
+$(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2:
+	$(WGET) http://vtuner.googlecode.com/files/$(notdir $@)
 
 $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz:
 	$(WGET) http://ftp.gwdg.de/pub/linux/misc/xfs/xfs/cmd_tars/xfsprogs-$(XFSPROGS-VER).tar.gz
@@ -326,10 +348,15 @@ $(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2:
 	$(WGET) http://fribidi.org/download/fribidi-$(FRIBIDI_VER).tar.bz2
 
 # openazbox.org stuff
-$(ARCHIVE)/initramfs-azbox%.tar.bz2 \
-$(ARCHIVE)/azbox%-mrua-3.11.tar.gz \
-$(ARCHIVE)/azbox%-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz:
-	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))
+$(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
+$(ARCHIVE)/azboxme-mrua-%.tar.gz \
+$(ARCHIVE)/azboxme-dvb-modules-%.tar.gz:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)
+# separate me and minime to work around make weirdness with implicit rules
+$(ARCHIVE)/initramfs-azboxminime%.tar.bz2 \
+$(ARCHIVE)/azboxminime-mrua-%.tar.gz \
+$(ARCHIVE)/azboxminime-dvb-modules-%.tar.gz:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)
 
-$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2:
-	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(lastword $(subst /, ,$@))
+$(ARCHIVE)/linux-azbox-%.tar.bz2:
+	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)

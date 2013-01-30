@@ -56,10 +56,11 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	$(UNTAR)/djmount-0.71.tar.gz
 	set -e; cd $(BUILD_TMP)/djmount-0.71; \
 		$(PATCH)/djmount-0.71.diff; \
-		$(CONFIGURE) -C \
+		./configure -C \
 			--host=$(TARGET) \
 			--build=$(BUILD) \
 			--prefix=/opt/pkg \
+			--with-fuse-prefix=$(TARGETPREFIX) \
 			; \
 		$(MAKE); \
 		make install DESTDIR=$(PKGPREFIX)
@@ -324,13 +325,34 @@ $(D)/libdlna: $(ARCHIVE)/libdlna-hg.tar.bz2 $(D)/ffmpeg $(D)/libupnp | $(TARGETP
 	$(REMOVE)/libdlna-hg $(PKGPREFIX)
 	touch $@
 
+$(D)/nano: $(ARCHIVE)/nano-$(NANO_VER).tar.gz libncurses | $(TARGETPREFIX)
+	$(UNTAR)/nano-$(NANO_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/nano-$(NANO_VER); \
+		$(BUILDENV) ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix= ; \
+		$(MAKE) CPPFLAGS+="-I$(TARGETPREFIX)/include/ncurses" install DESTDIR=$(PKGPREFIX)
+	mv -v $(PKGPREFIX)/bin/$(TARGET)-nano $(PKGPREFIX)/bin/nano
+	rm -rf $(PKGPREFIX)/share/man
+	rm -rf $(PKGPREFIX)/share/locale
+	rm -rf $(PKGPREFIX)/share/nano/man-html
+	rm -rf $(PKGPREFIX)/share/info
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/; \
+	PKG_VER=$(NANO_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+	$(OPKG_SH) $(CONTROL_DIR)/nano
+	$(REMOVE)/nano-$(NANO_VER) $(PKGPREFIX)
+	touch $@
+
 $(ARCHIVE)/ushare-1.1a.r469.tar.bz2: | find-hg
 	set -e; cd $(BUILD_TMP); \
 		hg clone -u 469 http://hg.geexbox.org/ushare ushare-1.1a.r469; \
 		tar cvpjf $@ --exclude='*/.hg' ushare-1.1a.r469
 	$(REMOVE)/ushare-hg
 
-$(D)/ushare: $(ARCHIVE)/ushare-1.1a.r469.tar.bz2 $(D)/libdlna | $(TARGETPREFIX)
+$(D)/ushare: $(ARCHIVE)/ushare-1.1a.r469.tar.bz2 libupnp | $(TARGETPREFIX)
 	$(UNTAR)/ushare-1.1a.r469.tar.bz2
 	set -e; cd $(BUILD_TMP)/ushare-1.1a.r469; \
 		$(PATCH)/ushare-new-upnp.diff; \
@@ -408,8 +430,30 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+######
+# build glib-tools for the host, for build systems that don't have those
+# installed already.
+# TODO: check if we this built glib-genmarshal is new enough for the glib
+#       version we're trying to build
+######
+$(HOSTPREFIX)/bin/glib-genmarshal: | $(HOSTPREFIX)/bin
+	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
+		export PKG_CONFIG=/usr/bin/pkg-config; \
+		./configure \
+			--disable-gtk-doc \
+			--disable-gtk-doc-html \
+			--enable-static=yes \
+			--enable-shared=no \
+			--prefix=`pwd`/out \
+			; \
+		$(MAKE) install ; \
+		cp -a out/bin/glib-* $(HOSTPREFIX)/bin
+	$(REMOVE)/glib-$(GLIB-VER)
+
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
 $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+	type -p glib-genmarshal || $(MAKE) $(HOSTPREFIX)/bin/glib-genmarshal
 	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
 		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache; \
@@ -515,6 +559,27 @@ $(D)/sg3-utils: $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/sg3_utils-$(SG3_UTILS-VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/streamripper: $(ARCHIVE)/streamripper-1.64.6.tar.gz libglib libogg libvorbisidec | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/streamripper-1.64.6.tar.gz
+	set -e; cd $(BUILD_TMP)/streamripper-1.64.6; \
+		$(PATCH)/streamripper-1.64.6-use-tremor.diff; \
+		$(CONFIGURE) \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix= \
+			--includedir=$(TARGETPREFIX)/include \
+			; \
+		$(MAKE)  ; \
+		make install DESTDIR=$(PKGPREFIX)
+	rm -R $(PKGPREFIX)/share
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	PKG_VER=1.64.6 \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/streamripper
+	$(REMOVE)/streamripper-1.64.6 $(PKGPREFIX)
+	touch $@
+
 # the following libs are built static only for now, as they
 # have only one user (lcd4linux) yet => no opkg package yet, either.
 # libiconv libusb libusb-compat libgd2
@@ -531,32 +596,32 @@ $(D)/libiconv: $(ARCHIVE)/libiconv-$(ICONV-VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/libiconv-$(ICONV-VER)
 	touch $@
 
-$(D)/libusb: $(ARCHIVE)/libusb-1.0.8.tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/libusb-1.0.8.tar.bz2
-	set -e; cd $(BUILD_TMP)/libusb-1.0.8; \
+$(D)/libusb: $(ARCHIVE)/libusb-$(USB_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/libusb-$(USB_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libusb-$(USB_VER); \
 		$(CONFIGURE) --prefix= --enable-static --disable-shared ; \
 		$(MAKE) ; \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libusb-1.0.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libusb-1.0.pc
-	$(REMOVE)/libusb-1.0.8
+	$(REMOVE)/libusb-$(USB_VER)
 	touch $@
 
-$(D)/libusb-compat: $(ARCHIVE)/libusb-compat-0.1.3.tar.bz2 $(D)/libusb | $(TARGETPREFIX)
-	$(UNTAR)/libusb-compat-0.1.3.tar.bz2
-	set -e; cd $(BUILD_TMP)/libusb-compat-0.1.3; \
+$(D)/libusb-compat: $(ARCHIVE)/libusb-compat-$(USBCMPT_VER).tar.bz2 $(D)/libusb | $(TARGETPREFIX)
+	$(UNTAR)/libusb-compat-$(USBCMPT_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libusb-compat-$(USBCMPT_VER); \
 		$(CONFIGURE) --prefix= --enable-static --disable-shared ; \
 		$(MAKE) ; \
 		make install DESTDIR=$(TARGETPREFIX)
 	rm -f $(TARGETPREFIX)/bin/libusb-config
 	$(REWRITE_LIBTOOL)/libusb.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libusb.pc
-	$(REMOVE)/libusb-compat-0.1.3
+	$(REMOVE)/libusb-compat-$(USBCMPT_VER)
 	touch $@
 
 $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(ARCHIVE)/gd-2.0.35.tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/gd-2.0.35.tar.gz
-	set -e; cd $(BUILD_TMP)/gd/2.0.35; \
+	set -e; cd $(BUILD_TMP)/gd-2.0.35; \
 		chmod 0755 configure; \
 		: autoreconf -fi; \
 		$(CONFIGURE) --prefix= --enable-static --disable-shared --bindir=/.remove; \
@@ -564,46 +629,39 @@ $(D)/libgd2: $(D)/zlib $(D)/libpng $(D)/libjpeg $(D)/freetype $(D)/libiconv $(AR
 		make install DESTDIR=$(TARGETPREFIX)
 	rm -rf $(TARGETPREFIX)/.remove
 	$(REWRITE_LIBTOOL)/libgd.la
-	$(REMOVE)/gd
+	$(REMOVE)/gd-2.0.35
 	touch $@
 
-LCD4LINUXREV=1171
-DPFHACK_DIR=makefu-dpfhack_pearl-c66acd3
-$(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz:
-	set -e; cd $(BUILD_TMP); \
-		rm -rf lcd4linux-r$(LCD4LINUXREV); \
-		svn co -r$(LCD4LINUXREV) https://ssl.bulix.org/svn/lcd4linux/trunk lcd4linux-r$(LCD4LINUXREV); \
-		tar cvpzf $@ lcd4linux-r$(LCD4LINUXREV)
-	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV)
+$(D)/libdpf: $(ARCHIVE)/dpf-ax_r$(DPF-AXREV).tar.gz | $(TARGETPREFIX)
+	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+	$(UNTAR)/dpf-ax_r$(DPF-AXREV).tar.gz
+	set -e; cd $(BUILD_TMP)/dpf-ax_r$(DPF-AXREV)/dpflib; \
+		$(PATCH)/libdpf-crossbuild.diff; \
+		make libdpf.a CC=$(TARGET)-gcc PREFIX=$(TARGETPREFIX); \
+		mkdir -p $(TARGETPREFIX)/include/libdpf; \
+		cp dpf.h $(TARGETPREFIX)/include/libdpf/libdpf.h; \
+		cp ../include/spiflash.h $(TARGETPREFIX)/include/libdpf/; \
+		cp ../include/usbuser.h $(TARGETPREFIX)/include/libdpf/; \
+		cp libdpf.a $(TARGETPREFIX)/lib/
+	$(REMOVE)/dpf-ax_r$(DPF-AXREV)
+	touch $@
 
-# ugly hack to build / link against libdpf, but installing into TARGETPREFIX
-# does not make sense as it is only linked statically anyway.
-$(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(ARCHIVE)/dpfhack_pearl.zip $(ARCHIVE)/lcd4linux-r$(LCD4LINUXREV).tar.gz| $(TARGETPREFIX)
-	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
-	$(UNTAR)/lcd4linux-r$(LCD4LINUXREV).tar.gz
-	unzip $(ARCHIVE)/dpfhack_pearl.zip -d $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)
-	ln -s $(DPFHACK_DIR)/dpflib $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/
-	set -e; cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/$(DPFHACK_DIR) ; \
-		$(PATCH)/dpflib-crossbuild.diff; \
-		cp -a include/* dpflib/ ; \
-		cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV)/dpflib ; \
-		$(BUILDENV) LDFLAGS="-Wl,-rpath-link,$(TARGETLIB) -L$(TARGETLIB)" \
-			make CC=$(TARGET)-gcc; \
-		ln -s . libdpf; ln -s dpf.h libdpf.h; \
-	set -e; cd $(BUILD_TMP)/lcd4linux-r$(LCD4LINUXREV); \
-		$(PATCH)/lcd4linux-svn1171-dpf.patch; \
-		$(BUILD_ENV) ./bootstrap; \
-		DPF_LDFLAGS="-L./dpflib" \
-		$(BUILDENV) CFLAGS="$(TARGET_CFLAGS) -I./dpflib" ./configure $(CONFIGURE_OPTS) \
+$(D)/lcd4linux: $(D)/libusb-compat $(D)/libgd2 $(D)/libdpf $(ARCHIVE)/lcd4linux_r$(LCD4LINUX_SVN).tar.gz | $(TARGETPREFIX)
+	$(REMOVE)/lcd4linux_r$(LCD4LINUX_SVN) $(PKGPREFIX)
+	$(UNTAR)/lcd4linux_r$(LCD4LINUX_SVN).tar.gz
+	set -e; cd $(BUILD_TMP)/lcd4linux_r$(LCD4LINUX_SVN); \
+		$(PATCH)/lcd4linux-svn1184-dpf.diff; \
+		$(BUILDENV) ./bootstrap; \
+		$(BUILDENV) ./configure $(CONFIGURE_OPTS) \
 			--prefix= \
 			--with-drivers='DPF' \
 			--with-plugins='all,!dbus,!mpris_dbus,!asterisk,!isdn,!pop3,!ppp,!seti,!huawei,!imon,!kvv,!sample,!w1retap,!wireless,!xmms,!gps,!mpd,!mysql,!qnaplog' \
 			--without-ncurses; \
-		$(MAKE) all; \
-		make install DESTDIR=$(PKGPREFIX)/opt/pkg
-	install -D -m 600 $(SCRIPTS)/lcd4linux.conf $(PKGPREFIX)/opt/pkg/etc/lcd4linux.conf
-	PKG_VER=0.10.9999.r$(LCD4LINUXREV) $(OPKG_SH) $(CONTROL_DIR)/lcd4linux
-	$(REMOVE)/lcd4linux-r$(LCD4LINUXREV) $(PKGPREFIX)
+	$(MAKE) all; \
+	make install DESTDIR=$(PKGPREFIX)/opt/pkg
+	install -D -m 0600 $(SCRIPTS)/lcd4linux.conf $(PKGPREFIX)/opt/pkg/etc/lcd4linux.conf
+	PKG_VER=$(LCD4LINUX_SVN_VER) $(OPKG_SH) $(CONTROL_DIR)/lcd4linux
+	$(REMOVE)/lcd4linux_r$(LCD4LINUX_SVN) $(PKGPREFIX)
 	touch $@
 
 $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
@@ -637,6 +695,11 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove $(BUILD_TMP)/pkg-tmp
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	set -e; cd $(SCRIPTS); \
+		install -m 755 -D amixer.init $(PKGPREFIX)/etc/init.d/amixer; \
+		ln -s amixer $(PKGPREFIX)/etc/init.d/S70amixer; \
+		test -e asound.conf.$(PLATFORM) && cp asound.conf.$(PLATFORM) $(PKGPREFIX)/etc/asound.conf; \
+		test -e amixer.conf.$(PLATFORM) && cp amixer.conf.$(PLATFORM) $(PKGPREFIX)/etc/amixer.conf
 	rm -rf $(PKGPREFIX)/var $(PKGPREFIX)/share $(PKGPREFIX)/lib/pkgconfig
 	PKG_VER=$(ALSA_VER) $(OPKG_SH) $(CONTROL_DIR)/alsa-utils
 	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
@@ -708,3 +771,30 @@ $(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap $(D)/libnl | $(TARGETPRE
 	$(REMOVE)/ppp-$(PPP_VER) $(PKGPREFIX)
 	touch $@
 
+# hg rev 116
+$(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2:
+	$(REMOVE)/vtuner-apps-rel2.1.99.116
+	set -e; cd $(BUILD_TMP); \
+		wget --no-check-certificate https://apps.vtuner.googlecode.com/archive/b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0.zip; \
+		unzip b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0.zip; \
+		rm b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0.zip; \
+		mv apps.vtuner-b6fa0d2b133b vtuner-apps-rel2.1.99.116; \
+		tar -cvpjf $@ vtuner-apps-rel2.1.99.116
+
+$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2 $(PATCHES)/vtuner-2.1.99-debug.diff $(PATCHES)/vtuner-apps-compilerwarnings.diff
+	$(REMOVE)/vtuner-apps-rel2.1.99.116 $(PKGPREFIX)
+	$(UNTAR)/vtuner-apps-rel2.1.99.116.tar.bz2
+	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1.99.116; \
+		$(PATCH)/vtuner-apps-compilerwarnings.diff; \
+		$(PATCH)/vtuner-2.1.99-debug.diff; \
+		echo "CC-$(BOXARCH)=$(TARGET)-gcc" > Make.config; \
+		make $(BOXARCH); \
+		install -m 755 -D dist/$(BOXARCH)/vtunerd.$(BOXARCH) $(PKGPREFIX)/bin/vtunerd; \
+		install -m 755 -D dist/$(BOXARCH)/vtunerc.$(BOXARCH) $(PKGPREFIX)/bin/vtunerc
+	set -e; cd $(SCRIPTS); \
+		install -m 755 -D vtunerd.init $(PKGPREFIX)/etc/init.d/vtunerd; \
+		ln -s vtunerd $(PKGPREFIX)/etc/init.d/S70vtunerd; \
+		cp vtunerd.conf $(PKGPREFIX)/etc/
+	PKG_VER=2.1.99.116 $(OPKG_SH) $(CONTROL_DIR)/vtuner-apps
+	$(REMOVE)/vtuner-apps-rel2.1.99.116 $(PKGPREFIX)
+	touch $@

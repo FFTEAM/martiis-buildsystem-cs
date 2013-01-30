@@ -1,0 +1,18 @@
+--- ppl-0.11.2/configure
++++ ppl-0.11.2/configure
+@@ -10059,13 +10059,13 @@
+         for searchdir in $searchpath; do
+           if test -d "$searchdir"; then
+             case "$searchdir" in
+-              */lib64/ | */lib64 ) acl_libdirstem=lib64 ;;
++              */lib64/ | */lib64 ) acl_libdirstem2=lib64 ;;
+               */../ | */.. )
+                 # Better ignore directories of this form. They are misleading.
+                 ;;
+               *) searchdir=`cd "$searchdir" && pwd`
+                  case "$searchdir" in
+-                   */lib64 ) acl_libdirstem=lib64 ;;
++                   */lib64 ) acl_libdirstem2=lib64 ;;
+                  esac ;;
+             esac
+           fi

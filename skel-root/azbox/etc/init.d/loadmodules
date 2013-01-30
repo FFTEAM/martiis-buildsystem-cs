@@ -29,7 +29,7 @@ start)
 		s/^\(\S\+\)-/\1_/g;
 		p }" /etc/modprobe.conf)
 	read MODEL < /proc/model
-	for i in 865xi2c avl6211 avl2108 mxl241sf nimdetect sci${MODEL} 865xdvb; do
+	for i in llad em8xxx 865xi2c avl6211 avl2108 mxl241sf nimdetect sci${MODEL} 865xdvb; do
 		im $i
 	done
 	;;

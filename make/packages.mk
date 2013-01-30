@@ -67,41 +67,34 @@ cs-drivers-pkg:
 	# we have two directories packed, the newer one determines the package version
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-drivers $(BUILD_TMP)/tmp-ctrl
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
+	mkdir    $(PKGPREFIX)/lib/firmware
+ifneq ($(UNCOOL_SOURCE), git)
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
 		$(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
-	rm -rf $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
-	mkdir    $(PKGPREFIX)/lib/firmware
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
+else
+	set -e; cd $(UNCOOL_GIT)/cst-public-drivers; \
+		sed -i 's/^Package:.*$$/Package: cs-drivers_$(subst .,_,$(UNCOOL_KVER))/' \
+			$(BUILD_TMP)/tmp-ctrl/control; \
+		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/$(UNCOOL_KVER)-nevis firmware; \
+		cp -a drivers/$(UNCOOL_KVER)-nevis $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis/extra; \
+		cp -a firmware/*                   $(PKGPREFIX)/lib/firmware
+	rm $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis/extra/cifs.ko # we build our own...
+endif
 	mkdir -p $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
-cs-beta-drivers-pkg:
-	# we have two directories packed, the newer one determines the package version
-	rm -rf $(BUILD_TMP)/tmp-ctrl
-	cp -a $(CONTROL_DIR)/cs-beta-drivers $(BUILD_TMP)/tmp-ctrl
-	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
-		$(SOURCE_DIR)/svn/COOLSTREAM/beta-2.6.26.8-nevis $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
-	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/COOLSTREAM/beta-2.6.26.8-nevis || \
-	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware
-	rm -rf $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
-	mkdir    $(PKGPREFIX)/lib/firmware
-	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/beta-2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
-	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
-	mkdir -p $(PKGPREFIX)/etc/init.d
-	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
-	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
-	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
-
-cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.so $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
+cs-libs-pkg: $(UNCOOL_LIBS)
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-libs $(BUILD_TMP)/tmp-ctrl
+ifneq ($(UNCOOL_SOURCE), git)
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
 		$(SVN_TP_LIBS)/libnxp/libnxp.so \
 		$(SVN_TP_LIBS)/libcs/libcoolstream.so \
@@ -109,10 +102,14 @@ cs-libs-pkg: $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream.
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libnxp/libnxp.so || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream.so || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
+else
+	opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control $(UNCOOL_GIT)/cst-public-drivers/libs
+endif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(SVN_TP_LIBS)/libnxp/libnxp.so $(SVN_TP_LIBS)/libcs/libcoolstream*.so $(PKGPREFIX)/lib
-	$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
+	cp -a $(UNCOOL_LIBS) $(PKGPREFIX)/lib
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/tmp-ctrl
 
 usb-driver-pkg: cskernel
@@ -130,11 +127,16 @@ addon-drivers-pkg: cskernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
 	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
 		cp -a $(SOURCE_MODULE)/kernel/* ./; \
-		rm -fr drivers/usb fs/autofs4 # is in usb-driver-pkg and autofs
+		rm -fr drivers/usb fs/autofs4 drivers/media/dvb # is in usb-driver-pkg and autofs
+		# self compiled dvb-core does not work with the cs-drivers -- probably their version
+		# has some unknown patch...
 	depmod -n -ae -E $(K_OBJ)/Module.symvers -b $(PKGPREFIX) $(KVERSION_FULL) 2>&1 >/dev/null \
 		| grep WARNING; test $$? != 0 # invert return code
 	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)
+	sed -i 's/^Package:.*$$/Package: addon-drivers_$(subst .,_,$(UNCOOL_KVER))/' \
+		$(BUILD_TMP)/addon-drivers/control; \
 	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/addon-drivers/control
+	sed -i 's/^Provides: /Provides: addon-drivers, /' $(BUILD_TMP)/addon-drivers/control
 	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 
@@ -237,6 +239,17 @@ spark-directfb-pkg: \
 endif
 ifeq ($(PLATFORM), azbox)
 SYSTEM_PKGS += azboxdriver
+
+addon-drivers-pkg: azboxkernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/
+	set -e; cd $(PKGPREFIX)/lib/modules/$(KVERSION_FULL)/kernel/; \
+		cp -a $(SOURCE_MODULE)/kernel/* ./; \
+		rm -fr fs/autofs4 # is in autofs (and builtin on azbox...)
+	cp -a $(CONTROL_DIR)/addon-drivers $(BUILD_TMP)
+	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/addon-drivers/control
+	DONT_STRIP=1 PKG_VER=$(KVERSION) $(OPKG_SH) $(BUILD_TMP)/addon-drivers
+	$(REMOVE)/addon-drivers $(PKGPREFIX)
 endif
 
 AAA_BASE_DEPS = mhwepg

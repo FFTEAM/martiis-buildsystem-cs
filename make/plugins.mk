@@ -16,7 +16,7 @@ plugins: $(PLUGIN_DIR)/configure $(BUILD_TMP)/neutrino-hd-plugins
 		CC=$(TARGET)-gcc CFLAGS="$(N_CFLAGS) -I$(TARGETPREFIX)/include" CXXFLAGS="$(N_CFLAGS)" LDFLAGS="$(N_LDFLAGS) -L$(BUILD_TMP)/neutrino-hd-plugins/fx2/lib/.libs -L$(TARGETPREFIX)/lib" \
 		$(PLUGIN_DIR)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 			--oldinclude=$(TARGETPREFIX)/include \
-			--enable-maintainer-mode --with-boxtype=$(PLATFORM) --with-target=cdk; \
+			--enable-maintainer-mode --with-boxtype=$(PLATFORM) --with-target=cdk --enable-giflib ; \
 		$(MAKE)
 	set -e; for i in $(PLUGINS_TO_BUILD); do \
 		rm -rf $(PKGPREFIX); \

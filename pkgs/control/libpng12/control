@@ -1,5 +1,5 @@
 Package: libpng
-Version: 1.2.44-1
+Version: @VER@-1
 Description: Portable Network Graphics Library
 Section: base/libraries
 Priority: standard

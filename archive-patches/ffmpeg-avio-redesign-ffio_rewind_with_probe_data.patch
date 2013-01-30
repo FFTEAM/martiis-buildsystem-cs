@@ -1,0 +1,86 @@
+From 120b38b966b92a50dd36542190d35daba6730eb3 Mon Sep 17 00:00:00 2001
+From: Michael Niedermayer <michaelni@gmx.at>
+Date: Sat, 13 Oct 2012 02:08:59 +0200
+Subject: [PATCH] avio: redesign ffio_rewind_with_probe_data()
+
+This prevents a double free
+
+Fixes CID718285
+Signed-off-by: Michael Niedermayer <michaelni@gmx.at>
+---
+ libavformat/avio_internal.h |    2 +-
+ libavformat/aviobuf.c       |   13 +++++++++----
+ libavformat/utils.c         |    3 +--
+ 3 files changed, 11 insertions(+), 7 deletions(-)
+
+diff --git a/libavformat/avio_internal.h b/libavformat/avio_internal.h
+index df614b2..3c0fc93 100644
+--- a/libavformat/avio_internal.h
++++ b/libavformat/avio_internal.h
+@@ -64,7 +64,7 @@ static av_always_inline void ffio_wfourcc(AVIOContext *pb, const uint8_t *s)
+  * @return 0 in case of success, a negative value corresponding to an
+  * AVERROR code in case of failure
+  */
+-int ffio_rewind_with_probe_data(AVIOContext *s, unsigned char *buf, int buf_size);
++int ffio_rewind_with_probe_data(AVIOContext *s, unsigned char **buf, int buf_size);
+ 
+ uint64_t ffio_read_varlen(AVIOContext *bc);
+ 
+diff --git a/libavformat/aviobuf.c b/libavformat/aviobuf.c
+index dc09a07..6e060ba 100644
+--- a/libavformat/aviobuf.c
++++ b/libavformat/aviobuf.c
+@@ -726,27 +726,32 @@ static int url_resetbuf(AVIOContext *s, int flags)
+     return 0;
+ }
+ 
+-int ffio_rewind_with_probe_data(AVIOContext *s, unsigned char *buf, int buf_size)
++int ffio_rewind_with_probe_data(AVIOContext *s, unsigned char **bufp, int buf_size)
+ {
+     int64_t buffer_start;
+     int buffer_size;
+     int overlap, new_size, alloc_size;
++    uint8_t *buf = *bufp;
+ 
+-    if (s->write_flag)
++    if (s->write_flag) {
++        av_freep(bufp);
+         return AVERROR(EINVAL);
++    }
+ 
+     buffer_size = s->buf_end - s->buffer;
+ 
+     /* the buffers must touch or overlap */
+-    if ((buffer_start = s->pos - buffer_size) > buf_size)
++    if ((buffer_start = s->pos - buffer_size) > buf_size) {
++        av_freep(bufp);
+         return AVERROR(EINVAL);
++    }
+ 
+     overlap = buf_size - buffer_start;
+     new_size = buf_size + buffer_size - overlap;
+ 
+     alloc_size = FFMAX(s->buffer_size, new_size);
+     if (alloc_size > buf_size)
+-        if (!(buf = av_realloc_f(buf, 1, alloc_size)))
++        if (!(buf = (*bufp) = av_realloc_f(buf, 1, alloc_size)))
+             return AVERROR(ENOMEM);
+ 
+     if (new_size > buf_size) {
+diff --git a/libavformat/utils.c b/libavformat/utils.c
+index 13a2f2b..745dcaa 100644
+--- a/libavformat/utils.c
++++ b/libavformat/utils.c
+@@ -470,8 +470,7 @@ int av_probe_input_buffer(AVIOContext *pb, AVInputFormat **fmt,
+     }
+ 
+     /* rewind. reuse probe buffer to avoid seeking */
+-    if ((ret = ffio_rewind_with_probe_data(pb, buf, pd.buf_size)) < 0)
+-        av_free(buf);
++    ret = ffio_rewind_with_probe_data(pb, &buf, pd.buf_size);
+ 
+     return ret;
+ }
+-- 
+1.7.10.4
+
