@@ -85,6 +85,11 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h; \
 		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
 
+neutrino-mp:
+	$(MAKE) FLAVOUR=$@ neutrino
+
+neutrino-hd-td:
+	$(MAKE) FLAVOUR=$@ neutrino
 
 ifneq ($(FLAVOUR), neutrino-mp)
 HOMEPAGE = "http://gitorious.org/neutrino-hd"
