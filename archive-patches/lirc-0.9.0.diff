@@ -1,7 +1,9 @@
 Only in lirc-0.9.0: config.log
-diff -ur lirc-0.9.0-original/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
---- lirc-0.9.0-original/daemons/ir_remote.c	2011-03-25 23:28:18.000000000 +0100
-+++ lirc-0.9.0/daemons/ir_remote.c	2013-01-13 16:06:39.124707767 +0100
+Only in lirc-0.9.0: confinc
+Only in lirc-0.9.0: confmf
+diff -ur lirc-0.9.0-orig/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
+--- lirc-0.9.0-orig/daemons/ir_remote.c	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/ir_remote.c	2013-02-08 21:17:51.357105455 +0100
 @@ -37,6 +37,8 @@
  
  extern struct hardware hw;
@@ -47,9 +49,9 @@ diff -ur lirc-0.9.0-original/daemons/ir_remote.c lirc-0.9.0/daemons/ir_remote.c
  		}
  		remote->toggle_mask_state = 0;
  		remote = remote->next;
-diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
---- lirc-0.9.0-original/daemons/lircd.c	2011-03-25 23:28:18.000000000 +0100
-+++ lirc-0.9.0/daemons/lircd.c	2013-01-13 16:07:14.274707780 +0100
+diff -ur lirc-0.9.0-orig/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
+--- lirc-0.9.0-orig/daemons/lircd.c	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/lircd.c	2013-02-08 21:18:23.327103800 +0100
 @@ -60,6 +60,12 @@
  #if defined(__linux__)
  #include <linux/input.h>
@@ -99,11 +101,14 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  		for (i = 0; i < clin; i++) {
  			/* don't relay messages to remote clients */
  			if (cli_type[i] == CT_REMOTE)
-@@ -1609,6 +1621,50 @@
+@@ -1609,6 +1621,106 @@
  	return (1);
  }
  
 +static char *predata_lock_filename = "/etc/lircd_predata_lock";
++#ifdef SPARK
++static char *aotom_hotkey_filename = "/etc/lircd_vfd_hotkeys";
++#endif
 +
 +static void predata_read(void) {
 +	pre_data_locked = 0;
@@ -130,6 +135,53 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
 +		unlink(predata_lock_filename);
 +}
 +
++#ifdef SPARK
++static void aotom_predata_lock(void)
++{
++	int got_hotkeys = 0;
++	struct aotom_ioctl_data a;
++	uint32_t hk[10];
++	int aotomfd = open ("/dev/vfd", O_RDWR);
++	if (aotomfd < 0)
++		return;
++	int hotkeys = open(aotom_hotkey_filename, O_RDONLY);
++
++	if (hotkeys > -1) {
++		if (sizeof(hk) == read(hotkeys, &hk, sizeof(hk)))
++			got_hotkeys = 1;
++		close(hotkeys);
++	}
++	if (!got_hotkeys) {
++		memset(&a, 0, sizeof(a));
++		while (a.u.key.key_nr < 5) {
++			ioctl(aotomfd, VFDGETSTBYKEY, &a);
++			hk[2 * a.u.key.key_nr] = a.u.key.key;
++			ioctl(aotomfd, VFDGETBLUEKEY, &a);
++			hk[2 * a.u.key.key_nr + 1] = a.u.key.key;
++			a.u.key.key_nr++;
++		}
++		hotkeys = open(aotom_hotkey_filename, O_WRONLY | O_CREAT, 0644);
++		if (hotkeys > -1) {
++			write(hotkeys, &hk, sizeof(hk));
++			close(hotkeys);
++		}
++	}
++	memset(&a, 0, sizeof(a));
++	while (a.u.key.key_nr < 5) {
++		a.u.key.key = hk[2 * a.u.key.key_nr];
++		if (pre_data_locked && (a.u.key.key >> 16) != pre_data_locked)
++			a.u.key.key = 0;
++		ioctl(aotomfd, VFDSETSTBYKEY, &a);
++		a.u.key.key = hk[2 * a.u.key.key_nr + 1];
++		if (pre_data_locked && (a.u.key.key >> 16) != pre_data_locked)
++			a.u.key.key = 0;
++		ioctl(aotomfd, VFDSETBLUEKEY, &a);
++		a.u.key.key_nr++;
++	}
++	close(aotomfd);
++}
++#endif
++
 +int predata_lock(int fd, char *message, char *arguments __attribute__((unused)))
 +{
 +	if (last_remote) {
@@ -137,6 +189,9 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
 +		predata_write();
 +	} else // startup
 +		predata_read();
++#ifdef SPARK
++	aotom_predata_lock();
++#endif
 +	return (send_success(fd, message));
 +}
 +
@@ -144,13 +199,16 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
 +{
 +	pre_data_locked = 0;
 +	predata_write();
++#ifdef SPARK
++	aotom_predata_lock();
++#endif
 +	return (send_success(fd, message));
 +}
 +
  int get_command(int fd)
  {
  	int length;
-@@ -1786,18 +1842,41 @@
+@@ -1786,18 +1898,41 @@
  	if (uinputfd != -1) {
  		linux_input_code input_code;
  
@@ -193,7 +251,7 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  			/* Need to write sync event */
  			memset(&event, 0, sizeof(event));
  			event.type = EV_SYN;
-@@ -1807,6 +1886,7 @@
+@@ -1807,6 +1942,7 @@
  				logprintf(LOG_ERR, "writing EV_SYN to uinput failed");
  				logperror(LOG_ERR, NULL);
  			}
@@ -201,7 +259,7 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  		}
  	}
  #endif
-@@ -2233,6 +2313,10 @@
+@@ -2233,6 +2369,10 @@
  
  	signal(SIGPIPE, SIG_IGN);
  
@@ -212,7 +270,7 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  	start_server(permission, nodaemon);
  
  	act.sa_handler = sigterm;
-@@ -2246,8 +2330,10 @@
+@@ -2246,8 +2386,10 @@
  	act.sa_flags = SA_RESTART;	/* don't fiddle with EINTR */
  	sigaction(SIGALRM, &act, NULL);
  
@@ -223,9 +281,9 @@ diff -ur lirc-0.9.0-original/daemons/lircd.c lirc-0.9.0/daemons/lircd.c
  
  	act.sa_handler = sighup;
  	sigemptyset(&act.sa_mask);
-diff -ur lirc-0.9.0-original/daemons/lircd.h lirc-0.9.0/daemons/lircd.h
---- lirc-0.9.0-original/daemons/lircd.h	2011-03-25 23:28:18.000000000 +0100
-+++ lirc-0.9.0/daemons/lircd.h	2013-01-13 16:06:39.124707767 +0100
+diff -ur lirc-0.9.0-orig/daemons/lircd.h lirc-0.9.0/daemons/lircd.h
+--- lirc-0.9.0-orig/daemons/lircd.h	2011-03-25 23:28:18.000000000 +0100
++++ lirc-0.9.0/daemons/lircd.h	2013-02-08 21:17:51.357105455 +0100
 @@ -74,6 +74,8 @@
  int send_stop(int fd, char *message, char *arguments);
  int send_core(int fd, char *message, char *arguments, int once);
