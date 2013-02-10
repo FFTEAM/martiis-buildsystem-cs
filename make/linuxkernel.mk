@@ -335,9 +335,11 @@ $(BUILD_TMP)/linux-$(KVERSION_SRC): \
 	$(MAKE) -C $@ ARCH=sh oldconfig
 	$(MAKE) -C $@ ARCH=sh include/asm
 	$(MAKE) -C $@ ARCH=sh include/linux/version.h
+	$(MAKE) -C $@ ARCH=sh CROSS_COMPILE=$(TARGET)- modules_prepare
 	$(MAKE) -C $@-7162 ARCH=sh oldconfig
 	$(MAKE) -C $@-7162 ARCH=sh include/asm
 	$(MAKE) -C $@-7162 ARCH=sh include/linux/version.h
+	$(MAKE) -C $@-7162 ARCH=sh CROSS_COMPILE=$(TARGET)- modules_prepare
 
 kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA)
 	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
@@ -381,6 +383,7 @@ $(PATCHES)/sparkdrivers/0003-aotom-add-VFDGETVERSION-ioctl-to-find-FP-type.patch
 $(PATCHES)/sparkdrivers/0004-aotom-improve-scrolling-text-code.patch \
 $(PATCHES)/sparkdrivers/0005-aotom-speed-up-softi2c-lowering-CPU-load-of-aotom-dr.patch \
 $(PATCHES)/sparkdrivers/0006-aotom-add-additional-chars-for-VFD-fix-missing-chars.patch \
+$(PATCHES)/sparkdrivers/0007-aotom-register-reboot_notifier-implement-rtc-driver.patch \
 | $(TARGETPREFIX)/include/linux/dvb
 	rm -fr $@ $@-7162
 	cp -a $(SOURCE_DIR)/tdt-driver $(BUILD_TMP)

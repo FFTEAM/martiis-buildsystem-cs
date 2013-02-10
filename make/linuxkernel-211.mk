@@ -251,7 +251,7 @@ ifeq ($(PLATFORM), spark)
 TMP_KDIR=$(BUILD_TMP)/linux-2.6.32
 TDT_PATCHES=$(TDT_SRC)/tdt/cvs/cdk/Patches
 
-MY_KERNELPATCHES = $(PATCHES)/0001-added-pm_power_off-hook-for-machine_halt.patch
+MY_KERNELPATCHES = 
 
 # this is ugly, but easier than changing the way the tdt patches are applied.
 # The reason for this patch is, that the spark_setup and spark7162_setup patches
