@@ -1,14 +1,14 @@
-From a0a550a5308885fb0ec29aac41953159ef547b7f Mon Sep 17 00:00:00 2001
+From 3c790376eced8a3c6e56d06bf043adcb1bbf5ff2 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sun, 19 Feb 2012 16:45:49 +0100
 Subject: [PATCH 2/6] e2proc: silence kmsg spam
 
 ---
- e2_proc/e2_proc_main.c |   31 +++++++++++++++++--------------
- 1 files changed, 17 insertions(+), 14 deletions(-)
+ e2_proc/e2_proc_main.c |   29 ++++++++++++++++-------------
+ 1 file changed, 16 insertions(+), 13 deletions(-)
 
 diff --git a/e2_proc/e2_proc_main.c b/e2_proc/e2_proc_main.c
-index 27bbbdf..b95704f 100644
+index cad4387..67293d7 100644
 --- a/e2_proc/e2_proc_main.c
 +++ b/e2_proc/e2_proc_main.c
 @@ -316,9 +316,9 @@ static int three_d_mode_write(struct file *file, const char __user *buf,
@@ -105,13 +105,6 @@ index 27bbbdf..b95704f 100644
          }
          else
            printk("%s(): different read_procs '%s, %s' (%p, %p)\n",
-@@ -1016,4 +1019,4 @@ module_exit(e2_proc_cleanup_module);
- 
- MODULE_DESCRIPTION("procfs module with enigma2 support");
- MODULE_AUTHOR("Team Ducktales");
--MODULE_LICENSE("GPL");
-\ No newline at end of file
-+MODULE_LICENSE("GPL");
 -- 
-1.7.7
+1.7.10.4
 

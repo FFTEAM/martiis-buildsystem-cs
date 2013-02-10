@@ -1,35 +1,19 @@
-From 5cb5c9170731968d3d474ddde0ee25f8558884ad Mon Sep 17 00:00:00 2001
+From 2958842f02de90ba2342e1b478302e6b4f86d7d7 Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Fri, 6 Jul 2012 14:50:02 +0200
-Subject: [PATCH 1/4] import cec from pinky's git
+Subject: [PATCH 1/7] import cec from pinky's git
 
 git://gitorious.org/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
 commit 6d6486c89a5e4c0828ed0502f45b2b9c5b5f53ce
 ---
- Makefile               |    1 +
- cec/Makefile           |    5 ++++
- cec/cec_dev.c          |    3 ++
- cec/cec_main.c         |   15 ++++++++++++
- cec/cec_opcodes.c      |   58 +++++++++++++++++++++++++++++++++++++++++++++++-
- cec/cec_opcodes_def.h  |   11 +++++++++
- cec/cec_rc.c           |   14 +++++++++++
- e2_proc/e2_proc_main.c |    2 +-
- 8 files changed, 107 insertions(+), 2 deletions(-)
+ cec/Makefile      |    1 +
+ cec/cec_dev.c     |    3 +++
+ cec/cec_main.c    |   15 +++++++++++++++
+ cec/cec_opcodes.c |   48 +++++++++++++++++++++++++++++++++++++++++++++++-
+ 4 files changed, 66 insertions(+), 1 deletion(-)
 
-diff --git a/Makefile b/Makefile
-index 7e84c93..3aa63a9 100644
---- a/Makefile
-+++ b/Makefile
-@@ -223,6 +223,7 @@ endif
- ifdef SPARK
- obj-y	+= smartcard/
- obj-y	+= cpu_frequ/
-+obj-y	+= cec/
- endif
- 
- ifdef SPARK7162
 diff --git a/cec/Makefile b/cec/Makefile
-index 5741f23..c1b37a8 100644
+index 4194668..7fba26a 100644
 --- a/cec/Makefile
 +++ b/cec/Makefile
 @@ -6,6 +6,7 @@ obj-m           += cec.o
@@ -40,17 +24,6 @@ index 5741f23..c1b37a8 100644
  
  ifdef UFS912
  EXTRA_CFLAGS	+= -DSTx7111
-@@ -15,6 +16,10 @@ ifdef UFS913
- EXTRA_CFLAGS	+= -DSTx7105
- endif
- 
-+ifdef SPARK
-+EXTRA_CFLAGS	+= -DSTx7111
-+endif
-+
- ifdef HS7810A
- EXTRA_CFLAGS	+= -DSTx7111
- endif
 diff --git a/cec/cec_dev.c b/cec/cec_dev.c
 index 5fa3baa..0822037 100644
 --- a/cec/cec_dev.c
@@ -106,7 +79,7 @@ index 60223ff..d546acd 100644
 +#endif
  
 diff --git a/cec/cec_opcodes.c b/cec/cec_opcodes.c
-index 4e2b0b0..b7b0fba 100644
+index 6aacc38..08dab1c 100644
 --- a/cec/cec_opcodes.c
 +++ b/cec/cec_opcodes.c
 @@ -52,6 +52,19 @@ static unsigned char isFirstKiss = 0;
@@ -156,24 +129,7 @@ index 4e2b0b0..b7b0fba 100644
    return value & 0xffff;
  }
  
-@@ -279,6 +300,16 @@ void parseMessage(unsigned char src, unsigned char dst, unsigned int len, unsign
-         case USER_CONTROL_CODE_FUNCTION_POWER_TOGGLE:       strcat(name, "POWER_TOGGLE");        break;
-         case USER_CONTROL_CODE_FUNCTION_POWER_OFF:          strcat(name, "POWER_OFF");           break;
-         case USER_CONTROL_CODE_FUNCTION_POWER_ON:           strcat(name, "POWER_ON");            break;
-+#ifdef EVOLUX
-+	case USER_CONTROL_CODE_ROOT_MENU:	strcat(name, "ROOT_MENU");	break;
-+	case USER_CONTROL_CODE_CONTENTS_MENU:	strcat(name, "CONTENTS_MENU");	break;
-+	case USER_CONTROL_CODE_SETUP_MENU:	strcat(name, "SETUP_MENU");	break;
-+	case USER_CONTROL_CODE_PAGEUP:		strcat(name, "PAGEUP");		break;
-+	case USER_CONTROL_CODE_PAGEDOWN:	strcat(name, "PAGEDOWN");	break;
-+	case USER_CONTROL_CODE_INFO:		strcat(name, "INFO");		break;
-+	case USER_CONTROL_CODE_NEXT:		strcat(name, "NEXT");		break;
-+	case USER_CONTROL_CODE_LAST:		strcat(name, "LAST");		break;
-+#endif
-         default: break;
-       }
- 
-@@ -305,6 +336,15 @@ void parseMessage(unsigned char src, unsigned char dst, unsigned int len, unsign
+@@ -313,6 +334,15 @@ void parseMessage(unsigned char src, unsigned char dst, unsigned int len, unsign
        {
        responseBuffer[0] = (getLogicalDeviceType() << 4) + (src & 0xF);
        responseBuffer[1] = SET_OSD_NAME;
@@ -189,7 +145,7 @@ index 4e2b0b0..b7b0fba 100644
        responseBuffer[2] = 'D';
        responseBuffer[3] = 'U';
        responseBuffer[4] = 'C'; 
-@@ -313,6 +353,7 @@ void parseMessage(unsigned char src, unsigned char dst, unsigned int len, unsign
+@@ -321,6 +351,7 @@ void parseMessage(unsigned char src, unsigned char dst, unsigned int len, unsign
        responseBuffer[7] = 'O'; 
        responseBuffer[8] = 'X'; 
        sendMessage(9, responseBuffer);
@@ -197,7 +153,7 @@ index 4e2b0b0..b7b0fba 100644
        }
        break;
  
-@@ -637,14 +678,29 @@ void sendPingWithAutoIncrement(void)
+@@ -645,14 +676,29 @@ void sendPingWithAutoIncrement(void)
  {
    unsigned char responseBuffer[1];
  
@@ -227,75 +183,6 @@ index 4e2b0b0..b7b0fba 100644
  }
  
  void sendOneTouchPlay(void)
-diff --git a/cec/cec_opcodes_def.h b/cec/cec_opcodes_def.h
-index 8836db4..2e55ca6 100644
---- a/cec/cec_opcodes_def.h
-+++ b/cec/cec_opcodes_def.h
-@@ -149,7 +149,14 @@
- #define USER_CONTROL_CODE_NUMBERS_8     0x28
- #define USER_CONTROL_CODE_NUMBERS_9     0x29
- 
-+#ifdef EVOLUX
-+#define USER_CONTROL_CODE_PAGEUP	0x30
-+#define USER_CONTROL_CODE_PAGEDOWN	0x31
-+#endif
- #define USER_CONTROL_CODE_PREV_CHANNEL  0x32
-+#ifdef EVOLUX
-+#define USER_CONTROL_CODE_INFO		0x35
-+#endif
- #define USER_CONTROL_CODE_EPG           0x53
- 
- #define USER_CONTROL_CODE_F1_BLUE       0x71
-@@ -164,6 +171,10 @@
- #define USER_CONTROL_CODE_RECORD        0x47
- #define USER_CONTROL_CODE_REWIND        0x48
- #define USER_CONTROL_CODE_FASTFORWARD   0x49
-+#ifdef EVOLUX
-+#define USER_CONTROL_CODE_NEXT		0x4B
-+#define USER_CONTROL_CODE_LAST		0x4C
-+#endif
- 
- #define USER_CONTROL_CODE_FUNCTION_PLAY               0x60
- #define USER_CONTROL_CODE_FUNCTION_PAUSEPLAY          0x61
-diff --git a/cec/cec_rc.c b/cec/cec_rc.c
-index cc6359d..33e4d87 100644
---- a/cec/cec_rc.c
-+++ b/cec/cec_rc.c
-@@ -101,7 +101,21 @@ int input_inject(unsigned int key, unsigned int type)
- 	case USER_CONTROL_CODE_PAUSE: code = KEY_PAUSE; break;
- 	case USER_CONTROL_CODE_RECORD: code = KEY_RECORD; break;
- 	case USER_CONTROL_CODE_REWIND: code = KEY_REWIND; break;
-+#ifdef EVOLUX
- 	case USER_CONTROL_CODE_FASTFORWARD: code = KEY_FASTFORWARD; break;
-+#else
-+	case USER_CONTROL_CODE_FASTFORWARD: code = KEY_FORWARD; break;
-+#endif
-+#ifdef EVOLUX
-+	case USER_CONTROL_CODE_ROOT_MENU: code = KEY_MENU; break;
-+	case USER_CONTROL_CODE_CONTENTS_MENU: code = KEY_FAVORITES; break;
-+	case USER_CONTROL_CODE_SETUP_MENU: code = KEY_MENU; break;
-+	case USER_CONTROL_CODE_NEXT: code = KEY_NEXT; break;
-+	case USER_CONTROL_CODE_LAST: code = KEY_LAST; break;
-+	case USER_CONTROL_CODE_PAGEUP: code = KEY_PAGEUP; break;
-+	case USER_CONTROL_CODE_PAGEDOWN: code = KEY_PAGEDOWN; break;
-+	case USER_CONTROL_CODE_INFO: code = KEY_INFO; break;
-+#endif
- 	default: break;
- 	}
- 
-diff --git a/e2_proc/e2_proc_main.c b/e2_proc/e2_proc_main.c
-index d733b07..4cac021 100644
---- a/e2_proc/e2_proc_main.c
-+++ b/e2_proc/e2_proc_main.c
-@@ -623,7 +623,7 @@ struct ProcStructure_s e2Proc[] =
- 	{cProcEntry, "stb/video/plane/psi_contrast"                                     , NULL, NULL, NULL, NULL, "psi_contrast"},
- 	{cProcEntry, "stb/video/plane/psi_tint"                                         , NULL, NULL, NULL, NULL, "psi_tint"},
- 	{cProcEntry, "stb/video/plane/psi_apply"                                        , NULL, NULL, NULL, NULL, "psi_apply"},
--#if defined(UFS912) || defined(UFS913) || defined(ATEVIO7500)
-+#if defined(UFS912) || defined(UFS913) || defined(ATEVIO7500) || defined(SPARK)
- 	{cProcDir  , "stb/cec"                                                          , NULL, NULL, NULL, NULL, ""},
- 	{cProcEntry, "stb/cec/state_activesource"                                       , NULL, NULL, NULL, NULL, ""},
- 	{cProcEntry, "stb/cec/state_standby"                                            , NULL, NULL, NULL, NULL, ""},
 -- 
-1.7.7
+1.7.10.4
 

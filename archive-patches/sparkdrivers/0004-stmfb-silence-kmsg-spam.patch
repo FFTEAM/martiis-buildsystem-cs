@@ -1,11 +1,11 @@
-From a6d98122d55ea3192e2fe5084c728613f90db163 Mon Sep 17 00:00:00 2001
+From 4d4e9502a977fa0881c116322224e0009e79462c Mon Sep 17 00:00:00 2001
 From: Stefan Seyfried <seife@tuxbox-git.slipkontur.de>
 Date: Sun, 19 Feb 2012 16:50:18 +0100
 Subject: [PATCH 4/6] stmfb: silence kmsg spam
 
 ---
- .../linux/drivers/video/stmfbioctl.c               |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ stgfb/stmfb-3.1_stm24_0102/linux/drivers/video/stmfbioctl.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/stgfb/stmfb-3.1_stm24_0102/linux/drivers/video/stmfbioctl.c b/stgfb/stmfb-3.1_stm24_0102/linux/drivers/video/stmfbioctl.c
 index c8e75a0..1d87f0e 100644
@@ -25,5 +25,5 @@ index c8e75a0..1d87f0e 100644
    {
      dstrect.left   = pData->dst_left;
 -- 
-1.7.7
+1.7.10.4
 
