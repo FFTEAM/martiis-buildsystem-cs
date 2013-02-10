@@ -335,9 +335,11 @@ $(BUILD_TMP)/linux-$(KVERSION_SRC): \
 	$(MAKE) -C $@ ARCH=sh oldconfig
 	$(MAKE) -C $@ ARCH=sh include/asm
 	$(MAKE) -C $@ ARCH=sh include/linux/version.h
+	$(MAKE) -C $@ ARCH=sh CROSS_COMPILE=$(TARGET)- modules_prepare
 	$(MAKE) -C $@-7162 ARCH=sh oldconfig
 	$(MAKE) -C $@-7162 ARCH=sh include/asm
 	$(MAKE) -C $@-7162 ARCH=sh include/linux/version.h
+	$(MAKE) -C $@-7162 ARCH=sh CROSS_COMPILE=$(TARGET)- modules_prepare
 
 kernelmenuconfig: $(BUILD_TMP)/linux-$(KVERSION_SRC)$(K_EXTRA)
 	make -C$^ ARCH=sh CROSS_COMPILE=$(TARGET)- menuconfig
