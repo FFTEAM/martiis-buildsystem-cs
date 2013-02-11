@@ -91,6 +91,12 @@ neutrino-mp:
 neutrino-hd-td:
 	$(MAKE) FLAVOUR=$@ neutrino
 
+neutrino-pkg-mp:
+	$(MAKE) FLAVOUR=neutrino-hd-td neutrino-pkg
+
+neutrino-pkg-hd:
+	$(MAKE) FLAVOUR=neutrino-mp neutrino-pkg
+
 ifneq ($(FLAVOUR), neutrino-mp)
 HOMEPAGE = "http://gitorious.org/neutrino-hd"
 IMGNAME  = "HD-Neutrino"
