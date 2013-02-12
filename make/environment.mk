@@ -15,8 +15,8 @@ ifneq ($(PLATFORM), coolstream)
 # good platforms use the open sourced libstb-hal...
 USE_STB_HAL ?= yes
 # ...and the neutrino-multiplatform edition
-#FLAVOUR     ?= neutrino-mp
-FLAVOUR     ?= neutrino-hd-td
+FLAVOUR     ?= neutrino-mp
+#FLAVOUR     ?= neutrino-hd-td
 
 ifeq ($(PLATFORM), tripledragon)
 ifneq ($(TD_COMPILER), old)
