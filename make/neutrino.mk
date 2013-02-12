@@ -92,7 +92,7 @@ neutrino-hd-td:
 	$(MAKE) FLAVOUR=$@ neutrino
 
 neutrino-pkg-mp:
-	$(MAKE) FLAVOUR=neutrino-hd-td neutrino-pkg
+	$(MAKE) FLAVOUR=neutrino-mp neutrino-pkg
 
 neutrino-pkg-hd:
 	$(MAKE) FLAVOUR=neutrino-mp neutrino-pkg
