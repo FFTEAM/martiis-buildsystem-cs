@@ -99,9 +99,9 @@ $(TARGETPREFIX)/lib/libc.so.6: $(TARGETPREFIX)
 	else \
 		cp -a $(CROSS_DIR)/$(TARGET)/lib/*so* $(TARGETPREFIX)/lib; \
 	fi
-	if test -e $(CROSS_DIR)/$(TARGET)/usr/lib/gconv/ISO8859-1.so; then \
+	if test -e $(CROSS_DIR)/target/usr/lib/gconv/ISO8859-1.so; then \
 		if ! test -d $(TARGETPREFIX)/usr/lib/gconv; then mkdir -p $(TARGETPREFIX)/usr/lib/gconv; fi; \
-		cp -a $(CROSS_DIR)/$(TARGET)/usr/lib/gconv/ISO8859-1.so $(CROSS_DIR)/$(TARGET)/usr/lib/gconv/gconv-modules $(TARGETPREFIX)/usr/lib/gconv/; \
+		cp -a $(CROSS_DIR)/target/usr/lib/gconv/ISO8859-1.so $(CROSS_DIR)/target/usr/lib/gconv/gconv-modules $(TARGETPREFIX)/usr/lib/gconv/; \
 	fi 
 
 $(TD_SVN)/ARMAS:
