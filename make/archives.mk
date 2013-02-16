@@ -312,7 +312,7 @@ $(ARCHIVE)/ntp-$(NTP_VER).tar.gz:
 	$(WGET) http://www.eecis.udel.edu/~ntp/ntp_spool/ntp4/ntp-4.2/ntp-$(NTP_VER).tar.gz
 
 $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2:
-	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2 || git clone git://git.opendreambox.org/git/obi/libdvbsi++.git $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER) && cd $(ARCHIVE)/libdvbsi++-$(LIBDVBSI_VER) && git checkout $(LIBDVBSI_VER) && cd $(ARCHIVE) && tar -cjf $@ libdvbsi++-$(LIBDVBSI_VER) && rm -rf libdvbsi++-$(LIBDVBSI_VER)
+	$(WGET) http://www.saftware.de/libdvbsi++/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 
 $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2:
 	$(WGET) ftp://gd.tuwien.ac.at/opsys/linux/alsa/lib/alsa-lib-$(ALSA_VER).tar.bz2
