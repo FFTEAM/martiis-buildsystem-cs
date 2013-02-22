@@ -1,0 +1,60 @@
+# HG changeset patch
+# User Honza Petrous <jpetrous@smartimp.cz>
+# Date 1329250956 -3600
+# Node ID b6fa0d2b133b5c23a0fc9e2c038c3b5dde55f3b0
+# Parent  459631d448f7a53a451c89d9646865fd7c512074
+Better processing of GET_PROPERTY. Fixed return value for vtuner-dmm-2.c hardware
+
+diff -r 459631d448f7 -r b6fa0d2b133b vtuner-dmm-2.c
+--- a/vtuner-dmm-2.c	Tue Feb 14 21:03:05 2012 +0100
++++ b/vtuner-dmm-2.c	Tue Feb 14 21:22:36 2012 +0100
+@@ -146,13 +146,13 @@
+ 
+ int hw_get_property(vtuner_hw_t* hw, struct dtv_property* prop) {
+   int ret=-1;
+-  WARN(MSG_HW, "FE_GET_PROPERTY is not available\n");
++  ERROR(MSG_HW, "FE_GET_PROPERTY is not available\n");
+   return ret;
+ }
+ 
+ int hw_set_property(vtuner_hw_t* hw, struct dtv_property* prop) {
+   int ret=-1;
+-  WARN(MSG_HW, "FE_SET_PROPERTY is not available\n");
++  ERROR(MSG_HW, "FE_SET_PROPERTY is not available\n");
+   return ret;
+ }
+ 
+diff -r 459631d448f7 -r b6fa0d2b133b vtuner-dmm-3.c
+--- a/vtuner-dmm-3.c	Tue Feb 14 21:03:05 2012 +0100
++++ b/vtuner-dmm-3.c	Tue Feb 14 21:22:36 2012 +0100
+@@ -234,7 +234,8 @@
+ }
+ 
+ int hw_get_property(vtuner_hw_t* hw, struct dtv_property* prop) {
+-
++  INFO(MSG_HW, "FE_GET_PROPERTY: not implemented %d\n", prop->cmd);
++  return 0;
+ }
+ 
+ int hw_set_property(vtuner_hw_t* hw, struct dtv_property* prop) {
+diff -r 459631d448f7 -r b6fa0d2b133b vtuner-dvb-3.c
+--- a/vtuner-dvb-3.c	Tue Feb 14 21:03:05 2012 +0100
++++ b/vtuner-dvb-3.c	Tue Feb 14 21:22:36 2012 +0100
+@@ -236,7 +236,7 @@
+ }
+ 
+ int hw_get_property(vtuner_hw_t* hw, struct dtv_property* prop) {
+-  WARN(MSG_NET, "FE_GET_PROPERTY: not implemented %d\n", prop->cmd);
++  WARN(MSG_HW, "FE_GET_PROPERTY: not implemented %d\n", prop->cmd);
+   return 0;
+ }
+ 
+@@ -244,7 +244,7 @@
+   int ret=0;
+ #if DVB_API_VERSION < 5
+   ret = -1;
+-  WARN(MSG_NET, "FE_SET_PROPERTY is not available\n");
++  WARN(MSG_HW, "FE_SET_PROPERTY is not available\n");
+ #else
+   DEBUGHW("FE_SET_PROPERTY %d\n", prop->cmd);
+   switch( prop->cmd ) {

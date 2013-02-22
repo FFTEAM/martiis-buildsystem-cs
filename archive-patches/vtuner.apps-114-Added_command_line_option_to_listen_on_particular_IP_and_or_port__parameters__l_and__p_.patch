@@ -1,0 +1,164 @@
+# HG changeset patch
+# User Honza Petrous <jpetrous@smartimp.cz>
+# Date 1326660651 -3600
+# Node ID 3a9233717687de79bd975bb0419403c6a4c133e8
+# Parent  2a77437f560bffff7bfff3d8efb7909c89b63466
+Added command line option to listen on particular IP and/or port (parameters -l and -p)
+
+diff -r 2a77437f560b -r 3a9233717687 vtunerd-service.c
+--- a/vtunerd-service.c	Wed Jan 11 00:39:07 2012 +0100
++++ b/vtunerd-service.c	Sun Jan 15 21:50:51 2012 +0100
+@@ -17,27 +17,44 @@
+ #define str(s) #s
+ 
+ static unsigned short discover_port = VTUNER_DISCOVER_PORT;
++static int discover_fd = 0;
+ 
+-int discover_fd = 0;
++static unsigned short listen_port = VTUNER_DISCOVER_PORT;
++static unsigned long listen_ip = INADDR_ANY;
+ 
+-int init_vtuner_service() {
++int init_vtuner_service(char *ip, unsigned short port) {
+ 	struct sockaddr_in discover_so;
++	int rv;
++
++	if( discover_fd ) {
++		DEBUGSRV("autodiscover socket already bound\n");
++		return 0;
++	}
++
++	if( ip && strlen(ip) ) {
++		unsigned long nip;
++  		inet_aton(ip, &nip);
++		if( nip )
++			listen_ip = ntohl(nip);
++	}
++	if( port )
++		listen_port = port;
+ 
+ 	memset(&discover_so, 0, sizeof(discover_so));
+ 	discover_so.sin_family = AF_INET;
+-	discover_so.sin_addr.s_addr = htonl(INADDR_ANY);
+-	discover_so.sin_port = htons(0x9989);
++	discover_so.sin_addr.s_addr = htonl(listen_ip);
++	discover_so.sin_port = htons(listen_port);
+ 	discover_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
+ 
+-	if( bind(discover_fd, (struct sockaddr *) &discover_so, sizeof(discover_so)) < 0) {
+-		ERROR(MSG_SRV, "failed to bind autodiscover socket - %m\n");
+-		return 0;
++	if(( rv = bind(discover_fd, (struct sockaddr *) &discover_so, sizeof(discover_so))) < 0) {
++		ERROR(MSG_SRV, "failed to bind autodiscover socket %s:%d - %m\n", ip ? : "*.*", listen_port);
++		return rv;
+ 	}
+-	DEBUGSRV("autodiscover socket bound\n");
+-	return 1;
++	DEBUGSRV("autodiscover socket bound to %s:%d\n", ip ? : "*.*", listen_port);
++	return 0;
+ }
+ 
+-int prepare_anon_stream_socket(struct sockaddr_in* addr, socklen_t* addrlen) {
++static int prepare_anon_stream_socket(struct sockaddr_in* addr, socklen_t* addrlen) {
+ 
+   int listen_fd;
+   int ret;
+@@ -50,7 +67,7 @@
+ 
+   memset((char *)addr, 0, *addrlen);
+   addr->sin_family = AF_INET;
+-  addr->sin_addr.s_addr = INADDR_ANY;
++  addr->sin_addr.s_addr = htonl(listen_ip);
+   addr->sin_port = 0;
+ 
+   if( ret = bind(listen_fd, (struct sockaddr*)addr, *addrlen) < 0) {
+@@ -75,7 +92,7 @@
+   return(ret);
+ }
+ 
+-void set_socket_options(int fd) {
++static void set_socket_options(int fd) {
+     int opt=1;
+     if( setsockopt(fd, IPPROTO_TCP, TCP_NODELAY, &opt, sizeof(opt)) < 0)
+       WARN(MSG_SRV, "setsockopt TCP_NODELAY %d failed -%m\n",opt);
+@@ -123,7 +140,7 @@
+ 	tsdata_worker_status_t status;
+ } tsdata_worker_data_t;
+ 
+-void *tsdata_worker(void *d) {
++static void *tsdata_worker(void *d) {
+   tsdata_worker_data_t* data = (tsdata_worker_data_t*)d;
+ 
+   int out_fd;
+@@ -256,10 +273,6 @@
+ 	int clientlen = sizeof(*client_so);
+ 	vtuner_net_message_t msg;
+ 
+-	if(discover_fd==0) {
+-		if( ! init_vtuner_service()) return 0;
+-	}
+-
+ 	INFO(MSG_SRV, "waiting for autodiscover packet (groups 0x%04X) ...\n", *tuner_group);
+ 	do {
+ 		if( recvfrom(discover_fd, &msg, sizeof(msg), 0, (struct sockaddr *) client_so, &clientlen) <= 0 )
+diff -r 2a77437f560b -r 3a9233717687 vtunerd-service.h
+--- a/vtunerd-service.h	Wed Jan 11 00:39:07 2012 +0100
++++ b/vtunerd-service.h	Sun Jan 15 21:50:51 2012 +0100
+@@ -24,6 +24,7 @@
+ 	SST_BUSY
+ } vtuner_session_status_t;
+ 
++int init_vtuner_service(char *, unsigned short);
+ int fetch_request(struct sockaddr_in*, int*, int*, int*);
+ int run_worker(int, int, int, int, struct sockaddr_in*);
+ 
+diff -r 2a77437f560b -r 3a9233717687 vtunerd.c
+--- a/vtunerd.c	Wed Jan 11 00:39:07 2012 +0100
++++ b/vtunerd.c	Sun Jan 15 21:50:51 2012 +0100
+@@ -46,6 +46,8 @@
+ 	int hw_count = 0;
+ 	int tuner_group = VTUNER_GROUPS_ALL;
+ 	int opt_err = 0;
++	unsigned short lport = 0;
++	char *lip = NULL;
+ 
+ 	openlog("vtunerd", LOG_PERROR, LOG_USER);
+ 
+@@ -95,8 +97,12 @@
+ 				sscanf(optarg, "%i", &tuner_group);
+ 				break;
+ 
+-			case 'l': // TODO: local ip
+-			case 'p': // TODO: port
++			case 'l': // listenning ip
++				lip = optarg;
++				break;
++
++			case 'p': // listenning port
++				lport = atoi(optarg);
+ 				break;
+ 
+ 			case 'u': // udp log
+@@ -118,8 +124,8 @@
+ 				write_message(MSG_MAIN, MSG_ERROR, "\nCommand line options:\n"
+ 					"    -d devs_list             : adapter[:frontend[:demux[:dvr]]] (default is 0:0:0:0)\n"
+ 					"    -g group_mask            : listen for group members requests only\n"
+-					//"    -l ip_address            : listen on local ip address (default is on ALL)\n"
+-					//"    -p port_number           : listen on local port (default is %d)\n"
++					"    -l ip_address            : listen on local ip address (default is on ALL)\n"
++					"    -p port_number           : listen on local port (default is %d)\n"
+ 					"    -u ip_address:port_number: send message log to udp://ip_address:port_number\n"
+ 					"    -v level                 : verbosity level (1:err,2:warn,3:info,4:debug)\n",
+ 					VTUNER_DISCOVER_PORT);
+@@ -162,6 +168,11 @@
+ 	struct sockaddr_in client_so;
+ 	int tuner_type, proto = -1;
+ 
++	if (init_vtuner_service(lip, lport)) {
++		ERROR(MSG_MAIN, "Failed to init listening port '%s:%d'\n", lip ? : "*.*", lport);
++		exit(2);
++	}
++
+ 	while(fetch_request(&client_so, &proto, &tuner_type, &tuner_group)) {
+ 		INFO(MSG_MAIN, "received discover request proto%d, vtuner_type:%d group:0x%04X\n", proto, tuner_type, tuner_group);
+ 		for(i=0; i<hw_count; ++i) {

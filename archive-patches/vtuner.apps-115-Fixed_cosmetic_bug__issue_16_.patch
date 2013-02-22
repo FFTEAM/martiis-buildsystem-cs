@@ -1,0 +1,24 @@
+# HG changeset patch
+# User Honza Petrous <jpetrous@smartimp.cz>
+# Date 1329249785 -3600
+# Node ID 459631d448f7a53a451c89d9646865fd7c512074
+# Parent  3a9233717687de79bd975bb0419403c6a4c133e8
+Fixed cosmetic bug (issue#16)
+
+diff -r 3a9233717687 -r 459631d448f7 vtunerc.c
+--- a/vtunerc.c	Sun Jan 15 21:50:51 2012 +0100
++++ b/vtunerc.c	Tue Feb 14 21:03:05 2012 +0100
+@@ -427,11 +427,11 @@
+           types[modes] = VT_S;
+           vtuner_info[modes] = &fe_info_dvbs;
+           strncpy(ctypes[modes],"DVB-S",sizeof(ctypes[0]));
+-        } else if(strcmp(act,"c")==0) {
++        } else if(strcmp(act,"C")==0) {
+           types[modes] = VT_C;
+           vtuner_info[modes] = &fe_info_dvbc;
+           strncpy(ctypes[modes],"DVB-C",sizeof(ctypes[0]));
+-        } else if(strcmp(act,"t")==0) {
++        } else if(strcmp(act,"T")==0) {
+           types[modes] = VT_T;
+           vtuner_info[modes] = &fe_info_dvbt;
+           strncpy(ctypes[modes],"DVB-T",sizeof(ctypes[0]));
