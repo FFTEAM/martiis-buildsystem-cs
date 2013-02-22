@@ -715,7 +715,7 @@ $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2:
 		mv apps.vtuner-b6fa0d2b133b vtuner-apps-rel2.1.99.116; \
 		tar -cvpjf $@ vtuner-apps-rel2.1.99.116
 
-$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(sort $(wildcard $(PATCHES)/vtuner.apps-[1-9]*)) $(PATCHES)/vtuner-2.1.99-debug.diff $(PATCHES)/vtuner-apps-compilerwarnings.diff
+$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(sort $(wildcard $(PATCHES)/vtuner.apps-[1-9]*)) $(PATCHES)/vtuner-2.1.99-debug.diff $(PATCHES)/vtuner-apps-compilerwarnings.diff $(PATCHES)/vtuner-ratelimit-buffer-message.diff
 	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
 	$(UNTAR)/vtuner-apps-rel2.1.tar.bz2
 	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1; \

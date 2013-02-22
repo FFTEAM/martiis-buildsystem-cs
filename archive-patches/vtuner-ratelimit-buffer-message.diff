@@ -1,0 +1,17 @@
+diff --git a/vtunerd-service.c b/vtunerd-service.c
+index 913e30e..01b0cac 100644
+--- a/vtunerd-service.c
++++ b/vtunerd-service.c
+@@ -201,7 +201,11 @@ static void *tsdata_worker(void *d) {
+       // of RMAX
+       rmax = (rmax>RMAX)?RMAX:rmax;
+       if(rmax == 0) {
+-        WARN(MSG_SRV, "no space left in buffer to read data, data loss possible\n");
++        static time_t last_warn = 0;
++        if (time(NULL) - last_warn > 4) { /* rate-limit the message */
++          last_warn = time(NULL);
++          WARN(MSG_SRV, "no space left in buffer to read data, data loss possible\n");
++        }
+       } else {
+         int rlen = read(data->in, buffer + bufptr, rmax);
+         if(rlen>0) bufptr += rlen;
