@@ -1,0 +1,119 @@
+# HG changeset patch
+# User Honza Petrous <jpetrous@smartimp.cz>
+# Date 1326238747 -3600
+# Node ID 2a77437f560bffff7bfff3d8efb7909c89b63466
+# Parent  c227c246838e9e03626fbb580b3856d050830951
+Added UDP logging. Command line parameter '-u ip_address:port_number' (send message log to udp://ip_address:port_number)
+
+diff -r c227c246838e -r 2a77437f560b vtuner-utils.c
+--- a/vtuner-utils.c	Tue Jan 10 21:11:55 2012 +0100
++++ b/vtuner-utils.c	Wed Jan 11 00:39:07 2012 +0100
+@@ -2,12 +2,21 @@
+ #include <string.h>
+ #include <syslog.h>
+ #include <stdarg.h>
++#include <arpa/inet.h>
++#include <netinet/in.h>
++#include <sys/types.h>
++#include <sys/socket.h>
++#include <unistd.h>
+ 
+ #define MAX_MSGSIZE 1024
+ #include "vtuner-utils.h"
+ 
+ __thread char msg[MAX_MSGSIZE];
+ 
++static struct sockaddr_in udplog_saddr;
++static int udplog_fd = -1;
++static int udplog_enabled = 0;
++
+ void write_message(const unsigned int mtype, const int level, const char* fmt, ... ) {
+   if( !(mtype & dbg_mask ) )
+     return;
+@@ -33,7 +42,10 @@
+     } else {
+       fprintf(stderr, "%s", msg);
+     }
+-  } 
++
++    if(udplog_fd > -1 && udplog_enabled)
++      sendto(udplog_fd, msg, strlen(msg), 0, (const struct sockaddr *)&udplog_saddr, sizeof(udplog_saddr));
++  }
+ 
+   strncpy(msg, "", sizeof(msg));
+ }
+@@ -55,3 +67,21 @@
+ 
+   strncat(msg, tn, sizeof(msg));
+ }  
++
++int open_udplog(char *ipaddr, int portnum) {
++
++  if(udplog_fd != -1)
++    return 0;
++
++  udplog_fd = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
++  memset(&udplog_saddr, 0, sizeof(udplog_saddr));
++  udplog_saddr.sin_family = AF_INET;
++  inet_aton(ipaddr, &udplog_saddr.sin_addr);
++  udplog_saddr.sin_port = htons(portnum);
++
++  return 0;
++}
++
++void udplog_enable(int ena) {
++  udplog_enabled = ena;
++}
+diff -r c227c246838e -r 2a77437f560b vtuner-utils.h
+--- a/vtuner-utils.h	Tue Jan 10 21:11:55 2012 +0100
++++ b/vtuner-utils.h	Wed Jan 11 00:39:07 2012 +0100
+@@ -29,4 +29,6 @@
+ #define DEBUG(mtype, msg, ...) write_message(mtype, MSG_DEBUG, "[%d %s:%u] debug: " msg, getpid(), __FILE__, __LINE__, ## __VA_ARGS__)
+ 
+ void write_message(const unsigned int, const int, const char*, ...);
++int open_udplog(char *, int );
++void udplog_enable(int);
+ #endif
+diff -r c227c246838e -r 2a77437f560b vtunerd.c
+--- a/vtunerd.c	Tue Jan 10 21:11:55 2012 +0100
++++ b/vtunerd.c	Wed Jan 11 00:39:07 2012 +0100
+@@ -97,7 +97,20 @@
+ 
+ 			case 'l': // TODO: local ip
+ 			case 'p': // TODO: port
+-			case 'u': // TODO: udp log
++				break;
++
++			case 'u': // udp log
++				{
++					char ip[64];
++					int pnum;
++
++					if(sscanf(optarg, "%[^:]:%d", ip, &pnum) < 2) {
++						WARN(MSG_MAIN, "Invalid UDP logger parameter: %s\n", optarg);
++						break;
++					}
++					open_udplog(ip, pnum);
++					DEBUGMAIN("UDP logger to %s:%d opened\n", ip, pnum);
++				}
+ 				break;
+ 
+ 
+@@ -107,7 +120,7 @@
+ 					"    -g group_mask            : listen for group members requests only\n"
+ 					//"    -l ip_address            : listen on local ip address (default is on ALL)\n"
+ 					//"    -p port_number           : listen on local port (default is %d)\n"
+-					//"    -u ip_address:port_number: send message log to udp://ip_address:port_number\n"
++					"    -u ip_address:port_number: send message log to udp://ip_address:port_number\n"
+ 					"    -v level                 : verbosity level (1:err,2:warn,3:info,4:debug)\n",
+ 					VTUNER_DISCOVER_PORT);
+ 				exit(1);
+@@ -127,6 +140,8 @@
+ 		INFO(MSG_MAIN, "S2API tuning support.\n");
+ 	#endif
+ 
++	udplog_enable(1);
++
+ 	for(i=0;i<hw_count;++i) {
+ 		vtuner_hw_t hw;
+ 		if(hw_init(&hw, session[i].adapter, session[i].frontend,

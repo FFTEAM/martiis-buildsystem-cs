@@ -781,12 +781,13 @@ $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2:
 		mv apps.vtuner-b6fa0d2b133b vtuner-apps-rel2.1.99.116; \
 		tar -cvpjf $@ vtuner-apps-rel2.1.99.116
 
-$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2 $(PATCHES)/vtuner-2.1.99-debug.diff $(PATCHES)/vtuner-apps-compilerwarnings.diff
-	$(REMOVE)/vtuner-apps-rel2.1.99.116 $(PKGPREFIX)
-	$(UNTAR)/vtuner-apps-rel2.1.99.116.tar.bz2
-	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1.99.116; \
-		$(PATCH)/vtuner-apps-compilerwarnings.diff; \
-		$(PATCH)/vtuner-2.1.99-debug.diff; \
+$(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(sort $(wildcard $(PATCHES)/vtuner.apps-[1-9]*)) $(PATCHES)/vtuner-2.1.99-debug.diff $(PATCHES)/vtuner-apps-compilerwarnings.diff $(PATCHES)/vtuner-ratelimit-buffer-message.diff
+	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
+	$(UNTAR)/vtuner-apps-rel2.1.tar.bz2
+	set -e; cd $(BUILD_TMP)/vtuner-apps-rel2.1; \
+		for i in $^; do \
+			test $$i = $(firstword $^) && continue; \
+			echo "applying patch $$i"; patch -p1 -i $$i; done; \
 		echo "CC-$(BOXARCH)=$(TARGET)-gcc" > Make.config; \
 		make $(BOXARCH); \
 		install -m 755 -D dist/$(BOXARCH)/vtunerd.$(BOXARCH) $(PKGPREFIX)/bin/vtunerd; \
@@ -796,5 +797,5 @@ $(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2 $(PATCHES)/vtuner-2.1.
 		ln -s vtunerd $(PKGPREFIX)/etc/init.d/S70vtunerd; \
 		cp vtunerd.conf $(PKGPREFIX)/etc/
 	PKG_VER=2.1.99.116 $(OPKG_SH) $(CONTROL_DIR)/vtuner-apps
-	$(REMOVE)/vtuner-apps-rel2.1.99.116 $(PKGPREFIX)
+	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
 	touch $@
