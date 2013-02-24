@@ -321,7 +321,8 @@ $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
 	$(WGET) ftp://gd.tuwien.ac.at/opsys/linux/alsa/utils/alsa-utils-$(ALSA_VER).tar.bz2
 
 $(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz:
-	$(WGET) http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz
+	$(WGET) http://pkgs.fedoraproject.org/repo/pkgs/wireless-tools/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz/e06c222e186f7cc013fd272d023710cb/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz # version 29 only!
+#	$(WGET) http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz
 
 $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz:
 	$(WGET) http://hostap.epitest.fi/releases/wpa_supplicant-$(WPASUPP_VER).tar.gz
