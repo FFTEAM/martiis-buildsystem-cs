@@ -47,5 +47,4 @@ EOT
 
 chmod 755 restore.sh
 echo "Done. Image is in $B"
-sleep 3
 
