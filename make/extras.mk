@@ -733,3 +733,12 @@ $(D)/vtuner: $(ARCHIVE)/vtuner-apps-rel2.1.tar.bz2 $(sort $(wildcard $(PATCHES)/
 	PKG_VER=2.1.99.116 $(OPKG_SH) $(CONTROL_DIR)/vtuner-apps
 	$(REMOVE)/vtuner-apps-rel2.1 $(PKGPREFIX)
 	touch $@
+
+$(D)/samsremote: $(ARCHIVE)/samsremote-1.tar.gz
+	$(UNTAR)/samsremote-1.tar.gz
+	set -e; cd $(BUILD_TMP)/samsremote-samsremote; \
+		make CC=$(TARGET)-gcc; \
+		install -m 755 -D samsremote $(PKGPREFIX)/bin/samsremote
+	PKG_VER=1 $(OPKG_SH) $(CONTROL_DIR)/samsremote
+	$(REMOVE)/samsremote-samsremote $(PKGPREFIX)
+	touch $@
