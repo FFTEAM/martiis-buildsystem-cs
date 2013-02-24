@@ -257,6 +257,9 @@ $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz:
 $(ARCHIVE)/samba-3.3.9.tar.gz:
 	$(WGET) http://download.samba.org/samba/ftp/old-versions/samba-3.3.9.tar.gz
 
+$(ARCHIVE)/samsremote-1.tar.gz:
+	$(WGET) -O $@ https://gitorious.org/samsremote/samsremote/archive-tarball/release-1
+
 $(ARCHIVE)/sg3_utils-$(SG3_UTILS-VER).tar.bz2:
 	$(WGET) http://sg.danny.cz/sg/p/sg3_utils-$(SG3_UTILS-VER).tar.bz2
 

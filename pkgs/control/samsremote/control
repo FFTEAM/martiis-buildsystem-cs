@@ -1,0 +1,10 @@
+Package: samsremote
+Version: @VER@-1
+Description: Network remote control for Samsung TVs
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://gitorious.org/samsremote
+Source:
+Depends:

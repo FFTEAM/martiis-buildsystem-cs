@@ -124,6 +124,7 @@ endif
 PHONY += $(PKGPREFIX)/.version $(TARGETPREFIX)/.version
 
 $(D)/neutrino: $(N_OBJDIR)/config.status $(NEUTRINO_DEPS2)
+	rm -f $(N_OBJDIR)/src/neutrino # trigger relinking, to pick up newly built libstb-hal
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(N_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(N_OBJDIR) install DESTDIR=$(TARGETPREFIX)
