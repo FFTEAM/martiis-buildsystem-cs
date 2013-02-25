@@ -510,7 +510,7 @@ $(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_A
 	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	touch $@
 
-FUSE_NEEDS_KO = true;
+FUSE_NEEDS_KO = true
 ifeq ($(PLATFORM), spark)
 FUSE_NEEDS_KO = false
 endif
@@ -521,14 +521,14 @@ $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/fuse-$(FUSE_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/fuse-$(FUSE_VER); \
-		$(CONFIGURE) --prefix= ; \
+		$(CONFIGURE) --prefix= --mandir=/.remove; \
 		$(MAKE) all; \
 		make install DESTDIR=$(TARGETPREFIX) ;\
 		make install DESTDIR=$(PKGPREFIX)
 	$(REWRITE_LIBTOOL)/libfuse.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/fuse.pc
 	set -e; cd $(PKGPREFIX); \
-		rm -rf dev etc lib/pkgconfig include; \
+		rm -rf dev etc lib/pkgconfig include .remove; \
 		rm lib/*.so lib/*.la lib/*.a
 ifeq ($(FUSE_NEEDS_KO), true)
 	install -m 755 -D $(SCRIPTS)/load-fuse.init \
