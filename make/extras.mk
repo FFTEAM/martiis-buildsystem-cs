@@ -355,6 +355,7 @@ $(ARCHIVE)/ushare-1.1a.r469.tar.bz2: | find-hg
 $(D)/ushare: $(ARCHIVE)/ushare-1.1a.r469.tar.bz2 libupnp | $(TARGETPREFIX)
 	$(UNTAR)/ushare-1.1a.r469.tar.bz2
 	set -e; cd $(BUILD_TMP)/ushare-1.1a.r469; \
+		sed -i 's/__DATE__/"for $(PLATFORM)"/' src/ctrl_telnet.c; \
 		$(PATCH)/ushare-new-upnp.diff; \
 		$(BUILDENV) \
 		./configure --cross-compile --cross-prefix=$(TARGET)- \
