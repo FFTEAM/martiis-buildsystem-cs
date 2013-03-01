@@ -69,7 +69,7 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-silent-rules --enable-mdev --enable-giflib \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
-				$(N_CONFIG_OPTS) \
+				$(N_CONFIG_OPTS) $(LOCAL_NEUTRINO_BUILD_OPTIONS) \
 				INSTALL="`which install` -p"; \
 		test -e src/gui/svn_version.h || echo '#define BUILT_DATE "error - not set"' > src/gui/svn_version.h; \
 		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h; \
