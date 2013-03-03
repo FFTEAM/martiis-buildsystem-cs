@@ -56,3 +56,10 @@
 # this also affects the use of svn:// or http:// for the crosstool builds
 #
 # GIT_PROTOCOL = http
+
+
+# if you want to use more than default build options for neutrino
+# you can add more build options, here for example, activate the build of UPNP-Browser
+#
+# LOCAL_NEUTRINO_BUILD_OPTIONS = --enable-upnp
+
