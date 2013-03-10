@@ -49,6 +49,7 @@ stop)
 		echo "correcting WAKEUP to $WAKEUP"
 	fi
 	echo $WAKEUP > /sys/class/rtc/rtc0/wakealarm
+	spark_fp -l 1 # enable green LED
 	# dmesg | tail -2
 	;;
 esac
