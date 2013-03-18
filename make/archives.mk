@@ -80,6 +80,9 @@ $(ARCHIVE)/libpng-$(PNG_VER).tar.xz:
 $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2:
 	$(WGET) http://sourceforge.net/projects/lirc/files/LIRC/0.9.0/lirc-0.9.0.tar.bz2
 
+$(ARCHIVE)/lua-$(LUA_VER).tar.gz:
+	$(WGET) http://www.lua.org/ftp/$(notdir $@)
+
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2
 

@@ -82,6 +82,9 @@ LINUX_AZBOX_VER=3.3.1
 # LIRC: linux infrared control
 LIRC_VER=0.9.0
 
+# lua: easily embeddable scripting language
+LUA_VER=5.2.1
+
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 

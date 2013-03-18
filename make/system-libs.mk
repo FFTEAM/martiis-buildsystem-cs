@@ -666,6 +666,19 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(REMOVE)/libdvbsi++-$(LIBDVBSI_VER) $(PKGPREFIX)
 	touch $@
 
+# no package, since the library is only built statically
+$(D)/lua: libncurses $(ARCHIVE)/lua-$(LUA_VER).tar.gz
+	$(REMOVE)/lua-$(LUA_VER)
+	$(UNTAR)/lua-$(LUA_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/lua-$(LUA_VER); \
+		sed -i '/^#define LUA_USE_READLINE/d' src/luaconf.h; \
+		sed -i 's/ -lreadline//' src/Makefile; \
+		$(MAKE) linux CC=$(TARGET)-gcc LDFLAGS="-L$(TARGETPREFIX)/lib" ; \
+		$(MAKE) install INSTALL_TOP=$(TARGETPREFIX)
+	$(REMOVE)/lua-$(LUA_VER)
+	touch $@
+
+
 $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
