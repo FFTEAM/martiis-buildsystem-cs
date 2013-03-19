@@ -222,6 +222,8 @@ $(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+samba-server:
+samba-client:
 $(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/samba-$(SAMBA2-VER).tar.gz
 	rm -rf $(PKGPREFIX)
