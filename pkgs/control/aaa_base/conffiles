@@ -10,3 +10,4 @@
 /etc/modprobe.conf
 /etc/nsswitch.conf
 /etc/network/interfaces
+/etc/init.d/cam
