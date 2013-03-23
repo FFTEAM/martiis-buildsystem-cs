@@ -200,7 +200,8 @@ GST_FFMPEG_VER=0.10.13
 GST123_VER=0.3.1
 
 # links; a text WWW browser, similar to Lynx
-LINKS-VER=2.3pre1
+#LINKS-VER=2.3pre1
+LINKS-VER=2.7
 
 # qt-everythere-opensource-src; the Qt4 package contains several C++ libraries with both GUI and non-GUI components
 QT-VER=4.6.3
