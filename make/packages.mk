@@ -20,8 +20,8 @@ getrc: plugins
 shellexec: plugins
 fx2: plugins
 
-SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2
-SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2
+SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 links
+SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 links
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
