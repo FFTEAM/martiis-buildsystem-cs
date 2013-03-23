@@ -658,10 +658,17 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	touch $@
 
 # no package, since the library is only built statically
-$(D)/lua: libncurses $(ARCHIVE)/lua-$(LUA_VER).tar.gz
+$(D)/lua: libncurses $(ARCHIVE)/lua-$(LUA_VER).tar.gz \
+	$(ARCHIVE)/luaposix-$(LUAPOSIX_VER).tar.bz2 $(PATCHES)/lua-5.2.1-luaposix.patch
 	$(REMOVE)/lua-$(LUA_VER)
 	$(UNTAR)/lua-$(LUA_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/lua-$(LUA_VER); \
+		$(PATCH)/lua-5.2.1-luaposix.patch; \
+		tar xf $(ARCHIVE)/luaposix-$(LUAPOSIX_VER).tar.bz2; \
+		cd luaposix-$(LUAPOSIX_VER); cp lposix.c lua52compat.h ../src/; cd ..; \
+		sed -i 's/<config.h>/"config.h"/' src/lposix.c; \
+		sed -i '/^#define/d' src/lua52compat.h; \
+		sed -i 's@^#define LUA_ROOT.*@#define LUA_ROOT "/"@' src/luaconf.h; \
 		sed -i '/^#define LUA_USE_READLINE/d' src/luaconf.h; \
 		sed -i 's/ -lreadline//' src/Makefile; \
 		$(MAKE) linux CC=$(TARGET)-gcc LDFLAGS="-L$(TARGETPREFIX)/lib" ; \
