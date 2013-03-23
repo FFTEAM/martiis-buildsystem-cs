@@ -132,12 +132,13 @@ arduino-serlcd: | $(TARGETPREFIX)
 		cp arduino_serlcd_test $(TARGETPREFIX)/bin
 
 
-$(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX)
-	rm -rf $(PKGPREFIX)
+$(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/libpng $(PATCHES)/links-$(LINKS-VER).diff | $(TARGETPREFIX)
+	#rm -rf $(PKGPREFIX)
+	$(REMOVE)/links-$(LINKS-VER) $(BUILD_TMP)/.remove $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/links-$(LINKS-VER); \
-		$(PATCH)/links-2.3pre1.diff; \
-		export CC=$(TARGET)-gcc; \
+		$(PATCH)/links-$(LINKS-VER).diff; \
+		export CC="$(TARGET)-gcc -D$(PLATFORM)"; \
 		export SYSROOT=$(TARGETPREFIX); \
 		$(CONFIGURE) \
 			--host=$(TARGET) \
@@ -148,7 +149,8 @@ $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/directfb | $(TARGETPREFIX
 			--without-x \
 			--without-libtiff \
 			--enable-graphics \
-			--enable-javascript; \
+			--enable-javascript \
+			--with-ssl; \
 		$(MAKE); \
 		DESTDIR=$(PKGPREFIX) make install prefix=$(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/tuxbox/plugins $(PKGPREFIX)/var/tuxbox/config/links
