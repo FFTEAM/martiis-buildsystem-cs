@@ -8,6 +8,13 @@
 #
 ME=${0##*/}
 
+if [ $1 = '-k' ]; then
+	KEEP=true
+	shift
+else
+	KEEP=false
+fi
+
 OLD=$1
 NEW=$2
 
@@ -44,8 +51,14 @@ case $NEW in
 esac
 
 equal=true
-TMPD=$(mktemp -d ${ME}.XXXXXX)
-trap 'rm -rf $TMPD' EXIT
+if $KEEP; then
+	TMPD=opkg-diff
+	rm -fr $TMPD
+	mkdir $TMPD
+else
+	TMPD=$(mktemp -d ${ME}.XXXXXX)
+	trap 'rm -rf $TMPD' EXIT
+fi
 pushd $TMPD > /dev/null
 mkdir {old,new}{root,CONTROL}
 ar p $OLD control.tar.gz | tar -xzpf - -C oldCONTROL
