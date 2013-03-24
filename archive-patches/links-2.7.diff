@@ -117,7 +117,7 @@ diff --new-file -ur links-2.7/dither.c cst-public-plugins-links/dither.c
  }
 -
 +#endif
-+#define TABLE_DIR "/tmp/"
++#define TABLE_DIR "/var/cache/"
 +void make_red_table(int bits, int pos, int dump_t2c, int be)
 +{                
 +    FILE *fd;    
