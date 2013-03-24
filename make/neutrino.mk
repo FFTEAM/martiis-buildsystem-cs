@@ -2,6 +2,7 @@
 
 NEUTRINO_DEPS  = libcurl libid3tag libmad freetype libboost libjpeg giflib ffmpeg libdvbsi++
 NEUTRINO_DEPS += openthreads
+NEUTRINO_DEPS += lua
 NEUTRINO_PKG_DEPS =
 
 N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL
