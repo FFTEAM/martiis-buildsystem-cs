@@ -83,7 +83,7 @@ $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2:
 $(ARCHIVE)/lua-$(LUA_VER).tar.gz:
 	$(WGET) http://www.lua.org/ftp/$(notdir $@)
 
-$(ARCHIVE)/luaposix-$(LUAPOSIX_VER).tar.bz2:
+$(ARCHIVE)/luaposix-$(LUAPOSIX_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
 	get-git-archive.sh git://github.com/luaposix/luaposix.git release-v$(LUAPOSIX_VER) $(notdir $@) $(ARCHIVE)
 
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
