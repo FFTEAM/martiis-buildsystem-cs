@@ -156,7 +156,7 @@ $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/libpng $(PATCHES)/links-$
 	mkdir -p $(PKGPREFIX)/lib/tuxbox/plugins $(PKGPREFIX)/var/tuxbox/config/links
 	mv $(PKGPREFIX)/bin/links $(PKGPREFIX)/lib/tuxbox/plugins/links.so
 	rmdir $(PKGPREFIX)/bin
-	echo "name=Links web browser"	 > $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
+	echo "name=Links Web Wrowser"	 > $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
 	echo "desc=Web Browser"		>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
 	echo "type=2"			>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
 	echo "needfb=1"			>> $(PKGPREFIX)/lib/tuxbox/plugins/links.cfg
