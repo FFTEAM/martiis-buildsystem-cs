@@ -341,13 +341,13 @@ diff --new-file -ur links-2.7/framebuffer.c cst-public-plugins-links/framebuffer
 +		*ex = ex_old; *sx = sx_old; *ey = ey_old; *sy = sy_old;
 +	}
 +#if spark
-+	// Coordinates are in backbuffer resolution, but links will write to the front buffer.
-+	// We either need to scale from 1280x720 to 1920x1080, or use the frontbuffer-backbuffer
-+	// model. Upscaling is easier.   --martii
-+	*ex *= 1920;
-+	*sx *= 1920;
-+	*ey *= 1080;
-+	*sy *= 1080;
++	struct fb_var_screeninfo s;
++	if (ioctl(fb_handler, FBIOGET_VSCREENINFO, &s) == -1)
++		perror("blit FBIOGET_VSCREENINFO");
++	*ex *= s.xres;
++	*sx *= s.xres;
++	*ey *= s.yres;
++	*sy *= s.yres;
 +	*ex /= 1280;
 +	*sx /= 1280;
 +	*ey /= 720;
