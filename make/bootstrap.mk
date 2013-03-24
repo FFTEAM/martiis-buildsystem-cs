@@ -6,6 +6,7 @@ BOOTSTRAP += $(HOSTPREFIX)/bin/opkg.sh $(HOSTPREFIX)/bin/opkg-chksvn.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-gitdescribe.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-find-requires.sh $(HOSTPREFIX)/bin/opkg-find-provides.sh
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-module-deps.sh
+BOOTSTRAP += $(HOSTPREFIX)/bin/get-git-archive.sh
 BOOTSTRAP += pkg-config
 
 ifeq ($(PLATFORM), tripledragon)
@@ -56,6 +57,7 @@ $(HOSTPREFIX)/bin: $(HOSTPREFIX)
 	mkdir $@
 
 $(HOSTPREFIX)/bin/unpack%.sh \
+$(HOSTPREFIX)/bin/get%.sh \
 $(HOSTPREFIX)/bin/opkg%sh: | $(HOSTPREFIX)/bin
 	ln -sf $(BASE_DIR)/scripts/$(shell basename $@) $(HOSTPREFIX)/bin
 
