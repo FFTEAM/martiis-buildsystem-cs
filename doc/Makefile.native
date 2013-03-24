@@ -15,7 +15,8 @@ LH_OBJ = $(OBJ)/libstb-hal
 N_SRC  = $(SOURCE)/neutrino-mp
 N_OBJ  = $(OBJ)/neutrino-mp
 
-CFLAGS = -funsigned-char -g -W -Wall -DPEDANTIC_VALGRIND_SETUP
+CFLAGS =  -funsigned-char -g -W -Wall -Wshadow -O2
+CFLAGS += -DPEDANTIC_VALGRIND_SETUP -DDYNAMIC_LUAPOSIX
 CXXFLAGS = $(CFLAGS)
 
 export CFLAGS CXXFLAGS
@@ -33,11 +34,13 @@ neutrino: $(N_OBJ)/config.status
 $(LH_OBJ)/libstb-hal.a: libstb-hal
 libstb-hal: $(LH_OBJ)/config.status
 	$(MAKE) -C $(LH_OBJ) all
+	$(MAKE) -C $(LH_OBJ) install
 
 $(LH_OBJ)/config.status: | $(LH_OBJ) $(LH_SRC)
 	$(LH_SRC)/autogen.sh
 	set -e; cd $(LH_OBJ); \
-		$(LH_SRC)/configure --enable-maintainer-mode
+		$(LH_SRC)/configure --enable-maintainer-mode \
+			--prefix=$(DEST) --enable-shared=no
 
 $(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
 	$(N_SRC)/autogen.sh
@@ -48,9 +51,10 @@ $(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
 			--with-fontdir="$(DEST)/share/fonts" \
 			--with-themesdir="$(DEST)/share/tuxbox/neutrino/themes" \
 			--enable-silent-rules --enable-mdev \
+			--enable-giflib \
 			--with-target=native --with-boxtype=generic \
 			--with-stb-hal-includes=$(LH_SRC)/include \
-			--with-stb-hal-build=$(LH_OBJ) \
+			--with-stb-hal-build=$(DEST)/lib \
 			; \
 		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h; \
 		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
