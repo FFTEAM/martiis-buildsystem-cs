@@ -132,7 +132,7 @@ arduino-serlcd: | $(TARGETPREFIX)
 		cp arduino_serlcd_test $(TARGETPREFIX)/bin
 
 
-$(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/libpng $(PATCHES)/links-$(LINKS-VER).diff | $(TARGETPREFIX)
+$(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/libpng $(D)/openssl $(PATCHES)/links-$(LINKS-VER).diff | $(TARGETPREFIX)
 	#rm -rf $(PKGPREFIX)
 	$(REMOVE)/links-$(LINKS-VER) $(BUILD_TMP)/.remove $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2
