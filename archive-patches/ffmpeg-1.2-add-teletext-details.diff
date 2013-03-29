@@ -12,10 +12,10 @@ index 8b92bc4..eb6ec23 100644
 -        language[3] = 0;
 -        av_dict_set(&st->metadata, "language", language, 0);
 +	{
-+		char tmp_key[20];
-+		char tmp_val[20];
 +		int ttx_count = desc_len / 5;
 +		for (i = 0; i < ttx_count; i++) {
++			char tmp_key[20];
++			char tmp_val[40];
 +			language[0] = get8(pp, desc_end);
 +			language[1] = get8(pp, desc_end);
 +			language[2] = get8(pp, desc_end);
