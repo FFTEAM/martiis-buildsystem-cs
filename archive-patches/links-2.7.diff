@@ -1567,3 +1567,24 @@ diff --new-file -ur links-2.7/view_gr.c cst-public-plugins-links/view_gr.c
  			if (fd->vsb && ev_in_rect(ev, fd->xw - G_SCROLL_BAR_WIDTH, 0, fd->xw, fd->yw)) return 0;
  			if (fd->hsb && ev_in_rect(ev, 0, fd->yw - G_SCROLL_BAR_WIDTH, fd->xw, fd->yw)) return 0;
  
+diff -ur a/language.inc b/language.inc
+--- a/language.inc.orig	2013-03-30 12:45:11.459221286 +0100
++++ b/language.inc	2013-03-30 12:47:01.299221339 +0100
+@@ -8812,7 +8812,7 @@
+   {T_TOGGLE_HTML_PLAIN, "Umschaltung HTML/Quelltext" },
+   {T_DOCUMENT_INFO, "Dokumentinformationen" },
+   {T_FRAME_AT_FULL_SCREEN, "Rahmen im Vollbildschirm" },
+-  {T_SAVE_HTML_OPTIONS, "HTML Sicherheit" },
++  {T_SAVE_HTML_OPTIONS, "HTML-Optionen speichern" },
+   {T_CHARACTER_SET, "Zeichensatz" },
+   {T_CACHE, "Cache" },
+   {T_MAIL_AND_TELNEL, "Mail und Telnet" },
+@@ -18067,7 +18067,7 @@
+   {T_TOGGLE_HTML_PLAIN, "Umschaltig HTML/Quelltext" },
+   {T_DOCUMENT_INFO, "Dokumentinformatione" },
+   {T_FRAME_AT_FULL_SCREEN, "Rahme im Vollbildschirm" },
+-  {T_SAVE_HTML_OPTIONS, "HTML Sicherheit" },
++  {T_SAVE_HTML_OPTIONS, "HTML-Optionen speichern" },
+   {T_CHARACTER_SET, "Zeichesatz" },
+   {T_CACHE, "Cache" },
+   {T_MAIL_AND_TELNEL, "Mail und Telnet" },
