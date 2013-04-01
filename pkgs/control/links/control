@@ -1,5 +1,5 @@
 Package: links
-Version: 2.2.99.1-1
+Version: 2.7-0
 Description: Neutrino-HD Text-Mode Web Browser Plugin
 Section: extras
 Priority: optional
@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://links.twibright.com/
 Source:
-Depends: libjpeg.so.62 libpng12.so.0 libz.so.1 libdirectfb-1.4.so.0 libfusion-1.4.so.0 libdirect-1.4.so.0
+Depends: libjpeg.so.62 libpng12.so.0 libz.so.1 libssl.so.0.9.8 libcrypto.so.0.9.8
