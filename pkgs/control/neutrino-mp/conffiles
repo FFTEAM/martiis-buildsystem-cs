@@ -3,3 +3,4 @@
 /var/tuxbox/config/cables.xml
 /var/tuxbox/config/satellites.xml
 /var/tuxbox/config/encoding.conf
+/var/tuxbox/config/tobackup.conf
