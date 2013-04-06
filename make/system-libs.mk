@@ -682,8 +682,10 @@ $(D)/lua: libncurses $(ARCHIVE)/lua-$(LUA_VER).tar.gz \
 		sed -i 's@^#define LUA_ROOT.*@#define LUA_ROOT "/"@' src/luaconf.h; \
 		sed -i '/^#define LUA_USE_READLINE/d' src/luaconf.h; \
 		sed -i 's/ -lreadline//' src/Makefile; \
+		sed -i 's|man/man1|.remove|' Makefile; \
 		$(MAKE) linux CC=$(TARGET)-gcc LDFLAGS="-L$(TARGETPREFIX)/lib" ; \
 		$(MAKE) install INSTALL_TOP=$(TARGETPREFIX)
+	rm -rf $(TARGETPREFIX)/.remove
 	$(REMOVE)/lua-$(LUA_VER)
 	touch $@
 
