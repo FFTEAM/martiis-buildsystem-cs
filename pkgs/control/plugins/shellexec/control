@@ -1,6 +1,6 @@
 Package: shellexec
 Version: 1.19-1
-Description: shellexec
+Description: Neutrino-HD shellexec Plugin
 Section: extras
 Priority: optional
 Maintainer: @MAINT@

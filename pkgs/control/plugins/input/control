@@ -1,6 +1,6 @@
 Package: input
 Version: 1.08-1
-Description: input
+Description: Neutrino-HD input Plugin
 Section: extras
 Priority: optional
 Maintainer: @MAINT@

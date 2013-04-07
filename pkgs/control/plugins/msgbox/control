@@ -1,6 +1,6 @@
 Package: msgbox
 Version: 1.12-1
-Description: msgbox
+Description: Neutrino-HD msgbox Plugin
 Section: extras
 Priority: optional
 Maintainer: @MAINT@

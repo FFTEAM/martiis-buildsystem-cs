@@ -1,6 +1,6 @@
 Package: getrc
 Version: 1.0-1
-Description: getrc
+Description: Neutrino-HD getrc Plugin
 Section: extras
 Priority: optional
 Maintainer: @MAINT@
