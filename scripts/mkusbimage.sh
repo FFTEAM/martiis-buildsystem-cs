@@ -2,7 +2,7 @@
 #
 # helper script to build a USB stick image
 #
-# (C) 2011 Stefan Seyfried
+# (C) 2011, 2013 Stefan Seyfried
 #     License: GPL v2
 #
 # * the kernel Image has to already exist in build_tmp
@@ -15,6 +15,16 @@
 #
 # the size in million bytes, hopefully smaller than the USB stick ;)
 SIZE=500
+
+# get PLATFORM from the config file...
+eval `sed -n '/^PLATFORM[[:space:]*]=/{s/[[:space:]*]//g;p}' config 2>/dev/null`
+if [ x$PLATFORM = xspark ]; then
+	if ! [ -d build_tmp/sparksystem ]; then
+		echo "ERROR: please run 'make spark-system-usb' first."
+		echo
+		exit 1
+	fi
+fi
 
 # hack for people who don't have sbin in $PATH
 if ! echo $PATH | grep -q /sbin; then
@@ -47,10 +57,22 @@ mkfs.ext3 -L root-fs /dev/mapper/*-usbstick-2
 mount /dev/mapper/*-usbstick-1 build_tmp/usbstick/p1
 mount /dev/mapper/*-usbstick-2 build_tmp/usbstick/p2
 
-# copy kernel...
-cp build_tmp/*Image.img build_tmp/usbstick/p1
-# ...and rootfs
-cp -a build_tmp/install/.  build_tmp/usbstick/p2
+# just check if the directory is here, is easier than reliably
+# propagating TARGET into sudo...
+if [ -d build_tmp/sparksystem ]; then
+	# TARGET=spark
+	echo "copying build_tmp/sparksystem/p1/"
+	cp    build_tmp/sparksystem/p1/* build_tmp/usbstick/p1/
+	echo "copying build_tmp/sparksystem/p2/"
+	cp -a build_tmp/sparksystem/p2/* build_tmp/usbstick/p2/
+else
+	# copy kernel...
+	echo "copying build_tmp/*Image.img"
+	cp build_tmp/*Image.img build_tmp/usbstick/p1
+	# ...and rootfs
+	echo "copying build_tmp/install/."
+	cp -a build_tmp/install/.  build_tmp/usbstick/p2
+fi
 # create /dev/console for first boot
 # sudo mknod -m 644 build_tmp/usbstick/p2/dev/console c 5 1
 
