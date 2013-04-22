@@ -280,11 +280,7 @@ $(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz | $(TARGETPREFIX)
 		install $(BUILD_TMP)/samba-$(SAMBA2-VER)/source/bin/$$i $(PKGPREFIX)/opt/pkg/bin; \
 	done
 	install -d $(PKGPREFIX)/opt/pkg/etc/samba/private
-	install -d $(PKGPREFIX)/opt/pkg/etc/init.d
 	install $(SCRIPTS)/smb.conf $(PKGPREFIX)/opt/pkg/etc
-	install -m 755 $(SCRIPTS)/samba2.init $(PKGPREFIX)/opt/pkg/etc/init.d/samba
-	ln -s samba $(PKGPREFIX)/opt/pkg/etc/init.d/S99samba
-	ln -s samba $(PKGPREFIX)/opt/pkg/etc/init.d/K01samba
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(TARGET)-strip $(PKGPREFIX)/opt/pkg/bin/*
 	DONT_STRIP=1 $(OPKG_SH) $(CONTROL_DIR)/samba2/server

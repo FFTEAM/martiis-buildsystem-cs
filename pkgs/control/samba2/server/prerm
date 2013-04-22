@@ -1,2 +1,3 @@
 #!/bin/sh
-service samba stop || true
+sed -e "/^netbios/ d" -i /etc/inetd.conf
+kill -HUP $(pidof inetd)

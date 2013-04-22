@@ -1,0 +1,6 @@
+#!/bin/sh
+grep ^netbios- /etc/services >/dev/null || printf "netbios-ssn 139/tcp\nnetbios-ns 137/udp\n" >> /etc/services
+sed -e "/^netbios/ d" -i /etc/inetd.conf
+echo "netbios-ssn stream tcp nowait root /opt/pkg/sbin/smbd smbd" >> /etc/inetd.conf
+echo "netbios-ns  dgram  udp wait   root /opt/pkg/sbin/nmbd nmbd" >> /etc/inetd.conf
+kill -HUP $(pidof inetd)
