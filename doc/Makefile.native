@@ -1,6 +1,6 @@
 ####################################################
 # Makefile for building native neutrino / libstb-hal
-# (C) 2012 Stefan Seyfried
+# (C) 2012,2013 Stefan Seyfried
 #
 # prerequisite packages need to be installed,
 # no checking is done for that
@@ -16,7 +16,10 @@ N_SRC  = $(SOURCE)/neutrino-mp
 N_OBJ  = $(OBJ)/neutrino-mp
 
 CFLAGS =  -funsigned-char -g -W -Wall -Wshadow -O2
-CFLAGS += -DPEDANTIC_VALGRIND_SETUP -DDYNAMIC_LUAPOSIX
+CFLAGS += -rdynamic
+CFLAGS += -DPEDANTIC_VALGRIND_SETUP
+CFLAGS += -DDYNAMIC_LUAPOSIX
+CFLAGS += -DTEST_MENU
 CXXFLAGS = $(CFLAGS)
 
 export CFLAGS CXXFLAGS
@@ -29,11 +32,11 @@ run:
 	gdb -ex run $(DEST)/bin/neutrino
 
 neutrino: $(N_OBJ)/config.status
+	-rm $(N_OBJ)/src/neutrino # force relinking on changed libstb-hal
 	$(MAKE) -C $(N_OBJ) install
 
 $(LH_OBJ)/libstb-hal.a: libstb-hal
 libstb-hal: $(LH_OBJ)/config.status
-	$(MAKE) -C $(LH_OBJ) all
 	$(MAKE) -C $(LH_OBJ) install
 
 $(LH_OBJ)/config.status: | $(LH_OBJ) $(LH_SRC)
