@@ -23,12 +23,12 @@ C["muteRing"]=1
 C["popup"]=1
 
 function num2onoff(a)
-	if a == 0 then return off end
+	if (tonumber(a) == 0) then return off end
 	return on
 end
 
 function onoff2num(a)
-	if a == on then return 1 end
+	if (a == on) then return 1 end
 	return 0
 end
 
@@ -91,7 +91,7 @@ local m = menue.new{name="FritzBox CallMonitor", icon="settings"}
 m:addItem{type="back"}
 m:addItem{type="forwarder", name="Speichern", action="save", icon="rot", directkey=RC["red"]}
 m:addItem{type="separator"}
-m:addItem{type="chooser", name="Autostart", value=autostart, action="set_autostart", options={ on, off }}
+m:addItem{type="chooser", name="Autostart", value=num2onoff(autostart), action="set_autostart", options={ on, off }}
 m:addItem{type="stringinput", name="FritzBox IP/Name", value=C["FRITZBOXIP"], action="set_fbip", sms=1}
 m:addItem{type="stringinput", name="FritzBox Port", value=C["FRITZBOXPORT"], action="set_fbport", enabled=1, valid_chars="0123456789"}
 m:addItem{type="chooser", name="Debug (nur in Telnet)", value=num2onoff(C["debug"]), action="set_debug", options={ off, on }}
@@ -103,7 +103,7 @@ m:addItem{type="stringinput", name="Rufnummer 2 Name", value=C["Phone_2_name"], 
 m:addItem{type="stringinput", name="Rufnummer 3", value=C["Phone_3"], action="set_Phone_3", valid_chars="0123456789"}
 m:addItem{type="stringinput", name="Rufnummer 3 Name", value=C["Phone_3_name"], action="set_Phone_3_name"}
 m:addItem{type="separator"}
-m:addItem{type="chooser", name="Alle Rufnummern überwachen", valeu=num2onoff(C["All"]), action="set_All", options={ on, off }, directkey=RC["1"]}
+m:addItem{type="chooser", name="Alle Rufnummern überwachen", value=num2onoff(C["All"]), action="set_All", options={ on, off }, directkey=RC["1"]}
 m:addItem{type="chooser", name="Eingehende Anrufe anzeigen", value=num2onoff(C["monRing"]), action="set_monRing", options={ on, off }, directkey=RC["2"]}
 m:addItem{type="chooser", name="Dauer und Ende des Anrufs anzeigen", value=num2onoff(C["monDisconnect"]), action="set_monDisconnect", options={ on, off }, directkey=RC["3"]}
 m:addItem{type="chooser", name="Ton aus bei Anruf", value=num2onoff(C["muteRing"]), action="set_muteRing", options={ on, off }, directkey=RC["4"]}
