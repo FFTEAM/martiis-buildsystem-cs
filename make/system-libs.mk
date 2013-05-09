@@ -99,7 +99,9 @@ $(D)/libungif: $(ARCHIVE)/libungif-$(UNGIF_VER).tar.bz2
 	$(REMOVE)/libungif-$(UNGIF_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/giflib: $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/giflib: $(D)/giflib-$(GIFLIB_VER)
+	touch $@
+$(D)/giflib-$(GIFLIB_VER): $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/giflib-$(GIFLIB_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/giflib-$(GIFLIB_VER); \
 		export ac_cv_prog_have_xmlto=no; \
@@ -118,7 +120,9 @@ $(D)/giflib: $(ARCHIVE)/giflib-$(GIFLIB_VER).tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libcurl: $(ARCHIVE)/curl-$(CURL_VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
+$(D)/libcurl: $(D)/libcurl-$(CURL_VER)
+	touch $@
+$(D)/libcurl-$(CURL_VER): $(ARCHIVE)/curl-$(CURL_VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/curl-$(CURL_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/curl-$(CURL_VER); \
 		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET) \
@@ -158,7 +162,9 @@ $(D)/libFLAC: $(ARCHIVE)/flac-1.2.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/flac-1.2.1
 	touch $@
 
-$(D)/libpng: $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
+$(D)/libpng: $(D)/libpng-$(PNG_VER)
+	touch $@
+$(D)/libpng-$(PNG_VER): $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
 	$(UNTAR)/libpng-$(PNG_VER).tar.xz
 	set -e; cd $(BUILD_TMP)/libpng-$(PNG_VER); \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman; \
@@ -172,7 +178,9 @@ $(D)/libpng: $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/freetype: $(D)/freetype-$(FREETYPE_VER)
+	touch $@
+$(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/freetype-$(FREETYPE_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/freetype-$(FREETYPE_VER); \
 		sed -i '/#define FT_CONFIG_OPTION_OLD_INTERNALS/d' include/freetype/config/ftoption.h; \
@@ -199,7 +207,9 @@ $(D)/freetype: $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGE
 ## build both libjpeg.so.62 and libjpeg.so.8
 ## use only libjpeg.so.62 for our own build, but keep libjpeg8 for
 ## compatibility to third party binaries
-$(D)/libjpeg: $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz | $(TARGETPREFIX)
+$(D)/libjpeg: $(D)/libjpeg-turbo-$(JPEG_TURBO_VER)
+	touch $@
+$(D)/libjpeg-turbo-$(JPEG_TURBO_VER): $(ARCHIVE)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/libjpeg-turbo-$(JPEG_TURBO_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libjpeg-turbo-$(JPEG_TURBO_VER); \
 		export CC=$(TARGET)-gcc; \
@@ -291,7 +301,9 @@ FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decode
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
 endif
-$(D)/ffmpeg: $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/ffmpeg: $(D)/ffmpeg-$(FFMPEG_VER)
+	touch $@
+$(D)/ffmpeg-$(FFMPEG_VER): $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
 		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
@@ -483,7 +495,9 @@ $(D)/openthreads: | $(TARGETPREFIX) find-lzma
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libvorbisidec: $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz $(D)/libogg
+$(D)/libvorbisidec: $(D)/libvorbisidec-$(VORBISIDEC_VER)
+	touch $@
+$(D)/libvorbisidec-$(VORBISIDEC_VER): $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz $(D)/libogg
 	$(UNTAR)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
 	set -e; cd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC_VER); \
 		patch -p1 < $(PATCHES)/tremor.diff; \
