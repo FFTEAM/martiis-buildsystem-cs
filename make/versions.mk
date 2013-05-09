@@ -64,6 +64,9 @@ OPENSSL_SUBVER=q
 
 # libffmpeg; complete, cross-platform solution to record, convert and stream audio and video
 FFMPEG_VER=0.10
+ifeq ($(PLATFORM), coolstream)
+FFMPEG_VER=1.2
+endif
 
 # libogg; encoding, decoding of the ogg file format
 OGG_VER=1.3.0
