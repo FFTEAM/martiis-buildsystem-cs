@@ -265,18 +265,24 @@ $(D)/openssl: $(ARCHIVE)/openssl-$(OPENSSL_VER)$(OPENSSL_SUBVER).tar.gz | $(TARG
 	touch $@
 
 ifeq ($(BOXARCH), arm)
-FFMPEG_CONFIGURE  = --arch=arm --cpu=armv6
+FFMPEG_CONFIGURE  = --arch=arm --cpu=armv6 --disable-neon
 FFMPEG_CONFIGURE += --disable-decoders --disable-parsers --disable-demuxers
-FFMPEG_CONFIGURE += --disable-ffmpeg --disable-swscale --disable-filters --disable-swresample --disable-postproc
+FFMPEG_CONFIGURE += --disable-ffmpeg --disable-swscale --disable-filters --enable-swresample --disable-postproc
 FFMPEG_CONFIGURE += --enable-parser=aac --enable-parser=aac_latm --enable-parser=ac3 --enable-parser=dca
 FFMPEG_CONFIGURE += --enable-parser=mpeg4video --enable-parser=mpegvideo --enable-parser=mpegaudio
 FFMPEG_CONFIGURE += --enable-parser=h264 --enable-parser=vc1 --enable-parser=dvdsub --enable-parser=dvbsub
-FFMPEG_CONFIGURE += --enable-decoder=dca --enable-decoder=dvbsub
+FFMPEG_CONFIGURE += --enable-decoder=dca --enable-decoder=dvdsub --enable-decoder=dvbsub
+FFMPEG_CONFIGURE += --enable-decoder=text --enable-decoder=srt --enable-decoder=subrip
+FFMPEG_CONFIGURE += --enable-decoder=subviewer --enable-decoder=subviewer1
+FFMPEG_CONFIGURE += --enable-decoder=xsub --enable-decoder=pgssub
 FFMPEG_CONFIGURE += --enable-demuxer=aac --enable-demuxer=ac3
-FFMPEG_CONFIGURE += --enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=mpegtsraw --enable-demuxer=mpegps
+FFMPEG_CONFIGURE += --enable-demuxer=avi --enable-demuxer=mov --enable-demuxer=vc1
+FFMPEG_CONFIGURE += --enable-demuxer=mpegts --enable-demuxer=mpegtsraw --enable-demuxer=mpegps
 FFMPEG_CONFIGURE += --enable-demuxer=mpegvideo --enable-demuxer=wav --enable-demuxer=pcm_s16be
 FFMPEG_CONFIGURE += --enable-demuxer=mp3 --enable-demuxer=pcm_s16le --enable-demuxer=matroska
+FFMPEG_CONFIGURE += --enable-demuxer=flv --enable-demuxer=rm
 FFMPEG_CONFIGURE += --enable-bsfs
+FFMPEG_CONFIGURE += --enable-network --enable-protocol=http
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
@@ -285,6 +291,7 @@ FFMPEG_CONFIGURE += --disable-parsers --disable-demuxers --enable-ffmpeg
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
+FFMPEG_CONFIGURE += --disable-network
 endif
 ## todo: check. this is a plain copy of tripledragon configure...
 ifeq ($(BOXARCH), sh4)
@@ -293,6 +300,7 @@ FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
+FFMPEG_CONFIGURE += --disable-network
 endif
 ifeq ($(BOXARCH), mipsel)
 FFMPEG_CONFIGURE  = --arch=mips
@@ -300,6 +308,7 @@ FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
+FFMPEG_CONFIGURE += --disable-network
 endif
 $(D)/ffmpeg: $(D)/ffmpeg-$(FFMPEG_VER)
 	touch $@
@@ -310,16 +319,12 @@ ifeq ($(PLATFORM), coolstream)
 	fi
 	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 	cp -a $(UNCOOL_GIT)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
-	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
-		$(PATCH)/ffmpeg-lavf-compute-probe-buffer-size-more-reliably.patch; \
-		$(PATCH)/ffmpeg-avio-redesign-ffio_rewind_with_probe_data.patch
 else
 	$(UNTAR)/ffmpeg-$(FFMPEG_VER).tar.bz2
 endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
-		: $(PATCH)/ffmpeg-dvbsubs.diff; \
-		$(PATCH)/ffmpeg-0.6-avoid-UINT64_C.diff; \
-		$(PATCH)/ffmpeg-0.10-remove-buildtime.diff; \
+		sed -i '/\(__DATE__\|__TIME__\)/d' ffprobe.c; # remove build time \
+		sed -i -e 's/__DATE__/""/' -e 's/__TIME__/""/' cmdutils.c; \
 		./configure \
 			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
@@ -328,7 +333,7 @@ endif
 			--disable-devices --disable-mmx --disable-altivec \
 			--disable-protocols --enable-protocol=file \
 			--disable-zlib --enable-bzlib \
-			--disable-network --disable-ffprobe \
+			--disable-ffprobe \
 			--disable-static --enable-shared \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
