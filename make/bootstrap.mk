@@ -74,6 +74,9 @@ $(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
 $(TARGETPREFIX)/lib/libnxp.so: $(UNCOOL_LIBNXP) | $(TARGETPREFIX)
 	cp -a $(UNCOOL_LIBNXP) $@
 
+$(TARGETPREFIX)/lib/libca-sc.so: $(UNCOOL_LIBCA) | $(TARGETPREFIX)
+	cp -a $(UNCOOL_LIBCA) $@
+
 $(TARGETPREFIX)/lib/libcoolstream%.so: $(UNCOOL_LIBCS) | $(TARGETPREFIX)
 	cp -a $(UNCOOL_LIBCS) $@
 
