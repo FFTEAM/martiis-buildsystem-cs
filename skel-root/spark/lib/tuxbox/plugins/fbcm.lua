@@ -40,21 +40,8 @@ function set_autostart(a)
 	autostart=onoff2num(a)
 end
 
-function set_fbip(a) C["FRITZBOXIP"]=a end
-function set_fbport(a) C["FRITZBOXPORT"]=a end
-function set_debug(a) C["debug"]=onoff2num(a) end
-function set_Phone_1(a) C["Phone_1"]=a end
-function set_Phone_1_name(a) C["Phone_1"]=a end
-function set_Phone_2(a) C["Phone_2"]=a end
-function set_Phone_2_name(a) C["Phone_2"]=a end
-function set_Phone_3(a) C["Phone_3"]=a end
-function set_Phone_3_name(a) C["Phone_3"]=a end
-function set_All(a) C["All"]=onoff2num(a) end
-function set_monRing(a) C["monRing"]=onoff2num(a) end
-function set_monDisconnect(a) C["monDisconnect"]=onoff2num(a) end
-function set_muteRing(a) C["muteRing"]=onoff2num(a) end
-function set_popup(a) C["popup"]=onoff2num(a) end
-function set_invers(a) C["invers"]=onoff2num(a) end
+function set_string(k, v) C[k]=v end
+function set_bool(k, v) C[k]=onoff2num(v) end
 
 function load()
 	-- missing: autostart handling
@@ -89,25 +76,26 @@ load()
 
 local m = menue.new{name="FritzBox CallMonitor", icon="settings"}
 m:addItem{type="back"}
+m:addItem{type="separator"}
 m:addItem{type="forwarder", name="Speichern", action="save", icon="rot", directkey=RC["red"]}
 m:addItem{type="separator"}
 m:addItem{type="chooser", name="Autostart", value=num2onoff(autostart), action="set_autostart", options={ on, off }}
-m:addItem{type="stringinput", name="FritzBox IP/Name", value=C["FRITZBOXIP"], action="set_fbip", sms=1}
-m:addItem{type="stringinput", name="FritzBox Port", value=C["FRITZBOXPORT"], action="set_fbport", enabled=1, valid_chars="0123456789"}
-m:addItem{type="chooser", name="Debug (nur in Telnet)", value=num2onoff(C["debug"]), action="set_debug", options={ off, on }}
+m:addItem{type="stringinput", id="FRITZBOXIP", name="FritzBox IP/Name", value=C["FRITZBOXIP"], action="set_string", sms=1}
+m:addItem{type="stringinput", id="FRITZBOXPORT", name="FritzBox Port", value=C["FRITZBOXPORT"], action="set_string", enabled=1, valid_chars="0123456789"}
+m:addItem{type="chooser", id="debug", name="Debug (nur in Telnet)", value=num2onoff(C["debug"]), action="set_bool", options={ off, on }}
 m:addItem{type="separator"}
-m:addItem{type="stringinput", name="Rufnummer 1", value=C["Phone_1"], action="set_Phone_1", valid_chars="0123456789"}
-m:addItem{type="stringinput", name="Rufnummer 1 Name", value=C["Phone_1_name"], action="set_Phone_1_name"}
-m:addItem{type="stringinput", name="Rufnummer 2", value=C["Phone_2"], action="set_Phone_2", valid_chars="0123456789"}
-m:addItem{type="stringinput", name="Rufnummer 2 Name", value=C["Phone_2_name"], action="set_Phone_2_name"}
-m:addItem{type="stringinput", name="Rufnummer 3", value=C["Phone_3"], action="set_Phone_3", valid_chars="0123456789"}
-m:addItem{type="stringinput", name="Rufnummer 3 Name", value=C["Phone_3_name"], action="set_Phone_3_name"}
+m:addItem{type="stringinput", id="Phone_1", name="Rufnummer 1", value=C["Phone_1"], action="set_Phone_1", valid_chars="0123456789"}
+m:addItem{type="stringinput", id="Phone_1_name", name="Rufnummer 1 Name", value=C["Phone_1_name"], action="set_string", sms=1}
+m:addItem{type="stringinput", id="Phone_2", name="Rufnummer 2", value=C["Phone_2"], action="set_Phone_2", valid_chars="0123456789"}
+m:addItem{type="stringinput", id="Phone_2_name", name="Rufnummer 2 Name", value=C["Phone_2_name"], action="set_string", sms=1}
+m:addItem{type="stringinput", id="Phone_3", name="Rufnummer 3", value=C["Phone_3"], action="set_Phone_3", valid_chars="0123456789"}
+m:addItem{type="stringinput", id="Phone_3_name", name="Rufnummer 3 Name", value=C["Phone_3_name"], action="set_string", sms=1}
 m:addItem{type="separator"}
-m:addItem{type="chooser", name="Alle Rufnummern überwachen", value=num2onoff(C["All"]), action="set_All", options={ on, off }, directkey=RC["1"]}
-m:addItem{type="chooser", name="Eingehende Anrufe anzeigen", value=num2onoff(C["monRing"]), action="set_monRing", options={ on, off }, directkey=RC["2"]}
-m:addItem{type="chooser", name="Dauer und Ende des Anrufs anzeigen", value=num2onoff(C["monDisconnect"]), action="set_monDisconnect", options={ on, off }, directkey=RC["3"]}
-m:addItem{type="chooser", name="Ton aus bei Anruf", value=num2onoff(C["muteRing"]), action="set_muteRing", options={ on, off }, directkey=RC["4"]}
-m:addItem{type="chooser", name="Popup statt normaler Meldung", value=num2onoff(C["popup"]), action="set_popup", options={ on, off }, directkey=RC["5"]}
-m:addItem{type="chooser", name="Inverssuche (GoYellow)", value=num2onoff(C["invers"]), action="set_invers", options={ on, off }, directkey=RC["6"]}
+m:addItem{type="chooser", id="All", name="Alle Rufnummern überwachen", value=num2onoff(C["All"]), action="setbool", options={ on, off }, directkey=RC["1"]}
+m:addItem{type="chooser", id="monRing", name="Eingehende Anrufe anzeigen", value=num2onoff(C["monRing"]), action="set_bool", options={ on, off }, directkey=RC["2"]}
+m:addItem{type="chooser", id="monDisconnect", name="Dauer und Ende des Anrufs anzeigen", value=num2onoff(C["monDisconnect"]), action="set_bool", options={ on, off }, directkey=RC["3"]}
+m:addItem{type="chooser", id="muteRing", name="Ton aus bei Anruf", value=num2onoff(C["muteRing"]), action="set_bool", options={ on, off }, directkey=RC["4"]}
+m:addItem{type="chooser", id="popup", name="Popup statt normaler Meldung", value=num2onoff(C["popup"]), action="set_bool", options={ on, off }, directkey=RC["5"]}
+m:addItem{type="chooser", id="invers", name="Inverssuche (GoYellow)", value=num2onoff(C["invers"]), action="set_bool", options={ on, off }, directkey=RC["6"]}
 m:exec()
 
