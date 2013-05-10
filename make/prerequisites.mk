@@ -91,6 +91,7 @@ $(UNCOOL_LIBNXP): | $(SVN_TP_LIBS)/libnxp
 $(UNCOOL_DRIVER): | $(SOURCE_DIR)/svn/COOLSTREAM
 else
 $(UNCOOL_LIBCS) \
+$(UNCOOL_LIBCA) \
 $(UNCOOL_LIBNXP) \
 $(UNCOOL_DRIVER):
 	make $(UNCOOL_GIT)/cst-public-drivers
@@ -130,7 +131,8 @@ toolcheck: $(TOOLCHECK)
 	fi
 
 neutrino-source: $(N_HD_SOURCE)
-cs-sources: $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_DRIVER) $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
+cs-sources: $(UNCOOL_LIBS) $(UNCOOL_DRIVER)
+# $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream $(SOURCE_DIR)/svn/THIRDPARTY/lib
 
 # TRIPLEDRAGON stuff...
 $(TD_SVN):

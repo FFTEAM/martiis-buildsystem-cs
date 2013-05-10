@@ -26,7 +26,7 @@ MAD_VER=0.15.1b
 UNGIF_VER=4.1.4
 
 # giflib: replaces libungif
-GIFLIB_VER=5.0.2
+GIFLIB_VER=5.0.4
 
 # libiconv; converting encodings
 ICONV-VER=1.14
@@ -50,7 +50,7 @@ PNG_VER=1.2.50
 FREETYPE_VER=2.4.11
 
 # libjpeg-turbo; a derivative of libjpeg for x86 and x86-64 processors which uses SIMD instructions (MMX, SSE2, etc.) to accelerate baseline JPEG compression and decompression
-JPEG_TURBO_VER=1.1.1
+JPEG_TURBO_VER=1.2.1
 
 # boost; portable C++ source library
 BOOST_MAJOR=1
@@ -63,8 +63,13 @@ OPENSSL_VER=0.9.8
 OPENSSL_SUBVER=q
 
 # libffmpeg; complete, cross-platform solution to record, convert and stream audio and video
-#FFMPEG_VER=1.1.3
+FFMPEG_VER=0.10
+ifeq ($(PLATFORM), spark)
 FFMPEG_VER=1.2
+endif
+ifeq ($(PLATFORM), coolstream)
+FFMPEG_VER=1.2
+endif
 
 # libogg; encoding, decoding of the ogg file format
 OGG_VER=1.3.0

@@ -17,8 +17,8 @@ ifeq ($(PLATFORM), coolstream)
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
 PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
-# PLAT_LIBS += $(TARGETPREFIX)/lib/libcoolstream.so
-PLAT_INCS  = $(TARGETPREFIX)/lib/firmware $(TARGETPREFIX)/include/coolstream
+#PLAT_LIBS += $(TARGETPREFIX)/lib/libca-sc.so
+PLAT_INCS  = $(TARGETPREFIX)/lib/firmware
 endif
 ifeq ($(PLATFORM), spark)
 BOOTSTRAP += $(STL_ARCHIVE)
@@ -74,12 +74,15 @@ $(TARGETPREFIX)/include/coolstream: $(SOURCE_DIR)/svn/CROSSENVIROMENT/coolstream
 $(TARGETPREFIX)/lib/libnxp.so: $(UNCOOL_LIBNXP) | $(TARGETPREFIX)
 	cp -a $(UNCOOL_LIBNXP) $@
 
+$(TARGETPREFIX)/lib/libca-sc.so: $(UNCOOL_LIBCA) | $(TARGETPREFIX)
+	cp -a $(UNCOOL_LIBCA) $@
+
 $(TARGETPREFIX)/lib/libcoolstream%.so: $(UNCOOL_LIBCS) | $(TARGETPREFIX)
 	cp -a $(UNCOOL_LIBCS) $@
 
 $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	mkdir -p $@
-	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/* $@/
+	cp -a $(UNCOOL_GIT)/cst-public-drivers/firmware/* $@/
 
 $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis: | $(TARGETPREFIX)
 	mkdir -p $@/extra
