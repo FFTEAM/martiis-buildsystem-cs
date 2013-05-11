@@ -93,6 +93,10 @@ LUA_VER=5.2.1
 # luaposix: posix bindings for lua
 LUAPOSIX_VER=5.1.28
 
+# luasocket: socket bindings for lua
+LUASOCKET_VER=2.1
+LUASOCKET_TAG=ca48baf495d57a592030db82d5e4407596f0afde
+
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 

@@ -708,6 +708,18 @@ $(D)/lua: libncurses $(ARCHIVE)/lua-$(LUA_VER).tar.gz \
 	$(REMOVE)/lua-$(LUA_VER)
 	touch $@
 
+$(D)/luasocket: $(ARCHIVE)/luasocket-$(LUASOCKET_VER).tar.bz2
+	rm -rf $(PKGPREFIX)
+	$(REMOVE)/luasocket-$(LUASOCKET_VER)
+	$(UNTAR)/luasocket-$(LUASOCKET_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/luasocket-$(LUASOCKET_VER); \
+		sed -i -e "s@LD_linux=gcc@LD_LINUX=$(TARGET)-gcc@" -e "s@CC_linux=gcc@CC_LINUX=$(TARGET)-gcc -L$(TARGETPREFIX)/lib@" -e "s@DESTDIR=@DESTDIR=$(PKGPREFIX)@" src/makefile; \
+		$(MAKE) CC=$(TARGET)-gcc LD=$(TARGET)-gcc LUAV=5.2 LUAINC_linux=$(TARGETPREFIX)/include LUAPREFIX_linux= linux ;\
+		$(MAKE) LUAPREFIX_linux=/ LUAV=5.2 install
+	PKG_VER=$(LUASOCKET_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasocket
+	$(REMOVE)/luasocket-$(LUASOCKET_VER)
+	rm -rf $(PKGPREFIX)
+	touch $@
 
 $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif
 	rm -rf $(PKGPREFIX)

@@ -1,0 +1,12 @@
+Package: luasocket
+Version: @VER@-1
+Description: Network support for the Lua language
+Section: lua
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.impa.br/~diego/software/luasocket
+Source: https://github.com/diegonehab/luasocket.git
+Depends:
+Provides: luasocket
+
