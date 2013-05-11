@@ -32,16 +32,20 @@ function onoff2num(a)
 	return 0
 end
 
+changed=0
+changed_startup=0
+
 -- fixme
 autostart=0
 
 function set_auto(a)
 	-- fixme
 	autostart=onoff2num(a)
+	changed_startup=1
 end
 
-function set_string(k, v) C[k]=v end
-function set_bool(k, v) C[k]=onoff2num(v) end
+function set_string(k, v) C[k]=v changed=1 end
+function set_bool(k, v) C[k]=onoff2num(v) changed=1 end
 
 function load()
 	-- missing: autostart handling
@@ -61,20 +65,38 @@ function load()
 end
 
 function save()
-	-- missing: autostart handling
-	local f = io.open(config, "w")
-	if f then
-		local key, val
-		for key, val in pairs(C) do
-			f:write(key .. "=" .. val .. "\n")
+	local h = hintbox.new{caption="Einstellungen werden gespeichert", text="Bitte warten ..."}
+	h:paint()
+	if (changed) then
+		local f = io.open(config, "w")
+		if f then
+			local key, val
+			for key, val in pairs(C) do
+				f:write(key .. "=" .. val .. "\n")
+			end
+			f:close()
 		end
-		f:close()
+		changed = 0
 	end
+	if (changed_startup != 0) then
+		-- fixme: falls autostart => restart
+		print("fixme")
+		changed_startup = 0
+	end
+	h:hide()
 end
 
 load()
 
+function handle_key(a)
+	if (changed == 0) then return MENU_RETURN["EXIT"] end
+	local res = messagebox.exec{title="Änderungen verwerfen?", text="Sollen die Änderungen verworfen werden?", buttons={ "yes", "no" } }
+	if (res == "yes") then return MENU_RETURN["EXIT"] end
+	return MENU_RETURN["REPAINT"]
+end
+
 local m = menue.new{name="FritzBox CallMonitor", icon="settings"}
+m:addKey{directkey=RC["home"], id="home", action="handle_key"}
 m:addItem{type="back"}
 m:addItem{type="separator"}
 m:addItem{type="forwarder", name="Speichern", action="save", icon="rot", directkey=RC["red"]}
