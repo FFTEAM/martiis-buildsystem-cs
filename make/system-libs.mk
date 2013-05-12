@@ -627,6 +627,8 @@ $(D)/libflex: $(ARCHIVE)/flex-$(FLEX_VER).tar.gz
 	touch $@
 
 $(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)
 	$(UNTAR)/expat-$(EXPAT_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/expat-$(EXPAT_VER); \
 		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls; \
@@ -634,7 +636,12 @@ $(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
 	$(REWRITE_LIBTOOL)/libexpat.la
-	$(REMOVE)/expat-$(EXPAT_VER)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(BUILD_TMP)/expat-$(EXPAT_VER)/.libs/libexpat.so.* $(PKGPREFIX)/lib
+	PKG_DEP=" " PKG_VER=$(EXPAT_VER) PKG_VER=$(EXPAT_VER) \
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+	$(OPKG_SH) $(CONTROL_DIR)/libexpat
+	$(REMOVE)/expat-$(EXPAT_VER) $(PKGPREFIX)
 	touch $@
 
 # !!! libcap != libpcap !!!
@@ -708,16 +715,41 @@ $(D)/lua: libncurses $(ARCHIVE)/lua-$(LUA_VER).tar.gz \
 	$(REMOVE)/lua-$(LUA_VER)
 	touch $@
 
-$(D)/luasocket: $(ARCHIVE)/luasocket-$(LUASOCKET_VER).tar.bz2
+$(D)/luasocket: $(ARCHIVE)/luasocket-$(LUASOCKET_VER).tar.bz2 lua
 	rm -rf $(PKGPREFIX)
 	$(REMOVE)/luasocket-$(LUASOCKET_VER)
 	$(UNTAR)/luasocket-$(LUASOCKET_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/luasocket-$(LUASOCKET_VER); \
 		sed -i -e "s@LD_linux=gcc@LD_LINUX=$(TARGET)-gcc@" -e "s@CC_linux=gcc@CC_LINUX=$(TARGET)-gcc -L$(TARGETPREFIX)/lib@" -e "s@DESTDIR=@DESTDIR=$(PKGPREFIX)@" src/makefile; \
-		$(MAKE) CC=$(TARGET)-gcc LD=$(TARGET)-gcc LUAV=5.2 LUAINC_linux=$(TARGETPREFIX)/include LUAPREFIX_linux= linux ;\
-		$(MAKE) LUAPREFIX_linux=/ LUAV=5.2 install
+		$(MAKE) CC=$(TARGET)-gcc LD=$(TARGET)-gcc LUAV=$(LUA_VER_SHORT) LUAINC_linux=$(TARGETPREFIX)/include LUAPREFIX_linux= linux ;\
+		$(MAKE) LUAPREFIX_linux=/ LUAV=$(LUA_VER_SHORT) install
 	PKG_VER=$(LUASOCKET_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasocket
 	$(REMOVE)/luasocket-$(LUASOCKET_VER)
+	rm -rf $(PKGPREFIX)
+	touch $@
+
+$(D)/luaexpat: $(ARCHIVE)/luaexpat-$(LUAEXPAT_VER).tar.gz lua libexpat
+	rm -rf $(PKGPREFIX)
+	$(REMOVE)/luaexpat-$(LUAEXPAT_VER)
+	$(UNTAR)/luaexpat-$(LUAEXPAT_VER).tar.gz
+	set -e; cd $(BUILD_TMP) ; mv lua-expat-$(LUAEXPAT_TAG) luaexpat-$(LUAEXPAT_VER) ; cd luaexpat-$(LUAEXPAT_VER); \
+		sed -i -e "s@LUA_INC=.*@LUA_INC=$(TARGETPREFIX)/include@" -e "s@EXPAT_INC=.*@EXPAT_INC=$(TARGETPREFIX)/include@" -e "s@LUA_LIBDIR=.*@LUA_LIBDIR=$(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)@" -e "s@LUA_DIR=.*@LUA_DIR=$(PKGPREFIX)/share/lua/$(LUA_VER_SHORT)@" config; \
+		$(MAKE) CC=$(TARGET)-gcc LD=$(TARGET)-gcc LIB_OPTION="-shared -L$(TARGETPREFIX)/lib"; \
+		$(MAKE) install; \
+	PKG_VER=$(LUAEXPAT_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luaexpat
+	$(REMOVE)/luaexpat-$(LUAEXPAT_VER)
+	rm -rf $(PKGPREFIX)
+	touch $@
+
+$(D)/luasoap: $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz $(PATCHES)/luasoap-$(LUASOAP_VER).diff lua luasocket luaexpat
+	rm -rf $(PKGPREFIX)
+	$(REMOVE)/luasoap-$(LUASOAP_VER)
+	$(UNTAR)/luasoap-$(LUASOAP_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/luasoap-$(LUASOAP_VER); \
+		$(PATCH)/luasoap-$(LUASOAP_VER).diff ; \
+		$(MAKE) LUA_DIR=$(PKGPREFIX)/share/lua/$(LUA_VER_SHORT) install; \
+	PKG_VER=$(LUASOAP_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasoap
+	$(REMOVE)/luasoap-$(LUASOAP_VER)
 	rm -rf $(PKGPREFIX)
 	touch $@
 

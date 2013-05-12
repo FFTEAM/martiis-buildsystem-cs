@@ -89,6 +89,12 @@ $(ARCHIVE)/luaposix-$(LUAPOSIX_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive
 $(ARCHIVE)/luasocket-$(LUASOCKET_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
 	get-git-archive.sh "-b unstable git://github.com/diegonehab/luasocket.git" $(LUASOCKET_TAG) $(notdir $@) $(ARCHIVE)
 
+$(ARCHIVE)/luaexpat-$(LUAEXPAT_VER).tar.gz:
+	$(WGET) -O $@ http://code.matthewwild.co.uk/lua-expat/archive/$(LUAEXPAT_TAG).tar.gz
+
+$(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz:
+	$(WGET) --no-check-certificate https://github.com/downloads/tomasguisasola/luasoap/luasoap-$(LUASOAP_VER).tar.gz
+
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2 || $(WGET) -O $@ http://ftp.de.freebsd.org/pub/FreeBSD/ports/distfiles/dropbear-$(DROPBEAR-VER).orig.tar.bz2
 

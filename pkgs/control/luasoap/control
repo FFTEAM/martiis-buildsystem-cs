@@ -1,0 +1,12 @@
+Package: luasoap
+Version: @VER@-1
+Description: SOAP interface for Lua
+Section: lua
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://tomasguisasola.github.io/luasoap/
+Source: http://tomasguisasola.github.io/luasoap/
+Depends: luaexpat luasocket
+Provides: luasoap
+

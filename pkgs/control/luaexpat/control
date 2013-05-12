@@ -1,0 +1,12 @@
+Package: luaexpat
+Version: @VER@-1
+Description: XML Expat parsing for Lua
+Section: lua
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://code.matthewwild.co.uk/lua-expat
+Source: http://code.matthewwild.co.uk/lua-expat
+Depends: libexpat.so
+Provides: luaexpat
+

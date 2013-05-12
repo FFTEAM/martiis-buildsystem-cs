@@ -1,0 +1,11 @@
+Package: libexpat
+Version: @VER@-1
+Description: The Expat XML Parser
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://expat.sourceforge.net/
+Source:
+Depends: @DEP@
+Provides: libexpat.so

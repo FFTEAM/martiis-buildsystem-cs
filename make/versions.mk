@@ -89,6 +89,7 @@ LIRC_VER=0.9.0
 
 # lua: easily embeddable scripting language
 LUA_VER=5.2.1
+LUA_VER_SHORT=5.2
 
 # luaposix: posix bindings for lua
 LUAPOSIX_VER=5.1.28
@@ -96,6 +97,13 @@ LUAPOSIX_VER=5.1.28
 # luasocket: socket bindings for lua
 LUASOCKET_VER=2.1
 LUASOCKET_TAG=ca48baf495d57a592030db82d5e4407596f0afde
+
+# luaexpat
+LUAEXPAT_VER=1.2.0
+LUAEXPAT_TAG=b4e6b167e020
+
+# luasoap
+LUASOAP_VER=3.0
 
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
