@@ -78,7 +78,7 @@ function save()
 		end
 		changed = 0
 	end
-	if (changed_startup != 0) then
+	if (changed_startup) then
 		-- fixme: falls autostart => restart
 		print("fixme")
 		changed_startup = 0
