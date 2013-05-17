@@ -24,7 +24,7 @@ diff -ur a/src/server.lua b/src/server.lua
  local encoding = "iso-8859-1"
 diff -ur a/src/soap.lua b/src/soap.lua
 --- a/src/soap.lua	2012-04-14 02:35:31.000000000 +0200
-+++ b/src/soap.lua	2013-05-12 13:17:52.380976336 +0200
++++ b/src/soap.lua	2013-05-17 07:26:38.551190138 +0200
 @@ -212,7 +212,7 @@
  				return v
  			end
@@ -34,12 +34,12 @@ diff -ur a/src/soap.lua b/src/soap.lua
  		end
  		return nil
  	end
-@@ -233,11 +233,12 @@
+@@ -233,19 +233,24 @@
  	local lc = list_children (obj)
  	local o = lc ()
  	-- Skip SOAP:Header
 -	while o and o.tag ~= ns..":Header" and o.tag ~= "SOAP-ENV:Header" do
-+	while o and o.tag ~= ns..":Body" and o.tag ~= "SOAP-ENV:Body" do
++	while (o and o.tag ~= ns..":Body" and o.tag ~= "SOAP-ENV:Body") do
  		o = lc ()
  	end
 -	if o.tag == ns..":Body" or o.tag == "SOAP-ENV:Body" then
@@ -50,3 +50,16 @@ diff -ur a/src/soap.lua b/src/soap.lua
  	else
  		error ("Couldn't find SOAP Body!")
  	end
+ 	local method = obj.tag:match ("%:([^:]*)$") or obj.tag
+ 
+ 	local entries = {}
++	local j = 1
+ 	for i = 1, #obj do
+-		entries[i] = obj[i]
++		if ((type(obj[i]) ~= 'string') or ((obj[i] ~= "\n") and (obj[i] ~= "\r"))) then 
++			entries[j] = obj[i]
++			j = j + 1
++		end
+ 	end
+ 	return namespace, method, entries
+ end
