@@ -754,7 +754,7 @@ $(D)/luasoap: $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz $(PATCHES)/luasoap-$(LUAS
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/luacurl: $(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2 lua
+$(D)/luacurl: $(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2 lua libcurl
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/
 	$(REMOVE)/luacurl-$(LUACURL_VER)

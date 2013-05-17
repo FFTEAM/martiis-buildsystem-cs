@@ -7,6 +7,6 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://luacurl.luaforge.net/
 Source: https://github.com/LuaDist/luacurl.git
-Depends:
+Depends: libcurl
 Provides: luacurl
 
