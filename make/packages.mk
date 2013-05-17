@@ -23,6 +23,9 @@ fx2: plugins
 SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links
 SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links
 
+# packages not included in the final image, but installable via opkg-cl
+OPKG_PKGS = luasoap
+
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
 SYSTEM_OPKGS  += graphlcd-base-touchcol
@@ -277,7 +280,7 @@ endif
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
-pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh
+pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh $(OPKG_PKGS)
 	cd $(PACKAGE_DIR) && opkg-make-index.sh . > Packages
 
 prepare-pkginstall: pkg-index
