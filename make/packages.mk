@@ -24,7 +24,7 @@ SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 open
 SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links
 
 # packages not included in the final image, but installable via opkg-cl
-OPKG_PKGS = luasoap
+OPKG_PKGS = luasoap luacurl
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat

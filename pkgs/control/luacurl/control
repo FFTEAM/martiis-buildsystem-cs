@@ -1,0 +1,12 @@
+Package: luacurl
+Version: @VER@-1
+Description: CURL bindings for Lua
+Section: lua
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://luacurl.luaforge.net/
+Source: https://github.com/LuaDist/luacurl.git
+Depends:
+Provides: luacurl
+

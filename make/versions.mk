@@ -105,6 +105,10 @@ LUAEXPAT_TAG=b4e6b167e020
 # luasoap
 LUASOAP_VER=3.0
 
+# luacurl
+LUACURL_VER=20130218
+LUACURL_TAG=89ca8b6b8fdc9c0237bf6184abb1885101d2023e
+
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 

@@ -754,6 +754,19 @@ $(D)/luasoap: $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz $(PATCHES)/luasoap-$(LUAS
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+$(D)/luacurl: $(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2 lua
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/
+	$(REMOVE)/luacurl-$(LUACURL_VER)
+	$(UNTAR)/luacurl-$(LUACURL_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/luacurl-$(LUACURL_VER); \
+		sed -i -e "s/lua_strlen/lua_rawlen/g" -e "s/luaL_reg/luaL_Reg/g" luacurl.c ; \
+		$(TARGET)-gcc -I$(TARGETPREFIX)/include -fPIC -shared -s -o $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/luacurl.so luacurl.c -L$(TARGETPREFIX)/lib -lcurl ; \
+	PKG_VER=$(LUACURL_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luacurl
+	$(REMOVE)/luacurl-$(LUACURL_VER)
+	rm -rf $(PKGPREFIX)
+	touch $@
+
 $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib

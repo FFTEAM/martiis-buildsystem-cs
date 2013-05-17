@@ -95,6 +95,9 @@ $(ARCHIVE)/luaexpat-$(LUAEXPAT_VER).tar.gz:
 $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz:
 	$(WGET) --no-check-certificate https://github.com/downloads/tomasguisasola/luasoap/luasoap-$(LUASOAP_VER).tar.gz
 
+$(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
+	get-git-archive.sh https://github.com/LuaDist/luacurl.git $(LUACURL_TAG) $(notdir $@) $(ARCHIVE)
+
 $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2:
 	$(WGET) http://matt.ucc.asn.au/dropbear/releases/dropbear-$(DROPBEAR-VER).tar.bz2 || $(WGET) -O $@ http://ftp.de.freebsd.org/pub/FreeBSD/ports/distfiles/dropbear-$(DROPBEAR-VER).orig.tar.bz2
 
