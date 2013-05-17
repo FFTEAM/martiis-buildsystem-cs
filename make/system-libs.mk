@@ -632,6 +632,7 @@ $(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz
 	$(UNTAR)/expat-$(EXPAT_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/expat-$(EXPAT_VER); \
 		$(CONFIGURE) -C --host=$(TARGET) --target=$(TARGET) --prefix= --bindir=/.remove --mandir=/.remove --infodir=/.remove --disable-nls; \
+		sed -i -e "s/^\(LDFLAGS.*\)/\1 -Wl,-Bsymbolic -Wl,-Bsymbolic-functions/" Makefile; \
 		$(MAKE); \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX)
 	rm -fr $(TARGETPREFIX)/.remove
