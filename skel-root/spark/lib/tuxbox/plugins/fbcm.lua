@@ -86,8 +86,6 @@ function save()
 	h:hide()
 end
 
-load()
-
 function handle_key(a)
 	if (changed == 0) then return MENU_RETURN["EXIT"] end
 	local res = messagebox.exec{title="Änderungen verwerfen?", text="Sollen die Änderungen verworfen werden?", buttons={ "yes", "no" } }
@@ -95,16 +93,34 @@ function handle_key(a)
 	return MENU_RETURN["REPAINT"]
 end
 
+load()
+
 local m = menue.new{name="FritzBox CallMonitor", icon="settings"}
 m:addKey{directkey=RC["home"], id="home", action="handle_key"}
 m:addItem{type="back"}
 m:addItem{type="separator"}
 m:addItem{type="forwarder", name="Speichern", action="save", icon="rot", directkey=RC["red"]}
 m:addItem{type="separator"}
-m:addItem{type="chooser",     action="set_auto", options={ on, off }, value=num2onoff(autostart), name="Autostart"}
+m:addItem{type="chooser",     action="set_auto", options={ on, off }, value=num2onoff(autostart), name="Autostart", icon="gruen", directkey=RC["green"]}
 m:addItem{type="stringinput", action="set_string", id="FRITZBOXIP",   value=C["FRITZBOXIP"],   sms=1,                    name="FritzBox IP/Name"}
 m:addItem{type="stringinput", action="set_string", id="FRITZBOXPORT", value=C["FRITZBOXPORT"], valid_chars="0123456789", name="FritzBox Port"}
 m:addItem{type="chooser",     action="set_bool", options={ on, off }, id="debug", value=num2onoff(C["debug"]), name="Debug (nur in Telnet)"}
+
+pcall(
+	function()
+		local client = require 'soap.client'
+		local ns = 'urn:schemas-upnp-org:service:WANIPConnection:1'
+		local meth = 'GetExternalIPAddress'
+		ns, meth, ent = client.call {
+		url = 'http://' .. C['FRITZBOXIP'] ..':49000/upnp/control/WANIPConn1',
+			soapaction = ns .. '#' .. meth, method=meth, namespace=ns, entries = { }
+		}
+		if (type(ent[1]) == 'table' and ent[1]['tag'] == 'NewExternalIPAddress') then
+			m:addItem{type="stringinput", value=ent[1][1], active=0, name="Aktuelle WAN-IP"}
+		end
+	end
+)
+
 m:addItem{type="separator"}
 m:addItem{type="stringinput", action="set_string", id="Phone_1",      name="Rufnummer 1",      value=C["Phone_1"],      valid_chars="0123456789"}
 m:addItem{type="stringinput", action="set_string", id="Phone_1_name", name="Rufnummer 1 Name", value=C["Phone_1_name"], sms=1}
