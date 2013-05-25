@@ -20,6 +20,9 @@ CFLAGS += -rdynamic
 CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 CFLAGS += -DDYNAMIC_LUAPOSIX
 CFLAGS += -DTEST_MENU
+### enable --as-needed for catching more build problems...
+CFLAGS += -Wl,--as-needed
+
 CXXFLAGS = $(CFLAGS)
 
 export CFLAGS CXXFLAGS
@@ -50,11 +53,9 @@ $(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
 	set -e; cd $(N_OBJ); \
 		$(N_SRC)/configure --enable-maintainer-mode \
 			--prefix=$(DEST) \
-			--with-datadir=$(DEST)/share/tuxbox \
-			--with-fontdir="$(DEST)/share/fonts" \
-			--with-themesdir="$(DEST)/share/tuxbox/neutrino/themes" \
 			--enable-silent-rules --enable-mdev \
 			--enable-giflib \
+			--enable-cleanup \
 			--with-target=native --with-boxtype=generic \
 			--with-stb-hal-includes=$(LH_SRC)/include \
 			--with-stb-hal-build=$(DEST)/lib \
