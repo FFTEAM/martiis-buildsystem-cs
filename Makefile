@@ -28,6 +28,7 @@ printenv:
 	@echo "BOXARCH:     $(BOXARCH)"
 	@echo "ROOTFS_TYPE: $(ROOTFS_TYPE)"
 	@echo "PLATFORM:    $(PLATFORM)"
+	@echo "KVERSION:    $(KVERSION)"
 	@echo "MAINTAINER:  $(MAINTAINER)"
 	@echo '============================================================================== '
 	@echo "LOCAL_NEUTRINO_BUILD_OPTIONS:  $(LOCAL_NEUTRINO_BUILD_OPTIONS)"
@@ -207,6 +208,12 @@ else
 update-neutrino:
 	cd $(N_HD_SOURCE) && git pull
 endif
+
+update-uncool:
+	set -e; cd $(UNCOOL_GIT); \
+		for i in cst-*; do \
+			( echo updating $$i; cd $$i; git pull; ); \
+		done
 
 
 all:

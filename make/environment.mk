@@ -174,7 +174,7 @@ UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER)-nevis
 else
 UNCOOL_LIBCS  = $(UNCOOL_GIT)/cst-public-drivers/libs/libcoolstream-mt.so
 UNCOOL_LIBNXP = $(UNCOOL_GIT)/cst-public-drivers/libs/libnxp.so
-#UNCOOL_LIBCA  = $(UNCOOL_GIT)/cst-public-drivers/libs/libca-sc.so
+UNCOOL_LIBCA  = $(UNCOOL_GIT)/cst-public-drivers/libs/libca-sc.so
 UNCOOL_DRIVER = $(UNCOOL_GIT)/cst-public-drivers/drivers/$(UNCOOL_KVER)-nevis
 endif
 UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_LIBCA)
