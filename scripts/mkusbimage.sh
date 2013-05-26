@@ -48,6 +48,8 @@ mkdir -p build_tmp/usbstick/p1 build_tmp/usbstick/p2
 sudo bash << EOF
 # map the image so that we can mount see the partitions in the image
 kpartx -v -a -p -usbstick- build_tmp/usb.img
+# wait for the devices to be created
+udevadm settle
 
 # create the filesystems
 mkdosfs   -n KERNEL  /dev/mapper/*-usbstick-1
@@ -76,6 +78,8 @@ fi
 # create /dev/console for first boot
 # sudo mknod -m 644 build_tmp/usbstick/p2/dev/console c 5 1
 
+# wait for potential udev stuff examining one of our mountpoints
+udevadm settle
 # unmount everything
 umount build_tmp/usbstick/p*
 
