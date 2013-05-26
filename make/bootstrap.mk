@@ -17,7 +17,7 @@ ifeq ($(PLATFORM), coolstream)
 BOOTSTRAP += $(HOSTPREFIX)/bin/opkg-controlver-from-svn.sh
 BOOTSTRAP += cs-modules $(TARGETPREFIX)/sbin/ldconfig
 PLAT_LIBS  = $(TARGETPREFIX)/lib/libnxp.so $(TARGETPREFIX)/lib/libcoolstream-mt.so
-#PLAT_LIBS += $(TARGETPREFIX)/lib/libca-sc.so
+PLAT_LIBS += $(TARGETPREFIX)/lib/libca-sc.so
 PLAT_INCS  = $(TARGETPREFIX)/lib/firmware
 endif
 ifeq ($(PLATFORM), spark)
