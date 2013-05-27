@@ -23,6 +23,12 @@ CFLAGS += -DTEST_MENU
 ### enable --as-needed for catching more build problems...
 CFLAGS += -Wl,--as-needed
 
+### in case some libs are installed in $(DEST) (e.g. dvbsi++ or ffmpeg)
+CFLAGS += -I$(DEST)/include
+CFLAGS += -L$(DEST)/lib
+PKG_CONFIG_PATH = $(DEST)/lib/pkgconfig
+export PKG_CONFIG_PATH
+
 CXXFLAGS = $(CFLAGS)
 
 export CFLAGS CXXFLAGS
@@ -80,6 +86,27 @@ clean:
 	-$(MAKE) -C $(LH_OBJ) clean
 	rm -rf $(N_OBJ) $(LH_OBJ)
 
+# for those poor ubuntu users, who cannot get recent enough ffmpeg & friends...
+$(SOURCE)/ffmpeg-1.2.1.tar.bz2: | $(SOURCE)
+	cd $(SOURCE) && wget http://www.ffmpeg.org/releases/ffmpeg-1.2.1.tar.bz2
+
+ffmpeg: $(SOURCE)/ffmpeg-1.2.1.tar.bz2
+	tar -C $(SOURCE) -xf $(SOURCE)/ffmpeg-1.2.1.tar.bz2
+	set -e; cd $(SOURCE)/ffmpeg-1.2.1; \
+		./configure --prefix=$(DEST) --disable-doc --disable-stripping ; \
+		$(MAKE); \
+		make install
+
+# libdvbsi is not commonly packaged for linux distributions...
+$(SOURCE)/libdvbsi++-0.3.6.tar.bz2: | $(SOURCE)
+	cd $(SOURCE) && wget http://www.saftware.de/libdvbsi++/libdvbsi++-0.3.6.tar.bz2
+
+libdvbsi: $(SOURCE)/libdvbsi++-0.3.6.tar.bz2
+	tar -C $(SOURCE) -xf $(SOURCE)/libdvbsi++-0.3.6.tar.bz2
+	set -e; cd $(SOURCE)/libdvbsi++-0.3.6; \
+		./configure --prefix=$(DEST); \
+		$(MAKE); \
+		make install
 
 PHONY = checkout
 .PHONY: $(PHONY)
