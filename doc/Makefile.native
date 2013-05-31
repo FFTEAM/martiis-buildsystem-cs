@@ -8,7 +8,7 @@
 
 SOURCE = $(PWD)/source
 OBJ = $(PWD)/obj
-DEST = $(PWD)/root
+DEST = $(PWD)/root-generic
 
 LH_SRC = $(SOURCE)/libstb-hal
 LH_OBJ = $(OBJ)/libstb-hal
@@ -20,6 +20,7 @@ CFLAGS += -rdynamic
 CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 CFLAGS += -DDYNAMIC_LUAPOSIX
 CFLAGS += -DTEST_MENU
+CFLAGS += -DMARTII
 ### enable --as-needed for catching more build problems...
 CFLAGS += -Wl,--as-needed
 
