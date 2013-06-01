@@ -63,6 +63,7 @@ $(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
 			--enable-silent-rules --enable-mdev \
 			--enable-giflib \
 			--enable-cleanup \
+			--enable-keyboard-no-rc \
 			--with-target=native --with-boxtype=generic \
 			--with-stb-hal-includes=$(LH_SRC)/include \
 			--with-stb-hal-build=$(DEST)/lib \
