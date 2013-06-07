@@ -1,5 +1,5 @@
 Package: links
-Version: 2.7-0
+Version: @VER@-1
 Description: Neutrino-HD Text-Mode Web Browser Plugin
 Section: extras
 Priority: optional

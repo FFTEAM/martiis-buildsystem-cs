@@ -133,7 +133,6 @@ arduino-serlcd: | $(TARGETPREFIX)
 
 
 $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/libpng $(D)/openssl $(PATCHES)/links-$(LINKS-VER).diff | $(TARGETPREFIX)
-	#rm -rf $(PKGPREFIX)
 	$(REMOVE)/links-$(LINKS-VER) $(BUILD_TMP)/.remove $(PKGPREFIX)
 	$(UNTAR)/links-$(LINKS-VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/links-$(LINKS-VER); \
@@ -166,7 +165,7 @@ $(D)/links: $(ARCHIVE)/links-$(LINKS-VER).tar.bz2 $(D)/libpng $(D)/openssl $(PAT
 	touch $(PKGPREFIX)/var/tuxbox/config/links/links.his
 	cp -a $(SCRIPTS)/bookmarks.html $(SCRIPTS)/tables.tar.gz $(PKGPREFIX)/var/tuxbox/config/links
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	$(OPKG_SH) $(CONTROL_DIR)/links
+	PKG_VER=$(LINKS-VER) $(OPKG_SH) $(CONTROL_DIR)/links
 	$(REMOVE)/links-$(LINKS-VER) $(BUILD_TMP)/.remove $(PKGPREFIX)
 	touch $@
 
