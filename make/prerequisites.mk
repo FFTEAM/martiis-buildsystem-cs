@@ -58,8 +58,7 @@ $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-neutrino-hd-tripledragon.git neutrino-hd-td
-#		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
+		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
 
 $(SOURCE_DIR)/libstb-hal:
 	@echo "=== cloning libstb-hal ==="
