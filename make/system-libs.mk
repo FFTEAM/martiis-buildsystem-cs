@@ -299,7 +299,7 @@ ifeq ($(BOXARCH), sh4)
 FFMPEG_CONFIGURE  = --arch=sh4
 FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
-FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-muxer=mpeg2video
+FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-encoder=png --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
 #FFMPEG_CONFIGURE += --enable-avresample
 endif
