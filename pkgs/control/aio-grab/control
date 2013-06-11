@@ -1,0 +1,10 @@
+Package: aio-grab
+Version: 1.0-1
+Description: A screen grabber
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: 
+Source: git://openpli.git.sourceforge.net/gitroot/openpli/aio-grab
+Depends: @DEP@

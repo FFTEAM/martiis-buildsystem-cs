@@ -567,6 +567,23 @@ $(D)/wpa_supplicant: libnl $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz | $(T
 	$(REMOVE)/wpa_supplicant-$(WPASUPP_VER) $(PKGPREFIX) && \
 	touch $@
 
+$(D)/aio-grab: zlib libpng libjpeg $(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2 $(PATCHES)/0001-aio-grab-add-st-support.patch $(PATCHES)/0001-aio-grab-better-but-still-error-on-sd.patch $(PATCHES)/0001-aio-grab-fix-video-grab-for-sd.patch $(PATCHES)/0001-aio-grab-set-default-res-720p.patch
+	-rm -rf $(PKGPREFIX) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
+	cp -a $(BUILD_TMP)/driver/bpamem/bpamem.h $(TARGETPREFIX)/include; \
+	$(UNTAR)/aio-grab-$(AIOGRAB_VER).tar.bz2 && \
+	cd $(BUILD_TMP)/aio-grab-$(AIOGRAB_VER) && \
+	$(PATCH)/0001-aio-grab-add-st-support.patch && \
+	$(PATCH)/0001-aio-grab-better-but-still-error-on-sd.patch && \
+	$(PATCH)/0001-aio-grab-fix-video-grab-for-sd.patch && \
+	$(PATCH)/0001-aio-grab-set-default-res-720p.patch && \
+	patch -p1 < patches/aio-grab-*/aio-grab-*-ADD_ST_SUPPORT.patch && \
+	autoreconf -f -i -s && automake --foreign --include-deps && \
+	$(BUILDENV) ./configure --prefix=$(PKGPREFIX/bin) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
+	make && cp grab $(PKGPREFIX)/bin/ && $(TARGET)-strip $(PKGPREFIX)/bin/* && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=1.0 $(OPKG_SH) $(CONTROL_DIR)/aio-grab && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/aio-grab-$(AIOGRAB_VER) && \
+	touch $@
+
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools $(D)/vsftpd
 system-tools-opt: $(D)/samba2 $(D)/ntfs-3g
 system-tools-all: system-tools system-tools-opt

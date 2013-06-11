@@ -369,6 +369,12 @@ $(ARCHIVE)/ppp-$(PPP_VER).tar.gz:
 $(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2:
 	$(WGET) http://fribidi.org/download/fribidi-$(FRIBIDI_VER).tar.bz2
 
+$(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
+	cd $(BUILD_TMP) && \
+	git clone git://openpli.git.sourceforge.net/gitroot/openpli/aio-grab aio-grab-$(AIOGRAB_VER) && \
+	cd aio-grab-$(AIOGRAB_VER) && git checkout $(AIOGRAB_VER) && cd .. && \
+	tar cjf $@ aio-grab-$(AIOGRAB_VER) && rm -rf aio-grab-$(AIOGRAB_VER)
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
 $(ARCHIVE)/azboxme-mrua-%.tar.gz \

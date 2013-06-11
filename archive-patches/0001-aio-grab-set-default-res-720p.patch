@@ -1,0 +1,34 @@
+From 2ef4ad1fe423b2b4ad5223571610feee90350692 Mon Sep 17 00:00:00 2001
+From: Schischu <schischu@duckbox>
+Date: Sun, 2 Jun 2013 13:00:23 +0200
+Subject: [PATCH] [aio-grab] set default res 720p
+
+---
+ ...dbef3aab36113d5c6fc34bb11b-ADD_ST_SUPPORT.patch |    6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/patches/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b-ADD_ST_SUPPORT.patch b/patches/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b-ADD_ST_SUPPORT.patch
+index 7bce607..470a125 100644
+--- a/patches/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b-ADD_ST_SUPPORT.patch
++++ b/patches/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b-ADD_ST_SUPPORT.patch
+@@ -1,5 +1,5 @@
+ --- aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/main.c.org	2013-05-26 13:32:36.000000000 +0200
+-+++ aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/main.c	2013-06-02 12:31:40.450417839 +0200
+++++ aio-grab-47983a78821c0fdbef3aab36113d5c6fc34bb11b/main.c	2013-06-02 13:00:02.290292491 +0200
+ @@ -37,9 +37,47 @@
+  #include <sys/mman.h>
+  #include <linux/types.h>
+@@ -104,8 +104,8 @@
+ +		}
+ +
+ +		//if stride and res is zero than this is most probably a stillpicture
+-+		if(stride == 0) stride = 720;
+-+		if(res == 0) res = 576;
+++		if(stride == 0) stride = 1280;
+++		if(res == 0) res = 720;
+ +
+ +		stride_half = stride / 2;
+ +
+-- 
+1.7.9.5
+

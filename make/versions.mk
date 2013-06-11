@@ -311,6 +311,9 @@ LCD4LINUX_VER=0.10.0
 LCD4LINUX_SVN=1184
 LCD4LINUX_SVN_VER=$(LCD4LINUX_VER)+svnr$(LCD4LINUX_SVN)
 
+# AIO-GRAB
+AIOGRAB_VER=47983a78821c0fdbef3aab36113d5c6fc34bb11b
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################
