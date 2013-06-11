@@ -20,8 +20,8 @@ getrc: plugins
 shellexec: plugins
 fx2: plugins
 
-SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links
-SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links
+SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links aio-grab
+SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links aio-grab
 
 # packages not included in the final image, but installable via opkg-cl
 OPKG_PKGS = luasoap luacurl ntfs-3g ppp usb-modeswitch
