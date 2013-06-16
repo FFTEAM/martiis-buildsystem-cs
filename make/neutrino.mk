@@ -74,7 +74,8 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 				INSTALL="`which install` -p"; \
 		test -e src/gui/svn_version.h || echo '#define BUILT_DATE "error - not set"' > src/gui/svn_version.h; \
 		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h; \
-		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
+		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h; \
+		test -e version.h || touch version.h
 
 
 ifneq ($(FLAVOUR), neutrino-mp)
