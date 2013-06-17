@@ -121,6 +121,30 @@ $(D)/libdvdread: $(ARCHIVE)/libdvdread-4.1.3.tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/libdvdread-4.1.3 $(PKGPREFIX)
 	touch $@
 
+# should be in archives.mk...
+$(SOURCE_DIR)/tvheadend-seife:
+	set -e; cd $(SOURCE_DIR); \
+		git clone git://github.com/seife/tvheadend.git tvheadend-seife
+
+$(D)/tvheadend: $(SOURCE_DIR)/tvheadend-seife openssl
+	$(REMOVE)/tvheadend $(PKGPREFIX)
+	cp -a $(SOURCE_DIR)/tvheadend-seife $(BUILD_TMP)/tvheadend
+ifeq ($(PLATFORM), spark)
+	set -e; cd $(BUILD_TMP)/tvheadend; \
+		$(PATCH)/tvheadend-sh4.diff
+endif
+	set -e; cd $(BUILD_TMP)/tvheadend; \
+		$(BUILDENV) CC=$(TARGET)-gcc \
+			./configure  --prefix= --arch=sh4 --cpu=sh4 \
+			; \
+		$(MAKE) DESTDIR=$(PKGPREFIX) install
+	rm -rf $(PKGPREFIX)/share/man $(PKGPREFIX)/share/tvheadend/docs
+	PKG_VER=3.5.git \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/tvheadend
+	touch $@
+
 # this rule is ugly, but will do for now
 arduino-serlcd: | $(TARGETPREFIX)
 	set -e; if [ -d $(BUILD_TMP)/arduino-serlcd ]; \

@@ -1,0 +1,10 @@
+Package: tvheadend
+Version: @VER@-1
+Description: TV streaming server
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://tvheadend.org/
+Source:
+Depends: @DEP@

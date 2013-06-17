@@ -1,0 +1,25 @@
+diff --git a/src/dvb/dvb_adapter.c b/src/dvb/dvb_adapter.c
+index feea3ac..02b33e3 100644
+--- a/src/dvb/dvb_adapter.c
++++ b/src/dvb/dvb_adapter.c
+@@ -612,14 +612,20 @@ tda_add(int adapter_num)
+     /* Find Demux */
+     snprintf(dmxpath, sizeof(dmxpath), "%s/demux%d", path, i);
+     fd = tvh_open(dmxpath, O_RDONLY, 0);
++#if 0
+     if (fd == -1) {
+       snprintf(dmxpath, sizeof(dmxpath), "%s/demux%d", path, 0);
+       fd = tvh_open(dmxpath, O_RDONLY, 0);
+     }
++#endif
+     if (fd == -1) {
+       tvhlog(LOG_ALERT, "dvb", "%s: unable to find demux", fepath);
+       continue;
+     }
++    if (ioctl(fd, DMX_SET_SOURCE, &i))
++	tvhlog(LOG_ALERT, "dvb", "%s: cannot set source to %d (%m)", dmxpath, i);
++    else
++	tvhlog(LOG_NOTICE, "dvb", "%s: set source to %d", dmxpath, i);
+     close(fd);
+ 
+     /* Find DVR */
