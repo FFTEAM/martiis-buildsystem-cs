@@ -20,7 +20,6 @@ CFLAGS += -rdynamic
 CFLAGS += -DPEDANTIC_VALGRIND_SETUP
 CFLAGS += -DDYNAMIC_LUAPOSIX
 CFLAGS += -DTEST_MENU
-CFLAGS += -DSCREENSHOT
 CFLAGS += -DMARTII
 ### enable --as-needed for catching more build problems...
 CFLAGS += -Wl,--as-needed

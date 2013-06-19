@@ -5,7 +5,7 @@ NEUTRINO_DEPS += openthreads
 NEUTRINO_DEPS += lua
 NEUTRINO_PKG_DEPS =
 
-N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL -DCPU_FREQ -DMARTII -DSCREENSHOT
+N_CFLAGS   = -Wall -W -Wshadow -g -O2 -fno-strict-aliasing -rdynamic -DNEW_LIBCURL -DCPU_FREQ -DMARTII
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
 ifeq ($(PLATFORM), coolstream)
 N_CPPFLAGS += -DUSE_NEVIS_GXA
