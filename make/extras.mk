@@ -797,6 +797,29 @@ $(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap $(D)/libnl | $(TARGETPRE
 	$(REMOVE)/ppp-$(PPP_VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/openvpn: $(ARCHIVE)/openvpn-$(OPENVPN_VER).tar.gz openssl | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/openvpn-$(OPENVPN_VER)
+	$(UNTAR)/openvpn-$(OPENVPN_VER).tar.gz
+	cd $(BUILD_TMP)/openvpn-$(OPENVPN_VER) && \
+	$(BUILDENV) ./configure \
+			--enable-password-save \
+			--disable-plugin-auth-pam \
+			--host=$(TARGET) \
+			--build=$(BUILD) \
+			--prefix= \
+			--exec-prefix=$(PKGPREFIX) \
+			--includedir=$(TARGETPREFIX)/include \
+			--mandir=$(BUILD_TMP)/.remove \
+			--docdir=$(BUILD_TMP)/.remove \
+			&& \
+	sed -i "/#define HAVE_OPENSSL_ENGINE/d" config.h && \
+	make all install && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	PKG_VER=$(OPENVPN_VER) $(OPKG_SH) $(CONTROL_DIR)/openvpn && \
+	$(REMOVE)/openvpn-$(OPENVPN_VER) $(PKGPREFIX) $(BUILD_TMP)/.remove
+	touch $@
+
+
 # hg rev 116
 $(ARCHIVE)/vtuner-apps-rel2.1.99.116.tar.bz2:
 	$(REMOVE)/vtuner-apps-rel2.1.99.116

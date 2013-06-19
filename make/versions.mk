@@ -314,6 +314,9 @@ LCD4LINUX_SVN_VER=$(LCD4LINUX_VER)+svnr$(LCD4LINUX_SVN)
 # AIO-GRAB
 AIOGRAB_VER=47983a78821c0fdbef3aab36113d5c6fc34bb11b
 
+# OpenVPN
+OPENVPN_VER=2.3.2
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

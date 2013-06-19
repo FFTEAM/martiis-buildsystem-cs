@@ -12,5 +12,5 @@ zd1201		# ZYDAS 1201 USB WLAN
 pl2303		# Prolific PL-2303 USB-to-serial
 ftdi_sio 	# FTDI_SIO USB-to-serial
 cec(activemode=1 deviceName=DuckBox deviceType=3) # HDMI CEC
-
+tun		# TUN network device
 

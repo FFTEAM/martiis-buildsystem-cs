@@ -1,0 +1,11 @@
+Package: openvpn
+Version: @VER@-1
+Description: openvpn
+Section: extras
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://openvpn.net/
+Source: http://openvpn.net/index.php/open-source/downloads.html
+Depends: libcrypto.so.0.9.8, libssl.so.0.9.8
+Provides: openvpn

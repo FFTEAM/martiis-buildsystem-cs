@@ -375,6 +375,9 @@ $(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.
 	cd aio-grab-$(AIOGRAB_VER) && git checkout $(AIOGRAB_VER) && cd .. && \
 	tar cjf $@ aio-grab-$(AIOGRAB_VER) && rm -rf aio-grab-$(AIOGRAB_VER)
 
+$(ARCHIVE)/openvpn-$(OPENVPN_VER).tar.gz:
+	$(WGET) http://swupdate.openvpn.org/community/releases/openvpn-$(OPENVPN_VER).tar.gz
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
 $(ARCHIVE)/azboxme-mrua-%.tar.gz \
