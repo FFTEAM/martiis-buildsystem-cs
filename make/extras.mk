@@ -797,7 +797,7 @@ $(D)/ppp: $(ARCHIVE)/ppp-$(PPP_VER).tar.gz $(D)/libpcap $(D)/libnl | $(TARGETPRE
 	$(REMOVE)/ppp-$(PPP_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/openvpn: $(ARCHIVE)/openvpn-$(OPENVPN_VER).tar.gz openssl | $(TARGETPREFIX)
+$(D)/openvpn: $(ARCHIVE)/openvpn-$(OPENVPN_VER).tar.gz lzo openssl | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/openvpn-$(OPENVPN_VER)
 	$(UNTAR)/openvpn-$(OPENVPN_VER).tar.gz
 	cd $(BUILD_TMP)/openvpn-$(OPENVPN_VER) && \
