@@ -567,18 +567,13 @@ $(D)/wpa_supplicant: libnl $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz | $(T
 	$(REMOVE)/wpa_supplicant-$(WPASUPP_VER) $(PKGPREFIX) && \
 	touch $@
 
-$(D)/aio-grab: zlib libpng libjpeg $(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2 $(PATCHES)/0001-aio-grab-add-st-support.patch $(PATCHES)/0001-aio-grab-better-but-still-error-on-sd.patch $(PATCHES)/0001-aio-grab-fix-video-grab-for-sd.patch $(PATCHES)/0001-aio-grab-set-default-res-720p.patch $(PATCHES)/0001-aio-grab-add-framesync.patch
+$(D)/aio-grab: zlib libpng libjpeg $(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2 $(PATCHES)/aio-grab-$(AIOGRAB_VER)-ADD_ST_FRAMESYNC_SUPPORT.patch $(PATCHES)/aio-grab-$(AIOGRAB_VER)-ADD_ST_SUPPORT.patch
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/aio-grab-$(AIOGRAB_VER) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
 	cp -a $(BUILD_TMP)/driver/bpamem/bpamem.h $(TARGETPREFIX)/include; \
 	$(UNTAR)/aio-grab-$(AIOGRAB_VER).tar.bz2 && \
 	cd $(BUILD_TMP)/aio-grab-$(AIOGRAB_VER) && \
-	$(PATCH)/0001-aio-grab-add-st-support.patch && \
-	$(PATCH)/0001-aio-grab-better-but-still-error-on-sd.patch && \
-	$(PATCH)/0001-aio-grab-fix-video-grab-for-sd.patch && \
-	$(PATCH)/0001-aio-grab-set-default-res-720p.patch && \
-	$(PATCH)/0001-aio-grab-add-framesync.patch && \
-	patch -p1 < patches/aio-grab-*/aio-grab-*-ADD_ST_SUPPORT.patch && \
-	patch -p1 < patches/aio-grab-*/aio-grab-*-ADD_ST_FRAMESYNC_SUPPORT.patch && \
+	$(PATCH)/aio-grab-$(AIOGRAB_VER)-ADD_ST_SUPPORT.patch && \
+	$(PATCH)/aio-grab-$(AIOGRAB_VER)-ADD_ST_FRAMESYNC_SUPPORT.patch && \
 	autoreconf -f -i -s && automake --foreign --include-deps && \
 	$(BUILDENV) ./configure --prefix=$(PKGPREFIX/bin) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
 	make && cp grab $(PKGPREFIX)/bin/ && $(TARGET)-strip $(PKGPREFIX)/bin/* && \
