@@ -87,7 +87,7 @@ $(ARCHIVE)/luaposix-$(LUAPOSIX_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive
 	get-git-archive.sh git://github.com/luaposix/luaposix.git release-v$(LUAPOSIX_VER) $(notdir $@) $(ARCHIVE)
 
 $(ARCHIVE)/luasocket-$(LUASOCKET_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
-	get-git-archive.sh "-b unstable git://github.com/diegonehab/luasocket.git" $(LUASOCKET_TAG) $(notdir $@) $(ARCHIVE)
+	get-git-archive.sh git://github.com/diegonehab/luasocket.git $(LUASOCKET_TAG) $(notdir $@) $(ARCHIVE)
 
 $(ARCHIVE)/luaexpat-$(LUAEXPAT_VER).tar.gz:
 	$(WGET) -O $@ http://code.matthewwild.co.uk/lua-expat/archive/$(LUAEXPAT_TAG).tar.gz
