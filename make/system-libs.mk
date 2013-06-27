@@ -346,10 +346,12 @@ endif
 	rm -rf $(PKGPREFIX)/share/ffmpeg
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cp $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavfilter.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavcodec.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavutil.pc
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libswresample.pc
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/.remove
 	PKG_VER=$(FFMPEG_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
 		$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
