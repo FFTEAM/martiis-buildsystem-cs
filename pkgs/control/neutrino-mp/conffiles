@@ -4,3 +4,4 @@
 /var/tuxbox/config/satellites.xml
 /var/tuxbox/config/encoding.conf
 /var/tuxbox/config/tobackup.conf
+/var/tuxbox/config/nhttpd.conf
