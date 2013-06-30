@@ -366,7 +366,7 @@ $(D)/fribidi: $(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2
 		$(MAKE); \
 		make install DESTDIR=$(TARGETPREFIX)
 	$(REWRITE_LIBTOOL)/libfribidi.la
-	$(REMOVE)/libass-$(LIBFRIBIDI_VER)
+	$(REMOVE)/libfribidi-$(LIBFRIBIDI_VER)
 	touch $@
 
 $(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi| $(TARGETPREFIX)
