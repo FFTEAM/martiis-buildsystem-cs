@@ -701,6 +701,8 @@ $(D)/alsa-lib: $(ARCHIVE)/alsa-lib-$(ALSA_VER).tar.bz2 | $(TARGETPREFIX)
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REWRITE_LIBTOOL)/libasound.la
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/alsa.pc
 	rm -rf $(PKGPREFIX)/{bin,include,lib/alsa-lib,lib/pkgconfig} \
 		$(PKGPREFIX)/share/alsa/{pcm,cards,smixer.conf} \
 		$(PKGPREFIX)/share/aclocal
