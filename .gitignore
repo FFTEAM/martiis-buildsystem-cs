@@ -13,3 +13,6 @@ local
 Makefile.local
 .ignore
 config
+obj
+root-generic
+
