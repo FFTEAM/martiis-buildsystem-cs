@@ -8,6 +8,9 @@ $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz:
 $(ARCHIVE)/binutils-2.19.50.0.1.tar.bz2:
 	$(WGET) http://www.dbox2world.net/download/binutils-2.19.50.0.1.tar.bz2
 
+$(ARCHIVE)/gcc-4.5.2.tar.bz2:
+	$(WGET) ftp://ftp.gnu.org/gnu/gcc/gcc-4.5.2/gcc-4.5.2.tar.bz2
+
 $(ARCHIVE)/cddfs-0.2.tar.gz:
 	$(WGET) http://castet.matthieu.free.fr/cddfs/cddfs-0.2.tar.gz
 
