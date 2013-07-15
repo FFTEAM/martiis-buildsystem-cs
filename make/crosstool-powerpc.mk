@@ -29,7 +29,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-0.43.tar.gz | $(BUILD_TMP)
 else
 #
 # $(TD_COMPILER) == new
-$(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2
+$(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE)/linux-libc-headers-2.6.12.0.tar.bz2 $(ARCHIVE)/gcc-4.5.2.tar.bz2
 	make $(BUILD_TMP)
 	$(REMOVE)/crosstool-ng-1.10.0
 	$(UNTAR)/crosstool-ng-1.10.0.tar.bz2
@@ -52,6 +52,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: $(ARCHIVE)/crosstool-ng-1.10.0.tar.bz2 $(ARCHIVE
 		export TD_BUILD_TMP=$(BUILD_TMP); \
 		./configure --local; make; chmod 0755 ct-ng; \
 		./ct-ng oldconfig; \
+		sed -i 's/"2\.21"/"2.21.1"/' .config; \
 		./ct-ng build
 	$(REMOVE)/crosstool-ng-1.10.0
 
