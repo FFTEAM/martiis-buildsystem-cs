@@ -381,6 +381,15 @@ $(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.
 $(ARCHIVE)/openvpn-$(OPENVPN_VER).tar.gz:
 	$(WGET) http://swupdate.openvpn.org/community/releases/openvpn-$(OPENVPN_VER).tar.gz
 
+$(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2:
+	cd $(BUILD_TMP) && \
+	git clone -b $(SHAIRPORT_BRANCH) https://github.com/abrasive/shairport shairport-$(SHAIRPORT_COMMIT) && \
+	cd shairport-$(SHAIRPORT_COMMIT) && git checkout $(SHAIRPORT_COMMIT) && cd .. && \
+	tar cjf $@ shairport-$(SHAIRPORT_COMMIT) && rm -rf shairport-$(SHAIRPORT_COMMIT)
+
+$(ARCHIVE)/howl-$(HOWL_VER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/project/howl/howl/$(HOWL_VER)/howl-$(HOWL_VER).tar.gz
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
 $(ARCHIVE)/azboxme-mrua-%.tar.gz \

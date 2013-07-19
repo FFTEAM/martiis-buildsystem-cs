@@ -318,6 +318,14 @@ AIOGRAB_VER=47983a78821c0fdbef3aab36113d5c6fc34bb11b
 # OpenVPN
 OPENVPN_VER=2.3.2
 
+# shairport
+SHAIRPORT_VER=1.0
+SHAIRPORT_COMMIT=159ab91602f04ff58272285d9215e9bd08b8d7fc
+SHAIRPORT_BRANCH=1.0-dev
+
+# howl
+HOWL_VER=1.0.0
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

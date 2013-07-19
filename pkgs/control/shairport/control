@@ -1,0 +1,10 @@
+Package: shairport
+Version: @VER@-1
+Description: shairport
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://github.com/abrasive/shairport
+Source: https://github.com/abrasive/shairport
+Depends: howl @DEP@

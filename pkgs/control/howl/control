@@ -1,0 +1,10 @@
+Package: howl
+Version: @VER@-1
+Description: Cross platform implementation of Zeroconf/Rendezvous
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://http://sourceforge.net/projects/howl
+Source: http://http://sourceforge.net/projects/howl
+Depends: @DEP@

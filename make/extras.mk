@@ -733,6 +733,32 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/howl: $(ARCHIVE)/howl-$(HOWL_VER).tar.gz
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/howl-$(HOWL_VER) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
+	$(UNTAR)/howl-$(HOWL_VER).tar.gz && \
+	cd $(BUILD_TMP)/howl-$(HOWL_VER) && \
+	$(BUILDENV) ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
+	make install && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
+	rm -rf $(PKGPREFIX)/{include,share,lib/*a,man,share,lib/pkgconfig} && \
+	$(TARGET)-strip `find $(PKGPREFIX) -type f` && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(HOWL_VER) $(OPKG_SH) $(CONTROL_DIR)/howl && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/howl-$(HOWL_VER) && \
+	touch $@
+
+$(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(PKGPREFIX)/etc/init.d ; \
+	$(UNTAR)/shairport-$(SHAIRPORT_COMMIT).tar.bz2 && \
+	cd $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) && \
+	$(BUILDENV) make CC=$(TARGET)-gcc LD=$(TARGET)-ld && \
+	cp shairport $(TARGETPREFIX)/bin && \
+	$(TARGET)-strip shairport && \
+	cp shairport $(PKGPREFIX)/bin && \
+	install -m 755 -D $(SCRIPTS)/shairport.init $(PKGPREFIX)/etc/init.d/shairport && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPORT_VER) $(OPKG_SH) $(CONTROL_DIR)/shairport && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) && \
+	touch $@
+	
 $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz libusb-compat | $(TARGETPREFIX)
 	-$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX)
 	set -e ; $(UNTAR)/graphlcd-base-$(GRAPHLCD_VER).tar.gz ;\

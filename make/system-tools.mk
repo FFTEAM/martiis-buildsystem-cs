@@ -575,7 +575,7 @@ $(D)/aio-grab: zlib libpng libjpeg $(ARCHIVE)/aio-grab-$(AIOGRAB_VER).tar.bz2 $(
 	$(PATCH)/aio-grab-$(AIOGRAB_VER)-ADD_ST_SUPPORT.patch && \
 	$(PATCH)/aio-grab-$(AIOGRAB_VER)-ADD_ST_FRAMESYNC_SUPPORT.patch && \
 	autoreconf -f -i -s && automake --foreign --include-deps && \
-	$(BUILDENV) ./configure --prefix=$(PKGPREFIX/bin) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
+	$(BUILDENV) ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
 	make && cp grab $(PKGPREFIX)/bin/ && $(TARGET)-strip $(PKGPREFIX)/bin/* && \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=1.0 $(OPKG_SH) $(CONTROL_DIR)/aio-grab && \
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/aio-grab-$(AIOGRAB_VER) && \
