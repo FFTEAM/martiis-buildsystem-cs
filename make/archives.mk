@@ -132,7 +132,7 @@ $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/2.3.11/freetype-2.3.11.tar.bz2
 
 $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2:
-	$(WGET) http://downloads.sourceforge.net/project/freetype/freetype2/$(FREETYPE_VER)/freetype-$(FREETYPE_VER).tar.bz2
+	$(WGET) http://www.tuxbox.org/cvsdata/files/freetype-$(FREETYPE_VER).tar.bz2
 
 $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
 	$(WGET) http://ftp.gnome.org/pub/gnome/sources/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/$(lastword $(subst /, ,$@))
