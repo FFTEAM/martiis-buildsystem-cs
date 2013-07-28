@@ -369,9 +369,10 @@ $(D)/fribidi: $(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2
 	$(REMOVE)/libfribidi-$(LIBFRIBIDI_VER)
 	touch $@
 
-$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi| $(TARGETPREFIX)
+$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi $(PATCHES)/libass-$(LIBASS_VER)-8ce53c411f40bea05c8942c488ff106b473b3c2f.diff | $(TARGETPREFIX)
 	$(UNTAR)/libass-$(LIBASS_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libass-$(LIBASS_VER); \
+		patch -p1 < $(PATCHES)/libass-0.10.1-8ce53c411f40bea05c8942c488ff106b473b3c2f.diff; \
 		$(CONFIGURE) --disable-fontconfig --prefix= --disable-shared; \
 		$(MAKE); \
 		make install DESTDIR=$(TARGETPREFIX)
