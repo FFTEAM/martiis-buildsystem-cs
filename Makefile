@@ -31,6 +31,7 @@ printenv:
 	@echo "MAINTAINER:  $(MAINTAINER)"
 	@echo '============================================================================== '
 	@echo "LOCAL_NEUTRINO_BUILD_OPTIONS:  $(LOCAL_NEUTRINO_BUILD_OPTIONS)"
+	@echo "LOCAL_NEUTRINO_CFLAGS:  $(LOCAL_NEUTRINO_CFLAGS)"
 	@echo ""
 	@echo "'make help' lists useful targets."
 	@echo "The doc/ directory contains documentation. Read it."

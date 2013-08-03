@@ -63,3 +63,8 @@
 #
 # LOCAL_NEUTRINO_BUILD_OPTIONS = --enable-upnp
 
+
+# for more commpiler flags
+# you can add more flags, here for example, add the pedantic option
+#
+# LOCAL_NEUTRINO_CFLAGS = -pedantic
