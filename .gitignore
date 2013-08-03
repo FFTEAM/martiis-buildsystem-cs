@@ -13,3 +13,4 @@ local
 Makefile.local
 .ignore
 config
+*~
