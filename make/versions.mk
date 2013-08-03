@@ -264,3 +264,6 @@ GDB_VER=7.3
 
 # mtd-utils for the host...
 MTD_UTILS_VER = 1.4.9
+
+# wget for retrieving files using HTTP, HTTPS and FTP
+WGET_VER=1.14

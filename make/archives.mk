@@ -337,3 +337,7 @@ $(ARCHIVE)/azboxminime-dvb-modules-%.tar.gz:
 
 $(ARCHIVE)/linux-azbox-%.tar.bz2:
 	$(WGET) http://azbox-enigma2-project.googlecode.com/files/$(notdir $@)
+
+# standalone wget for retrieving files using HTTP, HTTPS and FTP
+$(ARCHIVE)/wget-$(WGET_VER).tar.gz:
+	$(WGET) http://ftp.gnu.org/gnu/wget/$(notdir $@)
