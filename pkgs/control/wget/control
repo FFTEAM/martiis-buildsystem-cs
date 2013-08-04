@@ -1,0 +1,12 @@
+Package: wget
+Version: @VER@-1
+Description: Tool for retrieving files using HTTP, HTTPS and FTP
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.gnu.org/software/wget/
+Source:
+Depends: @DEP@
+Conflicts:
+Provides:

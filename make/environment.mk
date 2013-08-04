@@ -70,6 +70,7 @@ D            = $(BASE_DIR)/deps
 # backwards compatibility
 DEPDIR       = $(D)
 
+CCACHE       = /usr/bin/ccache
 HOSTPREFIX   = $(BASE_DIR)/host
 TARGETPREFIX = $(BASE_DIR)/root
 PKGPREFIX    = $(BUILD_TMP)/pkg

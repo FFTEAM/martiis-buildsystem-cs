@@ -292,7 +292,7 @@ prepare-pkginstall: pkg-index
 
 # install-pkgs installs everything the hard way, just to check dependencies...
 install-pkgs: prepare-pkginstall
-	opkg-cl -f $(PATCHES)/opkg.conf -o $(BUILD_TMP)/install install $(PACKAGE_DIR)/*
+	opkg-cl -f $(PATCHES)/opkg.conf -o $(BUILD_TMP)/install install $(PACKAGE_DIR)/*.opk
 	# postinst does not really work on cross-arch installation... TODO: make more flexible
 	test -d $(BUILD_TMP)/install/opt/pkg/lib && \
 		echo "/opt/pkg/lib" > $(BUILD_TMP)/install/etc/ld.so.conf || true

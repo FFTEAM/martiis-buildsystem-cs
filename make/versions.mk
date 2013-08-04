@@ -41,13 +41,13 @@ ZLIB_VER=1.2.7
 UTIL_LINUX_NG_VER=2.18
 
 # curl; command line tool for transferring data with URL syntax
-CURL_VER=7.26.0
+CURL_VER=7.28.0
 
 # libpng; reference library for reading and writing PNGs
 PNG_VER=1.2.50
 
 # freetype; free, high-quality and portable Font engine
-FREETYPE_VER=2.4.11
+FREETYPE_VER=2.5.0.1
 
 # libjpeg-turbo; a derivative of libjpeg for x86 and x86-64 processors which uses SIMD instructions (MMX, SSE2, etc.) to accelerate baseline JPEG compression and decompression
 JPEG_TURBO_VER=1.2.1
@@ -292,8 +292,10 @@ PPP_VER=2.4.5
 PPP_DIFF_VER=2.4.5-5.1
 
 # mtd-utils
-#MTD_UTILS_VER = 1.3.1
 MTD_UTILS_VER=1.5.0
+
+# wget for retrieving files using HTTP, HTTPS and FTP
+WGET_VER=1.14
 
 # GNU FriBidi
 FRIBIDI_VER=0.19.4
@@ -334,6 +336,5 @@ HOWL_VER=1.0.0
 GDB_VER=7.3
 
 # mtd-utils for the host...
-#MTD_UTILS_VER_HOST = 1.4.9
 MTD_UTILS_VER_HOST = 1.5.0
 
