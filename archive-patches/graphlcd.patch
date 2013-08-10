@@ -897,3 +897,21 @@
      //fprintf(stderr, "\n");
  }
  
+--- a/glcdgraphics/Makefile-orig	2012-03-11 18:58:39.000000000 +0100
++++ b/glcdgraphics/Makefile	2013-08-10 22:03:37.099811149 +0200
+@@ -44,13 +44,8 @@
+ -include $(DEPFILE)
+ 
+ ifdef HAVE_FREETYPE2
+-	ifneq ($(shell which freetype-config),)
+-		INCLUDES += $(shell freetype-config --cflags)
+-		LIBS += $(shell freetype-config --libs)
+-	else
+-		INCLUDES += -I/usr/include/freetype -I/usr/local/include/freetype
+-		LIBS += -lfreetype
+-	endif
++	INCLUDES += -I$(DESTDIR)/include/freetype
++	LIBS += -L$(DESTDIR)/lib -lfreetype
+ 	DEFINES += -DHAVE_FREETYPE2
+ endif### Targets:
+ 

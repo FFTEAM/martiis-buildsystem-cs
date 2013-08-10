@@ -764,7 +764,7 @@ $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz lib
 	set -e ; $(UNTAR)/graphlcd-base-$(GRAPHLCD_VER).tar.gz ;\
 	cd $(BUILD_TMP)/graphlcd-base-$(GRAPHLCD_VER) ;\
 	$(PATCH)/graphlcd.patch ;\
-	$(MAKE) -C glcdgraphics all TARGET=$(TARGET)- ;\
+	$(MAKE) -C glcdgraphics all TARGET=$(TARGET)- DESTDIR=$(TARGETPREFIX);\
 	$(MAKE) -C glcddrivers all TARGET=$(TARGET)- ;\
 	$(MAKE) -C glcdgraphics install DESTDIR=$(TARGETPREFIX) ;\
 	$(MAKE) -C glcddrivers install DESTDIR=$(TARGETPREFIX) ;\

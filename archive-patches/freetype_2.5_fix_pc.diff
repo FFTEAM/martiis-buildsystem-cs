@@ -1,0 +1,12 @@
+--- freetype-2.5.0.1/builds/unix/freetype2.in	2013-08-10 21:37:44.836550884 +0200
++++ freetype-2.5.0.1/builds/unix/freetype2.in	2013-05-28 23:00:03.000000000 +0200
+@@ -1,7 +1,7 @@
+ prefix="%prefix%"
+ exec_prefix="%exec_prefix%"
+-libdir="%libdir%"
+-includedir="%includedir%"
++libdir="${exec_prefix}%libdir%"
++includedir="${prefix}%includedir%"
+ 
+ Name: FreeType 2
+ Description: A free, high-quality, and portable font engine.

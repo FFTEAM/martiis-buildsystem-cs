@@ -180,12 +180,13 @@ $(D)/libpng-$(PNG_VER): $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGET
 
 $(D)/freetype: $(D)/freetype-$(FREETYPE_VER)
 	touch $@
-$(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 $(PATCHES)/freetype_2.5_*.diff | $(TARGETPREFIX)
 	$(UNTAR)/freetype-$(FREETYPE_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/freetype-$(FREETYPE_VER); \
 		if ! echo $(FREETYPE_VER) | grep "2.3"; then \
 			patch -p1 -i $(PATCHES)/freetype_2.5_render_old.diff; \
 			patch -p1 -i $(PATCHES)/freetype_2.5_subpix_hint.diff; \
+			patch -p1 -i $(PATCHES)/freetype_2.5_fix_pc.diff; \
 		fi; \
 		sed -i '/#define FT_CONFIG_OPTION_OLD_INTERNALS/d' include/freetype/config/ftoption.h; \
 		sed -i '/^FONT_MODULES += \(type1\|cid\|pfr\|type42\|pcf\|bdf\)/d' modules.cfg; \
@@ -198,7 +199,6 @@ $(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).t
 		if [ -d $(TARGETPREFIX)/include/freetype2/freetype ] ; then \
 			ln -sf ./freetype2/freetype $(TARGETPREFIX)/include/freetype; \
 		fi; \
-	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
 	$(REMOVE)/freetype-$(FREETYPE_VER) $(PKGPREFIX)
