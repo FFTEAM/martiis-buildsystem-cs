@@ -199,6 +199,7 @@ $(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).t
 		if [ -d $(TARGETPREFIX)/include/freetype2/freetype ] ; then \
 			ln -sf ./freetype2/freetype $(TARGETPREFIX)/include/freetype; \
 		fi; \
+	rm $(TARGETPREFIX)/bin/freetype-config
 	$(REWRITE_LIBTOOL)/libfreetype.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
 	$(REMOVE)/freetype-$(FREETYPE_VER) $(PKGPREFIX)
