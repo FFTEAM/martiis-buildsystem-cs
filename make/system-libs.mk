@@ -346,7 +346,7 @@ endif
 			--cross-prefix=$(TARGET)- \
 			--target-os=linux \
 			--enable-debug --enable-stripping \
-			--mandir=/.remove \
+			--disable-doc \
 			--prefix=/; \
 		$(MAKE); \
 		make install DESTDIR=$(PKGPREFIX)
