@@ -335,10 +335,11 @@ endif
 		./configure \
 			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
+			--disable-protocols \
 			$(FFMPEG_CONFIGURE) \
 			--enable-decoder=dvbsub --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec \
-			--disable-protocols --enable-protocol=file \
+			--enable-protocol=file \
 			--disable-zlib --enable-bzlib \
 			--disable-ffprobe \
 			--disable-static --enable-shared \
