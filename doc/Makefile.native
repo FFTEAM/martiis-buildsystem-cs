@@ -67,7 +67,8 @@ $(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
 			--with-stb-hal-build=$(DEST)/lib \
 			; \
 		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h; \
-		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
+		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h; \
+		test -e version.h || touch version.h
 
 $(OBJ):
 	mkdir $(OBJ)
