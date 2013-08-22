@@ -98,6 +98,16 @@ ffmpeg: $(SOURCE)/ffmpeg-1.2.1.tar.bz2
 		$(MAKE); \
 		make install
 
+$(SOURCE)/lua-5.2.2.tar.gz: | $(SOURCE)
+	cd $(SOURCE) && curl -R -O http://www.lua.org/ftp/lua-5.2.2.tar.gz; \
+	tar zxf lua-5.2.2.tar.gz;
+
+lua: $(SOURCE)/lua-5.2.2.tar.gz
+	cd $(SOURCE)/lua-5.2.2 && $(MAKE) linux; \
+	$(MAKE) install INSTALL_TOP=$(DEST); \
+	rm -rf $(DEST)/man
+
+
 # libdvbsi is not commonly packaged for linux distributions...
 $(SOURCE)/libdvbsi++-0.3.6.tar.bz2: | $(SOURCE)
 	cd $(SOURCE) && wget http://www.saftware.de/libdvbsi++/libdvbsi++-0.3.6.tar.bz2
@@ -108,6 +118,9 @@ libdvbsi: $(SOURCE)/libdvbsi++-0.3.6.tar.bz2
 		./configure --prefix=$(DEST); \
 		$(MAKE); \
 		make install
+
+
+
 
 PHONY = checkout
 .PHONY: $(PHONY)
