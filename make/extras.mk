@@ -843,6 +843,7 @@ $(D)/openvpn: $(ARCHIVE)/openvpn-$(OPENVPN_VER).tar.gz lzo openssl | $(TARGETPRE
 	sed -i "/#define HAVE_OPENSSL_ENGINE/d" config.h && \
 	make all install && \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX) && \
+	rm -f $(PKGPREFIX)/lib/openvpn/plugins/*.la && \
 	PKG_VER=$(OPENVPN_VER) $(OPKG_SH) $(CONTROL_DIR)/openvpn && \
 	$(REMOVE)/openvpn-$(OPENVPN_VER) $(PKGPREFIX) $(BUILD_TMP)/.remove
 	touch $@
