@@ -50,7 +50,7 @@ $(SOURCE_DIR)/neutrino-mp:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/~martii/neutrino-mp/martiis-neutrino-mp.git neutrino-mp
+		git clone $(GITORIOUS)/neutrino-mp/martiis-neutrino-mp.git neutrino-mp
 
 $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
@@ -64,13 +64,13 @@ $(SOURCE_DIR)/libstb-hal:
 	@echo "=== cloning libstb-hal ==="
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-libstb-hal.git libstb-hal
+		git clone $(GITORIOUS)/neutrino-hd/martiis-libstb-hal.git libstb-hal
 #		git clone $(GITORIOUS)/neutrino-hd/libstb-hal.git libstb-hal
 
 $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/~martii/neutrino-hd/martiis-neutrino-hd-plugins.git neutrino-hd-plugins
+		git clone $(GITORIOUS)/neutrino-hd/martiis-neutrino-hd-plugins.git neutrino-hd-plugins
 #		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-plugins.git
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
