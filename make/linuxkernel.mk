@@ -363,11 +363,6 @@ endif
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
 
-# disabled, merged upstream:
-# $(PATCHES)/sparkdrivers/0006-stmdvb-reinit-TS-merger-when-demux-is-idle.patch \
-# $(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
-# $(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
-#
 # the dependency on .../tdt-driver/.git should trigger on updated git...
 $(BUILD_TMP)/tdt-driver: \
 $(SOURCE_DIR)/tdt-driver/.git \
