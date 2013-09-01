@@ -459,8 +459,8 @@ $(D)/systemd: $(ARCHIVE)/systemd-$(SYSTEMD-VER).tar.bz2 $(D)/dbus $(D)/libcap | 
 	touch $@
 
 $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
-	$(UNTAR)/dbus-$(DBUS-VER).tar.gz
-	rm -rf $(PKGPREFIX)
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/dbus-$(DBUS-VER) ; mkdir -p $(PKGPREFIX); \
+	$(UNTAR)/dbus-$(DBUS-VER).tar.gz && \
 	set -e; cd $(BUILD_TMP)/dbus-$(DBUS-VER); \
 		$(BUILDENV) ./configure \
 			--build=$(BUILD) \
@@ -472,13 +472,17 @@ $(D)/dbus: $(ARCHIVE)/dbus-$(DBUS-VER).tar.gz $(D)/libexpat | $(TARGETPREFIX)
 			--enable-abstract-sockets \
 			--with-x=no \
 			--with-xml=no \
-			--mandir=/.remove \
 			; \
-		$(MAKE) install DESTDIR=$(TARGETPREFIX)
-	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/dbus-1.pc
-	$(REWRITE_LIBTOOL)/libdbus-1.la
-	$(REMOVE)/dbus-$(DBUS-VER) $(TARGETPREFIX)/.remove
-	touch $@
+		$(MAKE) install DESTDIR=$(PKGPREFIX) ; \
+		rm -rf $(PKGPREFIX)/var ;\
+		cp -a $(PKGPREFIX)/* $(TARGETPREFIX) ; \
+		$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/dbus-1.pc; \
+		$(REWRITE_LIBTOOL)/libdbus-1.la; \
+		rm -rf $(PKGPREFIX)/{share/doc,share/man,include,lib/*a,lib/dbus-1.0}; \
+		$(TARGET)-strip `find $(PKGPREFIX) -type f` || true ; \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(DBUS-VER) $(OPKG_SH) $(CONTROL_DIR)/dbus && \
+		$(REMOVE)/dbus-$(DBUS-VER) $(PKGPREFIX); \
+		touch $@
 
 $(D)/ntp: $(ARCHIVE)/ntp-$(NTP_VER).tar.gz | $(TARGETPREFIX)
 	$(UNTAR)/ntp-$(NTP_VER).tar.gz

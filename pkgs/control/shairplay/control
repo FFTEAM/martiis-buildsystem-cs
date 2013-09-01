@@ -1,0 +1,10 @@
+Package: shairplay
+Version: @VER@-1
+Description: shairplay
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://github.com/juhovh/shairplay
+Source: https://github.com/juhovh/shairplay.git
+Depends: @DEP@

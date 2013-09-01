@@ -205,7 +205,8 @@ TZ_VER = 2012d
 SYSTEMD-VER=19
 
 # dbus; message bus system
-DBUS-VER=1.4.6
+#DBUS-VER=1.4.6
+DBUS-VER=1.6.12
 
 # ntp; synchronize system clock over a network
 NTP_VER=4.2.6p5
@@ -324,8 +325,21 @@ SHAIRPORT_VER=1.0
 SHAIRPORT_COMMIT=bb04e3b07136b63168dfeaa252b462a9239b75c4
 SHAIRPORT_BRANCH=1.0-dev
 
+# shairplay
+SHAIRPLAY_VER=1.0
+SHAIRPLAY_COMMIT=c8920724b694ee2b35dcb104f0bf169eb8a858d9
+
+# libao: a cross platform audio library
+LIBAO_VER=1.1.0
+
+# Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite.
+AVAHI_VER=0.6.31
+
 # howl
 HOWL_VER=1.0.0
+
+# libdaemon
+LIBDAEMON_VER=0.14
 
 ##################################
 # devel-tools; make/devel-tools.mk

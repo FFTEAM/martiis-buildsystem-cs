@@ -8,4 +8,4 @@ Architecture: @ARCH@
 Homepage: http://expat.sourceforge.net/
 Source:
 Depends: @DEP@
-Provides: libexpat.so
+Provides: libexpat.so.1

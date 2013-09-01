@@ -740,10 +740,40 @@ $(D)/howl: $(ARCHIVE)/howl-$(HOWL_VER).tar.gz
 	$(BUILDENV) ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
 	make install && \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
-	rm -rf $(PKGPREFIX)/{include,share,lib/*a,man,share,lib/pkgconfig} && \
+	rm -rf $(PKGPREFIX)/{include,share,lib/*a,man,lib/pkgconfig} && \
 	$(TARGET)-strip `find $(PKGPREFIX) -type f` && \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(HOWL_VER) $(OPKG_SH) $(CONTROL_DIR)/howl && \
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/howl-$(HOWL_VER) && \
+	touch $@
+
+$(D)/libdaemon: $(ARCHIVE)/libdaemon-$(LIBDAEMON_VER).tar.gz
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/libdaemon-$(LIBDAEMON_VER) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
+	$(UNTAR)/libdaemon-$(LIBDAEMON_VER).tar.gz && \
+	cd $(BUILD_TMP)/libdaemon-$(LIBDAEMON_VER) && \
+	$(BUILDENV) ac_cv_func_setpgrp_void=yes ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
+	make install && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libdaemon.pc && \
+	$(REWRITE_LIBTOOL)/libdaemon.la && \
+	rm -rf $(PKGPREFIX)/{include,share,lib/*a,lib/pkgconfig} && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(LIBDAEMON_VER) $(OPKG_SH) $(CONTROL_DIR)/libdaemon && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libdaemon-$(LIBDAEMON_VER) && \
+	touch $@
+
+$(D)/avahi: dbus libexpat libdaemon $(ARCHIVE)/avahi-$(AVAHI_VER).tar.gz
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/avahi-$(AVAHI_VER) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
+	$(UNTAR)/avahi-$(AVAHI_VER).tar.gz && \
+	cd $(BUILD_TMP)/avahi-$(AVAHI_VER) && \
+	$(BUILDENV) ./configure --enable-shared --disable-static --with-distro=none --disable-nls --disable-glib --disable-gobject --disable-static --enable-shared --disable-qt3 --disable-qt4 --disable-gtk --disable-gtk3 --enable-dbus --disable-dbm --disable-gdbm --enable-libdaemon --disable-python --disable-pygtk --disable-python-dbus --disable-mono --disable-monodoc --disable-autoipd --disable-doxygen-doc --disable-doxygen-dot --disable-doxygen-man --disable-doxygen-rtf --disable-doxygen-xml --disable-doxygen-chm --disable-doxygen-chi --disable-doxygen-html --disable-doxygen-ps --disable-doxygen-pdf --disable-core-docs --disable-manpages --disable-xmltoman --disable-tests --enable-compat-libdns_sd --enable-compat-howl --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
+	make install && \
+	rm -rf $(PKGPREFIX)/var && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
+	for A in compat-libdns_sd core client compat-howl ; do $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/avahi-$$A.pc ; done && \
+	for A in avahi-core avahi-client dns_sd avahi-common howl ; do $(REWRITE_LIBTOOL)/lib$$A.la ; done && \
+	rm -rf $(PKGPREFIX)/{var,include,lib/*a,man,share/man,share/locale,lib/pkgconfig} && \
+	$(TARGET)-strip `find $(PKGPREFIX) -type f` || true && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(AVAHI_VER) $(OPKG_SH) $(CONTROL_DIR)/avahi && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/avahi-$(AVAHI_VER) && \
 	touch $@
 
 $(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2
@@ -758,7 +788,45 @@ $(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPORT_VER) $(OPKG_SH) $(CONTROL_DIR)/shairport && \
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) && \
 	touch $@
-	
+
+$(D)/libao: alsa-lib $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(LIBAO_VER) ; \
+	$(UNTAR)/libao-$(LIBAO_VER).tar.gz && \
+	cd $(BUILD_TMP)/libao-$(LIBAO_VER) && \
+	$(BUILDENV) \
+	sed -i -e "s#@plugindir@#/lib/ao/plugins-4#" src/Makefile.am && \
+	sed -i -e "s#@plugindir@#/lib/ao/plugins-4#" src/Makefile.in && \
+	./configure --enable-alsa --enable-alsa-mmap --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-shared --disable-static && \
+	make install && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/ao.pc && \
+	$(REWRITE_LIBTOOL)/libao.la && \
+	rm -rf $(PKGPREFIX)/share $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.la $(PKGPREFIX)/lib/ao/plugins-4/*.la && \
+	$(TARGET)-strip `find $(PKGPREFIX) -type f` && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPLAY_VER) $(OPKG_SH) $(CONTROL_DIR)/libao && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(SHAIRPLAY_COMMIT) && \
+	touch $@
+
+$(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(TARGETPREFIX)/share/shairplay $(PKGPREFIX)/share/shairplay; \
+	$(UNTAR)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 && \
+	cd $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) && \
+	for A in src/test/example.c src/test/main.c src/shairplay.c ; do sed -i "s#airport.key#/share/shairplay/airport.key#" $$A ; done && \
+	$(BUILDENV) \
+	autoreconf --install && \
+	./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-shared --disable-static && \
+	make install && \
+	install -m 644 airport.key $(PKGPREFIX)/share/shairplay/ && \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
+	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/lib*.la $(PKGPREFIX)/lib/lib*.a && \
+	$(TARGET)-strip $(PKGPREFIX)/lib/lib* $(PKGPREFIX)/bin/* && \
+	mkdir -p $(PKGPREFIX)2 && mv $(PKGPREFIX)/bin $(PKGPREFIX)2 && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPLAY_VER) $(OPKG_SH) $(CONTROL_DIR)/libshairplay && \
+	rm -rf $(PKGPREFIX) && mv $(PKGPREFIX)2 $(PKGPREFIX) && \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPLAY_VER) $(OPKG_SH) $(CONTROL_DIR)/shairplay && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) && \
+	touch $@
+
 $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz libusb-compat | $(TARGETPREFIX)
 	-$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX)
 	set -e ; $(UNTAR)/graphlcd-base-$(GRAPHLCD_VER).tar.gz ;\

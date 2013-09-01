@@ -1,0 +1,11 @@
+Package: libao
+Version: @VER@-1
+Description: libao: a cross platform audio library
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.xiph.org/ao/
+Source: http://www.xiph.org/ao/
+Depends: @DEP@
+Provides: libao.so.4

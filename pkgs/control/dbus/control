@@ -1,0 +1,11 @@
+Package: dbus
+Version: @VER@-1
+Description: A message bus system.
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://dbus.freedesktop.org/
+Source: http://dbus.freedesktop.org/releases/dbus/
+Depends: @DEP@
+Provides: libdbus-1.so.3

@@ -1,0 +1,11 @@
+Package: libdaemon
+Version: @VER@-1
+Description: libdaemon
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://0pointer.de/lennart/projects/libdaemon/
+Source: http://0pointer.de/lennart/projects/libdaemon/
+Depends: @DEP@
+Provides: libdaemon.so.0

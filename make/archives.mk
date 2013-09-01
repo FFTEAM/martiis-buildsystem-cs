@@ -387,8 +387,23 @@ $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2:
 	cd shairport-$(SHAIRPORT_COMMIT) && git checkout $(SHAIRPORT_COMMIT) && cd .. && \
 	tar cjf $@ shairport-$(SHAIRPORT_COMMIT) && rm -rf shairport-$(SHAIRPORT_COMMIT)
 
+$(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2:
+	cd $(BUILD_TMP) && \
+	git clone https://github.com/juhovh/shairplay.git shairplay-$(SHAIRPLAY_COMMIT) && \
+	cd shairplay-$(SHAIRPLAY_COMMIT) && git checkout $(SHAIRPLAY_COMMIT) && cd .. && \
+	tar cjf $@ shairplay-$(SHAIRPLAY_COMMIT) && rm -rf shairplay-$(SHAIRPLAY_COMMIT)
+
+$(ARCHIVE)/libao-$(LIBAO_VER).tar.gz:
+	$(WGET) http://downloads.xiph.org/releases/ao/libao-$(LIBAO_VER).tar.gz
+
 $(ARCHIVE)/howl-$(HOWL_VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/howl/howl/$(HOWL_VER)/howl-$(HOWL_VER).tar.gz
+
+$(ARCHIVE)/avahi-$(AVAHI_VER).tar.gz:
+	$(WGET) http://avahi.org/download/avahi-$(AVAHI_VER).tar.gz
+
+$(ARCHIVE)/libdaemon-$(LIBDAEMON_VER).tar.gz:
+	$(WGET) http://0pointer.de/lennart/projects/libdaemon/libdaemon-$(LIBDAEMON_VER).tar.gz
 
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
