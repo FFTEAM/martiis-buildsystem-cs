@@ -11,9 +11,11 @@
 ###########################
 
 # azbox-dvb-modules
-AZBOX_DVB_M_VER=20130117
 # not the most useful date format...
-AZBOX_INITRAMFS_VER=08012013
+AZBOX_DVB_M_VER=28082013
+# not the most useful date format...
+AZBOX_INITRAMFS_ME=24072013
+AZBOX_INITRAMFS_MINIME=22072013
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1
@@ -78,7 +80,7 @@ VORBIS_VER=1.3.3
 LIBASS_VER=0.9.11
 
 # azbox kernel
-LINUX_AZBOX_VER=3.3.1
+LINUX_AZBOX_VER=3.9.2
 
 # LIRC: linux infrared control
 LIRC_VER=0.9.0

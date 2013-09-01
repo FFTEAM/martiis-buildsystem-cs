@@ -90,6 +90,7 @@ selected_boot=0;
 #mknod /dev/em8xxx0 c 127 0
 mknod /dev/micom c 75 0
 
+insmod /lib/modules/$KVER/kernel/drivers/hook.ko
 insmod /lib/modules/$KVER/kernel/drivers/scsi_wait_scan.ko
 insmod /lib/modules/$KVER/kernel/drivers/irvfd${APPEND}.ko
 insmod /lib/modules/$KVER/kernel/drivers/llad.ko
