@@ -804,7 +804,7 @@ $(D)/libao: alsa-lib $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz
 	rm -rf $(PKGPREFIX)/share $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.la $(PKGPREFIX)/lib/ao/plugins-4/*.la && \
 	$(TARGET)-strip `find $(PKGPREFIX) -type f` && \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPLAY_VER) $(OPKG_SH) $(CONTROL_DIR)/libao && \
-	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(SHAIRPLAY_COMMIT) && \
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(LIBAO_VER) && \
 	touch $@
 
 $(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 $(PATCHES)/shairplay-howl.diff
