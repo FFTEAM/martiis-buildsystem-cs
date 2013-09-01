@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: https://github.com/abrasive/shairport
 Source: https://github.com/abrasive/shairport
-Depends: howl @DEP@
+Depends: howl, @DEP@
