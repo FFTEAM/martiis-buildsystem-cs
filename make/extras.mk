@@ -793,9 +793,9 @@ $(D)/libao: alsa-lib $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(LIBAO_VER) ; \
 	$(UNTAR)/libao-$(LIBAO_VER).tar.gz && \
 	cd $(BUILD_TMP)/libao-$(LIBAO_VER) && \
-	$(BUILDENV) \
 	sed -i -e "s#@plugindir@#/lib/ao/plugins-4#" src/Makefile.am && \
 	sed -i -e "s#@plugindir@#/lib/ao/plugins-4#" src/Makefile.in && \
+	$(BUILDENV) \
 	./configure --enable-alsa --enable-alsa-mmap --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-shared --disable-static && \
 	make install && \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
@@ -807,11 +807,12 @@ $(D)/libao: alsa-lib $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(SHAIRPLAY_COMMIT) && \
 	touch $@
 
-$(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2
+$(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 $(PATCHES)/shairplay-howl.diff
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(TARGETPREFIX)/share/shairplay $(PKGPREFIX)/share/shairplay; \
 	$(UNTAR)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 && \
 	cd $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) && \
 	for A in src/test/example.c src/test/main.c src/shairplay.c ; do sed -i "s#airport.key#/share/shairplay/airport.key#" $$A ; done && \
+	$(PATCH)/shairplay-howl.diff && \
 	$(BUILDENV) \
 	autoreconf --install && \
 	./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-shared --disable-static && \
