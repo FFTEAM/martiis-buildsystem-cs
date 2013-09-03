@@ -1,0 +1,30 @@
+These scripts allow to automatically test if the build
+works for all supported platforms.
+
+HOWTO:
+
+1) create a directory where the built toolchains will be stored
+   in order to not build them again every time:
+
+	mkdir toolchains
+
+2) create a directory where all downloads are stored (you can also
+   symlink you existing download directory
+
+	ln -s /local/Archive ./
+   or
+	mkdir Archive
+
+3) mirror all necessary git repos, so they are not downloaded over
+   and over again:
+
+	./mirror-git.sh
+
+4) now build everything:
+
+	./test-build-all-platforms.sh
+
+for later re-testing, keep the "gitorious", "Archive" and "toolchains"
+directories, and start directly at step 3.
+
+Have fun :-)
