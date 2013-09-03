@@ -2,7 +2,7 @@
 
 crosstool: $(CROSS_DIR)/bin/$(TARGET)-gcc
 
-$(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2
+$(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHIVE)/linux-$(LINUX_AZBOX_VER).tar.xz
 	make $(BUILD_TMP)
 	$(REMOVE)/crosstool-ng-1.15.2
 	$(UNTAR)/crosstool-ng-1.15.2.tar.bz2
@@ -14,7 +14,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHI
 				scripts/build/libc/eglibc.sh || \
 			true; \
 		mkdir -p targets/src/; \
-		tar -C targets/src/ -xf $(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER).tar.bz2; \
+		tar -C targets/src/ -xf $(ARCHIVE)/linux-$(LINUX_AZBOX_VER).tar.xz; \
 		sed -i 's/ -static//' targets/src/linux-$(LINUX_AZBOX_VER)/scripts/Makefile.host; \
 		cp -a $(PATCHES)/crosstool-ng-mips.config .config; \
 		NUM_CPUS=$$(expr `getconf _NPROCESSORS_ONLN` \* 2); \
