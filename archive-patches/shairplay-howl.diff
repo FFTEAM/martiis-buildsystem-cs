@@ -263,3 +263,60 @@ index 8137962..f6aa1e4 100644
  	dnssd->airplayService = NULL;
 +#endif
  }
+diff --git a/src/lib/netutils.c b/src/lib/netutils.c
+index 180d32e..27c2b47 100644
+--- a/src/lib/netutils.c
++++ b/src/lib/netutils.c
+@@ -67,6 +67,8 @@ netutils_init_socket(unsigned short *port, int use_ipv6, int use_udp)
+ 	if (server_fd == -1) {
+ 		goto cleanup;
+ 	}
++	int one = 1;
++	setsockopt(server_fd, SOL_SOCKET, SO_REUSEADDR, (char*) &one, sizeof(one));
+ 
+ 	memset(&saddr, 0, sizeof(saddr));
+ 	if (use_ipv6) {
+diff --git a/src/shairplay.c b/src/shairplay.c
+index 424c28f..b112ace 100644
+--- a/src/shairplay.c
++++ b/src/shairplay.c
+@@ -247,6 +247,30 @@ audio_set_volume(void *cls, void *opaque, float volume)
+ 	session->volume = pow(10.0, 0.05*volume);
+ }
+ 
++static void
++audio_set_metadata(void *cls, void *session, const void *buffer, int buflen)
++{
++	int orig = buflen;
++	FILE *file = fopen("/tmp/metadata.bin", "wb");
++	while (buflen > 0) {
++		buflen -= fwrite(buffer+orig-buflen, 1, buflen, file);
++	}
++	fclose(file);
++	printf("Metadata of length %d saved as metadata.bin\n", orig);
++}
++
++static void
++audio_set_coverart(void *cls, void *session, const void *buffer, int buflen)
++{
++	int orig = buflen;
++	FILE *file = fopen("/tmp/coverart.jpg", "wb");
++	while (buflen > 0) {
++		buflen -= fwrite(buffer+orig-buflen, 1, buflen, file);
++	}
++	fclose(file);
++	printf("Coverart of length %d saved as coverart.jpg\n", orig);
++}
++
+ static int
+ parse_options(shairplay_options_t *opt, int argc, char *argv[])
+ {
+@@ -345,6 +369,8 @@ main(int argc, char *argv[])
+ 	raop_cbs.audio_process = audio_process;
+ 	raop_cbs.audio_destroy = audio_destroy;
+ 	raop_cbs.audio_set_volume = audio_set_volume;
++	raop_cbs.audio_set_metadata = audio_set_metadata;
++	raop_cbs.audio_set_coverart = audio_set_coverart;
+ 
+ 	raop = raop_init_from_keyfile(10, &raop_cbs, "airport.key", NULL);
+ 	if (raop == NULL) {
