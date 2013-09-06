@@ -1,0 +1,14 @@
+#!/bin/sh
+
+case $1 in
+	start)
+	(
+		while [ -f /tmp/.init_networking ] ; do
+			usleep 100000 # 100ms
+		done
+		mDNSResponder
+	) & ;;
+	stop)	kill $(pidof mDNSResponder)
+		;;
+	restart) $0 stop; $0 start ;;
+esac

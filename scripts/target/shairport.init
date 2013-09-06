@@ -11,7 +11,7 @@ case $1 in
 		# Kill -9 shairport to keep it from muting the volume. FIXME.
 		[ -f $PID ] && kill -9 `cat $PID` $(pidof mDNSPublish)
 		rm -f $PID 2>/dev/null
-		kill $(pidof mDNSResponder)
+		# kill $(pidof mDNSResponder)
 		;;
 	*)
 		echo   "usage:	$0 <start|stop>"
