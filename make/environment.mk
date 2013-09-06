@@ -48,6 +48,7 @@ BOXARCH     ?= arm
 endif
 
 USE_GRAPHLCD ?= yes
+USE_SHAIRPLAY ?= yes
 
 ifneq ($(GIT_PROTOCOL), http)
 GITORIOUS ?= git://gitorious.org
