@@ -38,6 +38,11 @@ NEUTRINO_DEPS += graphlcd-base-touchcol
 N_CONFIG_OPTS += --enable-graphlcd
 endif
 
+ifeq ($(USE_SHAIRPLAY), yes)
+N_CONFIG_OPTS += --enable-shairplay
+NEUTRINO_DEPS = shairplay
+endif
+
 ifeq ($(USE_STB_HAL), yes)
 N_CONFIG_OPTS += --with-stb-hal-includes=$(LH_SRC)/include \
 	--with-stb-hal-build=$(LH_OBJDIR)
