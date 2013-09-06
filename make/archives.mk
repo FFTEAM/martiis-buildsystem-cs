@@ -226,6 +226,9 @@ $(ARCHIVE)/linux-2.6.26.8.tar.bz2:
 $(ARCHIVE)/linux-2.6.34.13.tar.xz:
 	$(WGET) http://www.kernel.org/pub/linux/kernel/v2.6/longterm/v2.6.34/linux-2.6.34.13.tar.xz
 
+$(ARCHIVE)/linux-3.9.2.tar.xz:
+	$(WGET) http://www.kernel.org/pub/linux/kernel/v3.x/$(notdir $@)
+
 $(ARCHIVE)/mc-$(MC-VER).tar.gz:
 	$(WGET) http://midnight-commander.org/downloads/mc-$(MC-VER).tar.gz
 

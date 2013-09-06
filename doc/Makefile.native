@@ -69,7 +69,8 @@ $(N_OBJ)/config.status: | $(N_OBJ) $(N_SRC) $(LH_OBJ)/libstb-hal.a
 			--with-stb-hal-build=$(DEST)/lib \
 			; \
 		test -e svn_version.h || echo '#define BUILT_DATE "error - not set"' > svn_version.h; \
-		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h
+		test -e git_version.h || echo '#define BUILT_DATE "error - not set"' > git_version.h; \
+		test -e version.h || touch version.h
 
 $(OBJ):
 	mkdir $(OBJ)
@@ -99,6 +100,16 @@ ffmpeg: $(SOURCE)/ffmpeg-1.2.1.tar.bz2
 		$(MAKE); \
 		make install
 
+$(SOURCE)/lua-5.2.2.tar.gz: | $(SOURCE)
+	cd $(SOURCE) && curl -R -O http://www.lua.org/ftp/lua-5.2.2.tar.gz; \
+	tar zxf lua-5.2.2.tar.gz;
+
+lua: $(SOURCE)/lua-5.2.2.tar.gz
+	cd $(SOURCE)/lua-5.2.2 && $(MAKE) linux; \
+	$(MAKE) install INSTALL_TOP=$(DEST); \
+	rm -rf $(DEST)/man
+
+
 # libdvbsi is not commonly packaged for linux distributions...
 $(SOURCE)/libdvbsi++-0.3.6.tar.bz2: | $(SOURCE)
 	cd $(SOURCE) && wget http://www.saftware.de/libdvbsi++/libdvbsi++-0.3.6.tar.bz2
@@ -109,6 +120,9 @@ libdvbsi: $(SOURCE)/libdvbsi++-0.3.6.tar.bz2
 		./configure --prefix=$(DEST); \
 		$(MAKE); \
 		make install
+
+
+
 
 PHONY = checkout
 .PHONY: $(PHONY)

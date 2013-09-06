@@ -363,11 +363,6 @@ endif
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
 
-# disabled, merged upstream:
-# $(PATCHES)/sparkdrivers/0006-stmdvb-reinit-TS-merger-when-demux-is-idle.patch \
-# $(PATCHES)/sparkdrivers/0001-pti-fix-spark_stm_tsm_init-parameters.patch \
-# $(PATCHES)/sparkdrivers/0001-import-aotom-from-pinky-s-git.patch \
-#
 # the dependency on .../tdt-driver/.git should trigger on updated git...
 $(BUILD_TMP)/tdt-driver: \
 $(SOURCE_DIR)/tdt-driver/.git \
@@ -462,14 +457,16 @@ $(SOURCE_DIR)/genzbf:
 		wget -O genzbf.c 'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/genzbf.c;hb=HEAD'; \
 		wget -O zboot.h  'http://azboxopenpli.git.sourceforge.net/git/gitweb.cgi?p=azboxopenpli/openembedded;a=blob_plain;f=recipes/linux/linux-azbox/zboot.h;hb=HEAD'
 
+INITRAMFS_ME     = $(ARCHIVE)/initramfs-azboxme-oe-core-$(KVERSION)-$(AZBOX_INITRAMFS_ME).tar.bz2
+INITRAMFS_MINIME = $(ARCHIVE)/initramfs-azboxminime-oe-core-$(KVERSION)-$(AZBOX_INITRAMFS_MINIME).tar.bz2 \
+
 $(BUILD_TMP)/linux-$(KVERSION_SRC)/initramfs: \
-$(ARCHIVE)/initramfs-azboxme-$(AZBOX_INITRAMFS_VER).tar.bz2 \
-$(ARCHIVE)/initramfs-azboxminime-$(AZBOX_INITRAMFS_VER).tar.bz2 \
+$(INITRAMFS_ME) $(INITRAMFS_MINIME) \
 $(PATCHES)/initramfs-azboxmeminime-init
 	rm -rf $(BUILD_TMP)/minime $(BUILD_TMP)/me
 	mkdir $(BUILD_TMP)/minime $(BUILD_TMP)/me
-	tar -C $(BUILD_TMP)/me -xf $(firstword $^)
-	tar -C $(BUILD_TMP)/minime -xf $(subst azboxme,azboxminime,$(firstword $^))
+	tar -C $(BUILD_TMP)/me     -xf $(INITRAMFS_ME)
+	tar -C $(BUILD_TMP)/minime -xf $(INITRAMFS_MINIME)
 	rm -rf $@
 	cp -a $(BUILD_TMP)/me/linux-$(KVERSION)/initramfs $@
 	set -e; cd $(BUILD_TMP)/minime/linux-$(KVERSION)/initramfs/lib/modules/$(KVERSION_FULL)/kernel/drivers; \
@@ -486,17 +483,32 @@ $(PATCHES)/initramfs-azboxmeminime-init
 	chmod 755 $@/init
 	sed -i 's/^root:.*/root::10933:0:99999:7:::/' $@/etc/shadow # empty rootpassword for rescue
 
+# these are from https://github.com/OpenAZBox/oe-core/tree/master/meta-openpli/recipes-linux/linux/
+AZBOX_KPATCHES =  kernel-3.9.2.patch
+AZBOX_KPATCHES += add-dmx-source-timecode.patch
+AZBOX_KPATCHES += af9015-output-full-range-SNR.patch af9033-output-full-range-SNR.patch
+AZBOX_KPATCHES += as102-adjust-signal-strength-report.patch as102-scale-MER-to-full-range.patch
+AZBOX_KPATCHES += cinergy_s2_usb_r2.patch cxd2820r-output-full-range-SNR.patch
+AZBOX_KPATCHES += dvb-usb-dib0700-disable-sleep.patch dvb_usb_disable_rc_polling.patch
+AZBOX_KPATCHES += it913x-switch-off-PID-filter-by-default.patch tda18271-advertise-supported-delsys.patch
+AZBOX_KPATCHES += fix-dvb-siano-sms-order.patch mxl5007t-add-no_probe-and-no_reset-parameters.patch
+AZBOX_KPATCHES += 0001-rt2800usb-add-support-for-rt55xx.patch
+AZBOX_KPATCHES += 0001-Revert-MIPS-Fix-potencial-corruption.patch
+
 $(BUILD_TMP)/linux-$(KVERSION_SRC): \
 $(PATCHES)/kernel.config-azbox-$(KVERSION) \
-$(PATCHES)/linux-azbox-allow-rebuild-after-failed-genromfs.diff \
-$(ARCHIVE)/linux-azbox-$(LINUX_AZBOX_VER)-new-2.tar.bz2
+$(ARCHIVE)/linux-$(KVERSION_SRC).tar.xz \
+$(AZBOX_KPATCHES:%=$(PATCHES)/azboxkernel/$(KVERSION)/%)
 	rm -fr $@
-	$(UNTAR)/linux-azbox-$(LINUX_AZBOX_VER)-new-2.tar.bz2
+	$(UNTAR)/linux-$(KVERSION_SRC).tar.xz
 	set -e; cd $@; \
-		$(PATCH)/linux-azbox-allow-rebuild-after-failed-genromfs.diff; \
+		for i in $(AZBOX_KPATCHES); do \
+			echo "===> applying $$i"; \
+			$(PATCH)/azboxkernel/$(KVERSION)/$$i; \
+		done; \
 		sed -i 's/ -static//' scripts/Makefile.host; \
 		cp $(PATCHES)/kernel.config-azbox-$(KVERSION) .config; \
-		make ARCH=mips oldconfig
+		make ARCH=mips CROSS_COMPILE=$(TARGET)- oldconfig
 
 $(BUILD_TMP)/linux-$(KVERSION_SRC)/arch/mips/boot/genzbf: $(SOURCE_DIR)/genzbf
 	set -e; cd $(SOURCE_DIR)/genzbf; \
@@ -513,13 +525,15 @@ azboxkernel: $(BUILD_TMP)/linux-$(KVERSION_SRC) $(BUILD_TMP)/linux-$(KVERSION_SR
 		rm -f azboxkernel.tar; \
 		tar -cvpf azboxkernel.tar -C linux-$(KVERSION_SRC) zbimage-linux-xload
 
-azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz $(ARCHIVE)/azboxminime-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz
+AZ_DRIVER_TMPL = dvb-modules-$(LINUX_AZBOX_VER)-opensat-oe-core-$(AZBOX_DVB_M_VER).tar.gz
+
+azboxdriver: $(ARCHIVE)/azboxme-$(AZ_DRIVER_TMPL) $(ARCHIVE)/azboxminime-$(AZ_DRIVER_TMPL)
 	$(REMOVE)/azboxme-dvb-modules $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers
 	set -e; cd $(BUILD_TMP); \
 		mkdir azboxme-dvb-modules; \
 		cd azboxme-dvb-modules; \
 		for i in me minime; do \
-			tar -xf $(ARCHIVE)/azbox$${i}-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_DVB_M_VER).tar.gz; \
+			tar -xf $(ARCHIVE)/azbox$${i}-$(AZ_DRIVER_TMPL); \
 			mv sci.ko sci$${i}.ko; \
 		done; \
 		install -d lib/modules/$(KVERSION_FULL)/extra; \
@@ -532,7 +546,10 @@ azboxdriver: $(ARCHIVE)/azboxme-dvb-modules-$(LINUX_AZBOX_VER)-opensat-$(AZBOX_D
 	mv $(BUILD_TMP)/azboxme-dvb-modules/* $(PKGPREFIX)
 	cp -a $(CONTROL_DIR)/azboxme-dvb-drivers $(BUILD_TMP)
 	opkg-module-deps.sh $(PKGPREFIX) $(BUILD_TMP)/azboxme-dvb-drivers/control
-	DONT_STRIP=1 PKG_VER=$(KVERSION).$(AZBOX_DVB_M_VER) $(OPKG_SH) $(BUILD_TMP)/azboxme-dvb-drivers
+	# who comes up with such crap versioning... :-(
+	bash -c 'T=$(AZBOX_DVB_M_VER); AZ_VER="$${T:4}$${T:2:2}$${T::2}"; \
+		DONT_STRIP=1 PKG_VER=$(KVERSION).$$AZ_VER $(OPKG_SH) $(BUILD_TMP)/azboxme-dvb-drivers'
+	$(REMOVE)/azboxme-dvb-drivers $(PKGPREFIX)
 endif
 
 
