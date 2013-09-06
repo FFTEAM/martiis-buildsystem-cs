@@ -742,6 +742,8 @@ $(D)/howl: $(ARCHIVE)/howl-$(HOWL_VER).tar.gz
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
 	rm -rf $(PKGPREFIX)/{include,share,lib/*a,man,lib/pkgconfig} && \
 	$(TARGET)-strip `find $(PKGPREFIX) -type f` && \
+	install -D -m 0755 $(SCRIPTS)/howl.init $(PKGPREFIX)/etc/init.d/howl && \
+	ln -sf howl $(PKGPREFIX)/etc/init.d/S99howl && \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(HOWL_VER) $(OPKG_SH) $(CONTROL_DIR)/howl && \
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/howl-$(HOWL_VER) && \
 	touch $@
@@ -808,18 +810,19 @@ $(D)/libao: alsa-lib $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz
 	touch $@
 
 $(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 $(PATCHES)/shairplay-howl.diff
-	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(TARGETPREFIX)/share/shairplay $(PKGPREFIX)/share/shairplay; \
+	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(TARGETPREFIX)/share/shairplay $(PKGPREFIX)/share/shairplay $(PKGPREFIX)/lib $(TARGETPREFIX)/lib ; \
 	$(UNTAR)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 && \
 	cd $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) && \
 	for A in src/test/example.c src/test/main.c src/shairplay.c ; do sed -i "s#airport.key#/share/shairplay/airport.key#" $$A ; done && \
 	$(PATCH)/shairplay-howl.diff && \
 	$(BUILDENV) \
 	autoreconf --install && \
-	./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-shared --disable-static && \
+	./configure --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-shared --disable-static && \
 	make install && \
+	$(REWRITE_LIBTOOL)/libshairplay.la && \
 	install -m 644 airport.key $(PKGPREFIX)/share/shairplay/ && \
-	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
-	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/lib*.la $(PKGPREFIX)/lib/lib*.a && \
+	cp -a $(TARGETPREFIX)/lib/libshairplay*so* $(PKGPREFIX)/lib && \
+	cp -a $(TARGETPREFIX)/bin/shairplay $(PKGPREFIX)/bin && \
 	$(TARGET)-strip $(PKGPREFIX)/lib/lib* $(PKGPREFIX)/bin/* && \
 	mkdir -p $(PKGPREFIX)2 && mv $(PKGPREFIX)/bin $(PKGPREFIX)2 && \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPLAY_VER) $(OPKG_SH) $(CONTROL_DIR)/libshairplay && \
@@ -842,7 +845,7 @@ $(D)/graphlcd-base-touchcol: $(ARCHIVE)/graphlcd-base-$(GRAPHLCD_VER).tar.gz lib
 	cp -a $(TARGETPREFIX)/lib/libglcd{drivers,graphics}* $(PKGPREFIX)/lib ;\
 	PKG_VER=2.1 $(OPKG_SH) $(CONTROL_DIR)/graphlcd-base-touchcol ;\
 	$(REMOVE)/graphlcd-base-$(GRAPHLCD_VER) $(PKGPREFIX) ;\
-	touch $(D)/graphlcd-base-touchcol
+	touch $@
 
 $(D)/usb-modeswitch-data: $(ARCHIVE)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2 | $(TARGETPREFIX)
 	$(UNTAR)/usb-modeswitch-data-$(USB_MODESWITCH_DATA_VER).tar.bz2
