@@ -405,6 +405,7 @@ $(D)/libogg: $(ARCHIVE)/libogg-$(OGG_VER).tar.gz | $(TARGETPREFIX)
 	touch $@
 
 $(D)/libvorbis: $(D)/libogg $(ARCHIVE)/libvorbis-$(VORBIS_VER).tar.xz | $(TARGETPREFIX)
+	$(REMOVE)/libvorbis-$(VORBIS_VER) $(PKGPREFIX)
 	$(UNTAR)/libvorbis-$(VORBIS_VER).tar.xz
 	set -e; cd $(BUILD_TMP)/libvorbis-$(VORBIS_VER); \
 		$(CONFIGURE) --enable-shared --prefix= LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" CFLAGS="$(TARGET_CFLAGS)"; \
@@ -523,9 +524,10 @@ $(D)/openthreads: | $(TARGETPREFIX) find-lzma
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/libvorbisidec: $(D)/libvorbisidec-$(VORBISIDEC_VER)
+$(D)/libvorbisidec: $(D)/libvorbisidec-$(VORBISIDEC_VER) $D/libvorbis
 	touch $@
 $(D)/libvorbisidec-$(VORBISIDEC_VER): $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz $(D)/libogg
+	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	$(UNTAR)/libvorbisidec_$(VORBISIDEC_VER)$(VORBISIDEC_VER_APPEND).tar.gz
 	set -e; cd $(BUILD_TMP)/libvorbisidec-$(VORBISIDEC_VER); \
 		patch -p1 < $(PATCHES)/tremor.diff; \
