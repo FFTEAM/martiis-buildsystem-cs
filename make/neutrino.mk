@@ -40,7 +40,7 @@ endif
 
 ifeq ($(USE_SHAIRPLAY), yes)
 N_CONFIG_OPTS += --enable-shairplay
-NEUTRINO_DEPS = shairplay
+NEUTRINO_DEPS += shairplay
 endif
 
 ifeq ($(USE_STB_HAL), yes)
@@ -83,7 +83,6 @@ $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 		LDFLAGS="$(N_LDFLAGS)" \
 		$(N_HD_SOURCE)/configure --host=$(TARGET) --build=$(BUILD) --prefix= \
 				--enable-silent-rules --enable-mdev --enable-giflib \
-				--enable-freesatepg \
 				--enable-maintainer-mode --with-target=cdk --with-boxtype=$(PLATFORM) \
 				$(N_CONFIG_OPTS) $(LOCAL_NEUTRINO_BUILD_OPTIONS) \
 				INSTALL="`which install` -p"; \
