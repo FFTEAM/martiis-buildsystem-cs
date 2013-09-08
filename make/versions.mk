@@ -334,10 +334,7 @@ SHAIRPLAY_COMMIT=c8920724b694ee2b35dcb104f0bf169eb8a858d9
 # libao: a cross platform audio library
 LIBAO_VER=1.1.0
 
-# Avahi is a system which facilitates service discovery on a local network via the mDNS/DNS-SD protocol suite.
-AVAHI_VER=0.6.31
-
-# howl
+# howl is a cross platform implementation of Zeroconf/Rendezvous
 HOWL_VER=1.0.0
 
 # libdaemon

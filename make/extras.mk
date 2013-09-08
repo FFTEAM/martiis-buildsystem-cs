@@ -762,22 +762,6 @@ $(D)/libdaemon: $(ARCHIVE)/libdaemon-$(LIBDAEMON_VER).tar.gz
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libdaemon-$(LIBDAEMON_VER) && \
 	touch $@
 
-$(D)/avahi: dbus libexpat libdaemon $(ARCHIVE)/avahi-$(AVAHI_VER).tar.gz
-	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/avahi-$(AVAHI_VER) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
-	$(UNTAR)/avahi-$(AVAHI_VER).tar.gz && \
-	cd $(BUILD_TMP)/avahi-$(AVAHI_VER) && \
-	$(BUILDENV) ./configure --enable-shared --disable-static --with-distro=none --disable-nls --disable-glib --disable-gobject --disable-static --enable-shared --disable-qt3 --disable-qt4 --disable-gtk --disable-gtk3 --enable-dbus --disable-dbm --disable-gdbm --enable-libdaemon --disable-python --disable-pygtk --disable-python-dbus --disable-mono --disable-monodoc --disable-autoipd --disable-doxygen-doc --disable-doxygen-dot --disable-doxygen-man --disable-doxygen-rtf --disable-doxygen-xml --disable-doxygen-chm --disable-doxygen-chi --disable-doxygen-html --disable-doxygen-ps --disable-doxygen-pdf --disable-core-docs --disable-manpages --disable-xmltoman --disable-tests --enable-compat-libdns_sd --enable-compat-howl --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) && \
-	make install && \
-	rm -rf $(PKGPREFIX)/var && \
-	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)/ && \
-	for A in compat-libdns_sd core client compat-howl ; do $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/avahi-$$A.pc ; done && \
-	for A in avahi-core avahi-client dns_sd avahi-common howl ; do $(REWRITE_LIBTOOL)/lib$$A.la ; done && \
-	rm -rf $(PKGPREFIX)/{var,include,lib/*a,man,share/man,share/locale,lib/pkgconfig} && \
-	$(TARGET)-strip `find $(PKGPREFIX) -type f` || true && \
-	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(AVAHI_VER) $(OPKG_SH) $(CONTROL_DIR)/avahi && \
-	rm -rf $(PKGPREFIX) $(BUILD_TMP)/avahi-$(AVAHI_VER) && \
-	touch $@
-
 $(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(PKGPREFIX)/etc/init.d ; \
 	$(UNTAR)/shairport-$(SHAIRPORT_COMMIT).tar.bz2 && \

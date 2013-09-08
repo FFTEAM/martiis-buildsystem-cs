@@ -402,9 +402,6 @@ $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz:
 $(ARCHIVE)/howl-$(HOWL_VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/howl/howl/$(HOWL_VER)/howl-$(HOWL_VER).tar.gz
 
-$(ARCHIVE)/avahi-$(AVAHI_VER).tar.gz:
-	$(WGET) http://avahi.org/download/avahi-$(AVAHI_VER).tar.gz
-
 $(ARCHIVE)/libdaemon-$(LIBDAEMON_VER).tar.gz:
 	$(WGET) http://0pointer.de/lennart/projects/libdaemon/libdaemon-$(LIBDAEMON_VER).tar.gz
 
