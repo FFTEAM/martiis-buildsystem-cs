@@ -762,7 +762,7 @@ $(D)/libdaemon: $(ARCHIVE)/libdaemon-$(LIBDAEMON_VER).tar.gz
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libdaemon-$(LIBDAEMON_VER) && \
 	touch $@
 
-$(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2
+$(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2 $(PATCHES)/.rebuild.shairport
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(PKGPREFIX)/etc/init.d ; \
 	$(UNTAR)/shairport-$(SHAIRPORT_COMMIT).tar.bz2 && \
 	cd $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) && \
@@ -770,7 +770,6 @@ $(D)/shairport: openssl $(ARCHIVE)/shairport-$(SHAIRPORT_COMMIT).tar.bz2
 	cp shairport $(TARGETPREFIX)/bin && \
 	$(TARGET)-strip shairport && \
 	cp shairport $(PKGPREFIX)/bin && \
-	install -m 755 -D $(SCRIPTS)/shairport.init $(PKGPREFIX)/etc/init.d/shairport && \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(SHAIRPORT_VER) $(OPKG_SH) $(CONTROL_DIR)/shairport && \
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairport-$(SHAIRPORT_COMMIT) && \
 	touch $@
