@@ -1,5 +1,5 @@
 diff --git a/src/lib/dnssd.c b/src/lib/dnssd.c
-index 8137962..6f3d663 100644
+index 8137962..547e5d2 100644
 --- a/src/lib/dnssd.c
 +++ b/src/lib/dnssd.c
 @@ -16,6 +16,7 @@
@@ -33,7 +33,7 @@ index 8137962..6f3d663 100644
  };
  
  
-@@ -158,6 +166,21 @@ dnssd_init(int *error)
+@@ -158,6 +166,22 @@ dnssd_init(int *error)
  		free(dnssd);
  		return NULL;
  	}
@@ -51,11 +51,21 @@ index 8137962..6f3d663 100644
 +		b++;
 +	}
 +	free(dnssd);
++	if (error) *error = DNSSD_ERROR_LIBNOTFOUND;
 +	return NULL;
  #elif USE_LIBDL
  	dnssd->module = dlopen("libdns_sd.so", RTLD_LAZY);
  	if (!dnssd->module) {
-@@ -198,11 +221,24 @@ void
+@@ -191,18 +215,33 @@ dnssd_init(int *error)
+ 	dnssd->TXTRecordDeallocate = &TXTRecordDeallocate;
+ #endif
+ 
++#if !USE_HOWL
+ 	return dnssd;
++#endif
+ }
+ 
+ void
  dnssd_destroy(dnssd_t *dnssd)
  {
  	if (dnssd) {
@@ -80,7 +90,7 @@ index 8137962..6f3d663 100644
  		free(dnssd);
  	}
  }
-@@ -210,6 +246,67 @@ dnssd_destroy(dnssd_t *dnssd)
+@@ -210,6 +249,67 @@ dnssd_destroy(dnssd_t *dnssd)
  int
  dnssd_register_raop(dnssd_t *dnssd, const char *name, unsigned short port, const char *hwaddr, int hwaddrlen, int password)
  {
@@ -148,7 +158,7 @@ index 8137962..6f3d663 100644
  	TXTRecordRef txtRecord;
  	char servname[MAX_SERVNAME];
  	int ret;
-@@ -267,6 +364,7 @@ dnssd_register_raop(dnssd_t *dnssd, const char *name, unsigned short port, const
+@@ -267,6 +367,7 @@ dnssd_register_raop(dnssd_t *dnssd, const char *name, unsigned short port, const
  	/* Deallocate TXT record */
  	dnssd->TXTRecordDeallocate(&txtRecord);
  	return 1;
@@ -156,7 +166,7 @@ index 8137962..6f3d663 100644
  }
  
  int
-@@ -291,6 +389,62 @@ dnssd_register_airplay(dnssd_t *dnssd, const char *name, unsigned short port, co
+@@ -291,6 +392,62 @@ dnssd_register_airplay(dnssd_t *dnssd, const char *name, unsigned short port, co
  	features[sizeof(features)-1] = '\0';
  	snprintf(features, sizeof(features)-1, "0x%x", GLOBAL_FEATURES);
  
@@ -219,7 +229,7 @@ index 8137962..6f3d663 100644
  	dnssd->TXTRecordCreate(&txtRecord, 0, NULL);
  	dnssd->TXTRecordSetValue(&txtRecord, "deviceid", strlen(deviceid), deviceid);
  	dnssd->TXTRecordSetValue(&txtRecord, "features", strlen(features), features);
-@@ -307,6 +461,7 @@ dnssd_register_airplay(dnssd_t *dnssd, const char *name, unsigned short port, co
+@@ -307,6 +464,7 @@ dnssd_register_airplay(dnssd_t *dnssd, const char *name, unsigned short port, co
  
  	/* Deallocate TXT record */
  	dnssd->TXTRecordDeallocate(&txtRecord);
@@ -227,7 +237,7 @@ index 8137962..6f3d663 100644
  	return 0;
  }
  
-@@ -315,12 +470,19 @@ dnssd_unregister_raop(dnssd_t *dnssd)
+@@ -315,12 +473,19 @@ dnssd_unregister_raop(dnssd_t *dnssd)
  {
  	assert(dnssd);
  
@@ -248,7 +258,7 @@ index 8137962..6f3d663 100644
  }
  
  void
-@@ -328,10 +490,17 @@ dnssd_unregister_airplay(dnssd_t *dnssd)
+@@ -328,10 +493,17 @@ dnssd_unregister_airplay(dnssd_t *dnssd)
  {
  	assert(dnssd);
  
