@@ -7,5 +7,5 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: https://github.com/juhovh/shairplay
 Source: https://github.com/juhovh/shairplay.git
-Depends: @DEP@
+Depends: howl, @DEP@
 Provides: libshairplay.so.0

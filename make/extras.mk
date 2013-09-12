@@ -792,7 +792,7 @@ $(D)/libao: alsa-lib $(ARCHIVE)/libao-$(LIBAO_VER).tar.gz
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libao-$(LIBAO_VER) && \
 	touch $@
 
-$(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 $(PATCHES)/shairplay-howl.diff
+$(D)/shairplay: libao $(ARCHIVE)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 $(PATCHES)/shairplay-howl.diff $(PATCHES)/.rebuild.shairplay
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin $(TARGETPREFIX)/share/shairplay $(PKGPREFIX)/share/shairplay $(PKGPREFIX)/lib $(TARGETPREFIX)/lib ; \
 	$(UNTAR)/shairplay-$(SHAIRPLAY_COMMIT).tar.bz2 && \
 	cd $(BUILD_TMP)/shairplay-$(SHAIRPLAY_COMMIT) && \
