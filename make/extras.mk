@@ -455,6 +455,29 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
+$(D)/libffi: $(D)/libffi-$(LIBFFI_VER)
+$(D)/libffi-$(LIBFFI_VER): $(ARCHIVE)/libffi-$(LIBFFI_VER).tar.gz
+	$(UNTAR)/libffi-$(LIBFFI_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libffi-$(LIBFFI_VER); \
+		$(CONFIGURE) \
+			--prefix= \
+			--includedir=/include \
+			--mandir=/.remove \
+			--infodir=/.remove; \
+		$(MAKE) all; \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	rm -rf $(PKGPREFIX)/.remove
+	cp -a $(PKGPREFIX)/lib $(TARGETPREFIX)/
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libffi.pc
+	$(REWRITE_LIBTOOL)/libffi.la
+	rm -rf $(PKGPREFIX)/lib/libffi-* $(PKGPREFIX)/lib/pkgconfig
+	rm $(PKGPREFIX)/lib/libffi.{so,la,a}
+	PKG_VER=$(LIBFFI_VER) \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/libffi
+	$(REMOVE)/libffi-$(LIBFFI_VER) $(PKGPREFIX)
+	touch $@
+
 ######
 # build glib-tools for the host, for build systems that don't have those
 # installed already.

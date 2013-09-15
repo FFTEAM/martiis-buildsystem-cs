@@ -201,6 +201,8 @@ GST_PLUG_BAD_VER=0.10.23
 GST_FFMPEG_VER=0.10.13
 GST123_VER=0.3.1
 
+LIBFFI_VER=3.0.11
+
 # links; a text WWW browser, similar to Lynx
 LINKS-VER=2.3pre1
 

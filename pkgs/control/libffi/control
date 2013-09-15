@@ -1,0 +1,11 @@
+Package: libffi
+Version: @VER@-1
+Description: A Portable Foreign Function Interface Library
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceware.org/libffi/
+Source:
+Depends:
+Provides: @PROV@
