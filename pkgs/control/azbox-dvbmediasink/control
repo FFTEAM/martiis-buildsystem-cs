@@ -1,0 +1,11 @@
+Package: azbox-dvbmediasink
+Version: @VER@-1
+Description: GStreamer dvbmediasink plugin for AZbox
+Section: extras/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://github.com/OpenAZBox/azbox-dvbmediasink
+Source:
+Depends: @DEP@
+Provides: @PROV@
