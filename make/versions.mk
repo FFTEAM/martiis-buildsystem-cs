@@ -12,10 +12,10 @@
 
 # azbox-dvb-modules
 # not the most useful date format...
-AZBOX_DVB_M_VER=28082013
+AZBOX_DVB_M_VER=14092013
 # not the most useful date format...
-AZBOX_INITRAMFS_ME=24072013
-AZBOX_INITRAMFS_MINIME=22072013
+AZBOX_INITRAMFS_ME=14092013
+AZBOX_INITRAMFS_MINIME=14092013
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1
