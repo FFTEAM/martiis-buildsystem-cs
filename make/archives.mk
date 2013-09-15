@@ -134,8 +134,9 @@ $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2:
 	$(WGET) http://www.tuxbox.org/cvsdata/files/freetype-$(FREETYPE_VER).tar.bz2
 
-$(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
-	$(WGET) http://ftp.gnome.org/pub/gnome/sources/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/$(lastword $(subst /, ,$@))
+$(ARCHIVE)/glib-$(GLIB_VER).tar.bz2 \
+$(ARCHIVE)/glib-$(GLIB_VER).tar.xz:
+	$(WGET) http://ftp.gnome.org/pub/gnome/sources/glib/$(GLIB_MAJOR).$(GLIB_MINOR)/$(notdir $@)
 
 $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/iperf/iperf-$(IPERF-VER).tar.gz

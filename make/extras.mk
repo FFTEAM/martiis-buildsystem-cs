@@ -484,9 +484,10 @@ $(D)/libffi-$(LIBFFI_VER): $(ARCHIVE)/libffi-$(LIBFFI_VER).tar.gz
 # TODO: check if we this built glib-genmarshal is new enough for the glib
 #       version we're trying to build
 ######
-$(HOSTPREFIX)/bin/glib-genmarshal: | $(HOSTPREFIX)/bin
-	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
+$(HOSTPREFIX)/bin/glib-genmarshal \
+$(HOSTPREFIX)/bin/glib-compile-resources: | $(HOSTPREFIX)/bin
+	$(UNTAR)/glib-$(GLIB_VER).tar.xz
+	set -e; cd $(BUILD_TMP)/glib-$(GLIB_VER); \
 		export PKG_CONFIG=/usr/bin/pkg-config; \
 		./configure \
 			--disable-gtk-doc \
@@ -497,13 +498,16 @@ $(HOSTPREFIX)/bin/glib-genmarshal: | $(HOSTPREFIX)/bin
 			; \
 		$(MAKE) install ; \
 		cp -a out/bin/glib-* $(HOSTPREFIX)/bin
-	$(REMOVE)/glib-$(GLIB-VER)
+	$(REMOVE)/glib-$(GLIB_VER)
 
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
-$(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
-	type -p glib-genmarshal || $(MAKE) $(HOSTPREFIX)/bin/glib-genmarshal
-	$(UNTAR)/glib-$(GLIB-VER).tar.bz2
-	set -e; cd $(BUILD_TMP)/glib-$(GLIB-VER); \
+$(D)/libglib: $(D)/libglib-$(GLIB_VER)
+$(D)/libglib-$(GLIB_VER): $(ARCHIVE)/glib-$(GLIB_VER).tar.xz $(D)/zlib $(D)/libffi | $(TARGETPREFIX)
+	type -p glib-compile-resources || $(MAKE) $(HOSTPREFIX)/bin/glib-compile-resources
+	$(UNTAR)/glib-$(GLIB_VER).tar.xz
+	set -e; cd $(BUILD_TMP)/glib-$(GLIB_VER); \
+		$(PATCH)/glib-2.32.4-crosscompile-fix.diff; \
+		autoreconf -fi; \
 		echo "ac_cv_func_posix_getpwuid_r=yes" > config.cache; \
 		echo "ac_cv_func_posix_getgrgid_r=ys" >> config.cache; \
 		echo "glib_cv_stack_grows=no" >> config.cache; \
@@ -529,14 +533,14 @@ $(D)/libglib: $(ARCHIVE)/glib-$(GLIB-VER).tar.bz2 $(D)/zlib | $(TARGETPREFIX)
 	rm $(PKGPREFIX)/opt/pkg/bin/gdbus
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
-		rm -r include lib/*.so lib/*.la share etc/bash_completion.d \
-		bin/gtester-report bin/glib-gettextize
-	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig $(PKGPREFIX)/opt/pkg/etc
-	PKG_VER=$(GLIB-VER) \
+		rm -r include lib/*.so lib/*.la share lib/gdbus-2.0 \
+		bin/gtester-report bin/glib-* bin/gdbus-codegen
+	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig
+	PKG_VER=$(GLIB_VER) \
 		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
 		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
 		$(OPKG_SH) $(CONTROL_DIR)/libglib
-	$(REMOVE)/glib-$(GLIB-VER) $(PKGPREFIX)
+	$(REMOVE)/glib-$(GLIB_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/libxml2: $(D)/zlib $(ARCHIVE)/libxml2-$(LIBXML2_VER).tar.gz | $(TARGETPREFIX)
