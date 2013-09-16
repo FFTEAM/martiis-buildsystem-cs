@@ -149,8 +149,9 @@ $(ARCHIVE)/freetype-2.3.11.tar.bz2:
 $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2:
 	$(WGET) http://www.tuxbox.org/cvsdata/files/freetype-$(FREETYPE_VER).tar.bz2
 
-$(ARCHIVE)/glib-$(GLIB-VER).tar.bz2:
-	$(WGET) http://ftp.gnome.org/pub/gnome/sources/glib/$(GLIB-MAJOR).$(GLIB-MINOR)/$(lastword $(subst /, ,$@))
+$(ARCHIVE)/glib-$(GLIB_VER).tar.bz2 \
+$(ARCHIVE)/glib-$(GLIB_VER).tar.xz:
+	$(WGET) http://ftp.gnome.org/pub/gnome/sources/glib/$(GLIB_MAJOR).$(GLIB_MINOR)/$(notdir $@)
 
 $(ARCHIVE)/iperf-$(IPERF-VER).tar.gz:
 	$(WGET) http://downloads.sourceforge.net/project/iperf/iperf-$(IPERF-VER).tar.gz
@@ -180,6 +181,9 @@ $(ARCHIVE)/gst123-$(GST123_VER).tar.bz2:
 $(ARCHIVE)/gstreamer%.tar.bz2 \
 $(ARCHIVE)/gst-%.tar.bz2:
 	$(WGET) http://gstreamer.freedesktop.org/src/$(firstword $(subst -0., ,$(lastword $(subst /, ,$@))))/$(lastword $(subst /, ,$@))
+
+$(ARCHIVE)/libffi-$(LIBFFI_VER).tar.gz:
+	ftp://sourceware.org/pub/libffi/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/libogg-$(OGG_VER).tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VER).tar.gz

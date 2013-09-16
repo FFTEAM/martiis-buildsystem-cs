@@ -190,6 +190,34 @@ $(D)/gst-plugin-dvbmediasink: $(SOURCE_DIR)/gst-plugin-dvbmediasink $(D)/gst-plu
 	$(REMOVE)/gst-plugin-dvbmediasink $(PKGPREFIX)
 	touch $@
 
+$(SOURCE_DIR)/azbox-dvbmediasink:
+	cd $(SOURCE_DIR) && \
+		git clone https://github.com/OpenAZBox/azbox-dvbmediasink.git
+
+$(D)/azbox-dvbmediasink: $(SOURCE_DIR)/azbox-dvbmediasink $(D)/gst-plugins-base $(PATCHES)/azbox-dvbmediasink.patch
+	set -e; cd $(BUILD_TMP); \
+		mkdir -p azbox-dvbmediasink; \
+		cd azbox-dvbmediasink; \
+		cp -a $</* .; \
+		$(PATCH)/azbox-dvbmediasink.patch; \
+		aclocal --force; \
+		libtoolize --copy --force; \
+		autoconf --force; \
+		autoheader --force; \
+		automake --add-missing --copy --force-missing --foreign; \
+		$(CONFIGURE) --prefix= \
+			--with-wma --with-wmv --with-pcm \
+			; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+	rm $(PKGPREFIX)/lib/gstreamer-0.10/*a
+	PKG_VER=0.0.0 \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/azbox-dvbmediasink
+	$(REMOVE)/azbox-dvbmediasink $(PKGPREFIX)
+	touch $@
+
 # not yet packaged, just for testing...
 $(D)/gst123: $(ARCHIVE)/gst123-$(GST123_VER).tar.bz2 $(D)/gstreamer $(D)/gst-plugins-base $(D)/libncurses $(PATCHES)/gst123-0001-add-disable-gtk-option-to-build-without-GTK.patch
 	$(UNTAR)/gst123-$(GST123_VER).tar.bz2

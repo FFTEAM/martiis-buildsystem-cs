@@ -12,10 +12,10 @@
 
 # azbox-dvb-modules
 # not the most useful date format...
-AZBOX_DVB_M_VER=28082013
+AZBOX_DVB_M_VER=14092013
 # not the most useful date format...
-AZBOX_INITRAMFS_ME=24072013
-AZBOX_INITRAMFS_MINIME=22072013
+AZBOX_INITRAMFS_ME=14092013
+AZBOX_INITRAMFS_MINIME=14092013
 
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1
@@ -226,6 +226,8 @@ GST_PLUG_BAD_VER=0.10.23
 GST_FFMPEG_VER=0.10.13
 GST123_VER=0.3.1
 
+LIBFFI_VER=3.0.11
+
 # links; a text WWW browser, similar to Lynx
 #LINKS-VER=2.3pre1
 LINKS-VER=2.7
@@ -252,10 +254,10 @@ OPKG_SVN=635
 OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
 
 # glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
-GLIB-MAJOR=2
-GLIB-MINOR=26
-GLIB-MICRO=1
-GLIB-VER=$(GLIB-MAJOR).$(GLIB-MINOR).$(GLIB-MICRO)
+GLIB_MAJOR=2
+GLIB_MINOR=32
+GLIB_MICRO=4
+GLIB_VER=$(GLIB_MAJOR).$(GLIB_MINOR).$(GLIB_MICRO)
 
 # mc; the famous midnight commander
 MC-VER=4.6.2
