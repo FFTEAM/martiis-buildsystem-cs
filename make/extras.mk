@@ -456,6 +456,7 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	touch $@
 
 $(D)/libffi: $(D)/libffi-$(LIBFFI_VER)
+	touch $@
 $(D)/libffi-$(LIBFFI_VER): $(ARCHIVE)/libffi-$(LIBFFI_VER).tar.gz
 	$(UNTAR)/libffi-$(LIBFFI_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libffi-$(LIBFFI_VER); \
