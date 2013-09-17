@@ -571,7 +571,7 @@ $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETP
 	$(UNTAR)/mc-$(MC-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/mc-$(MC-VER); \
 		$(PATCH)/mc-4.6.2.diff; \
-		./autogen.sh; \
+		autoreconf -fi; \
 		$(BUILDENV) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CONFIG_SHELL=/bin/bash \
@@ -589,7 +589,9 @@ $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETP
 	rm -rf $(PKGPREFIX)/.remove
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/share/mc/mc.h*.* # mc.hint.*, mc.hlp.*
-	$(OPKG_SH) $(CONTROL_DIR)/mc
+	PKG_VER=$(MC-VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/mc
 	$(REMOVE)/mc-$(MC-VER) $(PKGPREFIX)
 	touch $@
 

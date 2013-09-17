@@ -1,5 +1,5 @@
 Package: mc
-Version: 4.6.2-1
+Version: @VER@-1
 Description: A Visual File Manager for the Text Console
 Section: extras/comsole
 Priority: optional
@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://www.midnight-commander.org/
 Source:
-Depends: libglib(>= 2.8.6-1)
+Depends: @DEP@
