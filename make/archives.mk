@@ -168,7 +168,7 @@ $(ARCHIVE)/gst-%.tar.bz2:
 	$(WGET) http://gstreamer.freedesktop.org/src/$(firstword $(subst -0., ,$(lastword $(subst /, ,$@))))/$(lastword $(subst /, ,$@))
 
 $(ARCHIVE)/libffi-$(LIBFFI_VER).tar.gz:
-	ftp://sourceware.org/pub/libffi/$(lastword $(subst /, ,$@))
+	$(WGET) ftp://sourceware.org/pub/libffi/$(notdir $@)
 
 $(ARCHIVE)/libogg-$(OGG_VER).tar.gz:
 	$(WGET) http://downloads.xiph.org/releases/ogg/libogg-$(OGG_VER).tar.gz
