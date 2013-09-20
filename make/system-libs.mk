@@ -288,8 +288,10 @@ FFMPEG_CONFIGURE += --enable-demuxer=mpegts --enable-demuxer=mpegtsraw --enable-
 FFMPEG_CONFIGURE += --enable-demuxer=mpegvideo --enable-demuxer=wav --enable-demuxer=pcm_s16be
 FFMPEG_CONFIGURE += --enable-demuxer=mp3 --enable-demuxer=pcm_s16le --enable-demuxer=matroska
 FFMPEG_CONFIGURE += --enable-demuxer=flv --enable-demuxer=rm
-FFMPEG_CONFIGURE += --enable-bsfs
 FFMPEG_CONFIGURE += --enable-network --enable-protocol=http
+FFMPEG_CONFIGURE += --enable-demuxer=rtsp
+FFMPEG_CONFIGURE += --enable-protocol=rtmp --enable-protocol=rtmpe --enable-protocol=rtmps --enable-protocol=rtmpte --enable-protocol=rtp
+FFMPEG_CONFIGURE += --enable-bsfs
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
