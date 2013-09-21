@@ -457,6 +457,7 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	touch $@
 
 $(D)/libffi: $(D)/libffi-$(LIBFFI_VER)
+	touch $@
 $(D)/libffi-$(LIBFFI_VER): $(ARCHIVE)/libffi-$(LIBFFI_VER).tar.gz
 	$(UNTAR)/libffi-$(LIBFFI_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libffi-$(LIBFFI_VER); \
@@ -504,7 +505,7 @@ $(HOSTPREFIX)/bin/glib-compile-resources: | $(HOSTPREFIX)/bin
 #http://www.dbox2world.net/board293-coolstream-hd1/board314-coolstream-development/9363-idee-midnight-commander/
 $(D)/libglib: $(D)/libglib-$(GLIB_VER)
 $(D)/libglib-$(GLIB_VER): $(ARCHIVE)/glib-$(GLIB_VER).tar.xz $(D)/zlib $(D)/libffi | $(TARGETPREFIX)
-	type -p glib-compile-resources || $(MAKE) $(HOSTPREFIX)/bin/glib-compile-resources
+	$(REMOVE)/glib-$(GLIB_VER) $(PKGPREFIX)
 	$(UNTAR)/glib-$(GLIB_VER).tar.xz
 	set -e; cd $(BUILD_TMP)/glib-$(GLIB_VER); \
 		$(PATCH)/glib-2.32.4-crosscompile-fix.diff; \
@@ -517,6 +518,7 @@ $(D)/libglib-$(GLIB_VER): $(ARCHIVE)/glib-$(GLIB_VER).tar.xz $(D)/zlib $(D)/libf
 		./configure \
 			--cache-file=config.cache \
 			--disable-gtk-doc \
+			--disable-modular_tests \
 			--build=$(BUILD) \
 			--host=$(TARGET) \
 			--with-html-dir=/.remove \
@@ -534,7 +536,7 @@ $(D)/libglib-$(GLIB_VER): $(ARCHIVE)/glib-$(GLIB_VER).tar.xz $(D)/zlib $(D)/libf
 	rm $(PKGPREFIX)/opt/pkg/bin/gdbus
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	cd $(PKGPREFIX)/opt/pkg && \
-		rm -r include lib/*.so lib/*.la share lib/gdbus-2.0 \
+		rm -rf include lib/*.so lib/*.la share lib/gdbus-2.0 \
 		bin/gtester-report bin/glib-* bin/gdbus-codegen
 	rmdir $(PKGPREFIX)/opt/pkg/lib/pkgconfig
 	PKG_VER=$(GLIB_VER) \
@@ -570,7 +572,7 @@ $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETP
 	$(UNTAR)/mc-$(MC-VER).tar.gz
 	set -e; cd $(BUILD_TMP)/mc-$(MC-VER); \
 		$(PATCH)/mc-4.6.2.diff; \
-		./autogen.sh; \
+		autoreconf -fi; \
 		$(BUILDENV) \
 		CFLAGS="$(TARGET_CFLAGS)" \
 		CONFIG_SHELL=/bin/bash \
@@ -588,7 +590,9 @@ $(D)/mc: $(ARCHIVE)/mc-$(MC-VER).tar.gz $(D)/libglib $(D)/libncurses | $(TARGETP
 	rm -rf $(PKGPREFIX)/.remove
 	rm -rf $(PKGPREFIX)/opt/pkg/share/locale # who needs localization?
 	rm $(PKGPREFIX)/opt/pkg/share/mc/mc.h*.* # mc.hint.*, mc.hlp.*
-	$(OPKG_SH) $(CONTROL_DIR)/mc
+	PKG_VER=$(MC-VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/mc
 	$(REMOVE)/mc-$(MC-VER) $(PKGPREFIX)
 	touch $@
 
