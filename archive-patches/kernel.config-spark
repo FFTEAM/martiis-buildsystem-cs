@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
 # Linux kernel version: 2.6.32.59
-# Sun Dec 23 16:02:57 2012
+# Mon Sep 30 21:02:46 2013
 #
 CONFIG_SUPERH=y
 CONFIG_SUPERH32=y
@@ -251,7 +251,7 @@ CONFIG_HAVE_MLOCKED_PAGE_BIT=y
 # CONFIG_KSM is not set
 CONFIG_DEFAULT_MMAP_MIN_ADDR=4096
 CONFIG_BPA2=y
-# CONFIG_BPA2_ALLOC_TRACE is not set
+CONFIG_BPA2_ALLOC_TRACE=y
 # CONFIG_MIN_FREE_KBYTES is not set
 
 #
@@ -1498,7 +1498,11 @@ CONFIG_JBD=y
 CONFIG_JBD2=y
 CONFIG_FS_MBCACHE=y
 # CONFIG_REISERFS_FS is not set
-# CONFIG_JFS_FS is not set
+CONFIG_JFS_FS=m
+# CONFIG_JFS_POSIX_ACL is not set
+# CONFIG_JFS_SECURITY is not set
+# CONFIG_JFS_DEBUG is not set
+# CONFIG_JFS_STATISTICS is not set
 CONFIG_FS_POSIX_ACL=y
 # CONFIG_XFS_FS is not set
 # CONFIG_GFS2_FS is not set

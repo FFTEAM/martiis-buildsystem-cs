@@ -1,0 +1,11 @@
+Package: jfsutils
+Version: @VER@-1
+Description: Filesystem Utilities for JFS
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://jfs.sourceforge.net/
+Source:
+Depends:
+Provides: jfs_fscklog, fsck.jfs, mkfs.jfs, jfs_tune, jfs_debugfs, jfs_fsck, jfs_mkfs, jfs_logdump

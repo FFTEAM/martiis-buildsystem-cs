@@ -613,6 +613,25 @@ $(D)/wget: e2fsprogs $(ARCHIVE)/wget-$(WGET_VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/wget-$(WGET_VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/jfsutils: $(ARCHIVE)/jfsutils-$(JFSUTILS_VER).tar.gz | $(TARGETPREFIX)
+	$(REMOVE)/jfsutils-$(JFSUTILS_VER) $(PKGPREFIX)
+	$(UNTAR)/jfsutils-$(JFSUTILS_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/jfsutils-$(JFSUTILS_VER); \
+		$(BUILDENV) ./configure \
+			--build=$(BUILD) \
+			--host=$(TARGET) \
+			--target=$(TARGET) \
+			--prefix= \
+			; \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+		cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+		rm -rf $(PKGPREFIX)/share
+			PKG_VER=$(JFSUTILS_VER) \
+			PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+			$(OPKG_SH) $(CONTROL_DIR)/jfsutils
+		$(REMOVE)/jfsutils-$(JFSUTILS_VER) $(PKGPREFIX)
+	touch $@
+
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools $(D)/vsftpd
 system-tools-opt: $(D)/samba2 $(D)/ntfs-3g
 system-tools-all: system-tools system-tools-opt

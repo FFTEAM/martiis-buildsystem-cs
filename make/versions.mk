@@ -342,6 +342,9 @@ HOWL_VER=1.0.0
 # libdaemon
 LIBDAEMON_VER=0.14
 
+# JFS for Linux
+JFSUTILS_VER=1.1.15
+
 ##################################
 # devel-tools; make/devel-tools.mk
 ##################################

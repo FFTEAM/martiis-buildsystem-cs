@@ -409,6 +409,9 @@ $(ARCHIVE)/howl-$(HOWL_VER).tar.gz:
 $(ARCHIVE)/libdaemon-$(LIBDAEMON_VER).tar.gz:
 	$(WGET) http://0pointer.de/lennart/projects/libdaemon/libdaemon-$(LIBDAEMON_VER).tar.gz
 
+$(ARCHIVE)/jfsutils-$(JFSUTILS_VER).tar.gz:
+	$(WGET) http://jfs.sourceforge.net/project/pub/jfsutils-$(JFSUTILS_VER).tar.gz
+
 # openazbox.org stuff
 $(ARCHIVE)/initramfs-azboxme%.tar.bz2 \
 $(ARCHIVE)/azboxme-mrua-%.tar.gz \
