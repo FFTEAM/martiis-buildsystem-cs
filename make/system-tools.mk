@@ -613,7 +613,7 @@ $(D)/wget: e2fsprogs $(ARCHIVE)/wget-$(WGET_VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/wget-$(WGET_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/jfsutils: $(ARCHIVE)/jfsutils-$(JFSUTILS_VER).tar.gz | $(TARGETPREFIX)
+$(D)/jfsutils: $(ARCHIVE)/jfsutils-$(JFSUTILS_VER).tar.gz e2fsprogs | $(TARGETPREFIX)
 	$(REMOVE)/jfsutils-$(JFSUTILS_VER) $(PKGPREFIX)
 	$(UNTAR)/jfsutils-$(JFSUTILS_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/jfsutils-$(JFSUTILS_VER); \
