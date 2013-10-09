@@ -163,17 +163,20 @@ OPKG_SH = $(OPKG_SH_ENV) opkg.sh
 
 UNCOOL_GIT    = $(SOURCE_DIR)/uncool
 UNCOOL_KVER  ?= 2.6.34.13
+UNCOOL_FLAVOUR ?= nevis
+UNCOOL_KVER_FULL = $(UNCOOL_KVER)-$(UNCOOL_FLAVOUR)
+UNCOOL_DRVBASE = $(UNCOOL_GIT)/cst-public-drivers/$(UNCOOL_FLAVOUR)
 # svn to check out from obsolete SVN
 UNCOOL_SOURCE?= git
 ifneq ($(UNCOOL_SOURCE), git)
 UNCOOL_LIBCS  = $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 UNCOOL_LIBNXP = $(SVN_TP_LIBS)/libnxp/libnxp.so
-UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER)-nevis
+UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER_FULL)
 else
-UNCOOL_LIBCS  = $(UNCOOL_GIT)/cst-public-drivers/libs/libcoolstream-mt.so
-UNCOOL_LIBNXP = $(UNCOOL_GIT)/cst-public-drivers/libs/libnxp.so
-UNCOOL_LIBCA  = $(UNCOOL_GIT)/cst-public-drivers/libs/libca-sc.so
-UNCOOL_DRIVER = $(UNCOOL_GIT)/cst-public-drivers/drivers/$(UNCOOL_KVER)-nevis
+UNCOOL_LIBCS  = $(UNCOOL_DRVBASE)/libs/libcoolstream-mt.so
+UNCOOL_LIBNXP = $(UNCOOL_DRVBASE)/libs/libnxp.so
+UNCOOL_LIBCA  = $(UNCOOL_DRVBASE)/libs/libca-sc.so
+UNCOOL_DRIVER = $(UNCOOL_DRVBASE)/drivers/$(UNCOOL_KVER_FULL)
 endif
 UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_LIBCA)
 

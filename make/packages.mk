@@ -47,7 +47,7 @@ cs-drivers-pkg:
 	rm -rf $(BUILD_TMP)/tmp-ctrl
 	cp -a $(CONTROL_DIR)/cs-drivers $(BUILD_TMP)/tmp-ctrl
 	rm -rf $(PKGPREFIX)
-	mkdir -p $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
+	mkdir -p $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER_FULL)
 	mkdir    $(PKGPREFIX)/lib/firmware
 ifneq ($(UNCOOL_SOURCE), git)
 	opkg-controlver-from-svn.sh $(BUILD_TMP)/tmp-ctrl/control \
@@ -57,13 +57,13 @@ ifneq ($(UNCOOL_SOURCE), git)
 	cp -a $(SOURCE_DIR)/svn/COOLSTREAM/2.6.26.8-nevis/* $(PKGPREFIX)/lib/modules/2.6.26.8-nevis
 	cp -a $(SOURCE_DIR)/svn/THIRDPARTY/lib/firmware/*   $(PKGPREFIX)/lib/firmware
 else
-	set -e; cd $(UNCOOL_GIT)/cst-public-drivers; \
+	set -e; cd $(UNCOOL_DRVBASE); \
 		sed -i 's/^Package:.*$$/Package: cs-drivers_$(subst .,_,$(UNCOOL_KVER))/' \
 			$(BUILD_TMP)/tmp-ctrl/control; \
-		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/$(UNCOOL_KVER)-nevis firmware; \
-		cp -a drivers/$(UNCOOL_KVER)-nevis $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis/extra; \
-		cp -a firmware/*                   $(PKGPREFIX)/lib/firmware
-	rm $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis/extra/cifs.ko # we build our own...
+		opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control . drivers/$(UNCOOL_KVER_FULL) firmware; \
+		cp -a drivers/$(UNCOOL_KVER_FULL) $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER_FULL)/extra; \
+		cp -a firmware/*                  $(PKGPREFIX)/lib/firmware
+	rm $(PKGPREFIX)/lib/modules/$(UNCOOL_KVER_FULL)/extra/cifs.ko # we build our own...
 endif
 	mkdir -p $(PKGPREFIX)/etc/init.d
 	cp -a skel-root/$(PLATFORM)/etc/init.d/*loadmodules $(PKGPREFIX)/etc/init.d
@@ -82,7 +82,7 @@ ifneq ($(UNCOOL_SOURCE), git)
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream.so || \
 	opkg-chksvn.sh $(BUILD_TMP)/tmp-ctrl $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 else
-	opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control $(UNCOOL_GIT)/cst-public-drivers/libs
+	opkg-gitdescribe.sh $(BUILD_TMP)/tmp-ctrl/control $(UNCOOL_DRVBASE)/libs
 endif
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib

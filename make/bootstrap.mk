@@ -82,9 +82,9 @@ $(TARGETPREFIX)/lib/libcoolstream%.so: $(UNCOOL_LIBCS) | $(TARGETPREFIX)
 
 $(TARGETPREFIX)/lib/firmware: | $(TARGETPREFIX)
 	mkdir -p $@
-	cp -a $(UNCOOL_GIT)/cst-public-drivers/firmware/* $@/
+	cp -a $(UNCOOL_DRVBASE)/firmware/* $@/
 
-$(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis: | $(TARGETPREFIX)
+$(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER_FULL): | $(TARGETPREFIX)
 	mkdir -p $@/extra
 	cp -a $(UNCOOL_DRIVER)/* $@/extra/
 
@@ -115,7 +115,7 @@ $(TD_SVN)/ARMAS:
 includes-and-libs: $(PLAT_LIBS) $(PLAT_INCS)
 
 ifeq ($(PLATFORM), coolstream)
-cs-modules: $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
+cs-modules: $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER_FULL)
 endif
 
 ifeq ($(PLATFORM), tripledragon)
@@ -202,7 +202,7 @@ $(HOSTPREFIX)/bin/pkg-config: $(ARCHIVE)/pkg-config-$(PKGCONFIG_VER).tar.gz | $(
 	$(REMOVE)/pkg-config-$(PKGCONFIG_VER)
 
 # hack to make sure they are always copied
-PHONY += $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER)-nevis
+PHONY += $(TARGETPREFIX)/lib/modules/$(UNCOOL_KVER_FULL)
 PHONY += $(TARGETPREFIX)/include/coolstream
 PHONY += $(TARGETPREFIX)/lib/libnxp.so
 PHONY += $(TARGETPREFIX)/lib/libcoolstream.so

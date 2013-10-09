@@ -196,6 +196,16 @@ update-uncool:
 		for i in cst-*; do \
 			( echo updating $$i; cd $$i; git pull; ); \
 		done
+	if test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
+		cd $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
+		if [ x"`git rev-parse --abbrev-ref HEAD`" != xcoolstream ]; then \
+			if [ x"`git branch --list coolstream`" = xcoolstream ]; then \
+				git checkout coolstream; \
+			else \
+				git checkout -b coolstream origin/coolstream; \
+			fi; \
+		fi; \
+	fi
 
 
 all:
