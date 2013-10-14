@@ -798,3 +798,17 @@ $(D)/samsremote: $(ARCHIVE)/samsremote-1.tar.gz
 	PKG_VER=1 $(OPKG_SH) $(CONTROL_DIR)/samsremote
 	$(REMOVE)/samsremote-samsremote $(PKGPREFIX)
 	touch $@
+
+$(D)/xmlto: $(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/xmlto-$(XMLTO_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/xmlto-$(XMLTO_VER); \
+		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
+			--prefix=; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+		rm -rf $(PKGPREFIX)/share/man
+	PKG_VER=$(XMLTO_VER) $(OPKG_SH) $(CONTROL_DIR)/xmlto
+	$(REMOVE)/xmlto-$(XMLTO_VER) $(PKGPREFIX)
+	rm -rf $(PKGPREFIX)
+	touch $@
+

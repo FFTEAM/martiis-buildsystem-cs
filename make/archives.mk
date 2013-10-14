@@ -348,3 +348,8 @@ $(ARCHIVE)/linux-azbox-%.tar.bz2:
 # standalone wget for retrieving files using HTTP, HTTPS and FTP
 $(ARCHIVE)/wget-$(WGET_VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/gnu/wget/$(notdir $@)
+
+#xmlto, shell-script tool for converting XML files to various formats.
+$(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz:
+	$(WGET) https://fedorahosted.org/releases/x/m/xmlto/xmlto-$(XMLTO_VER).tar.gz
+
