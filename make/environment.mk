@@ -48,6 +48,7 @@ endif
 
 ifneq ($(GIT_PROTOCOL), http)
 GITORIOUS ?= git://gitorious.org
+COOLSTREAM_DE ?= git://coolstreamtech.de
 else
 GITORIOUS ?= https://git.gitorious.org
 endif
