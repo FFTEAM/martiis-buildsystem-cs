@@ -10,13 +10,27 @@
 # License: WTFPL v2
 #
 
-# this unusual notation of the PLATFORMS variable makes it easy
-# to change the order of the targets...
+# platforms can be specified on the command line...
 PLATFORMS=""
-PLATFORMS="$PLATFORMS tripledragon"
-PLATFORMS="$PLATFORMS spark"
-PLATFORMS="$PLATFORMS azbox"
-PLATFORMS="$PLATFORMS coolstream"
+while [ -n "$1" ]; do
+	case "$1" in
+		tripledragon|spark|azbox|coolstream) ;;
+		*)	echo "unknown platform: $1"
+			echo "	supported: tripledragon spark azbox coolstream"
+			exit 1 ;;
+	esac
+	PLATFORMS="$PLATFORMS $1"
+	shift
+done
+# ... if none are specified, buid all.
+if [ -z "$PLATFORMS" ]; then
+	# this unusual notation of the PLATFORMS variable makes it easy
+	# to change the order of the targets...
+	PLATFORMS="$PLATFORMS tripledragon"
+	PLATFORMS="$PLATFORMS spark"
+	PLATFORMS="$PLATFORMS azbox"
+	PLATFORMS="$PLATFORMS coolstream"
+fi
 
 ARCHIVE_DIR=$PWD/Archive
 TOOLCHAIN_TARDIR=${ARCHIVE_DIR}/toolchains
@@ -78,6 +92,9 @@ for P in ${PLATFORMS}; do
 	cd bs-$P
 	echo "PLATFORM=$P" > config
 	echo "GITORIOUS=$TOPDIR/gitorious" >> config
+	if [ -d $TOPDIR/uncool-git ]; then
+		echo "COOLSTREAM_DE=$TOPDIR/uncool-git" >> config
+	fi
 	rm -f download
 	ln -s $ARCHIVE_DIR download
 	T="source_setup"
