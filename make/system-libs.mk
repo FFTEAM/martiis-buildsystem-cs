@@ -748,4 +748,23 @@ rmfp_player: mrua
 		PKG_VER=$$V PKG_AUTOREQPROV=1 $(OPKG_SH) $(CONTROL_DIR)/rmfp_player; \
 	rm -rf $(PKGPREFIX)
 
+#libsigc++: typesafe Callback Framework for C++
+$(D)/libsigc++: $(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/libsigc++-$(LIBSIGCPP_VER).tar.xz
+	set -e; cd $(BUILD_TMP)/libsigc++-$(LIBSIGCPP_VER); \
+		$(CONFIGURE) -prefix= \
+				--disable-documentation \
+				--enable-silent-rules; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX); \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	PKG_VER=$(LIBSIGCPP_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+			$(OPKG_SH) $(CONTROL_DIR)/libsigc++
+	$(REMOVE)/libsigc++-$(LIBSIGCPP_VER)
+	rm -rf $(PKGPREFIX)
+	touch $@
+
 PHONY += ncurses-prereq rmfp_player

@@ -274,3 +274,11 @@ WGET_VER=1.14
 
 #xmlto, shell-script tool for converting XML files to various formats.
 XMLTO_VER=0.0.25
+
+#libsigc++: typesafe Callback Framework for C++
+LIBSIGCPP_MAJOR=2
+LIBSIGCPP_MINOR=3
+LIBSIGCPP_MICRO=1
+LIBSIGCPP_VER=$(LIBSIGCPP_MAJOR).$(LIBSIGCPP_MINOR).$(LIBSIGCPP_MICRO)
+
+

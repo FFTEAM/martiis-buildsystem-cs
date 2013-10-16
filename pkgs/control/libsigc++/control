@@ -1,0 +1,11 @@
+Package: libsigc++
+Version: @VER@-1
+Description: Typesafe Callback Framework for C++
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://libsigc.sourceforge.net/
+Source:
+Depends: @DEP@
+Provides: @PROV@

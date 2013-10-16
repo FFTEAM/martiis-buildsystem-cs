@@ -353,3 +353,7 @@ $(ARCHIVE)/wget-$(WGET_VER).tar.gz:
 $(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz:
 	$(WGET) https://fedorahosted.org/releases/x/m/xmlto/xmlto-$(XMLTO_VER).tar.gz
 
+#libsigc++: typesafe Callback Framework for C++
+$(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz:
+	$(WGET) http://ftp.gnome.org/pub/GNOME/sources/libsigc++/$(LIBSIGCPP_MAJOR).$(LIBSIGCPP_MINOR)/libsigc++-$(LIBSIGCPP_VER).tar.xz
+
