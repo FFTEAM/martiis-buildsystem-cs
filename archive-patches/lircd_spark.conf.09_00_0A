@@ -12,7 +12,7 @@ begin remote
 	name		SPARK(rc05)(HOF-54M15)
 	bits		16
 	flags		SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9103	4361
@@ -117,7 +117,7 @@ begin remote
 	name		SPARK(HOF-55d-red)
 	bits		16
 	flags 		SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9028	4444
@@ -220,7 +220,7 @@ begin remote
 	name		SPARK(gm990Old)
 	bits	16
 	flags SPACE_ENC|CONST_LENGTH
-	eps	30
+	eps		50
 	aeps	100
 
 	header	9129	4395
@@ -308,7 +308,7 @@ begin remote
 	name		rc09(Alien)
 	bits		16
 	flags	SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9074	4344
@@ -410,7 +410,7 @@ begin remote
 	name		SPARK(gm990Rel)
 	bits		16
 	flags SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9129	4358
@@ -512,7 +512,7 @@ begin remote
 	name		rc13(PinguluxPlus)
 	bits		16
 	flags		SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		8992	4453
@@ -613,7 +613,7 @@ begin remote
 	name		SPARK(HOF-55d-green)
 	bits		16
 	flags 		SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9028	4444
@@ -716,7 +716,7 @@ begin remote
 	name		SPARK(HOF-55d-red)
 	bits		16
 	flags 		SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9028	4444

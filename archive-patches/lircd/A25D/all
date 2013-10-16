@@ -14,7 +14,7 @@ begin remote
 	name		SPARK(gm990Rel)
 	bits		16
 	flags SPACE_ENC|CONST_LENGTH
-	eps		30
+	eps		50
 	aeps		100
 
 	header		9129	4358
