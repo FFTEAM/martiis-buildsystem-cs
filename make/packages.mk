@@ -336,6 +336,7 @@ ifeq ($(PKG_DEST_DIR),)
 	@printf "\ndist-pkgs needs the variable PKG_DEST_DIR set in config.\n\n"
 	@false
 else
+	mkdir -pv $(PKG_DEST_DIR)
 	rsync -avP --exclude=.cache --exclude=.old --exclude=.gitignore --delete \
 		$(PACKAGE_DIR)/. $(PKG_DEST_DIR)/.
 endif
