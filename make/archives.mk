@@ -32,8 +32,8 @@ $(ARCHIVE)/DirectFB_$(DIRECTFB_VER).tar.gz:
 $(ARCHIVE)/dvdreadfs.tar:
 	$(WGET) http://www.daemoninc.com/dvdreadfs/dvdreadfs.tar
 
-$(ARCHIVE)/djmount-0.71.tar.gz:
-	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
+$(ARCHIVE)/djmount-$(DJMOUNT_VER).tar.gz:
+	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/$(DJMOUNT_VER)/djmount-$(DJMOUNT_VER).tar.gz
 
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2

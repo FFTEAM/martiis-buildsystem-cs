@@ -51,10 +51,10 @@ $(D)/dvdreadfs: $(ARCHIVE)/dvdreadfs.tar fuse libdvdread | $(TARGETPREFIX)
 	$(REMOVE)/dvdreadfs $(PKGPREFIX)
 	touch $@
 
-$(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
+$(D)/djmount: $(ARCHIVE)/djmount-$(DJMOUNT_VER).tar.gz fuse | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/djmount-0.71.tar.gz
-	set -e; cd $(BUILD_TMP)/djmount-0.71; \
+	$(UNTAR)/djmount-$(DJMOUNT_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/djmount-$(DJMOUNT_VER); \
 		$(PATCH)/djmount-0.71.diff; \
 		./configure -C \
 			--host=$(TARGET) \
@@ -67,9 +67,12 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	install -D -m 755 $(SCRIPTS)/djmount.init $(PKGPREFIX)/opt/pkg/etc/init.d/djmount
 	ln -sf djmount $(PKGPREFIX)/opt/pkg/etc/init.d/S80djmount
 	ln -sf djmount $(PKGPREFIX)/opt/pkg/etc/init.d/K20djmount
+	PKG_VER=$(DJMOUNT_VER) \
+		PKG_DEP="libfuse.so.2, fuse" \
+		PKG_PROV=" " \
+		$(OPKG_SH) $(CONTROL_DIR)/djmount
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	PKG_VER=0.71 $(OPKG_SH) $(CONTROL_DIR)/djmount
-	$(REMOVE)/djmount-0.71 $(PKGPREFIX)
+	$(REMOVE)/djmount-$(DJMOUNT_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/evtest: $(ARCHIVE)/evtest_1.29.orig.tar.bz2

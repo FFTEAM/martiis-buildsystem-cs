@@ -534,6 +534,7 @@ $(D)/libvorbisidec-$(VORBISIDEC_VER): $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)
 	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	touch $@
 
+FUSE_DRIVER="fuse.ko"
 FUSE_NEEDS_KO = true
 ifeq ($(PLATFORM), spark)
 FUSE_NEEDS_KO = false
@@ -541,6 +542,10 @@ endif
 ifeq ($(PLATFORM), azbox)
 FUSE_NEEDS_KO = false
 endif
+ifeq ($(PLATFORM), coolstream)
+FUSE_DRIVER="cs-drivers"
+endif
+FUSE_PROVIDES="libfuse.so.2, libfuse.so.2, libulockmgr.so.1, mount.fuse, fusermount, ulockmgr_server"
 $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/fuse-$(FUSE_VER).tar.gz
@@ -558,9 +563,13 @@ ifeq ($(FUSE_NEEDS_KO), true)
 	install -m 755 -D $(SCRIPTS)/load-fuse.init \
 		$(PKGPREFIX)/etc/init.d/load-fuse
 	ln -s load-fuse $(PKGPREFIX)/etc/init.d/S56load-fuse
-	PKG_DEP="fuse.ko" PKG_VER=$(FUSE_VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	PKG_DEP=$(FUSE_DRIVER) PKG_VER=$(FUSE_VER) \
+	PKG_PROV=$(FUSE_PROVIDES) \
+		$(OPKG_SH) $(CONTROL_DIR)/fuse
 else
-	PKG_DEP=" " PKG_VER=$(FUSE_VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	PKG_DEP=" " PKG_VER=$(FUSE_VER) \
+	PKG_PROV=$(FUSE_PROVIDES) \
+		$(OPKG_SH) $(CONTROL_DIR)/fuse
 endif
 	$(REMOVE)/fuse-$(FUSE_VER) $(PKGPREFIX)
 	touch $@
