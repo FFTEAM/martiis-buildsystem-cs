@@ -1,0 +1,25 @@
+From a9a98f24af78b83c60fe579a25de24efae9de523 Mon Sep 17 00:00:00 2001
+From: Thilo Graf <dbt@novatux.de>
+Date: Sun, 20 Oct 2013 00:26:38 +0200
+Subject: [PATCH 2/2] avoid possible segfault
+
+---
+ src/opkg-cl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/src/opkg-cl.c b/src/opkg-cl.c
+index 0073847..7678405 100644
+--- a/src/opkg-cl.c
++++ b/src/opkg-cl.c
+@@ -316,7 +316,7 @@ int
+ main(int argc, char *argv[])
+ {
+ 	int opts, err = -1;
+-	char *cmd_name;
++	char *cmd_name = NULL;
+ 	opkg_cmd_t *cmd;
+ 	int nocheckfordirorfile = 0;
+         int noreadfeedsfile = 0;
+-- 
+1.8.1.5
+

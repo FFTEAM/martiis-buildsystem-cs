@@ -419,10 +419,10 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/dropbear-$(DROPBEAR-VER) $(PKGPREFIX)
 	touch $@
 
-$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/opkg-$(OPKG_SVN_VER).tar.gz
-	set -e; cd $(BUILD_TMP)/opkg-$(OPKG_SVN_VER); \
-		$(PATCH)/opkg-0.1.8-dont-segfault.diff; \
+$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/opkg-$(OPKG_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/opkg-$(OPKG_VER); \
+		$(PATCH)/opkg-$(OPKG_VER)-dont-segfault.diff; \
 		autoreconf -v --install; \
 		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache; \
 		$(CONFIGURE) \
@@ -450,11 +450,14 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	install -d -m 0755 $(PKGPREFIX)/etc/opkg
 	echo "# example config file, copy to opkg.conf and edit" > $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	echo "src server http://server/dist/$(PLATFORM)" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
-	$(REMOVE)/opkg-$(OPKG_SVN_VER) $(PKGPREFIX)/.remove
+	echo "# add an optional cache directory, important if too few  flash memory is available!" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "# directory must be exists, before executing of opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "option cache /tmp/media/sda1/.opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	$(REMOVE)/opkg-$(OPKG_VER) $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
 	rm -rf $(PKGPREFIX)/lib $(PKGPREFIX)/include
-	PKG_VER=$(OPKG_SVN_VER) $(OPKG_SH) $(CONTROL_DIR)/opkg
+	PKG_VER=$(OPKG_VER) $(OPKG_SH) $(CONTROL_DIR)/opkg
 	rm -rf $(PKGPREFIX)
 	touch $@
 

@@ -221,11 +221,11 @@ LIBXML2_VER=2.8.0
 DROPBEAR-VER=0.53.1
 
 # opkg; a lightweight package management system based on Ipkg
-OPKG-VER=0.1.8
+OPKG_VER=0.2.0
 
-# for recent versions, the SVN trunk rev is used:
-OPKG_SVN=635
-OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
+## for recent versions, the SVN trunk rev is used:
+#OPKG_SVN=635
+#OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
 
 # glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
 GLIB_MAJOR=2
