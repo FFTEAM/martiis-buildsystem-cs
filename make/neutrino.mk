@@ -26,12 +26,12 @@ endif
 # uses libtremor, static usage does not really hurt and is compatible
 # with the "original" image
 #N_CONFIG_OPTS = --with-tremor-static
-N_CONFIG_OPTS = --with-tremor
-NEUTRINO_DEPS += libvorbisidec
+#N_CONFIG_OPTS = --with-tremor
+#NEUTRINO_DEPS += libvorbisidec
 
 # enable FLAC decoder in neutrino
-N_CONFIG_OPTS += --enable-flac
-NEUTRINO_DEPS += libFLAC
+#N_CONFIG_OPTS += --enable-flac
+#NEUTRINO_DEPS += libFLAC
 
 ifeq ($(USE_GRAPHLCD), yes)
 NEUTRINO_DEPS += graphlcd-base-touchcol
