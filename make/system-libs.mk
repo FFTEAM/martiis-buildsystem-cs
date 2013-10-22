@@ -768,6 +768,7 @@ $(D)/libsigc++: $(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz | $(TARGETPREFIX)
 		$(MAKE); \
 		make install DESTDIR=$(PKGPREFIX); \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	ln -sf ./sigc++-2.0/sigc++ $(TARGETPREFIX)/include/sigc++
 	PKG_VER=$(LIBSIGCPP_VER) \
 		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
 		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
