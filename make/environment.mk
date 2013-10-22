@@ -191,3 +191,7 @@ else
 TDT_GIT ?= $(GITORIOUS)/open-duckbox-project-sh4/tdt.git
 TDT_SRC ?= $(SOURCE_DIR)/tdt
 endif
+
+######### default to non-verbose builds for most packages...
+V ?= 0
+export V
