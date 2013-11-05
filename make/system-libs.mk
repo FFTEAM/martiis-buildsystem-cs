@@ -694,6 +694,7 @@ $(PATCHES)/libdvbsi++-fix-unaligned-access-on-SuperH.patch
 	$(UNTAR)/libdvbsi++-$(LIBDVBSI_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/libdvbsi++-$(LIBDVBSI_VER); \
 			$(PATCH)/libdvbsi++-src-time_date_section.cpp-fix-sectionLength-check.patch; \
+			$(PATCH)/libdvbsi++-src-content_identifier_descriptor.cpp-fix-endless-loop.patch; \
 			$(PATCH)/libdvbsi++-fix-unaligned-access-on-SuperH.patch; \
 			$(CONFIGURE) \
 				--prefix=$(TARGETPREFIX) \

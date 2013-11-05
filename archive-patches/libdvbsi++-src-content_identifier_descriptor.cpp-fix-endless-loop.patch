@@ -1,0 +1,11 @@
+--- a/src/content_identifier_descriptor.cpp	2013-09-23 21:10:43.000000000 +0200
++++ b/src/content_identifier_descriptor.cpp	2013-11-05 15:19:28.774719808 +0100
+@@ -69,6 +69,8 @@
+ 			i += crid->getLength() + 2;
+ 		else if (crid->getLocation() == 1)
+ 			i += 3;
++		else
++			return; // probably wrong, but better than an endless loop ... --martii
+ 
+ 		identifier.push_back(crid);
+ 	}

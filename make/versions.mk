@@ -145,7 +145,7 @@ EXPAT_VER=2.0.1
 ATTR_VER=2.4.44
 
 # libdvbsi++; libdvbsi++ is a open source C++ library for parsing DVB Service Information and MPEG-2 Program Specific Information.
-LIBDVBSI_VER=0.3.6
+LIBDVBSI_VER=0.3.7
 
 #############################
 # tools; make/system-tools.mk
