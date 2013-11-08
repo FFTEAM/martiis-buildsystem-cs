@@ -1,6 +1,9 @@
--- lua demo script
+-- fritzcall demo script
 
 config="/lib/tuxbox/plugins/fritzcall/fb.conf"
+fritzcall="/lib/tuxbox/plugins/fritzcall/fb.sh"
+initscript="/etc/init.d/S98fritzcall"
+
 on="ein"
 off="aus"
 
@@ -34,13 +37,11 @@ end
 
 changed=0
 changed_startup=0
-
--- fixme
 autostart=0
 
-function set_auto(a)
-	-- fixme
-	autostart=onoff2num(a)
+
+function set_auto(k, v)
+	autostart=onoff2num(v)
 	changed_startup=1
 end
 
@@ -48,7 +49,6 @@ function set_string(k, v) C[k]=v changed=1 end
 function set_bool(k, v) C[k]=onoff2num(v) changed=1 end
 
 function load()
-	-- missing: autostart handling
 	local f = io.open(config, "r")
 	if f then
 		for line in f:lines() do
@@ -61,6 +61,11 @@ function load()
 			end
 		end
 		f:close()
+	end
+	f = io.open(initscript, "r");
+	if f ~= nil then
+		f:close()
+		autostart=1
 	end
 end
 
@@ -79,8 +84,27 @@ function save()
 		changed = 0
 	end
 	if (changed_startup) then
-		-- fixme: falls autostart => restart
-		print("fixme")
+		if (autostart == 0) then
+			os.execute(initscript .. " stop >/dev/null &>2")
+			os.remove(initscript)
+		else
+			local f = io.open(initscript, "w")
+			if f then
+				f:write(
+[[#!/bin/sh
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+export PATH
+case "$1" in
+	start|stop)
+		]] .. fritzcall .. [[ $1 >/dev/null 2>&1 &
+		;;
+esac
+]]
+				)
+				f:close()
+				os.execute("chmod 755 ".. initscript .. ";" .. initscript .. " start >/dev/null &>2")
+			end
+		end
 		changed_startup = 0
 	end
 	h:hide()
@@ -101,7 +125,7 @@ m:addItem{type="back"}
 m:addItem{type="separator"}
 m:addItem{type="forwarder", name="Speichern", action="save", icon="rot", directkey=RC["red"]}
 m:addItem{type="separator"}
-m:addItem{type="chooser",     action="set_auto", options={ on, off }, value=num2onoff(autostart), name="Autostart", icon="gruen", directkey=RC["green"]}
+m:addItem{type="chooser",     action="set_auto", options={ on, off }, id="dummy", value=num2onoff(autostart), name="Autostart", icon="gruen", directkey=RC["green"]}
 m:addItem{type="stringinput", action="set_string", id="FRITZBOXIP",   value=C["FRITZBOXIP"],   sms=1,                    name="FritzBox IP/Name"}
 m:addItem{type="stringinput", action="set_string", id="FRITZBOXPORT", value=C["FRITZBOXPORT"], valid_chars="0123456789", name="FritzBox Port"}
 m:addItem{type="chooser",     action="set_bool", options={ on, off }, id="debug", value=num2onoff(C["debug"]), name="Debug (nur in Telnet)"}
