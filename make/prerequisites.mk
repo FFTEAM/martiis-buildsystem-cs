@@ -113,7 +113,10 @@ $(UNCOOL_GIT):
 	mkdir -p $@
 
 $(UNCOOL_GIT)/%: | $(UNCOOL_GIT)
-	cd $(UNCOOL_GIT) && git clone git://coolstreamtech.de/$(notdir $@).git
+	cd $(UNCOOL_GIT) && git clone $(COOLSTREAM_DE)/$(notdir $@).git
+	if [ $(notdir $@) = cst-public-libraries-ffmpeg ]; then \
+		cd $(UNCOOL_GIT)/$(notdir $@); git checkout -b coolstream origin/coolstream; \
+	fi
 
 find-%:
 	@TOOL=$(patsubst find-%,%,$@); \

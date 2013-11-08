@@ -32,8 +32,8 @@ $(ARCHIVE)/DirectFB_$(DIRECTFB_VER).tar.gz:
 $(ARCHIVE)/dvdreadfs.tar:
 	$(WGET) http://www.daemoninc.com/dvdreadfs/dvdreadfs.tar
 
-$(ARCHIVE)/djmount-0.71.tar.gz:
-	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/0.71/djmount-0.71.tar.gz
+$(ARCHIVE)/djmount-$(DJMOUNT_VER).tar.gz:
+	$(WGET) http://sourceforge.net/projects/djmount/files/djmount/$(DJMOUNT_VER)/djmount-$(DJMOUNT_VER).tar.gz
 
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2
@@ -263,8 +263,9 @@ $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2:
 $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2
 
-$(ARCHIVE)/opkg-$(OPKG-VER).tar.gz:
-	$(WGET) http://opkg.googlecode.com/files/opkg-$(OPKG-VER).tar.gz
+$(ARCHIVE)/opkg-$(OPKG_VER).tar.gz:
+	$(WGET) http://opkg.googlecode.com/files/opkg-$(OPKG_VER).tar.gz
+
 
 $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz:
 	set -e; cd $(BUILD_TMP); \
@@ -429,3 +430,12 @@ $(ARCHIVE)/linux-azbox-%.tar.bz2:
 # standalone wget for retrieving files using HTTP, HTTPS and FTP
 $(ARCHIVE)/wget-$(WGET_VER).tar.gz:
 	$(WGET) http://ftp.gnu.org/gnu/wget/$(notdir $@)
+
+#xmlto, shell-script tool for converting XML files to various formats.
+$(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz:
+	$(WGET) https://fedorahosted.org/releases/x/m/xmlto/xmlto-$(XMLTO_VER).tar.gz
+
+#libsigc++: typesafe Callback Framework for C++
+$(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz:
+	$(WGET) http://ftp.gnome.org/pub/GNOME/sources/libsigc++/$(LIBSIGCPP_MAJOR).$(LIBSIGCPP_MINOR)/libsigc++-$(LIBSIGCPP_VER).tar.xz
+

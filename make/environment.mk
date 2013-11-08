@@ -16,7 +16,6 @@ ifneq ($(PLATFORM), coolstream)
 USE_STB_HAL ?= yes
 # ...and the neutrino-multiplatform edition
 FLAVOUR     ?= neutrino-mp
-#FLAVOUR     ?= neutrino-hd-td
 
 ifeq ($(PLATFORM), tripledragon)
 ifneq ($(TD_COMPILER), old)
@@ -52,6 +51,7 @@ USE_SHAIRPLAY ?= yes
 
 ifneq ($(GIT_PROTOCOL), http)
 GITORIOUS ?= git://gitorious.org
+COOLSTREAM_DE ?= git://coolstreamtech.de
 else
 GITORIOUS ?= https://git.gitorious.org
 endif
@@ -167,31 +167,25 @@ OPKG_SH = $(OPKG_SH_ENV) opkg.sh
 
 UNCOOL_GIT    = $(SOURCE_DIR)/uncool
 UNCOOL_KVER  ?= 2.6.34.13
+UNCOOL_FLAVOUR ?= nevis
+UNCOOL_KVER_FULL = $(UNCOOL_KVER)-$(UNCOOL_FLAVOUR)
+UNCOOL_DRVBASE = $(UNCOOL_GIT)/cst-public-drivers/$(UNCOOL_FLAVOUR)
 # svn to check out from obsolete SVN
 UNCOOL_SOURCE?= git
 ifneq ($(UNCOOL_SOURCE), git)
 UNCOOL_LIBCS  = $(SVN_TP_LIBS)/libcs/libcoolstream-mt.so
 UNCOOL_LIBNXP = $(SVN_TP_LIBS)/libnxp/libnxp.so
-UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER)-nevis
+UNCOOL_DRIVER = $(SOURCE_DIR)/svn/COOLSTREAM/$(UNCOOL_KVER_FULL)
 else
-UNCOOL_LIBCS  = $(UNCOOL_GIT)/cst-public-drivers/libs/libcoolstream-mt.so
-UNCOOL_LIBNXP = $(UNCOOL_GIT)/cst-public-drivers/libs/libnxp.so
-UNCOOL_LIBCA  = $(UNCOOL_GIT)/cst-public-drivers/libs/libca-sc.so
-UNCOOL_DRIVER = $(UNCOOL_GIT)/cst-public-drivers/drivers/$(UNCOOL_KVER)-nevis
+UNCOOL_LIBCS  = $(UNCOOL_DRVBASE)/libs/libcoolstream-mt.so
+UNCOOL_LIBNXP = $(UNCOOL_DRVBASE)/libs/libnxp.so
+UNCOOL_LIBCA  = $(UNCOOL_DRVBASE)/libs/libca-sc.so
+UNCOOL_DRIVER = $(UNCOOL_DRVBASE)/drivers/$(UNCOOL_KVER_FULL)
 endif
 UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_LIBCA)
 
-## for spark TDT git repos...
-#ifeq ($(TDT_REPO), "pinky")
-## this one seems to be more recent, but is a bit "chaotic" ...
-#TDT_GIT ?= $(GITORIOUS)/~pinky1981/open-duckbox-project-sh4/pingulux-git.git
-#TDT_SRC ?= $(SOURCE_DIR)/pingulux-git
-#else
-# ... but this one is not specific to SPARK boxes.
-#TDT_GIT ?= $(GITORIOUS)/open-duckbox-project-sh4/tdt.git
 TDT_GIT ?= $(GITORIOUS)/~martii/open-duckbox-project-sh4/martiis-tdt.git
 TDT_SRC ?= $(SOURCE_DIR)/tdt
-#endif
 
 # either "default", or "yaffs2"
 ROOTFS_TYPE ?= default
@@ -199,3 +193,6 @@ ROOTFS_TYPE ?= default
 # The 7162 build is currently plain broken. I don't see why I should care. --martii
 SPARK_ONLY=1
 
+######### default to non-verbose builds for most packages...
+V ?= 0
+export V

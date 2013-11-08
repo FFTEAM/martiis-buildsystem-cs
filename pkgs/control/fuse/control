@@ -8,5 +8,5 @@ Architecture: @ARCH@
 Homepage: http://fuse.sourceforge.net/
 Source:
 Depends: @DEP@
-Provides: libfuse.so.2, libfuse.so.2, libulockmgr.so.1, mount.fuse, fusermount, ulockmgr_server
+Provides: @PROV@
 

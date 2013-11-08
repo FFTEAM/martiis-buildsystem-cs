@@ -51,10 +51,10 @@ $(D)/dvdreadfs: $(ARCHIVE)/dvdreadfs.tar fuse libdvdread | $(TARGETPREFIX)
 	$(REMOVE)/dvdreadfs $(PKGPREFIX)
 	touch $@
 
-$(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
+$(D)/djmount: $(ARCHIVE)/djmount-$(DJMOUNT_VER).tar.gz fuse | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
-	$(UNTAR)/djmount-0.71.tar.gz
-	set -e; cd $(BUILD_TMP)/djmount-0.71; \
+	$(UNTAR)/djmount-$(DJMOUNT_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/djmount-$(DJMOUNT_VER); \
 		$(PATCH)/djmount-0.71.diff; \
 		./configure -C \
 			--host=$(TARGET) \
@@ -67,9 +67,12 @@ $(D)/djmount: $(ARCHIVE)/djmount-0.71.tar.gz fuse | $(TARGETPREFIX)
 	install -D -m 755 $(SCRIPTS)/djmount.init $(PKGPREFIX)/opt/pkg/etc/init.d/djmount
 	ln -sf djmount $(PKGPREFIX)/opt/pkg/etc/init.d/S80djmount
 	ln -sf djmount $(PKGPREFIX)/opt/pkg/etc/init.d/K20djmount
+	PKG_VER=$(DJMOUNT_VER) \
+		PKG_DEP="libfuse.so.2, fuse" \
+		PKG_PROV=" " \
+		$(OPKG_SH) $(CONTROL_DIR)/djmount
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	PKG_VER=0.71 $(OPKG_SH) $(CONTROL_DIR)/djmount
-	$(REMOVE)/djmount-0.71 $(PKGPREFIX)
+	$(REMOVE)/djmount-$(DJMOUNT_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/evtest: $(ARCHIVE)/evtest_1.29.orig.tar.bz2
@@ -417,10 +420,10 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/dropbear-$(DROPBEAR-VER) $(PKGPREFIX)
 	touch $@
 
-$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
-	$(UNTAR)/opkg-$(OPKG_SVN_VER).tar.gz
-	set -e; cd $(BUILD_TMP)/opkg-$(OPKG_SVN_VER); \
-		$(PATCH)/opkg-0.1.8-dont-segfault.diff; \
+$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/opkg-$(OPKG_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/opkg-$(OPKG_VER); \
+		$(PATCH)/opkg-$(OPKG_VER)-dont-segfault.diff; \
 		autoreconf -v --install; \
 		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache; \
 		$(CONFIGURE) \
@@ -448,11 +451,14 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz | $(TARGETPREFIX)
 	install -d -m 0755 $(PKGPREFIX)/etc/opkg
 	echo "# example config file, copy to opkg.conf and edit" > $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	echo "src server http://server/dist/$(PLATFORM)" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
-	$(REMOVE)/opkg-$(OPKG_SVN_VER) $(PKGPREFIX)/.remove
+	echo "# add an optional cache directory, important if too few  flash memory is available!" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "# directory must be exists, before executing of opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "option cache /tmp/media/sda1/.opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	$(REMOVE)/opkg-$(OPKG_VER) $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libopkg.pc
 	rm -rf $(PKGPREFIX)/lib $(PKGPREFIX)/include
-	PKG_VER=$(OPKG_SVN_VER) $(OPKG_SH) $(CONTROL_DIR)/opkg
+	PKG_VER=$(OPKG_VER) $(OPKG_SH) $(CONTROL_DIR)/opkg
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -973,3 +979,17 @@ $(D)/samsremote: $(ARCHIVE)/samsremote-1.tar.gz
 	PKG_VER=1 $(OPKG_SH) $(CONTROL_DIR)/samsremote
 	$(REMOVE)/samsremote-samsremote $(PKGPREFIX)
 	touch $@
+
+$(D)/xmlto: $(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz | $(TARGETPREFIX)
+	$(UNTAR)/xmlto-$(XMLTO_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/xmlto-$(XMLTO_VER); \
+		$(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
+			--prefix=; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX)
+		rm -rf $(PKGPREFIX)/share/man
+	PKG_VER=$(XMLTO_VER) $(OPKG_SH) $(CONTROL_DIR)/xmlto
+	$(REMOVE)/xmlto-$(XMLTO_VER) $(PKGPREFIX)
+	rm -rf $(PKGPREFIX)
+	touch $@
+

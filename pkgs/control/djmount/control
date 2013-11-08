@@ -7,6 +7,6 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://sourceforge.net/projects/djmount
 Source:
-Depends: libfuse.so.2
-Provides:
+Depends: @DEP@
+Provides: @PROV@
 

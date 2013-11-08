@@ -290,8 +290,10 @@ FFMPEG_CONFIGURE += --enable-demuxer=mpegts --enable-demuxer=mpegtsraw --enable-
 FFMPEG_CONFIGURE += --enable-demuxer=mpegvideo --enable-demuxer=wav --enable-demuxer=pcm_s16be
 FFMPEG_CONFIGURE += --enable-demuxer=mp3 --enable-demuxer=pcm_s16le --enable-demuxer=matroska
 FFMPEG_CONFIGURE += --enable-demuxer=flv --enable-demuxer=rm
-FFMPEG_CONFIGURE += --enable-bsfs
 FFMPEG_CONFIGURE += --enable-network --enable-protocol=http
+FFMPEG_CONFIGURE += --enable-demuxer=rtsp
+FFMPEG_CONFIGURE += --enable-protocol=rtmp --enable-protocol=rtmpe --enable-protocol=rtmps --enable-protocol=rtmpte --enable-protocol=rtp
+FFMPEG_CONFIGURE += --enable-bsfs
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
@@ -546,6 +548,7 @@ $(D)/libvorbisidec-$(VORBISIDEC_VER): $(ARCHIVE)/libvorbisidec_$(VORBISIDEC_VER)
 	$(REMOVE)/libvorbisidec-$(VORBISIDEC_VER) $(PKGPREFIX)
 	touch $@
 
+FUSE_DRIVER="fuse.ko"
 FUSE_NEEDS_KO = true
 ifeq ($(PLATFORM), spark)
 FUSE_NEEDS_KO = false
@@ -553,6 +556,10 @@ endif
 ifeq ($(PLATFORM), azbox)
 FUSE_NEEDS_KO = false
 endif
+ifeq ($(PLATFORM), coolstream)
+FUSE_DRIVER="cs-drivers"
+endif
+FUSE_PROVIDES="libfuse.so.2, libfuse.so.2, libulockmgr.so.1, mount.fuse, fusermount, ulockmgr_server"
 $(D)/fuse: $(ARCHIVE)/fuse-$(FUSE_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/fuse-$(FUSE_VER).tar.gz
@@ -570,9 +577,13 @@ ifeq ($(FUSE_NEEDS_KO), true)
 	install -m 755 -D $(SCRIPTS)/load-fuse.init \
 		$(PKGPREFIX)/etc/init.d/load-fuse
 	ln -s load-fuse $(PKGPREFIX)/etc/init.d/S56load-fuse
-	PKG_DEP="fuse.ko" PKG_VER=$(FUSE_VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	PKG_DEP=$(FUSE_DRIVER) PKG_VER=$(FUSE_VER) \
+	PKG_PROV=$(FUSE_PROVIDES) \
+		$(OPKG_SH) $(CONTROL_DIR)/fuse
 else
-	PKG_DEP=" " PKG_VER=$(FUSE_VER) $(OPKG_SH) $(CONTROL_DIR)/fuse
+	PKG_DEP=" " PKG_VER=$(FUSE_VER) \
+	PKG_PROV=$(FUSE_PROVIDES) \
+		$(OPKG_SH) $(CONTROL_DIR)/fuse
 endif
 	$(REMOVE)/fuse-$(FUSE_VER) $(PKGPREFIX)
 	touch $@
@@ -831,6 +842,27 @@ $(D)/libnl: $(ARCHIVE)/libnl-$(LIBNL_VER).tar.gz
 	cp -a $(TARGETPREFIX)/lib/libnl.so* $(PKGPREFIX)/lib && \
 	PKG_VER=$(LIBNL_VER) $(OPKG_SH) $(CONTROL_DIR)/libnl && \
 	$(REMOVE)/.remove $(PKGPREFIX) libnl-$(LIBNL_VER) && \
+	touch $@
+
+#libsigc++: typesafe Callback Framework for C++
+$(D)/libsigc++: $(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz | $(TARGETPREFIX)
+	rm -rf $(PKGPREFIX)
+	$(UNTAR)/libsigc++-$(LIBSIGCPP_VER).tar.xz
+	set -e; cd $(BUILD_TMP)/libsigc++-$(LIBSIGCPP_VER); \
+		$(CONFIGURE) -prefix= \
+				--disable-documentation \
+				--enable-silent-rules; \
+		$(MAKE); \
+		make install DESTDIR=$(PKGPREFIX); \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	ln -sf ./sigc++-2.0/sigc++ $(TARGETPREFIX)/include/sigc++
+	cp $(BUILD_TMP)/libsigc++-$(LIBSIGCPP_VER)/sigc++config.h $(TARGETPREFIX)/include
+	PKG_VER=$(LIBSIGCPP_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+			$(OPKG_SH) $(CONTROL_DIR)/libsigc++
+	$(REMOVE)/libsigc++-$(LIBSIGCPP_VER)
+	rm -rf $(PKGPREFIX)
 	touch $@
 
 PHONY += ncurses-prereq rmfp_player

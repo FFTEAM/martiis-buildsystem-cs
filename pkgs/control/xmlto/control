@@ -1,0 +1,10 @@
+Package: xmlto
+Version: @VER@-1
+Description: converts an XML file (DocBook or XSL-FO) into a specified format (PS, PDF, HTML, man, ASCII, XSL-FO, etc.)
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://fedorahosted.org/xmlto/
+Source:
+Depends:

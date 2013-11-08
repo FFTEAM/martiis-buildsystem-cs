@@ -12,7 +12,7 @@ local-install:
 	# copy local/flash/* into the image...
 	# you can e.g. create local/flash/boot/audio.elf ...
 	@if test -d $(BASE_DIR)/local/flash/; then \
-		cp -a -v $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install/.; \
+		rsync -avP --exclude=*.*~ $(BASE_DIR)/local/flash/. $(BUILD_TMP)/install; \
 	fi
 
 flash-prepare: local-install $(HOSTPREFIX)/bin/mkyaffs2

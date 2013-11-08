@@ -215,6 +215,16 @@ update-uncool:
 		for i in cst-*; do \
 			( echo updating $$i; cd $$i; git pull; ); \
 		done
+	if test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
+		cd $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
+		if [ x"`git rev-parse --abbrev-ref HEAD`" != xcoolstream ]; then \
+			if [ x"`git branch --list coolstream`" = xcoolstream ]; then \
+				git checkout coolstream; \
+			else \
+				git checkout -b coolstream origin/coolstream; \
+			fi; \
+		fi; \
+	fi
 
 
 all:
@@ -227,7 +237,8 @@ everything: $(shell sed -n 's/^\$$.D.\/\(.*\):.*/\1/p' make/*.mk)
 print-targets:
 	sed -n 's/^\$$.D.\/\(.*\):.*/\1/p; s/^\([a-z].*\):\( \|$$\).*/\1/p;' \
 		`ls -1 make/*.mk|grep -v make/unmaintained.mk` Makefile | \
-		sort | fmt -65
+		sort -u | fold -s -w 65
+
 
 $(BUILD_TMP)/Makefile.archivecheck: | $(BUILD_TMP)
 	rm -f $@

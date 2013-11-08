@@ -80,7 +80,6 @@ OGG_VER=1.3.0
 VORBIS_VER=1.3.3
 
 # libass: ass / ssa subtitle renderer
-#LIBASS_VER=0.9.11
 LIBASS_VER=0.10.1
 
 # azbox kernel
@@ -164,7 +163,6 @@ PKGCONFIG_VER=0.26
 PROCPS-VER=3.2.8
 
 # busybox; combines tiny versions of many common UNIX utilities into a single binary
-#BUSYBOX-VER=1.19.4
 BUSYBOX-VER=1.20.2
 
 # e2fsprogs; filesystem utilities for use with the ext[x] filesystem
@@ -207,7 +205,6 @@ TZ_VER = 2012d
 SYSTEMD-VER=19
 
 # dbus; message bus system
-#DBUS-VER=1.4.6
 DBUS-VER=1.6.12
 
 # ntp; synchronize system clock over a network
@@ -229,7 +226,6 @@ GST123_VER=0.3.1
 LIBFFI_VER=3.0.11
 
 # links; a text WWW browser, similar to Lynx
-#LINKS-VER=2.3pre1
 LINKS-VER=2.7
 
 # qt-everythere-opensource-src; the Qt4 package contains several C++ libraries with both GUI and non-GUI components
@@ -247,11 +243,11 @@ LIBXML2_VER=2.8.0
 DROPBEAR-VER=0.53.1
 
 # opkg; a lightweight package management system based on Ipkg
-OPKG-VER=0.1.8
+OPKG_VER=0.2.0
 
-# for recent versions, the SVN trunk rev is used:
-OPKG_SVN=635
-OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
+## for recent versions, the SVN trunk rev is used:
+#OPKG_SVN=635
+#OPKG_SVN_VER=$(OPKG-VER)+svnr$(OPKG_SVN)
 
 # glib; the low-level core library that forms the basis for projects such as GTK+ and GNOME
 GLIB_MAJOR=2
@@ -297,9 +293,6 @@ PPP_DIFF_VER=2.4.5-5.1
 
 # mtd-utils
 MTD_UTILS_VER=1.5.0
-
-# wget for retrieving files using HTTP, HTTPS and FTP
-WGET_VER=1.14
 
 # GNU FriBidi
 FRIBIDI_VER=0.19.4
@@ -354,4 +347,19 @@ GDB_VER=7.3
 
 # mtd-utils for the host...
 MTD_UTILS_VER_HOST = 1.5.0
+
+# wget for retrieving files using HTTP, HTTPS and FTP
+WGET_VER=1.14
+
+#xmlto, shell-script tool for converting XML files to various formats.
+XMLTO_VER=0.0.25
+
+#libsigc++: typesafe Callback Framework for C++
+LIBSIGCPP_MAJOR=2
+LIBSIGCPP_MINOR=3
+LIBSIGCPP_MICRO=1
+LIBSIGCPP_VER=$(LIBSIGCPP_MAJOR).$(LIBSIGCPP_MINOR).$(LIBSIGCPP_MICRO)
+
+#djmount: mount MediaServers content as a Linux filesystem 
+DJMOUNT_VER=0.71
 
