@@ -85,7 +85,7 @@ function save()
 	end
 	if (changed_startup) then
 		if (autostart == 0) then
-			os.execute(initscript .. " stop >/dev/null &>2")
+			os.execute(initscript .. " stop >/dev/null 2>&1")
 			os.remove(initscript)
 		else
 			local f = io.open(initscript, "w")
@@ -95,6 +95,9 @@ function save()
 PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
 export PATH
 case "$1" in
+	restart)
+		(]] .. fritzcall .. [[ stop ; ]] .. fritzcall .. [[ start ) >/dev/null 2>&1 &
+		;;
 	start|stop)
 		]] .. fritzcall .. [[ $1 >/dev/null 2>&1 &
 		;;
@@ -102,10 +105,14 @@ esac
 ]]
 				)
 				f:close()
-				os.execute("chmod 755 ".. initscript .. ";" .. initscript .. " start >/dev/null &>2")
+				os.execute("chmod 755 ".. initscript .. ";" .. initscript .. " start >/dev/null 2>&1")
 			end
 		end
 		changed_startup = 0
+	else
+		if (autostart == 1) then
+			os.execute(initscript .. " restart >/dev/null 2>&1")
+		end
 	end
 	h:hide()
 end
