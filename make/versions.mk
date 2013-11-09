@@ -69,6 +69,9 @@ FFMPEG_VER=0.10
 ifeq ($(PLATFORM), coolstream)
 FFMPEG_VER=1.2
 endif
+ifeq ($(PLATFORM), spark)
+FFMPEG_VER=2.0.2
+endif
 
 # libogg; encoding, decoding of the ogg file format
 OGG_VER=1.3.0
