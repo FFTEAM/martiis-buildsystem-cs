@@ -3,7 +3,7 @@
 # USB Stick boot enabler for Coolstream HD1 with old U-Boot
 # HD1, HD1 BSE and HD1 C
 #
-# (C) 2011-2012 Stefan Seyfried
+# (C) 2011-2013 Stefan Seyfried
 #     License: GPL v2
 #
 # create a U-Boot autoscript that can boot from USB
@@ -34,8 +34,8 @@
 # HDx> setenv bootcmd autoscr 0xf047f800\; autoscr 0xf047f800\; bootm 0xf0080000
 
 # if present: first argument: temp dir, second argument: mkimage location
-D=${1:=build_tmp}
-MKIMAGE=${2:=host/bin/mkimage}
+D=${1:-build_tmp}
+MKIMAGE=${2:-host/bin/mkimage}
 
 IN=mtd1-hd1.img
 OUT=${D}/kernel-autoscr-mtd1.img
