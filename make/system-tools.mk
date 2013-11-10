@@ -372,7 +372,7 @@ $(DEPDIR)/valgrind: $(ARCHIVE)/valgrind-$(VALGRIND_VER).tar.bz2 | $(TARGETPREFIX
 	$(REMOVE)/valgrind-$(VALGRIND_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATCHES)/lircd_spark.conf $(wildcard $(PATCHES)/lircd_spark.conf.0?_*)
+$(D)/lirc: $(ARCHIVE)/lirc-$(LIRC_VER).tar.bz2 $(PATCHES)/lirc-0.9.0.diff $(PATCHES)/lircd_spark.conf $(wildcard $(PATCHES)/lircd_spark.conf.0?_*) $(TARGETPREFIX)/include/aotom_main.h
 	$(UNTAR)/lirc-$(LIRC_VER).tar.bz2
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/lirc-$(LIRC_VER); \

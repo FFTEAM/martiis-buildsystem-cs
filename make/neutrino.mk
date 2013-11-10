@@ -55,6 +55,7 @@ endif
 endif
 ifeq ($(PLATFORM), spark)
 NEUTRINO_DEPS += alsa-lib
+NEUTRINO_DEPS += $(TARGETPREFIX)/include/aotom_main.h
 # this is a hack: stfbcontrol triggers include/linux/stmfb.h,
 # which is needed by framebuffer_spark
 NEUTRINO_DEPS2 += $(TARGETPREFIX)/bin/stfbcontrol
@@ -74,6 +75,9 @@ N_OBJDIR = $(BUILD_TMP)/neutrino-hd
 endif
 # use this if you want to build inside the source dir - but you don't want that ;)
 # N_OBJDIR = $(N_HD_SOURCE)
+
+$(TARGETPREFIX)/include/aotom_main.h: $(TDT_SRC)/tdt/cvs/driver/frontcontroller/aotom/aotom_main.h
+	cp $^ $@
 
 $(N_OBJDIR)/config.status: $(NEUTRINO_DEPS) $(MAKE_DIR)/neutrino.mk
 	test -d $(N_OBJDIR) || mkdir -p $(N_OBJDIR)
