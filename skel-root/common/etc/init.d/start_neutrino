@@ -26,6 +26,9 @@ if [ -e /sys/class/stmcoredisplay/hdmi0.0/hotplug ]; then
 	echo
 fi
 
+# coolstream: work around driver problems
+type -p uncoolinit > /dev/null && uncoolinit
+
 # touch /tmp/norestart
 until neutrino; do
 	RET=$?
