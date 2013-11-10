@@ -40,16 +40,21 @@ stop)
 	NOW=$(date +%s)
 	OFFSET=$((RTC_NOW - NOW)) # offset between UTC and localtime
 	echo 0 > /sys/class/rtc/rtc0/wakealarm
-	test -e /tmp/.timer || exit 0
-	read WAKEUP < /tmp/.timer
-	WAKEUP=$((WAKEUP + OFFSET))
-	echo "setting wakeup time to $WAKEUP (NOW: $RTC_NOW, OFFSET: $OFFSET)"
-	if test $WAKEUP -lt $((RTC_NOW + 30)); then
-		WAKEUP=$((RTC_NOW + 30))
-		echo "correcting WAKEUP to $WAKEUP"
+	if test -e /tmp/.timer; then
+		read WAKEUP < /tmp/.timer
+		WAKEUP=$((WAKEUP + OFFSET))
+		echo "setting wakeup time to $WAKEUP (NOW: $RTC_NOW, OFFSET: $OFFSET)"
+		if test $WAKEUP -lt $((RTC_NOW + 30)); then
+			WAKEUP=$((RTC_NOW + 30))
+			echo "correcting WAKEUP to $WAKEUP"
+		fi
+		echo $WAKEUP > /sys/class/rtc/rtc0/wakealarm
+		FP_OPTS="-l 1 -L 1" # enable green LED only
+	else
+		FP_OPTS="-L 0 -L 1" # disable LEDs
 	fi
-	echo $WAKEUP > /sys/class/rtc/rtc0/wakealarm
-	spark_fp -l 1 # enable green LED
+	[ -f /tmp/.fp_leds ] && read FP_OPTS < /tmp/.fp_leds
+	spark_fp $FP_OPTS
 	# dmesg | tail -2
 	;;
 esac
