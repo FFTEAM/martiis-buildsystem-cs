@@ -533,9 +533,14 @@ azboxdriver: $(ARCHIVE)/azboxme-$(AZ_DRIVER_TMPL) $(ARCHIVE)/azboxminime-$(AZ_DR
 		mkdir azboxme-dvb-modules; \
 		cd azboxme-dvb-modules; \
 		for i in me minime; do \
-			tar -xf $(ARCHIVE)/azbox$${i}-$(AZ_DRIVER_TMPL); \
+			mkdir $$i; \
+			tar -C $$i -xf $(ARCHIVE)/azbox$${i}-$(AZ_DRIVER_TMPL); \
+			cp $$i/* .; \
 			mv sci.ko sci$${i}.ko; \
 		done; \
+		if ! diff --exclude='sci*.ko' me/ minime/; then \
+			echo "too many differences in driver tarball"; false; fi; \
+		rm -r me minime; \
 		install -d lib/modules/$(KVERSION_FULL)/extra; \
 		install -d lib/firmware; \
 		mv *.fw lib/firmware; \

@@ -181,6 +181,7 @@ $(D)/libpng-$(PNG_VER): $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGET
 $(D)/freetype: $(D)/freetype-$(FREETYPE_VER)
 	touch $@
 $(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).tar.bz2 $(PATCHES)/freetype_2.5_*.diff | $(TARGETPREFIX)
+	$(REMOVE)/freetype-$(FREETYPE_VER)
 	$(UNTAR)/freetype-$(FREETYPE_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/freetype-$(FREETYPE_VER); \
 		if ! echo $(FREETYPE_VER) | grep "2.3"; then \
@@ -190,18 +191,14 @@ $(D)/freetype-$(FREETYPE_VER): $(D)/libpng $(ARCHIVE)/freetype-$(FREETYPE_VER).t
 		fi; \
 		sed -i '/#define FT_CONFIG_OPTION_OLD_INTERNALS/d' include/freetype/config/ftoption.h; \
 		sed -i '/^FONT_MODULES += \(type1\|cid\|pfr\|type42\|pcf\|bdf\)/d' modules.cfg; \
-		$(CONFIGURE) --prefix= --build=$(BUILD) --host=$(TARGET); \
+		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET); \
 		$(MAKE) all; \
-		sed -e "s,^prefix=,prefix=$(TARGETPREFIX)," < builds/unix/freetype-config > $(HOSTPREFIX)/bin/freetype-config; \
-		chmod 755 $(HOSTPREFIX)/bin/freetype-config; \
 		rm -f $(TARGETPREFIX)/lib/libfreetype.so*; \
-		make install libdir=$(TARGETPREFIX)/lib includedir=$(TARGETPREFIX)/include bindir=$(TARGETPREFIX)/bin prefix=$(TARGETPREFIX)
+		make install; \
 		if [ -d $(TARGETPREFIX)/include/freetype2/freetype ] ; then \
 			ln -sf ./freetype2/freetype $(TARGETPREFIX)/include/freetype; \
-		fi; \
-	rm $(TARGETPREFIX)/bin/freetype-config
-	$(REWRITE_LIBTOOL)/libfreetype.la
-	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/freetype2.pc
+		fi;
+	mv $(TARGETPREFIX)/bin/freetype-config $(HOSTPREFIX)/bin/freetype-config
 	$(REMOVE)/freetype-$(FREETYPE_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
 	cp -a $(TARGETPREFIX)/lib/libfreetype.so.* $(PKGPREFIX)/lib
