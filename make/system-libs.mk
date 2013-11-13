@@ -770,10 +770,12 @@ $(D)/libsigc++: $(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz | $(TARGETPREFIX)
 				--disable-documentation \
 				--enable-silent-rules; \
 		$(MAKE); \
-		make install DESTDIR=$(PKGPREFIX); \
-	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+		make install DESTDIR=$(TARGETPREFIX); \
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libsigc-2.0.so* $(PKGPREFIX)/lib
 	ln -sf ./sigc++-2.0/sigc++ $(TARGETPREFIX)/include/sigc++
 	cp $(BUILD_TMP)/libsigc++-$(LIBSIGCPP_VER)/sigc++config.h $(TARGETPREFIX)/include
+	$(REWRITE_LIBTOOL)/libsigc-2.0.la
 	PKG_VER=$(LIBSIGCPP_VER) \
 		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
 		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
