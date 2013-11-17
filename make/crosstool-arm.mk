@@ -29,7 +29,7 @@ crosstool-new: $(ARCHIVE)/crosstool-ng-$(UNCOOL_CT_VER).tar.bz2 $(ARCHIVE)/linux
 	make $(BUILD_TMP)
 	$(REMOVE)/crosstool-ng-$(UNCOOL_CT_VER)
 	$(UNTAR)/crosstool-ng-$(UNCOOL_CT_VER).tar.bz2
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-$(UNCOOL_CT_VER); \
+	set -e; unset CONFIG_SITE LD_LIBRARY_PATH; cd $(BUILD_TMP)/crosstool-ng-$(UNCOOL_CT_VER); \
 		cp $(PATCHES)/999-ppl-0_11_2-fix-configure-for-64bit-host.patch patches/ppl/0.11.2; \
 		test "$(GIT_PROTOCOL)" = http && \
 			sed -i 's#svn://svn.eglibc.org#http://www.eglibc.org/svn#' \
