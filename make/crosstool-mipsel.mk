@@ -6,7 +6,7 @@ $(CROSS_DIR)/bin/$(TARGET)-gcc: | $(ARCHIVE)/crosstool-ng-1.15.2.tar.bz2 $(ARCHI
 	make $(BUILD_TMP)
 	$(REMOVE)/crosstool-ng-1.15.2
 	$(UNTAR)/crosstool-ng-1.15.2.tar.bz2
-	set -e; unset CONFIG_SITE; cd $(BUILD_TMP)/crosstool-ng-1.15.2; \
+	set -e; unset CONFIG_SITE LD_LIBRARY_PATH; cd $(BUILD_TMP)/crosstool-ng-1.15.2; \
 		$(PATCH)/crosstool-ng-1.15.2-don_t-build-nconf.diff; \
 		cp $(PATCHES)/111-ppl-0_10_2-fix-CXXFLAGS-for-gcc-4_7.patch patches/ppl/0.10.2/; \
 		test "$(GIT_PROTOCOL)" = http && \
