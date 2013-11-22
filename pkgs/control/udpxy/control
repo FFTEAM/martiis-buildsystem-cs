@@ -1,0 +1,9 @@
+Package: udpxy
+Version: @VER@-1
+Description: A UDP-to-HTTP multicast traffic relay daemon
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.udpxy.com/
+Source: http://www.udpxy.com/download-en.html

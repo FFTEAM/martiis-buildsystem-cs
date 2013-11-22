@@ -439,3 +439,13 @@ $(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz:
 $(ARCHIVE)/libsigc++-$(LIBSIGCPP_VER).tar.xz:
 	$(WGET) http://ftp.gnome.org/pub/GNOME/sources/libsigc++/$(LIBSIGCPP_MAJOR).$(LIBSIGCPP_MINOR)/libsigc++-$(LIBSIGCPP_VER).tar.xz
 
+$(ARCHIVE)/udpxy.$(UDPXY_VER)-prod.tar.gz:
+	$(WGET) http://www.udpxy.com/download/1_23/udpxy.$(UDPXY_VER)-prod.tar.gz
+
+$(ARCHIVE)/xupnpd-r$(XUPNPD_REV).tar.gz:
+	set -e; cd $(BUILD_TMP); \
+		rm -rf xupnpd-r$(XUPNPD_REV); \
+		svn co -r$(XUPNPD_REV) http://tsdemuxer.googlecode.com/svn/trunk/xupnpd xupnpd-r$(XUPNPD_REV); \
+		tar cvpzf $@ xupnpd-r$(XUPNPD_REV)
+	$(REMOVE)/xupnpd-r$(XUPNPD_REV)
+

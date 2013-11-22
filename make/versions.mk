@@ -363,3 +363,9 @@ LIBSIGCPP_VER=$(LIBSIGCPP_MAJOR).$(LIBSIGCPP_MINOR).$(LIBSIGCPP_MICRO)
 #djmount: mount MediaServers content as a Linux filesystem 
 DJMOUNT_VER=0.71
 
+# udpxy: mall-footprint UNIX/Linux daemon to relay multicast UDP traffic to client's TCP (HTTP) connection
+UDPXY_VER=1.0.23-9
+
+# xupnpd - eXtensible UPnP agent 
+XUPNPD_REV=392
+

@@ -1,0 +1,9 @@
+Package: xupnpd
+Version: @VER@-1
+Description: eXtensible UPnP agent
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://http://xupnpd.org/
+Source: http://tsdemuxer.googlecode.com/svn/trunk/xupnpd
