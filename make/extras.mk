@@ -1009,19 +1009,19 @@ $(D)/udpxy: $(ARCHIVE)/udpxy.$(UDPXY_VER)-prod.tar.gz $(PATCHES)/udpxy-inetd.dif
 	rm -rf $(PKGPREFIX); \
 	touch $@
 
-$(D)/xupnpd: $(ARCHIVE)/xupnpd-r$(XUPNPD_REV).tar.gz $(PATCHES)/xupnpd_src_Makefile.patch | $(TARGETPREFIX)
+$(D)/xupnpd: $(ARCHIVE)/xupnpd-r$(XUPNPD_REV).tar.gz $(PATCHES)/xupnpd_src_Makefile.patch $(PATCHES)/xupnpd.lua $(PATCHES)/xupnpd_coolstream.lua $(SCRIPTS)/xupnpd.init $(PATCHES)/.rebuild.xupnpd | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/xupnpd-r$(XUPNPD_REV)
 	mkdir -p $(PKGPREFIX)/bin $(PKGPREFIX)/share/xupnpd $(PKGPREFIX)/etc/init.d
 	$(UNTAR)/xupnpd-r$(XUPNPD_REV).tar.gz
 	cd $(BUILD_TMP)/xupnpd-r$(XUPNPD_REV) && $(PATCH)/xupnpd_src_Makefile.patch
 	set -e; cd $(BUILD_TMP)/xupnpd-r$(XUPNPD_REV)/src ; \
 	$(BUILDENV) make TARGET=$(TARGET) sh4 ; \
-	cp -p contrib/OpenEmbedded/files/xupnpd.init $(PKGPREFIX)/etc/init.d/xupnpd ;\
-	sed -i "s/\/usr//g" $(PKGPREFIX)/etc/init.d/xupnpd ;\
 	cp xupnpd $(PKGPREFIX)/bin/ ;\
 	cp -ap plugins profiles ui www *.lua $(PKGPREFIX)/share/xupnpd/ ;\
-	cp -p contrib/OpenEmbedded/files/xupnpd.lua $(PKGPREFIX)/share/xupnpd/ ;\
+	cp -p $(PATCHES)/xupnpd.lua $(PKGPREFIX)/share/xupnpd/ ;\
+	cp -p $(PATCHES)/xupnpd_coolstream.lua $(PKGPREFIX)/share/xupnpd/plugins/ ;\
 	rm -rf `find $(PKGPREFIX) -type d -name .svn` \;
+	cp -p $(SCRIPTS)/xupnpd.init $(PKGPREFIX)/etc/init.d/xupnpd ;\
 	ln -s xupnpd $(PKGPREFIX)/etc/init.d/S99xupnpd
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX); \
 	PKG_VER=$(XUPNPD_REV) $(OPKG_SH) $(CONTROL_DIR)/xupnpd; \

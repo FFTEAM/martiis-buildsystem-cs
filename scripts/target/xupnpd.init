@@ -1,0 +1,14 @@
+#!/bin/sh
+case "$1" in
+	stop)
+		kill $(pidof xupnpd) 2>/dev/null
+		;;
+	start|restart)
+		[ "$1" == "restart" ] && kill $(pidof xupnpd) 2>/dev/null
+		(
+			sleep 10 # Give Neutrino a couple of seconds for startup
+			mkdir -p /tmp/xupnpd-feeds
+			XUPNPDROOTDIR=/share/xupnpd /bin/xupnpd
+		) &
+		;;
+esac
