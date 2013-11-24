@@ -1029,3 +1029,17 @@ $(D)/xupnpd: $(ARCHIVE)/xupnpd-r$(XUPNPD_REV).tar.gz $(PATCHES)/xupnpd_src_Makef
 	rm -rf $(PKGPREFIX); \
 	touch $@
 
+$(D)/mailsend: $(ARCHIVE)/mailsend-$(MAILSEND_VER).tar.gz
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/mailsend-$(MAILSEND_VER)
+	mkdir -p $(PKGPREFIX)/bin
+	$(UNTAR)/mailsend-$(MAILSEND_VER).tar.gz
+	set -e ; cd $(BUILD_TMP)/mailsend-$(MAILSEND_VER) ; \
+	$(BUILDENV) ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) ; \
+	make all install ; \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX); \
+	rm -rf $(PKGPREFIX)/share ; \
+	PKG_VER=$(MAILSEND_VER) $(OPKG_SH) $(CONTROL_DIR)/mailsend; \
+	$(REMOVE)/mailsend-$(MAILSEND_VER) $(PKGPREFIX); \
+	rm -rf $(PKGPREFIX); \
+	touch $@
+

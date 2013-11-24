@@ -369,3 +369,6 @@ UDPXY_VER=1.0.23-9
 # xupnpd - eXtensible UPnP agent 
 XUPNPD_REV=392
 
+# Send mail via SMTP protocol from command line
+MAILSEND_VER=1.17b14
+

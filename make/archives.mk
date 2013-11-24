@@ -449,3 +449,6 @@ $(ARCHIVE)/xupnpd-r$(XUPNPD_REV).tar.gz:
 		tar cvpzf $@ xupnpd-r$(XUPNPD_REV)
 	$(REMOVE)/xupnpd-r$(XUPNPD_REV)
 
+$(ARCHIVE)/mailsend-$(MAILSEND_VER).tar.gz:
+	$(WGET) https://mailsend.googlecode.com/files/$(notdir $@)
+

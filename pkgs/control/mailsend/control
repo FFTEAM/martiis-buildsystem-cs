@@ -1,0 +1,10 @@
+Package: mailsend
+Version: @VER@-1
+Description: Send mail via SMTP protocol from command line
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://code.google.com/p/mailsend/
+Source: https://code.google.com/p/mailsend/downloads/list
+
