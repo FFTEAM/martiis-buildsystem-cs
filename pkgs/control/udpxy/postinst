@@ -1,0 +1,6 @@
+#!/bin/sh
+grep "^local-4022\s" /etc/services >/dev/null || printf "local-4022 4022/tcp\n" >> /etc/services
+sed -e "/^local-4022\s/ d" -i /etc/inetd.conf
+echo "local-4022 stream tcp wait root /bin/udpxy udpxy" >> /etc/inetd.conf
+kill $(pidof udpxy) 2>/dev/null || true
+kill -HUP $(pidof inetd)

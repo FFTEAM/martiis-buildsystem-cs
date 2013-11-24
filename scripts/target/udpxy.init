@@ -1,9 +1,0 @@
-#!/bin/sh
-
-case $1 in
-	start)	udpxy -p 4022
-		;;
-	stop)	kill $(pidof udpxy)
-		;;
-	restart) $0 stop; $0 start ;;
-esac

@@ -993,17 +993,16 @@ $(D)/xmlto: $(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/udpxy: $(ARCHIVE)/udpxy.$(UDPXY_VER)-prod.tar.gz $(SCRIPTS)/udpxy.init | $(TARGETPREFIX)
+$(D)/udpxy: $(ARCHIVE)/udpxy.$(UDPXY_VER)-prod.tar.gz $(PATCHES)/udpxy-inetd.diff | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/udpxy-$(UDPXY_VER)
 	mkdir $(PKGPREFIX) $(PKGPREFIX)/bin
 	$(UNTAR)/udpxy.$(UDPXY_VER)-prod.tar.gz
 	set -e; cd $(BUILD_TMP)/udpxy-$(UDPXY_VER); \
+	$(PATCH)/udpxy-inetd.diff ;\
 	$(BUILDENV) make CC=$(TARGET)-gcc CCKIND=gcc; \
 	cp -p udpxy $(PKGPREFIX)/bin ; \
 	$(TARGET)-strip $(PKGPREFIX)/bin/udpxy; \
 	ln -s udpxy $(PKGPREFIX)/bin/udpxrec; \
-	install -m 755 -D $(SCRIPTS)/udpxy.init $(PKGPREFIX)/etc/init.d/udpxy; \
-	ln -s udpxy $(PKGPREFIX)/etc/init.d/S99udpxy; \
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX); \
 	PKG_VER=$(UDPXY_VER) $(OPKG_SH) $(CONTROL_DIR)/udpxy; \
 	$(REMOVE)/udpxy-$(UDPXY_VER) $(PKGPREFIX); \
