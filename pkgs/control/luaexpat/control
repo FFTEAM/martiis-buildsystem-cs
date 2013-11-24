@@ -7,6 +7,6 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://code.matthewwild.co.uk/lua-expat
 Source: http://code.matthewwild.co.uk/lua-expat
-Depends: libexpat.so
+Depends: libexpat.so.1
 Provides: luaexpat
 

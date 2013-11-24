@@ -649,7 +649,7 @@ $(D)/libflex: $(ARCHIVE)/flex-$(FLEX_VER).tar.gz
 	$(REMOVE)/flex-$(FLEX_VER)
 	touch $@
 
-$(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz
+$(D)/libexpat: $(ARCHIVE)/expat-$(EXPAT_VER).tar.gz $(PATCHES)/.rebuild.libexpat
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
 	$(UNTAR)/expat-$(EXPAT_VER).tar.gz
