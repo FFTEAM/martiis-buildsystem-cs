@@ -33,6 +33,7 @@ start)
 	test $REASON = 3 && touch /tmp/.timer_wakeup
 	wait_for_device /dev/rtc0 2
 	hwclock --hctosys --localtime
+	spark_fp -p 20 -l 2
 	;;
 stop)
 	hwclock --systohc --localtime
