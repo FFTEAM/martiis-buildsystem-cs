@@ -255,7 +255,7 @@ addon-drivers-pkg: azboxkernel |$(HOSTPREFIX)/bin/opkg-module-deps.sh
 	$(REMOVE)/addon-drivers $(PKGPREFIX)
 endif
 
-AAA_BASE_DEPS = mhwepg
+AAA_BASE_DEPS = 
 ifeq ($(PLATFORM), spark)
 AAA_BASE_DEPS += stfbcontrol ustslave libstb-hal
 endif
@@ -276,7 +276,6 @@ ifeq ($(PLATFORM), spark)
 else
 	cd $(PKGPREFIX) && rm etc/init.d/*loadmodules && rm etc/init.d/start_neutrino # ugly...
 endif
-	cp -a $(TARGETPREFIX)/bin/mhwepg $(PKGPREFIX)/bin
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
 
