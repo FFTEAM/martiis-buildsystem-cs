@@ -1,0 +1,11 @@
+Package: portmap
+Version: @VER@-1
+Description: Portmapper
+Section: base
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://neil.brown.name/portmap/
+Source:
+Depends:
+Provides: portmap

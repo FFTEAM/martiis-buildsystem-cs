@@ -1,0 +1,11 @@
+Package: libnfsidmap
+Version: @VER@-1
+Description: a library to map between names and to ids
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.citi.umich.edu/projects/nfsv4/
+Source: http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap
+Depends: @DEP@
+Provides: @PROV@

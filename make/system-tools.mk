@@ -295,14 +295,18 @@ $(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz | $(TARGETPREFIX)
 	touch $@
 
 $(D)/portmap: $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/portmap-$(PORTMAP-VER)
+	mkdir -p $(PKGPREFIX)/sbin
 	$(UNTAR)/portmap-$(PORTMAP-VER).tgz
 	set -e; cd $(BUILD_TMP)/portmap_$(PORTMAP-VER); \
 		$(PATCH)/portmap_6.0-nocheckport.diff; \
 		$(BUILDENV) $(MAKE) NO_TCP_WRAPPER=1 DAEMON_UID=65534 DAEMON_GID=65535 CC="$(TARGET)-gcc"; \
+		install -m 0755 portmap $(PKGPREFIX)/sbin; \
 		install -m 0755 portmap $(TARGETPREFIX)/sbin; \
 		install -m 0755 pmap_dump $(TARGETPREFIX)/sbin; \
 		install -m 0755 pmap_set $(TARGETPREFIX)/sbin
-	$(REMOVE)/portmap_$(PORTMAP-VER)
+	PKG_VER=$(PORTMAP-VER) $(OPKG_SH) $(CONTROL_DIR)/portmap
+	$(REMOVE)/portmap-$(PORTMAP_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz
@@ -319,9 +323,57 @@ $(D)/unfsd: $(D)/libflex $(D)/portmap $(ARCHIVE)/unfs3-$(UNFS3-VER).tar.gz
 	install -m 755 -D $(SCRIPTS)/nfsd.init $(PKGPREFIX)/etc/init.d/nfsd
 	ln -s nfsd $(PKGPREFIX)/etc/init.d/S99nfsd # needs to start after modules are loaded
 	ln -s nfsd $(PKGPREFIX)/etc/init.d/K01nfsd
-	cp -a $(TARGETPREFIX)/sbin/{unfsd,portmap} $(PKGPREFIX)/sbin
-	$(OPKG_SH) $(CONTROL_DIR)/unfsd
+	cp -a $(TARGETPREFIX)/sbin/unfsd $(PKGPREFIX)/sbin
+	PKG_VER=$(UNFS3-VER) $(OPKG_SH) $(CONTROL_DIR)/unfsd
 	$(REMOVE)/unfs3-$(UNFS3-VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/libevent: $(ARCHIVE)/libevent-$(LIBEVENT_VER).tar.gz
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libevent-$(LIBEVENT_VER)
+	mkdir -p $(PKGPREFIX)/lib
+	$(UNTAR)/libevent-$(LIBEVENT_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libevent-$(LIBEVENT_VER);\
+	$(BUILDENV) $(CONFIGURE) --prefix=$(TARGETPREFIX) --host=$(TARGET);\
+	make install;\
+	cp -a $(TARGETPREFIX)/lib/libevent*.so* $(PKGPREFIX)/lib ;\
+	$(TARGET)-strip $(PKGPREFIX)/lib/*
+	PKG_VER=$(LIBEVENT_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/libevent
+	$(REMOVE)/libevent-$(LIBEVENT_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/libnfsidmap: $(ARCHIVE)/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/libnfsidmap-$(LIBNFSIDMAP_VER)
+	mkdir -p $(PKGPREFIX)/lib
+	$(UNTAR)/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/libnfsidmap-$(LIBNFSIDMAP_VER);\
+	$(BUILDENV) ac_cv_func_malloc_0_nonnull=yes $(CONFIGURE) --prefix=$(TARGETPREFIX) --host=$(TARGET);\
+	sed -i -e '/^#define malloc rpl_malloc/d' config.h; \
+	make install ; \
+	cp -a $(TARGETPREFIX)/lib/libnfsidmap* $(PKGPREFIX)/lib;\
+	rm $(PKGPREFIX)/lib/*a $(PKGPREFIX)/lib/*/*a ;\
+	$(TARGET)-strip $(PKGPREFIX)/lib/*.so* $(PKGPREFIX)/lib/*/*.so*
+	PKG_VER=$(LIBNFSIDMAP_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/libnfsidmap
+	$(REMOVE)/libnfsidmap-$(LIBNFSIDMAP_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/nfs-utils: $(D)/libevent $(D)/libnfsidmap $(D)/libblkid $(ARCHIVE)/nfs-utils-$(NFSUTILS_VER).tar.bz2
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/nfs-utils-$(NFSUTILS_VER)
+	mkdir -p $(PKGPREFIX)/{sbin,etc/init.d}
+	$(UNTAR)/nfs-utils-$(NFSUTILS_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/nfs-utils-$(NFSUTILS_VER); \
+		$(BUILDENV) $(CONFIGURE) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) \
+			--prefix= --exec-prefix=  --disable-nfsdcltrack \
+                        --disable-uuid --disable-gss --disable-nfsv41 --without-tcp-wrappers; \
+		$(MAKE) DESTDIR=$(PKGPREFIX) install; \
+	install -m 0755 $(SCRIPTS)/knfsd.init $(PKGPREFIX)/etc/init.d/knfsd;\
+	ln -s knfsd $(PKGPREFIX)/etc/init.d/S99knfsd;\
+	ln -s knfsd $(PKGPREFIX)/etc/init.d/K01knfsd;\
+	chmod u+w $(PKGPREFIX)/sbin/mount.nfs; \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX);\
+	rm -rf $(PKGPREFIX)/{share,var/lib/nfs}/;\
+	ln -s /tmp/nfs $(PKGPREFIX)/var/lib/nfs;\
+	PKG_VER=$(NFSUTILS_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/nfs-utils
+	$(REMOVE)/nfs-utils-$(NFSUTILS_VER) $(PKGPREFIX)
 	touch $@
 
 fbshot: $(TARGETPREFIX)/bin/fbshot

@@ -1,0 +1,24 @@
+#!/bin/sh
+# Kernel NFS daemon init script
+
+case "$1" in
+	start)
+		mkdir /tmp/nfs /var/lib/nfs/sm
+		touch /var/lib/nfs/{etab,state,xtab,sm.bak,rmtab}
+		if [ -f /etc/exports ]
+		then
+			pidof portmap > /dev/null || portmap
+			/sbin/rpc.nfsd 4
+			/sbin/rpc.statd
+			/sbin/rpc.mountd
+			/sbin/exportfs -a
+		else
+			echo "No /etc/exports, not starting knfsd."
+		fi
+		;;
+	stop)	KILLPIDS=`pidof rcp.mountd rpc.statd rcp.nfsd`
+		[ "$KILLPIDS" != "" ] && kill $KILLPIDS
+		;;
+esac
+
+exit 0

@@ -452,3 +452,12 @@ $(ARCHIVE)/xupnpd-r$(XUPNPD_REV).tar.gz:
 $(ARCHIVE)/mailsend-$(MAILSEND_VER).tar.gz:
 	$(WGET) https://mailsend.googlecode.com/files/$(notdir $@)
 
+$(ARCHIVE)/nfs-utils-$(NFSUTILS_VER).tar.bz2:
+	$(WGET) http://downloads.sourceforge.net/project/nfs/nfs-utils/$(NFSUTILS_VER)/nfs-utils-$(NFSUTILS_VER).tar.bz2
+
+$(ARCHIVE)/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz:
+	$(WGET) http://www.citi.umich.edu/projects/nfsv4/linux/libnfsidmap/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz
+
+$(ARCHIVE)/libevent-$(LIBEVENT_VER).tar.gz:
+	$(WGET) https://github.com/downloads/libevent/libevent/libevent-$(LIBEVENT_VER).tar.gz
+

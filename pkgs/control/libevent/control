@@ -1,0 +1,11 @@
+Package: libevent
+Version: @VER@-1
+Description: An event notification library
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://libevent.org/
+Source: https://github.com/downloads/libevent
+Depends:
+Provides: @PROV@

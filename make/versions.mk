@@ -372,3 +372,12 @@ XUPNPD_REV=392
 # Send mail via SMTP protocol from command line
 MAILSEND_VER=1.17b14
 
+# NFS Utilities - the userspace server and client tools necessary to use the kernel's NFS abilities
+NFSUTILS_VER=1.2.9
+
+# libevent – an event notification library
+LIBEVENT_VER=2.0.21-stable
+
+# libnfsidmap - a library holding multiple methods of mapping names to id's and visa versa
+LIBNFSIDMAP_VER=0.25
+

@@ -1,0 +1,11 @@
+Package: nfs-utils
+Version: @VER@-1
+Description: NFS server and client tools
+Section: base/libraries
+Priority: standard
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://nfs-utils.sourceforge.net/
+Source:
+Depends: portmap @DEP@
+Provides:
