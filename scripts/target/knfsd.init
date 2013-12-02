@@ -3,8 +3,9 @@
 
 case "$1" in
 	start)
-		mkdir /tmp/nfs /var/lib/nfs/sm
-		touch /var/lib/nfs/{etab,state,xtab,sm.bak,rmtab}
+		mkdir /tmp/nfs /var/lib/nfs/sm 2>/dev/null
+		cd /var/lib/nfs && touch etab state xtab sm.bak rmtab
+		cd /
 		if [ -f /etc/exports ]
 		then
 			pidof portmap > /dev/null || portmap

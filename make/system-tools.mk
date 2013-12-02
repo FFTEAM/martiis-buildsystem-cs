@@ -356,7 +356,7 @@ $(D)/libnfsidmap: $(ARCHIVE)/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz
 	$(REMOVE)/libnfsidmap-$(LIBNFSIDMAP_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/nfs-utils: $(D)/libevent $(D)/libnfsidmap $(D)/libblkid $(ARCHIVE)/nfs-utils-$(NFSUTILS_VER).tar.bz2
+$(D)/nfs-utils: $(D)/libevent $(D)/libnfsidmap $(D)/libblkid $(ARCHIVE)/nfs-utils-$(NFSUTILS_VER).tar.bz2 $(SCRIPTS)/knfsd.init
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/nfs-utils-$(NFSUTILS_VER)
 	mkdir -p $(PKGPREFIX)/{sbin,etc/init.d}
 	$(UNTAR)/nfs-utils-$(NFSUTILS_VER).tar.bz2
