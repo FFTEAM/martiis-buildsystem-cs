@@ -294,7 +294,7 @@ $(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/samba-$(SAMBA2-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/portmap: $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz
+$(D)/portmap: $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz $(PATCHES)/.portmap.rebuild
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/portmap-$(PORTMAP-VER)
 	mkdir -p $(PKGPREFIX)/sbin
 	$(UNTAR)/portmap-$(PORTMAP-VER).tgz
