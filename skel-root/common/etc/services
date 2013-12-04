@@ -45,4 +45,9 @@ udpstreampes	31340/tcp
 udpstreampes	31341/udp
 streamtsfile	31342/tcp
 streames	31343/tcp
+nfs		2049/tcp
+nfs		2049/udp
+local-4022	4022/tcp
+netbios-ssn	139/tcp
+netbios-ns	137/udp
 

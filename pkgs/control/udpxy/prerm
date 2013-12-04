@@ -1,5 +1,4 @@
 #!/bin/sh
-sed -e "/^local-4022\s/ d" -i /etc/services
 sed -e "/^local-4022\s/ d" -i /etc/inetd.conf
 kill $(pidof udpxy) 2>/dev/null || true
 kill -HUP $(pidof inetd)

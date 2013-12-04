@@ -993,7 +993,7 @@ $(D)/xmlto: $(ARCHIVE)/xmlto-$(XMLTO_VER).tar.gz | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/udpxy: $(ARCHIVE)/udpxy.$(UDPXY_VER)-prod.tar.gz $(PATCHES)/udpxy-inetd.diff | $(TARGETPREFIX)
+$(D)/udpxy: $(ARCHIVE)/udpxy.$(UDPXY_VER)-prod.tar.gz $(PATCHES)/udpxy-inetd.diff $(PATCHES)/.rebuild.udpxy | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/udpxy-$(UDPXY_VER)
 	mkdir $(PKGPREFIX) $(PKGPREFIX)/bin
 	$(UNTAR)/udpxy.$(UDPXY_VER)-prod.tar.gz

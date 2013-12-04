@@ -224,7 +224,7 @@ $(D)/autofs: $(ARCHIVE)/autofs-$(AUTOFS-VER).tar.gz | $(TARGETPREFIX)
 
 samba-server:
 samba-client:
-$(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz | $(TARGETPREFIX)
+$(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz $(PATCHES)/.rebuild.samba2 | $(TARGETPREFIX)
 	$(UNTAR)/samba-$(SAMBA2-VER).tar.gz
 	rm -rf $(PKGPREFIX)
 	set -e; cd $(BUILD_TMP)/samba-$(SAMBA2-VER); \
