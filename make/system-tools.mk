@@ -294,7 +294,7 @@ $(D)/samba2: $(ARCHIVE)/samba-$(SAMBA2-VER).tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/samba-$(SAMBA2-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/portmap: $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz $(PATCHES)/.portmap.rebuild
+$(D)/portmap: $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz $(PATCHES)/.rebuild.portmap
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/portmap-$(PORTMAP-VER)
 	mkdir -p $(PKGPREFIX)/sbin
 	$(UNTAR)/portmap-$(PORTMAP-VER).tgz
@@ -356,7 +356,7 @@ $(D)/libnfsidmap: $(ARCHIVE)/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz
 	$(REMOVE)/libnfsidmap-$(LIBNFSIDMAP_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/nfs-utils: $(D)/libevent $(D)/libnfsidmap $(D)/libblkid $(ARCHIVE)/nfs-utils-$(NFSUTILS_VER).tar.bz2 $(SCRIPTS)/knfsd.init
+$(D)/nfs-utils: $(D)/libevent $(D)/libnfsidmap $(D)/libblkid $(D)/portmap $(ARCHIVE)/nfs-utils-$(NFSUTILS_VER).tar.bz2 $(SCRIPTS)/knfsd.init $(PATCHES)/.rebuild.nfsutils
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/nfs-utils-$(NFSUTILS_VER)
 	mkdir -p $(PKGPREFIX)/{sbin,etc/init.d}
 	$(UNTAR)/nfs-utils-$(NFSUTILS_VER).tar.bz2

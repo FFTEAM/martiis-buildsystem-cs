@@ -1,2 +1,3 @@
 #!/bin/sh
+grep ^nfs\\s /etc/services >/dev/null || printf "nfs tcp/2049\nnfs udp/2049\n" >> /etc/services
 /etc/init.d/knfsd start
