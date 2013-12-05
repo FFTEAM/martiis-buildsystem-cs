@@ -6,19 +6,23 @@ case "$1" in
 		mkdir /tmp/nfs /var/lib/nfs/sm 2>/dev/null
 		cd /var/lib/nfs && touch etab state xtab sm.bak rmtab
 		cd /
-		if [ -f /etc/exports ]
-		then
-			pidof portmap > /dev/null || portmap
-			/sbin/rpc.nfsd 4
+		if [ -f /etc/exports ] ; then
+		    (
+			/sbin/portmap
+			/sbin/rpc.nfsd
 			/sbin/rpc.statd
 			/sbin/rpc.mountd
+			# initial rpc registration seems to fail ... FIXME
+			kill -9 $(pidof nfsd)
+			/sbin/rpc.nfsd 4
 			/sbin/exportfs -a
+		    ) &
 		else
 			echo "No /etc/exports, not starting knfsd."
 		fi
 		;;
-	stop)	KILLPIDS=`pidof rcp.mountd rpc.statd rcp.nfsd`
-		[ "$KILLPIDS" != "" ] && kill $KILLPIDS
+	stop)	KILLPIDS=`pidof rpc.mountd rpc.statd nfsd`
+		[ "$KILLPIDS" != "" ] && kill -9 $KILLPIDS
 		;;
 esac
 

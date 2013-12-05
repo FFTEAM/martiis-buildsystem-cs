@@ -372,6 +372,7 @@ $(D)/nfs-utils: $(D)/libevent $(D)/libnfsidmap $(D)/libblkid $(D)/portmap $(ARCH
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX);\
 	rm -rf $(PKGPREFIX)/{share,var/lib/nfs}/;\
 	ln -s /tmp/nfs $(PKGPREFIX)/var/lib/nfs;\
+	printf "/ 0.0.0.0/0.0.0.0(rw,no_subtree_check)\n/media/sda1 0.0.0.0/0.0.0.0(rw,no_subtree_check)\n" > $(PKGPREFIX)/etc/exports;\
 	PKG_VER=$(NFSUTILS_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/nfs-utils
 	$(REMOVE)/nfs-utils-$(NFSUTILS_VER) $(PKGPREFIX)
 	touch $@
