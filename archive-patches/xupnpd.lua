@@ -115,4 +115,9 @@ cfg.ui_path='./ui/'
 cfg.drive=''                    -- reload playlists only if drive state=active/idle, example: cfg.drive='/dev/sda'
 cfg.profiles='./profiles/'      -- device profiles feature
 
+{
+	file = io.open("/tmp/.timer_wakeup", "w")
+	file:close()
+}
+
 dofile('xupnpd_main.lua')
