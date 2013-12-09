@@ -175,7 +175,7 @@ YAFFS2UTILS-VER=0.2.9
 XFSPROGS-VER=3.1.8
 
 # ntfs-3g; file system driver for the NTFS file system, enabling read/write support of NTFS file systems
-NTFS_3G_VER=2012.1.15
+NTFS_3G_VER=2013.1.13
 
 # autofs; mounting filesystems on demand
 AUTOFS-VER=4.1.4
