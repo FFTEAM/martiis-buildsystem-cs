@@ -126,7 +126,7 @@ end
 
 load()
 
-local m = menue.new{name="FritzBox CallMonitor", icon="settings"}
+local m = menu.new{name="FritzBox CallMonitor", icon="settings"}
 m:addKey{directkey=RC["home"], id="home", action="handle_key"}
 m:addItem{type="back"}
 m:addItem{type="separator"}
