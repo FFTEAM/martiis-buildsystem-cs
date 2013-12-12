@@ -162,6 +162,10 @@ $(D)/libFLAC: $(ARCHIVE)/flac-1.2.1.tar.gz | $(TARGETPREFIX)
 	$(REMOVE)/flac-1.2.1
 	touch $@
 
+# hackedy hack :-)
+space :=
+space +=
+PNG_SOVER = $(subst $(space),, $(wordlist 1, 2, $(subst ., , $(PNG_VER))))
 $(D)/libpng: $(D)/libpng-$(PNG_VER)
 	touch $@
 $(D)/libpng-$(PNG_VER): $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGETPREFIX)
@@ -169,12 +173,15 @@ $(D)/libpng-$(PNG_VER): $(ARCHIVE)/libpng-$(PNG_VER).tar.xz $(D)/zlib | $(TARGET
 	set -e; cd $(BUILD_TMP)/libpng-$(PNG_VER); \
 		$(CONFIGURE) --prefix=$(TARGETPREFIX) --build=$(BUILD) --host=$(TARGET) --bindir=$(HOSTPREFIX)/bin --mandir=$(BUILD_TMP)/tmpman; \
 		ECHO=echo $(MAKE) all; \
-		rm -f $(TARGETPREFIX)/lib/libpng.so* $(TARGETPREFIX)/lib/libpng12.so*; \
+		rm -f $(TARGETPREFIX)/lib/libpng.so* $(TARGETPREFIX)/lib/libpng$(PNG_SOVER).so*; \
 		make install
 	$(REMOVE)/libpng-$(PNG_VER) $(BUILD_TMP)/tmpman $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libpng12.so.* $(PKGPREFIX)/lib
-	PKG_VER=$(PNG_VER) $(OPKG_SH) $(CONTROL_DIR)/libpng12
+	cp -a $(TARGETPREFIX)/lib/libpng$(PNG_SOVER).so.* $(PKGPREFIX)/lib
+	PKG_VER=$(PNG_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+		$(OPKG_SH) $(CONTROL_DIR)/libpng$(PNG_SOVER)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
