@@ -1,4 +1,4 @@
-Package: libpng
+Package: libpng16
 Version: @VER@-1
 Description: Portable Network Graphics Library
 Section: base/libraries

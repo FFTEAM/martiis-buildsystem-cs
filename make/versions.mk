@@ -46,7 +46,7 @@ UTIL_LINUX_NG_VER=2.18
 CURL_VER=7.28.0
 
 # libpng; reference library for reading and writing PNGs
-PNG_VER=1.2.50
+PNG_VER=1.6.6
 
 # freetype; free, high-quality and portable Font engine
 FREETYPE_VER=2.5.0.1
