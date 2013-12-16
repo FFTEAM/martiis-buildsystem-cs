@@ -170,7 +170,7 @@ $(D)/xfsprogs: $(ARCHIVE)/xfsprogs-$(XFSPROGS-VER).tar.gz | $(TARGETPREFIX) $(TA
 	$(REMOVE)/xfsprogs-$(XFSPROGS-VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz | $(TARGETPREFIX)
+$(D)/ntfs-3g: $(ARCHIVE)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz $(PATCHES)/.rebuild.ntfs-3g | $(TARGETPREFIX)
 	$(UNTAR)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER).tgz
 	set -e; cd $(BUILD_TMP)/ntfs-3g_ntfsprogs-$(NTFS_3G_VER); \
 		CFLAGS="-pipe -O2 -g" ./configure \
