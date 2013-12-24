@@ -5,6 +5,6 @@ Section: extras/utils
 Priority: optional
 Maintainer: @MAINT@
 Architecture: @ARCH@
-Homepage: http://http://sourceforge.net/projects/howl
-Source: http://http://sourceforge.net/projects/howl
+Homepage: http://sourceforge.net/projects/howl
+Source: http://sourceforge.net/projects/howl
 Depends: @DEP@
