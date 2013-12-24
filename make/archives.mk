@@ -461,3 +461,6 @@ $(ARCHIVE)/libnfsidmap-$(LIBNFSIDMAP_VER).tar.gz:
 $(ARCHIVE)/libevent-$(LIBEVENT_VER).tar.gz:
 	$(WGET) https://github.com/downloads/libevent/libevent/libevent-$(LIBEVENT_VER).tar.gz
 
+$(ARCHIVE)/hd-idle-$(HDIDLE_VER).tgz:
+	$(WGET) http://downloads.sourceforge.net/project/hd-idle/hd-idle-$(HDIDLE_VER).tgz
+

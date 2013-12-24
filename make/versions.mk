@@ -381,3 +381,6 @@ LIBEVENT_VER=2.0.21-stable
 # libnfsidmap - a library holding multiple methods of mapping names to id's and visa versa
 LIBNFSIDMAP_VER=0.25
 
+# hd-idle is a [Linux] utility program for spinning-down external disks after a period of idle time.
+HDIDLE_VER=1.04
+

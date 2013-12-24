@@ -687,6 +687,19 @@ $(D)/jfsutils: $(ARCHIVE)/jfsutils-$(JFSUTILS_VER).tar.gz e2fsprogs | $(TARGETPR
 		$(REMOVE)/jfsutils-$(JFSUTILS_VER) $(PKGPREFIX)
 	touch $@
 
+$(D)/hd-idle: $(ARCHIVE)/hd-idle-$(HDIDLE_VER).tgz | $(TARGETPREFIX)
+	$(REMOVE)/hd-idle-$(HDIDLE_VER) $(PKGPREFIX)
+	$(UNTAR)/hd-idle-$(HDIDLE_VER).tgz
+	set -e; cd $(BUILD_TMP)/hd-idle; \
+		sed -i -e 's/-g root -o root//g' Makefile ; \
+		$(BUILDENV) make CC=$(TARGET)-gcc TARGET_DIR=$(PKGPREFIX) install ; \
+		cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+		rm -rf $(PKGPREFIX)/share
+		$(TARGET)-strip $(PKGPREFIX)/sbin/*
+		PKG_VER=$(HDIDLE_VER) PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/hd-idle
+		$(REMOVE)/hd-idle $(PKGPREFIX)
+	touch $@
+
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools $(D)/vsftpd
 system-tools-opt: $(D)/samba2 $(D)/ntfs-3g
 system-tools-all: system-tools system-tools-opt

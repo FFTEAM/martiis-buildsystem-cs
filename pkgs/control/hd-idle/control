@@ -1,0 +1,10 @@
+Package: hd-idle
+Version: @VER@-1
+Description: A utility program for spinning-down external disks after a period of idle time.
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceforge.net/projects/hd-idle
+Source: http://sourceforge.net/projects/hd-idle/
+Depends: @DEP@
