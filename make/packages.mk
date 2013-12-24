@@ -4,8 +4,8 @@ SYSTEM_PKGS = neutrino-pkg minimal-system-pkgs
 SYSTEM_OPKGS =
 
 # additional stuff which is useful on most systems
-SYSTEM_PKGS  += e2fsprogs dropbear wireless_tools wpa_supplicant vsftpd djmount
-SYSTEM_OPKGS += e2fsprogs dropbear wireless_tools wpa_supplicant vsftpd djmount
+SYSTEM_PKGS  += e2fsprogs dropbear wireless_tools wpa_supplicant vsftpd djmount hd-idle
+SYSTEM_OPKGS += e2fsprogs dropbear wireless_tools wpa_supplicant vsftpd djmount hd-idle
 
 ifeq ($(ROOTFS_TYPE), yaffs2)
 SYSTEM_PKGS  += yaffs2utils
@@ -24,7 +24,7 @@ SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 open
 SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links aio-grab howl
 
 # packages not included in the final image, but installable via opkg-cl
-OPKG_PKGS = luasoap luacurl ntfs-3g ppp usb-modeswitch openvpn jfsutils xupnpd udpxy mailsend nfs-utils hd-idle
+OPKG_PKGS = luasoap luacurl ntfs-3g ppp usb-modeswitch openvpn jfsutils xupnpd udpxy mailsend nfs-utils
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
