@@ -59,7 +59,7 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz | $(TARGETPR
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 $(PATCHES)/busybox-$(BUSYBOX-VER).config | $(TARGETPREFIX)
 	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	set -e; cd $(BUILD_TMP)/busybox-$(BUSYBOX-VER); \
@@ -688,16 +688,40 @@ $(D)/jfsutils: $(ARCHIVE)/jfsutils-$(JFSUTILS_VER).tar.gz e2fsprogs | $(TARGETPR
 	touch $@
 
 $(D)/hd-idle: $(ARCHIVE)/hd-idle-$(HDIDLE_VER).tgz | $(TARGETPREFIX)
-	$(REMOVE)/hd-idle-$(HDIDLE_VER) $(PKGPREFIX)
+	$(REMOVE)/hd-idle $(PKGPREFIX)
 	$(UNTAR)/hd-idle-$(HDIDLE_VER).tgz
 	set -e; cd $(BUILD_TMP)/hd-idle; \
 		sed -i -e 's/-g root -o root//g' Makefile ; \
 		$(BUILDENV) make CC=$(TARGET)-gcc TARGET_DIR=$(PKGPREFIX) install ; \
-		cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-		rm -rf $(PKGPREFIX)/share
+		cp -a $(PKGPREFIX)/* $(TARGETPREFIX) ; \
+		rm -rf $(PKGPREFIX)/share ; \
 		$(TARGET)-strip $(PKGPREFIX)/sbin/*
 		PKG_VER=$(HDIDLE_VER) PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/hd-idle
 		$(REMOVE)/hd-idle $(PKGPREFIX)
+	touch $@
+
+$(D)/hdparm: $(ARCHIVE)/hdparm-$(HDPARM_VER).tar.gz | $(TARGETPREFIX)
+	$(REMOVE)/hdparm-$(HDPARM_VER) $(PKGPREFIX)
+	$(UNTAR)/hdparm-$(HDPARM_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/hdparm-$(HDPARM_VER); \
+		$(BUILDENV) make CC=$(TARGET)-gcc STRIP=$(TARGET)-strip DESTDIR=$(PKGPREFIX) install ; \
+		cp -a $(PKGPREFIX)/* $(TARGETPREFIX) ; \
+		rm -rf $(PKGPREFIX)/usr ; \
+		PKG_VER=$(HDPARM_VER) PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/hdparm
+		$(REMOVE)/hdparm-$(HDPARM_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/sdparm: $(ARCHIVE)/sdparm-$(SDPARM_VER).tgz | $(TARGETPREFIX)
+	$(REMOVE)/sdparm-$(SDPARM_VER) $(PKGPREFIX)
+	$(UNTAR)/sdparm-$(SDPARM_VER).tgz
+	set -e; cd $(BUILD_TMP)/sdparm-$(SDPARM_VER); \
+		$(BUILDENV) ./configure --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --bindir=/sbin --prefix= ; \
+		$(MAKE) install DESTDIR=$(PKGPREFIX)
+		cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+		rm -rf $(PKGPREFIX)/share $(PKGPREFIX)/sbin/*_*
+		$(TARGET)-strip $(PKGPREFIX)/sbin/*
+		PKG_VER=$(SDPARM_VER) PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/sdparm
+		$(REMOVE)/sdparm-$(SDPARM_VER) $(PKGPREFIX)
 	touch $@
 
 system-tools: $(D)/rsync $(D)/procps $(D)/busybox $(D)/e2fsprogs $(D)/ntp $(D)/wpa_supplicant $(D)/wireless_tools $(D)/vsftpd

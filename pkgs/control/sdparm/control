@@ -1,0 +1,10 @@
+Package: sdparm
+Version: @VER@-1
+Description: A utility for accessing SCSI device parameters
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sg.danny.cz/sg/sdparm.html
+Source: http://sg.danny.cz/sg/sdparm.html
+Depends: @DEP@

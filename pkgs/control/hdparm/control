@@ -1,0 +1,10 @@
+Package: hdparm
+Version: @VER@-1
+Description: hdparm - get/set ATA/SATA drive parameters under Linux
+Section: extras/utils
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://sourceforge.net/projects/hdparm/
+Source: http://sourceforge.net/projects/hdparm/
+Depends: @DEP@

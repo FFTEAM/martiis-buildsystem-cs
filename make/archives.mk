@@ -464,3 +464,9 @@ $(ARCHIVE)/libevent-$(LIBEVENT_VER).tar.gz:
 $(ARCHIVE)/hd-idle-$(HDIDLE_VER).tgz:
 	$(WGET) http://downloads.sourceforge.net/project/hd-idle/hd-idle-$(HDIDLE_VER).tgz
 
+$(ARCHIVE)/hdparm-$(HDPARM_VER).tar.gz:
+	$(WGET) http://downloads.sourceforge.net/project/hdparm/hdparm/hdparm-$(HDPARM_VER).tar.gz
+
+$(ARCHIVE)/sdparm-$(SDPARM_VER).tar.gz:
+	$(WGET) http://sg.danny.cz/sg/p/sdparm-$(SDPARM_VER).tgz
+

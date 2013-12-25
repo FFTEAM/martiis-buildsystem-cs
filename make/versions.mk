@@ -384,3 +384,9 @@ LIBNFSIDMAP_VER=0.25
 # hd-idle is a [Linux] utility program for spinning-down external disks after a period of idle time.
 HDIDLE_VER=1.04
 
+# hdparm - get/set ATA/SATA drive parameters
+HDPARM_VER=9.43
+
+# sdparm - access SCSI device parameters
+SDPARM_VER=1.08
+
