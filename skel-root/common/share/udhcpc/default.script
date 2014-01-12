@@ -4,17 +4,21 @@
 
 RESOLV_CONF="/etc/resolv.conf"
 
+# ip was moved to /sbin with busybox 1.21
+IP=/sbin/ip
+test -e $IP || IP=/bin/ip
+
 case "$1" in
 	deconfig)
-		/bin/ip link set $interface up
+		$IP link set $interface up
 		;;
 
 	renew|bound)
-		/bin/ip addr add $ip/$mask dev $interface
+		$IP addr add $ip/$mask dev $interface
 
 		if [ -n "$router" ] ; then
 			for i in $router ; do
-				/bin/ip route add default via $i dev $interface
+				$IP route add default via $i dev $interface
 			done
 		fi
 
