@@ -237,8 +237,8 @@ $(ARCHIVE)/portmap-$(PORTMAP-VER).tgz:
 $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz:
 	$(WGET) http://procps.sourceforge.net/procps-$(PROCPS-VER).tar.gz
 
-$(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2:
-	$(WGET) http://busybox.net/downloads/busybox-$(BUSYBOX-VER).tar.bz2
+$(ARCHIVE)/busybox-$(BUSYBOX_VER).tar.bz2:
+	$(WGET) http://busybox.net/downloads/$(notdir $@)
 
 $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2

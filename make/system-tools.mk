@@ -59,17 +59,20 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz | $(TARGETPR
 	rm -rf $(PKGPREFIX)
 	touch $@
 
-$(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
-	$(UNTAR)/busybox-$(BUSYBOX-VER).tar.bz2
+$(D)/busybox: $(D)/busybox-$(BUSYBOX_VER)
+$(D)/busybox-$(BUSYBOX_VER): $(ARCHIVE)/busybox-$(BUSYBOX_VER).tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/busybox-$(BUSYBOX_VER).tar.bz2
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
-	set -e; cd $(BUILD_TMP)/busybox-$(BUSYBOX-VER); \
+	set -e; cd $(BUILD_TMP)/busybox-$(BUSYBOX_VER); \
 		$(PATCH)/busybox-1.18-hack-init-s-console.patch; \
-		$(PATCH)/busybox-1.19.4-revert-broken-sighandling.patch; \
-		$(PATCH)/busybox-1.19.4-mdev-firmware-loading.diff; \
-		$(PATCH)/busybox-1.19.4-mdev-increase-timeout.diff; \
-		test -e $(PATCHES)/busybox-1.19.config.$(PLATFORM) && \
-			cp $(PATCHES)/busybox-1.19.config.$(PLATFORM) .config || \
-			cp $(PATCHES)/busybox-1.19.config .config; \
+		$(PATCH)/busybox-$(BUSYBOX_VER)-revert-broken-sighandling.patch; \
+		$(PATCH)/busybox-$(BUSYBOX_VER)-mdev-firmware-loading.diff; \
+		$(PATCH)/busybox-$(BUSYBOX_VER)-mdev-increase-timeout.diff; \
+		test x"$(BUSYBOX_VER)" = x1.21.1 && \
+			$(PATCH)/busybox-1.21.1-udhcpcp-fix-old-kernel.diff || true; \
+		test -e $(PATCHES)/busybox-$(BUSYBOX_REL).config.$(PLATFORM) && \
+			cp $(PATCHES)/busybox-$(BUSYBOX_REL).config.$(PLATFORM) .config || \
+			cp $(PATCHES)/busybox-$(BUSYBOX_REL).config .config; \
 		sed -i -e 's#^CONFIG_PREFIX.*#CONFIG_PREFIX="$(PKGPREFIX)"#' .config; \
 		grep -q DBB_BT=AUTOCONF_TIMESTAMP Makefile.flags && \
 		sed -i 's#AUTOCONF_TIMESTAMP#"\\"$(PLATFORM)\\""#' Makefile.flags || true; \
@@ -84,8 +87,8 @@ $(D)/busybox: $(ARCHIVE)/busybox-$(BUSYBOX-VER).tar.bz2 | $(TARGETPREFIX)
 	sed -i 's/,$$//' $(BUILD_TMP)/bb-control/control
 	sed -i 's/\(^Provides:\)\(.*$$\)/\1\2\nConflicts:\2/' $(BUILD_TMP)/bb-control/control
 	echo >> $(BUILD_TMP)/bb-control/control
-	PKG_VER=$(BUSYBOX-VER) $(OPKG_SH) $(BUILD_TMP)/bb-control
-	$(REMOVE)/busybox-$(BUSYBOX-VER) $(PKGPREFIX) $(BUILD_TMP)/bb-control
+	PKG_VER=$(BUSYBOX_VER) $(OPKG_SH) $(BUILD_TMP)/bb-control
+	$(REMOVE)/busybox-$(BUSYBOX_VER) $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	touch $@
 
 # experimental

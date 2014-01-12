@@ -1,0 +1,26 @@
+diff --git a/util-linux/mdev.c b/util-linux/mdev.c
+index c5c0d61..eca2b0a 100644
+--- a/util-linux/mdev.c
++++ b/util-linux/mdev.c
+@@ -887,11 +887,19 @@ static void load_firmware(const char *firmware, const char *sysfs_path)
+ 	int firmware_fd, loading_fd;
+ 
+ 	/* check for /lib/firmware/$FIRMWARE */
+-	xchdir("/lib/firmware");
++	if (chdir("/lib/firmware")) {
++		/* don't die -- we still might need to write mdev.seq */
++		bb_perror_msg("chdir(%s)", "/lib/firmware");
++		return;
++	}
+ 	firmware_fd = open(firmware, O_RDONLY); /* can fail */
+ 
+ 	/* check for /sys/$DEVPATH/loading ... give 30 seconds to appear */
+-	xchdir(sysfs_path);
++	if (chdir(sysfs_path)) {
++		bb_perror_msg("chdir(%s)", sysfs_path); /* crappy driver... */
++		loading_fd = -1; /* don't close random fd's */
++		goto out;
++	}
+ 	for (cnt = 0; cnt < 30; ++cnt) {
+ 		loading_fd = open("loading", O_WRONLY);
+ 		if (loading_fd >= 0)

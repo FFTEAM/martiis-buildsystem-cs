@@ -7,4 +7,4 @@ Maintainer: @MAINT@
 Architecture: @ARCH@
 Homepage: http://busybox.net
 Source:
-Depends: libc.so.6
+Depends: libc.so.6, aaa_base(>= 2)

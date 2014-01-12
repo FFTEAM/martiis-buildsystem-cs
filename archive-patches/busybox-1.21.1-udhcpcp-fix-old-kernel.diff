@@ -1,0 +1,58 @@
+diff --git a/networking/udhcp/dhcpc.c b/networking/udhcp/dhcpc.c
+index 8dee916..02a8c7d 100644
+--- a/networking/udhcp/dhcpc.c
++++ b/networking/udhcp/dhcpc.c
+@@ -836,6 +836,7 @@ static NOINLINE int udhcp_recv_raw_packet(struct dhcp_packet *dhcp_pkt, int fd)
+ 	int bytes;
+ 	struct ip_udp_dhcp_packet packet;
+ 	uint16_t check;
++#ifdef PACKET_AUXDATA
+ 	unsigned char cmsgbuf[CMSG_LEN(sizeof(struct tpacket_auxdata))];
+ 	struct iovec iov;
+ 	struct msghdr msg;
+@@ -862,6 +863,14 @@ static NOINLINE int udhcp_recv_raw_packet(struct dhcp_packet *dhcp_pkt, int fd)
+ 		}
+ 		break;
+ 	}
++#else
++	bytes = safe_read(fd, &packet, sizeof(packet));
++	if (bytes < 0) {
++		log1("Packet read error, ignoring");
++		/* NB: possible down interface, etc. Caller should pause. */
++		return bytes; /* returns -1 */
++	}
++#endif
+ 
+ 	if (bytes < (int) (sizeof(packet.ip) + sizeof(packet.udp))) {
+ 		log1("Packet is too short, ignoring");
+@@ -897,6 +906,7 @@ static NOINLINE int udhcp_recv_raw_packet(struct dhcp_packet *dhcp_pkt, int fd)
+ 		return -2;
+ 	}
+ 
++#ifdef PACKET_AUXDATA
+ 	for (cmsg = CMSG_FIRSTHDR(&msg); cmsg; cmsg = CMSG_NXTHDR(&msg, cmsg)) {
+ 		if (cmsg->cmsg_level == SOL_PACKET
+ 		 && cmsg->cmsg_type == PACKET_AUXDATA
+@@ -910,6 +920,7 @@ static NOINLINE int udhcp_recv_raw_packet(struct dhcp_packet *dhcp_pkt, int fd)
+ 				goto skip_udp_sum_check;
+ 		}
+ 	}
++#endif
+ 
+ 	/* verify UDP checksum. IP header has to be modified for this */
+ 	memset(&packet.ip, 0, offsetof(struct iphdr, protocol));
+@@ -1032,12 +1043,14 @@ static int udhcp_raw_socket(int ifindex)
+ 			log1("Attached filter to raw socket fd"); // log?
+ 	}
+ 
++#ifdef PACKET_AUXDATA
+ 	if (setsockopt(fd, SOL_PACKET, PACKET_AUXDATA,
+ 			&const_int_1, sizeof(int)) < 0
+ 	) {
+ 		if (errno != ENOPROTOOPT)
+ 			log1("Can't set PACKET_AUXDATA on raw socket");
+ 	}
++#endif
+ 
+ 	log1("Created raw socket");
+ 
