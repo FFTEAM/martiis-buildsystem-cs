@@ -449,10 +449,11 @@ $(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_VER).tar.gz | $(TARGETPREFIX)
 		cp -a src/opkg-cl $(HOSTPREFIX)/bin
 	install -d -m 0755 $(PKGPREFIX)/var/lib/opkg
 	install -d -m 0755 $(PKGPREFIX)/etc/opkg
+	ln -s opkg-cl $(PKGPREFIX)/bin/opkg # convenience symlink
 	echo "# example config file, copy to opkg.conf and edit" > $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	echo "src server http://server/dist/$(PLATFORM)" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
-	echo "# add an optional cache directory, important if too few  flash memory is available!" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
-	echo "# directory must be exists, before executing of opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "# add an optional cache directory, important if not enough flash memory is available!" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
+	echo "# directory must exist before executing of opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	echo "option cache /tmp/media/sda1/.opkg" >> $(PKGPREFIX)/etc/opkg/opkg.conf.example
 	$(REMOVE)/opkg-$(OPKG_VER) $(PKGPREFIX)/.remove
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
