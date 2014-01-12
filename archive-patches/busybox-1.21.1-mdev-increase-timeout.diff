@@ -1,0 +1,13 @@
+diff --git a/util-linux/mdev.c b/util-linux/mdev.c
+index eca2b0a..f9db185 100644
+--- a/util-linux/mdev.c
++++ b/util-linux/mdev.c
+@@ -972,7 +972,7 @@ wait_for_seqfile(const char *seq)
+ {
+ 	/* We time out after 2 sec */
+ 	static const struct timespec ts = { 0, 32*1000*1000 };
+-	int timeout = 2000 / 32;
++	int timeout = 5000 / 32;
+ 	int seq_fd = -1;
+ 	int do_once = 1;
+ 	sigset_t set_CHLD;
