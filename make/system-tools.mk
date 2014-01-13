@@ -60,7 +60,7 @@ $(D)/procps: $(D)/libncurses $(ARCHIVE)/procps-$(PROCPS-VER).tar.gz | $(TARGETPR
 	touch $@
 
 $(D)/busybox: $(D)/busybox-$(BUSYBOX_VER)
-$(D)/busybox-$(BUSYBOX_VER): $(ARCHIVE)/busybox-$(BUSYBOX_VER).tar.bz2 $(PATCHES)/busybox-$(BUSYBOX-VER).config | $(TARGETPREFIX)
+$(D)/busybox-$(BUSYBOX_VER): $(ARCHIVE)/busybox-$(BUSYBOX_VER).tar.bz2 $(PATCHES)/busybox-$(BUSYBOX_REL).config | $(TARGETPREFIX)
 	$(UNTAR)/busybox-$(BUSYBOX_VER).tar.bz2
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/bb-control
 	set -e; cd $(BUILD_TMP)/busybox-$(BUSYBOX_VER); \
