@@ -7,10 +7,9 @@
 if test -e /etc/devwait.conf; then
 	DEVICES=$(cat /etc/devwait.conf)
 else
-	# defaults. input/uinput is taken care of by lirc init script
 	DEVICES="/dev/dvb/adapter0/demux0 /dev/dvb/adapter0/video0
 		 /dev/dvb/adapter0/audio0 /dev/dvb/adapter0/frontend0
-		 /dev/fb/0 /dev/bpamem"
+		 /dev/fb/0 /dev/bpamem /dev/uinput"
 fi
 
 case $1 in
