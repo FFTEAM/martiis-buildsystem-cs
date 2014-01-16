@@ -1,11 +1,11 @@
-build_tmp
-ccache
-cross
-deps
+build_tmp*
+ccache*
+cross*
+deps*
 download
 hack
 host
-root
+root*
 store
 test
 source
@@ -13,6 +13,7 @@ local
 Makefile.local
 .ignore
 config
-obj
+obj*
 root-generic
+pkgs*
 *~
