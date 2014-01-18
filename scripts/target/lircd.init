@@ -19,7 +19,7 @@ case $1 in
 		/sbin/lircd -u $LIRCD_CONF
 		/bin/irexec -d /etc/lircrc
 		touch /tmp/.init_lircd_done
-		) &
+		) >/dev/null 2>&1 &
 		;;
 	stop)
 		kill -TERM `cat $PID`
