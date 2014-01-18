@@ -4,6 +4,7 @@ PID=/var/run/lirc/lircd.pid
 case $1 in
 	start)
 		(
+		touch /tmp/.init_lircd_done
 #		read dummy dummy KVER dummy < /proc/version
 #		grep -q uinput /lib/modules/${KVER}/modules.dep || depmod -a
 #		modprobe uinput
@@ -18,7 +19,7 @@ case $1 in
 		done
 		/sbin/lircd -u $LIRCD_CONF
 		/bin/irexec -d /etc/lircrc
-		touch /tmp/.init_lircd_done
+		rm /tmp/.init_lircd_done
 		) >/dev/null 2>&1 &
 		;;
 	stop)
