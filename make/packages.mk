@@ -31,11 +31,11 @@ SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
 SYSTEM_OPKGS  += graphlcd-base-touchcol
 endif
 
-glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
+glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig $(PATCHES)/.rebuild.glibc
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
 	set -e; cd $(PKGPREFIX); \
-		mkdir lib sbin etc; \
+		mkdir lib sbin etc bin; \
 		if test -e $(CROSS_DIR)/$(TARGET)/sys-root/lib; then \
 			cp -a $(CROSS_DIR)/$(TARGET)/sys-root/lib/*.so* lib/; \
 		else \
@@ -43,6 +43,9 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		fi; \
 		if test -e $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/libstdc++.so; then \
 			cp -a $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/libstdc++.s*[!y] lib/; \
+		fi; \
+		if test -e $(CROSS_DIR)/target/usr/bin/iconv; then \
+			cp -a $(CROSS_DIR)/target/usr/bin/iconv bin/; \
 		fi; \
 		(cp -a $(TARGETPREFIX)/sbin/ldconfig sbin/||true);  \
 		rm -fv lib/libnss_hesiod* lib/libnss_nis* lib/libnss_compat* \
