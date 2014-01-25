@@ -15,5 +15,5 @@ Makefile.local
 config
 obj*
 root-generic
-pkgs*
+pkgs-*
 *~

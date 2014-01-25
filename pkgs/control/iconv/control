@@ -1,0 +1,11 @@
+Package: iconv
+Version: @VER@-1
+Description: iconv/gconv from the GNU C library
+Section: base/libraries
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://www.gnu.org/software/libc/
+Source:
+Depends: @DEP@
+Provides: @PROV@
