@@ -110,6 +110,9 @@ LUASOAP_VER=3.0
 LUACURL_VER=20130218
 LUACURL_TAG=89ca8b6b8fdc9c0237bf6184abb1885101d2023e
 
+# luasec (prosody version)
+LUASEC_PROSODY_VER=0.5.1
+
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 

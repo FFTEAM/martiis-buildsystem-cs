@@ -1,0 +1,12 @@
+Package: luasec-prosody
+Version: @VER@-1
+Description: LUA binding for OpenSSL to provide TLS/SSL communication.
+Section: lua
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://http://prosody.im/doc/depends/luasec/prosody
+Source: http://http://prosody.im/doc/depends/luasec/prosody
+Depends: @DEP@, luasocket
+Provides: luasec
+

@@ -757,6 +757,7 @@ $(D)/luasocket: $(ARCHIVE)/luasocket-$(LUASOCKET_VER).tar.bz2 lua
 		$(MAKE) LUAPREFIX_linux=/ LUAV=$(LUA_VER_SHORT) install
 	PKG_VER=$(LUASOCKET_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasocket
 	$(REMOVE)/luasocket-$(LUASOCKET_VER)
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	touch $@
 
@@ -769,8 +770,8 @@ $(D)/luaexpat: $(ARCHIVE)/luaexpat-$(LUAEXPAT_VER).tar.gz lua libexpat
 		$(MAKE) CC=$(TARGET)-gcc LD=$(TARGET)-gcc LIB_OPTION="-shared -L$(TARGETPREFIX)/lib"; \
 		$(MAKE) install; \
 	PKG_VER=$(LUAEXPAT_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luaexpat
-	$(REMOVE)/luaexpat-$(LUAEXPAT_VER)
-	rm -rf $(PKGPREFIX)
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REMOVE)/luaexpat-$(LUAEXPAT_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/luasoap: $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz $(PATCHES)/luasoap-$(LUASOAP_VER).diff lua luasocket luaexpat
@@ -781,8 +782,8 @@ $(D)/luasoap: $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz $(PATCHES)/luasoap-$(LUAS
 		$(PATCH)/luasoap-$(LUASOAP_VER).diff ; \
 		$(MAKE) LUA_DIR=$(PKGPREFIX)/share/lua/$(LUA_VER_SHORT) install; \
 	PKG_VER=$(LUASOAP_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasoap
-	$(REMOVE)/luasoap-$(LUASOAP_VER)
-	rm -rf $(PKGPREFIX)
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REMOVE)/luasoap-$(LUASOAP_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/luacurl: $(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2 lua libcurl
@@ -794,8 +795,22 @@ $(D)/luacurl: $(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2 lua libcurl
 		sed -i -e "s/lua_strlen/lua_rawlen/g" -e "s/luaL_reg/luaL_Reg/g" luacurl.c ; \
 		$(TARGET)-gcc -I$(TARGETPREFIX)/include -fPIC -shared -s -o $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/luacurl.so luacurl.c -L$(TARGETPREFIX)/lib -lcurl ; \
 	PKG_VER=$(LUACURL_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luacurl
-	$(REMOVE)/luacurl-$(LUACURL_VER)
-	rm -rf $(PKGPREFIX)
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REMOVE)/luacurl-$(LUACURL_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/luasec-prosody: $(ARCHIVE)/luasec-prosody-$(LUASEC_PROSODY_VER).tar.gz lua openssl-libs luasocket
+	$(REMOVE)/luasec-prosody-$(LUASEC_PROSODY_VER) $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/
+	$(UNTAR)/luasec-prosody-$(LUASEC_PROSODY_VER).tar.gz
+	set -e; cd $(BUILD_TMP)/luasec-prosody-$(LUASEC_PROSODY_VER); \
+	$(BUILDENV) \
+	LIBDIR=-L$(TARGETPREFIX)/lib LUAPATH=/share/lua/$(LUA_VER_SHORT) LUACPATH=/lib/lua/$(LUA_VER_SHORT) \
+	CC=$(TARGET)-gcc LD=$(TARGET)-gcc DESTDIR=$(PKGPREFIX) make linux install ; \
+	opkg-find-requires.sh $(PKGPREFIX)
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(LUASEC_PROSODY_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasec-prosody
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REMOVE)/luasec-prosody-$(LUASEC_PROSODY_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif
