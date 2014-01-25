@@ -70,9 +70,15 @@ iconv-pkg: glibc-pkg $(PATCHES)/.rebuild.glibc
 	mkdir -p $(PKGPREFIX)
 	set -e; cd $(PKGPREFIX); \
 		mkdir bin sbin usr usr/lib ; \
-		cp -p $(CROSS_DIR)/target/usr/bin/iconv bin/ ; \
-		cp -p $(CROSS_DIR)/target/usr/sbin/iconvconfig sbin/ ; \
-		cp -a $(CROSS_DIR)/target/usr/lib/gconv usr/lib/ ; \
+		if test -e $(CROSS_DIR)/$(TARGET)/sys-root/usr/bin/iconv; then \
+			cp -p $(CROSS_DIR)/$(TARGET)/sys-root/usr/bin/iconv bin/ ; \
+			cp -p $(CROSS_DIR)/$(TARGET)/sys-root/usr/sbin/iconvconfig sbin/ ; \
+			cp -a $(CROSS_DIR)/$(TARGET)/sys-root/usr/lib/gconv usr/lib/ ; \
+		else \
+			cp -p $(CROSS_DIR)/target/usr/bin/iconv bin/ ; \
+			cp -p $(CROSS_DIR)/target/usr/sbin/iconvconfig sbin/ ; \
+			cp -a $(CROSS_DIR)/target/usr/lib/gconv usr/lib/ ; \
+		fi ; \
 	PKG_VER=`cd $(CROSS_DIR)/target/lib; echo ld-*.so` && PKG_VER=$${PKG_VER#ld-} && PKG_VER=$${PKG_VER%.so} \
 	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/iconv
