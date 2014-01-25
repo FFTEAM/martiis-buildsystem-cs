@@ -24,14 +24,14 @@ SYSTEM_PKGS  += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 open
 SYSTEM_OPKGS += mtd-utils tuxcom tuxwetter msgbox input getrc shellexec fx2 openssl-libs links aio-grab howl
 
 # packages not included in the final image, but installable via opkg-cl
-OPKG_PKGS = luasoap luacurl ntfs-3g ppp usb-modeswitch openvpn jfsutils xupnpd udpxy mailsend nfs-utils hdparm sdparm
+OPKG_PKGS = luasoap luacurl ntfs-3g ppp usb-modeswitch openvpn jfsutils xupnpd udpxy mailsend nfs-utils hdparm sdparm iconv-pkg
 
 ifeq ($(USE_GRAPHLCD), yes)
 SYSTEM_PKGS  += graphlcd-base-touchcol libusb libusb-compat
 SYSTEM_OPKGS  += graphlcd-base-touchcol
 endif
 
-glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
+glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig $(PATCHES)/.rebuild.glibc
 	rm -rf $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)
 	set -e; cd $(PKGPREFIX); \
@@ -64,6 +64,19 @@ glibc-pkg: $(TARGETPREFIX)/sbin/ldconfig
 		 $(BUILD_TMP)/glibc-control/control
 	DONT_STRIP=1 $(OPKG_SH) $(BUILD_TMP)/glibc-control
 	rm -rf $(PKGPREFIX) $(BUILD_TMP)/glibc-control
+
+iconv-pkg: glibc-pkg $(PATCHES)/.rebuild.glibc
+	rm -rf $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)
+	set -e; cd $(PKGPREFIX); \
+		mkdir bin sbin usr usr/lib ; \
+		cp -p $(CROSS_DIR)/target/usr/bin/iconv bin/ ; \
+		cp -p $(CROSS_DIR)/target/usr/sbin/iconvconfig sbin/ ; \
+		cp -a $(CROSS_DIR)/target/usr/lib/gconv usr/lib/ ; \
+	PKG_VER=`cd $(CROSS_DIR)/target/lib; echo ld-*.so` && PKG_VER=$${PKG_VER#ld-} && PKG_VER=$${PKG_VER%.so} \
+	PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/iconv
+	rm -rf $(PKGPREFIX)
 
 ifeq ($(PLATFORM), coolstream)
 cs-drivers-pkg:
