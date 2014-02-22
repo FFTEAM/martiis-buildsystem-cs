@@ -17,6 +17,9 @@ AZBOX_DVB_M_VER=14092013
 AZBOX_INITRAMFS_ME=14092013
 AZBOX_INITRAMFS_MINIME=14092013
 
+# libbluray: an open-source library designed for Blu-Ray Discs playback
+LIBBLURAY_VER=0.5.0
+
 # libdid3tag; writing, reading and manipulating ID3 tags
 ID3TAG_VER=0.15.1
 ID3TAG_SUBVER=b

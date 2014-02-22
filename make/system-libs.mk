@@ -41,6 +41,29 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2 | $(TARGETPR
 	rm -rf $(PKGPREFIX)
 	touch $(D)/libuuid $(D)/libblkid
 
+$(D)/libbluray: $(ARCHIVE)/libbluray-$(LIBBLURAY_VER).tar.bz2
+	$(UNTAR)/libbluray-$(LIBBLURAY_VER).tar.bz2
+	set -e; cd $(BUILD_TMP)/libbluray-$(LIBBLURAY_VER); \
+		$(PATCH)/libbluray-0001-Optimized-file-I-O-for-chained-usage-with-libavforma.patch; \
+		$(PATCH)/libbluray-0003-Added-bd_get_clip_infos.patch; \
+		$(PATCH)/libbluray-0005-Don-t-abort-demuxing-if-the-disc-looks-encrypted.patch; \
+		$(PATCH)/libbluray-0006-disable-M2TS_TRACE.patch; \
+		$(CONFIGURE) --prefix= LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" CFLAGS="$(TARGET_CFLAGS)" \
+			     --without-libxml2 \
+			     --without-freetype; \
+		$(MAKE); \
+		$(MAKE) install DESTDIR=$(TARGETPREFIX); \
+	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libbluray.pc
+	$(REMOVE)/libbluray-$(LIBBLURAY_VER) $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libbluray.so* $(PKGPREFIX)/lib
+	PKG_VER=$(LIBBLURAY_VER) \
+		PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` \
+		PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
+	$(OPKG_SH) $(CONTROL_DIR)/libbluray
+	rm -rf $(PKGPREFIX)
+	touch $@
+
 ifeq ($(BOXARCH), arm)
 MAD_FPM = arm
 else
@@ -298,6 +321,7 @@ FFMPEG_CONFIGURE += --enable-network --enable-protocol=http
 FFMPEG_CONFIGURE += --enable-demuxer=rtsp
 FFMPEG_CONFIGURE += --enable-protocol=rtmp --enable-protocol=rtmpe --enable-protocol=rtmps --enable-protocol=rtmpte --enable-protocol=rtp
 FFMPEG_CONFIGURE += --enable-bsfs
+FFMPEG_CONFIGURE += --enable-decoder=pcm_s16le --enable-decoder=pcm_s16le_planar --enable-demuxer=srt --enable-protocol=bluray --enable-libbluray
 endif
 ifeq ($(BOXARCH), powerpc)
 FFMPEG_CONFIGURE  = --arch=ppc
@@ -327,7 +351,7 @@ FFMPEG_CONFIGURE += --disable-network
 endif
 $(D)/ffmpeg: $(D)/ffmpeg-$(FFMPEG_VER)
 	touch $@
-$(D)/ffmpeg-$(FFMPEG_VER): $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 | $(TARGETPREFIX)
+$(D)/ffmpeg-$(FFMPEG_VER): $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(D)/libbluray | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
 		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
@@ -342,6 +366,8 @@ endif
 		$(PATCH)/ffmpeg-$(FFMPEG_VER)-remove-buildtime.diff; \
 		$(PATCH)/ffmpeg-$(FFMPEG_VER)-add-teletext-details.diff; \
 		./configure \
+			--extra-cflags="-I$(TARGET_CFLAGS)" \
+			--extra-ldflags="-L$(LD_FLAGS)" \
 			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
 			$(FFMPEG_CONFIGURE) \
