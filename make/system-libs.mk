@@ -807,10 +807,21 @@ $(D)/luasec-prosody: $(ARCHIVE)/luasec-prosody-$(LUASEC_PROSODY_VER).tar.gz lua 
 	$(BUILDENV) \
 	LIBDIR=-L$(TARGETPREFIX)/lib LUAPATH=/share/lua/$(LUA_VER_SHORT) LUACPATH=/lib/lua/$(LUA_VER_SHORT) \
 	CC=$(TARGET)-gcc LD=$(TARGET)-gcc DESTDIR=$(PKGPREFIX) make linux install ; \
-	opkg-find-requires.sh $(PKGPREFIX)
 	PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_VER=$(LUASEC_PROSODY_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/luasec-prosody
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
 	$(REMOVE)/luasec-prosody-$(LUASEC_PROSODY_VER) $(PKGPREFIX)
+	touch $@
+
+$(D)/lua-feedparser: $(ARCHIVE)/lua-feedparser-$(LUAFEEDPARSER_VER).tar.bz2 lua luasocket luaexpat
+	$(REMOVE)/lua-feedparser-$(LUAFEEDPARSER_VER) $(PKGPREFIX)
+	mkdir -p $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/
+	$(UNTAR)/lua-feedparser-$(LUAFEEDPARSER_VER).tar.bz2; \
+	cd $(BUILD_TMP)/lua-feedparser-$(LUAFEEDPARSER_VER); \
+	sed -i -e "s/^PREFIX.*//" -e "s/^LUA_DIR.*//" Makefile ; \
+	$(BUILDENV) make LUA_DIR=$(PKGPREFIX)/share/lua/$(LUA_VER_SHORT) install ; \
+	PKG_VER=$(LUAFEEDPARSER_VER) $(OPKG_SH) $(CONTROL_DIR)/lua-feedparser
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
+	$(REMOVE)/lua-feedparser-$(LUAFEEDPARSER_VER) $(PKGPREFIX)
 	touch $@
 
 $(D)/mrua: $(ARCHIVE)/azboxme-mrua-3.11-1.tar.gz openssl libungif

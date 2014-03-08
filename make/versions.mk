@@ -113,6 +113,10 @@ LUACURL_TAG=89ca8b6b8fdc9c0237bf6184abb1885101d2023e
 # luasec (prosody version)
 LUASEC_PROSODY_VER=0.5.1
 
+# lua-feedparser
+LUAFEEDPARSER_VER=0.7
+LUAFEEDPARSER_TAG=74a96a4d8a9939108ac96948c40619028b7e3cc2
+
 # ncurses; software for controlling writing to the console screen
 NCURSES_VER=5.6
 

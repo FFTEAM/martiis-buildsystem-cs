@@ -101,6 +101,9 @@ $(ARCHIVE)/luasoap-$(LUASOAP_VER).tar.gz:
 $(ARCHIVE)/luacurl-$(LUACURL_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
 	get-git-archive.sh https://github.com/LuaDist/luacurl.git $(LUACURL_TAG) $(notdir $@) $(ARCHIVE)
 
+$(ARCHIVE)/lua-feedparser-$(LUAFEEDPARSER_VER).tar.bz2: | $(HOSTPREFIX)/bin/get-git-archive.sh
+	get-git-archive.sh https://github.com/slact/lua-feedparser.git $(LUAFEEDPARSER_TAG) $(notdir $@) $(ARCHIVE)
+
 $(ARCHIVE)/luasec-prosody-$(LUASEC_PROSODY_VER).tar.gz:
 	$(WGET) http://prosody.im/tmp/luasec-prosody-$(LUASEC_PROSODY_VER).tar.gz
 

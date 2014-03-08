@@ -1,0 +1,12 @@
+Package: lua-feedparser
+Version: @VER@-1
+Description: A decent RSS and Atom XML feed parser
+Section: lua
+Priority: optional
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://feedparser.luaforge.net/
+Source: https://github.com/slact/lua-feedparser
+Depends: luasocket, luaexpat
+Provides: lua-feedparser
+
