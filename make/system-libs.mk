@@ -339,6 +339,7 @@ FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-encoder=png --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
+FFMPEG_CONFIGURE += --enable-protocol=bluray --enable-libbluray \
 #FFMPEG_CONFIGURE += --enable-avresample
 endif
 ifeq ($(BOXARCH), mipsel)
@@ -351,7 +352,7 @@ FFMPEG_CONFIGURE += --disable-network
 endif
 $(D)/ffmpeg: $(D)/ffmpeg-$(FFMPEG_VER)
 	touch $@
-$(D)/ffmpeg-$(FFMPEG_VER): $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(D)/libbluray | $(TARGETPREFIX)
+$(D)/ffmpeg-$(FFMPEG_VER): $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(PATCHES)/.rebuild.ffmpeg $(D)/libbluray | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
 		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
