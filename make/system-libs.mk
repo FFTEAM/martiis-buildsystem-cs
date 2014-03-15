@@ -53,6 +53,7 @@ $(D)/libbluray: $(ARCHIVE)/libbluray-$(LIBBLURAY_VER).tar.bz2
 			     --without-freetype; \
 		$(MAKE); \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX); \
+	$(REWRITE_LIBTOOL)/libbluray.la
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libbluray.pc
 	$(REMOVE)/libbluray-$(LIBBLURAY_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib
