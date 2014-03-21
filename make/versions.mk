@@ -83,7 +83,7 @@ OGG_VER=1.3.0
 VORBIS_VER=1.3.3
 
 # libass: ass / ssa subtitle renderer
-LIBASS_VER=0.10.2
+LIBASS_VER=0.11.1
 
 # azbox kernel
 LINUX_AZBOX_VER=3.9.2

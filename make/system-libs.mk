@@ -412,9 +412,10 @@ $(D)/fribidi: $(ARCHIVE)/fribidi-$(FRIBIDI_VER).tar.bz2 $(PATCHES)/.rebuild.frib
 	$(REMOVE)/libfribidi-$(LIBFRIBIDI_VER)
 	touch $@
 
-$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi | $(TARGETPREFIX)
+$(D)/libass: $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz $(D)/freetype $(D)/fribidi $(PATCHES)/libass-$(LIBASS_VER).diff | $(TARGETPREFIX)
 	$(UNTAR)/libass-$(LIBASS_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/libass-$(LIBASS_VER); \
+		$(PATCH)/libass-$(LIBASS_VER).diff ; \
 		$(BUILDENV) $(CONFIGURE) --disable-fontconfig --prefix= --disable-shared; \
 		$(MAKE); \
 		make install DESTDIR=$(TARGETPREFIX)
