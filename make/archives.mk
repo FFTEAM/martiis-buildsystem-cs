@@ -39,7 +39,7 @@ $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2
 
 $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz:
-	$(WGET) http://libass.googlecode.com/files/libass-$(LIBASS_VER).tar.gz
+	$(WGET) -O $@ --no-check-certificate https://github.com/libass/libass/archive/$(LIBASS_VER).tar.gz
 
 $(ARCHIVE)/libbluray-$(LIBBLURAY_VER).tar.bz2:
 	$(WGET) http://ftp.videolan.org/pub/videolan/libbluray/$(LIBBLURAY_VER)/libbluray-$(LIBBLURAY_VER).tar.bz2
