@@ -1,0 +1,53 @@
+From 7952ac9048a66957ec9c65f1e1de6bbf13ead7c2 Mon Sep 17 00:00:00 2001
+From: Stas Sergeev <stsp@users.sourceforge.net>
+Date: Thu, 12 Dec 2013 18:23:52 +0400
+Subject: [PATCH] i2c-stm: Don't use wait_event_interruptible_timeout() when
+ waiting for i2c
+
+Many I2C drivers have dropped support for handling signals while waiting
+for I2C operations to complete, for example upstream commits:
+
+d295a86eab200b3f0c513e78dbe1f189fd32d397 (for mv64xxx),
+2637e5fd232d421b680757944f613d4b1a36ae26 (for octeon),
+e39428d53d080ad2615b772d7f99d2a70c2aaab2 (for imx),
+22f8b2695eda496026623020811cae34590ee3d7 (for pca),
+dc1972d02747d2170fb1d78d114801f5ecb27506 (for cpm),
+1ab082d7cbd0f34e39a5396cc6340c00bc5d66ef (for mpc),
+b7af349b175af45f9d87b3bf3f0a221e1831ed39 (for omap).
+
+as this causes problems for higher lever drivers built on top of I2C,
+and can leave the bus in unexpected states if sequences are terminated
+early.
+
+See the discussion on this at:
+https://www.mail-archive.com/linux-i2c@vger.kernel.org/msg00352.html
+
+This has also been reported to improve the reliability of the stm
+driver, see bugzilla 42046.
+
+As a side effect this also helps on systems using STAPI as this
+does not support -ERESTARTSYS at all.
+
+Signed-off-by: Stas Sergeev <stsp@users.sourceforge.net>
+[stuart: ammended commit comment to give more references]
+Signed-off-by: Stuart Menefy <stuart.menefy@st.com>
+---
+ drivers/i2c/busses/i2c-stm.c |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/i2c/busses/i2c-stm.c b/drivers/i2c/busses/i2c-stm.c
+index 884ecbe..34a0844 100644
+--- a/drivers/i2c/busses/i2c-stm.c
++++ b/drivers/i2c/busses/i2c-stm.c
+@@ -806,7 +806,7 @@ iic_xfer_retry:
+ 
+ 	iic_state_machine(0, adap);
+ 
+-	timeout = wait_event_interruptible_timeout(adap->wait_queue,
++	timeout = wait_event_timeout(adap->wait_queue,
+ 						   (transaction.waitcondition ==
+ 						    0), i2c_adap->timeout);
+ 
+-- 
+1.7.9.5
+

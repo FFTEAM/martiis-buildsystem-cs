@@ -21,7 +21,7 @@ KVERSION_FULL = $(KVERSION)-nevis
 K_DEP = $(D)/cskernel
 endif
 ifeq ($(PLATFORM), spark)
-KVERSION = 2.6.32.59
+KVERSION = 2.6.32.61
 KVERSION_FULL = $(KVERSION)_stm24$(PATCH_STR)
 endif
 SOURCE_MODULE = $(TARGETPREFIX)/mymodules/lib/modules/$(KVERSION_FULL)
@@ -264,10 +264,10 @@ $(TDT_PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch: \
 # if you only want to build for one version, set SPARK_ONLY=1 or SPARK7162_ONLY=1 in config
 SPARKKERNELDEPS =
 ifeq ($(SPARK7162_ONLY), )
-SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark-0211
+SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark-0213
 endif
 ifeq ($(SPARK_ONLY), )
-SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162
+SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162-0213
 endif
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL): \
@@ -278,9 +278,15 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc $<
 	rm -fr $(TMP_KDIR)
 	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2
+	# What a mess. The 0213 package comes with an 0212 patch, plus additional point patches.
 	set -e; cd $(TMP_KDIR); \
 		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION).patch.bz2 | patch -p1 ;\
-		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION)_stm24_sh4$(PATCH_STR).patch.bz2 | patch -p1; \
+		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION)_stm24_sh4_0212.patch.bz2 | patch -p1; \
+		patch -p1 < $(BUILD_TMP)/ksrc/frame-based-unwind-Bug21443.patch;\
+		patch -p1 < $(BUILD_TMP)/ksrc/0001-dumpstack-add-sub-r1-r15-support-to-prolog-parser-bug23006.patch;\
+		patch -p1 < $(BUILD_TMP)/ksrc/0001-fix-backtracer-to-handle-faults-inside-prolog-bug23006.patch;\
+		patch -p1 < $(BUILD_TMP)/ksrc/0001-apply-unwinder-fixes-from-Chris-Smith-chris-sh4.patch;\
+		patch -p1 < $(PATCHES)/stlinux/0001-i2c-stm-Don-t-use-wait_event_interruptible_timeout-w.patch;\
 		for i in $(SPARK_PATCHES_24); do \
 			echo "==> Applying Patch: $$i"; \
 			patch -p1 -i $(TDT_PATCHES)/$$i; \
@@ -289,8 +295,8 @@ $(BUILD_TMP)/linux-$(KVERSION_FULL): \
 			echo "==> Applying Patch: $(subst $(PATCHES)/,'',$$i)"; \
 			patch -p1 -i $$i; \
 		done; \
-		cp $(PATCHES)/kernel.config-spark-0211     .config-spark; \
-		cp $(PATCHES)/kernel.config-spark7162-0211 .config-7162; \
+		cp $(PATCHES)/kernel.config-spark-0213     .config-spark; \
+		cp $(PATCHES)/kernel.config-spark7162-0213 .config-7162; \
 		sed -i "s#^\(CONFIG_EXTRA_FIRMWARE_DIR=\).*#\1\"$(TDT_SRC)/tdt/cvs/cdk/integrated_firmware\"#" .config-*;
 	rm -fr $@ $@-7162
 	cd $(BUILD_TMP) && mv linux-2.6.32 linux-$(KVERSION_FULL)
