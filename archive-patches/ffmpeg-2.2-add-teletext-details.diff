@@ -1,0 +1,18 @@
+--- a/libavformat/mpegts.c-orig
++++ b/libavformat/mpegts.c
+@@ -1501,6 +1501,15 @@
+                     extradata += 2;
+ 
+                     *pp += 2;
++
++		    char tmp_key[20];
++		    char tmp_val[40];
++		    AVDictionaryEntry *t = NULL;
++		    unsigned char b3 = get8(pp, desc_end);
++		    unsigned char b4 = get8(pp, desc_end);
++		    snprintf(tmp_key, sizeof(tmp_key), "teletext_%d", i);
++		    snprintf(tmp_val, sizeof(tmp_val), "%d %s %u %u %u", pid, language, b3 >> 3, b3 & 0x7, b4); // pid lang type mag page
++		    av_dict_set(&st->metadata, tmp_key, tmp_val, 0);
+                 }
+ 
+                 language[i * 4 - 1] = 0;

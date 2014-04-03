@@ -387,7 +387,7 @@ endif
 		make install DESTDIR=$(PKGPREFIX)
 	rm -rf $(PKGPREFIX)/share/ffmpeg
 	cp -a $(PKGPREFIX)/* $(TARGETPREFIX)
-	cp $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h
+	cp $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)/version.h $(TARGETPREFIX)/lib/ffmpeg-version.h || true
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavfilter.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavdevice.pc
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libavformat.pc
