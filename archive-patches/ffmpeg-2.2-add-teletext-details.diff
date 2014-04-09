@@ -11,7 +11,7 @@
 +		    unsigned char b3 = get8(pp, desc_end);
 +		    unsigned char b4 = get8(pp, desc_end);
 +		    snprintf(tmp_key, sizeof(tmp_key), "teletext_%d", i);
-+		    snprintf(tmp_val, sizeof(tmp_val), "%d %s %u %u %u", pid, language, b3 >> 3, b3 & 0x7, b4); // pid lang type mag page
++		    snprintf(tmp_val, sizeof(tmp_val), "%d %c%c%c %u %u %u", pid, language[i * 4], language[i * 4 + 1], language[i * 4 + 2], b3 >> 3, b3 & 0x7, b4); // pid lang type mag page
 +		    av_dict_set(&st->metadata, tmp_key, tmp_val, 0);
                  }
  
