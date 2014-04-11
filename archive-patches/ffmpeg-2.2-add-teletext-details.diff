@@ -1,9 +1,10 @@
---- a/libavformat/mpegts.c-orig
-+++ b/libavformat/mpegts.c
-@@ -1501,6 +1501,15 @@
+--- ffmpeg-2.2/libavformat/mpegts.c	2014-03-23 23:08:02.000000000 +0100
++++ ffmpeg-2.2/libavformat/mpegts.c	2014-04-11 12:25:47.284959259 +0200
+@@ -1500,7 +1500,15 @@
+                     memcpy(extradata, *pp, 2);
                      extradata += 2;
  
-                     *pp += 2;
+-                    *pp += 2;
 +
 +		    char tmp_key[20];
 +		    char tmp_val[40];

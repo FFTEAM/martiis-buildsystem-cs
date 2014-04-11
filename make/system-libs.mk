@@ -366,7 +366,6 @@ endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
 		$(PATCH)/ffmpeg-$(FFMPEG_VER)-remove-buildtime.diff; \
-		$(PATCH)/ffmpeg-$(FFMPEG_VER)-add-teletext-details.diff; \
 		./configure \
 			--extra-cflags="-I$(TARGET_CFLAGS)" \
 			--extra-ldflags="-L$(LD_FLAGS)" \
