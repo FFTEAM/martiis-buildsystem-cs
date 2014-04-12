@@ -420,10 +420,9 @@ $(D)/dropbear: $(ARCHIVE)/dropbear-$(DROPBEAR-VER).tar.bz2 | $(TARGETPREFIX)
 	$(REMOVE)/dropbear-$(DROPBEAR-VER) $(PKGPREFIX)
 	touch $@
 
-$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_VER).tar.gz | $(TARGETPREFIX)
+$(DEPDIR)/opkg: $(ARCHIVE)/opkg-$(OPKG_VER).tar.gz $(PATCHES)/.rebuild.opkg | $(TARGETPREFIX)
 	$(UNTAR)/opkg-$(OPKG_VER).tar.gz
 	set -e; cd $(BUILD_TMP)/opkg-$(OPKG_VER); \
-		$(PATCH)/opkg-$(OPKG_VER)-dont-segfault.diff; \
 		autoreconf -v --install; \
 		echo ac_cv_func_realloc_0_nonnull=yes >> config.cache; \
 		$(CONFIGURE) \

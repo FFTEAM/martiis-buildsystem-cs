@@ -273,8 +273,7 @@ $(ARCHIVE)/busybox-snapshot.tar.bz2:
 	$(WGET) http://busybox.net/downloads/snapshots/busybox-snapshot.tar.bz2
 
 $(ARCHIVE)/opkg-$(OPKG_VER).tar.gz:
-	$(WGET) http://opkg.googlecode.com/files/opkg-$(OPKG_VER).tar.gz
-
+	$(WGET) http://downloads.yoctoproject.org/releases/opkg/opkg-$(OPKG_VER).tar.gz
 
 $(ARCHIVE)/opkg-$(OPKG_SVN_VER).tar.gz:
 	set -e; cd $(BUILD_TMP); \
