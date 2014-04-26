@@ -77,11 +77,11 @@ PATCH_STR = _0214
 
 ## rpm versions of packages on the STM server
 # binutils 2.21.51-* segfault on linking the kernel
-BINUTILS_VER	= 2.22-61
-GCC_VER		= 4.6.3-109
+BINUTILS_VER	= 2.22-64
+GCC_VER		= 4.6.3-111
 STMKERNEL_VER	= 2.6.32.46-45
-LIBGCC_VER	= 4.6.3-113
-GLIBC_VER	= 2.10.2-34
+LIBGCC_VER	= 4.6.3-115
+GLIBC_VER	= 2.10.2-43
 
 
 ### those patches are taken from the pingulux-git/tdt checkout
