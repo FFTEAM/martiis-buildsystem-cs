@@ -6,7 +6,7 @@ NEUTRINO_DEPS += lua
 NEUTRINO_PKG_DEPS =
 
 ifeq ($(DEBUGGING), yes)
-N_CFLAGS   = -g -O2
+N_CFLAGS   = -ggdb
 else
 N_CFLAGS   = -Os
 endif
