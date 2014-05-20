@@ -2,7 +2,7 @@
 # experimental, don't use yet until you know what you are doing
 $(PLUGIN_DIR)/configure.ac: | $(PLUGIN_DIR)
 $(PLUGIN_DIR)/configure: $(PLUGIN_DIR)/configure.ac
-	cd $(PLUGIN_DIR) && ./autogen.sh
+	cd $(PLUGIN_DIR) && ./autogen.sh && automake --add-missing
 
 $(BUILD_TMP)/neutrino-hd-plugins:
 	mkdir $@
