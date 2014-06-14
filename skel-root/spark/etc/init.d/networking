@@ -1,0 +1,31 @@
+#!/bin/sh
+
+# manage network interfaces and configure some networking options
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+case "$1" in
+    start)
+	echo -n "Configuring network interfaces... "
+	while [ -f /tmp/.init_network_1 ] ; do
+		usleep 100000 # 100ms
+	done
+	ifup -a
+	rm /tmp/.init_network_0
+	echo "done."
+	;;
+    stop)
+	echo -n "Deconfiguring network interfaces... "
+	ifdown -a
+	echo "done."
+	;;
+    force-reload|restart)
+	echo "Reconfiguring network interfaces... "
+	ifdown -a
+	ifup -a
+	echo "...done."
+	;;
+esac
+
+exit 0
+

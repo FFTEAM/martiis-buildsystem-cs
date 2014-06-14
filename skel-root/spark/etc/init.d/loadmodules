@@ -9,12 +9,14 @@ im()
 	file=/lib/modules/${KVER}/${modname}.ko
 	# own built modules are in /lib/modules/$KVER/kernel/... subdirectories
 	# ...but we can override this by putting modules to /lib/modules/$KVER directly
+	echo loading $modname
 	if test -e $file; then
 		echo "overriding ${modname}.ko from /lib/modules/$KVER ..."
 		/sbin/insmod $file ${params:-$@}
 	else
 		/sbin/modprobe $modname $@
 	fi
+	echo loading $modname done
 }
 
 # hack, ugly: we should not need to know about neutrino.conf internals
@@ -75,12 +77,14 @@ start)
 		p }" /etc/modprobe.conf)
 	touch /tmp/.init_loading_firmware
 	(
+		echo loading firmware
 		ustslave /dev/st231-1 /boot/audio.elf
 		ustslave /dev/st231-0 /boot/video.elf
+		echo loading firmware done
 		rm /tmp/.init_loading_firmware
 	) &
 	im cpu_frequ $(get_cpufreq)
-	im aotom
+	#im aotom
 	echo loading > /dev/vfd
 	im uinput
 	im e2_proc

@@ -70,6 +70,6 @@ opkg-cl configure
 
 . /etc/init.d/functions
 
-run_initscripts start
+run_initscripts start > /dev/kmsg 2>&1
 
-test -e /etc/init.d/rcS.local && . /etc/init.d/rcS.local
+test -e /etc/init.d/rcS.local && . /etc/init.d/rcS.local > /dev/kmsg 2>&1

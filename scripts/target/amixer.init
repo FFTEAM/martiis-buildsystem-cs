@@ -5,8 +5,9 @@
 #
 case $1 in
 start)
-	[ -e /etc/amixer.conf ] || exit 0
-	echo "setting default amixer values..."
-	amixer -s < /etc/amixer.conf
+	if [ -e /etc/amixer.conf ] ; then
+		amixer -s < /etc/amixer.conf &
+	fi
 	;;
 esac
+exit 0

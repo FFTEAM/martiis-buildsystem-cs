@@ -6,7 +6,7 @@ start)
 		touch /tmp/.init_mount
 	# actually only mounts devpts with the default fstab...
 	/bin/mount -a
-	while [ -f /tmp/.init_networking ] ; do
+	while [ -f /tmp/.init_network_0 ] ; do
 		usleep 100000 # 100ms
 	done
 	/bin/mount -a # in case we did try to mount a nfs or cifs share and networking wasn't set up alreads

@@ -770,7 +770,7 @@ $(D)/alsa-utils: $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2 $(D)/alsa-lib | $(TAR
 	$(REMOVE)/alsa-utils-$(ALSA_VER) $(PKGPREFIX)
 	touch $@
 
-$(D)/howl: $(ARCHIVE)/howl-$(HOWL_VER).tar.gz $(PATCHES)/.rebuild.howl $(PATCHES)/howl-ipv4-mapped-ipv6.diff
+$(D)/howl: $(ARCHIVE)/howl-$(HOWL_VER).tar.gz $(PATCHES)/.rebuild.howl $(PATCHES)/howl-ipv4-mapped-ipv6.diff $(SCRIPTS)/howl.init
 	-rm -rf $(PKGPREFIX) $(BUILD_TMP)/howl-$(HOWL_VER) ; mkdir -p $(TARGETPREFIX)/bin $(PKGPREFIX)/bin; \
 	$(UNTAR)/howl-$(HOWL_VER).tar.gz && \
 	cd $(BUILD_TMP)/howl-$(HOWL_VER) && \

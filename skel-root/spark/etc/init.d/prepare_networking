@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# manage network interfaces and configure some networking options
+
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+
+case "$1" in
+    start)
+	echo -n "Preparing network interfaces... "
+	grep -q '^auto lo' /etc/network/interfaces && sed -i '/^auto lo/d' /etc/network/interfaces
+	ifup lo 2>/dev/null
+    	touch /tmp/.init_network_0 /tmp/.init_network_1
+    	(
+		ifconfig eth0 down
+		ifup eth0
+		ifdown eth0
+		rm /tmp/.init_network_1
+	) &
+	echo "done (continuing in background)."
+	;;
+esac
+
+exit 0
+
