@@ -478,3 +478,8 @@ $(ARCHIVE)/hdparm-$(HDPARM_VER).tar.gz:
 $(ARCHIVE)/sdparm-$(SDPARM_VER).tgz:
 	$(WGET) http://sg.danny.cz/sg/p/sdparm-$(SDPARM_VER).tgz
 
+$(ARCHIVE)/prelink-$(PRELINK_VER).tar.bz2:
+	$(WGET) http://people.redhat.com/jakub/prelink/prelink-$(PRELINK_VER).tar.bz2
+
+$(ARCHIVE)/elfutils-$(ELFUTILS_VER).tar.bz2:
+	$(WGET) https://fedorahosted.org/releases/e/l/elfutils/$(ELFUTILS_VER)/elfutils-$(ELFUTILS_VER).tar.bz2

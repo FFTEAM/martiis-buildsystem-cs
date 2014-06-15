@@ -1,0 +1,11 @@
+Package: prelink
+Version: @VER@-1
+Description: ELF prelinking utility to speed up dynamic linking
+Section: extras/utils
+Priority: extra
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: http://people.redhat.com/jakub/prelink/
+Source: http://people.redhat.com/jakub/prelink/
+Depends:
+Provides:

@@ -403,3 +403,8 @@ HDPARM_VER=9.43
 # sdparm - access SCSI device parameters
 SDPARM_VER=1.08
 
+# prelink - ELF prelinking utility to speed up dynamic linking.
+PRELINK_VER=20130503
+
+# elfutils
+ELFUTILS_VER=0.159

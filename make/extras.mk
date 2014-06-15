@@ -1043,3 +1043,37 @@ $(D)/mailsend: $(ARCHIVE)/mailsend-$(MAILSEND_VER).tar.gz
 	rm -rf $(PKGPREFIX); \
 	touch $@
 
+$(D)/elfutils-libelf: $(ARCHIVE)/elfutils-$(ELFUTILS_VER).tar.bz2
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/elfutils
+	mkdir -p $(PKGPREFIX)
+	$(UNTAR)/elfutils-$(ELFUTILS_VER).tar.bz2
+	set -e ; cd $(BUILD_TMP)/elfutils-$(ELFUTILS_VER) ; \
+	$(BUILDENV); CFLAGS="$$CFLAGS -L$(TARGETPREFIX)/lib" ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) ; \
+	cd libelf ; \
+	make all install ; \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX); \
+	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/lib*.a; \
+	PKG_VER=$(ELFUTILS_VER) PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/elfutils-libelf; \
+	$(REMOVE)/elfutils-$(ELFUTILS_VER) $(PKGPREFIX); \
+	rm -rf $(PKGPREFIX); \
+	touch $@
+
+$(D)/prelink: elfutils-libelf $(ARCHIVE)/prelink-$(PRELINK_VER).tar.bz2 $(PATCHES)/prelink-0.4.5.1-sh4_port.patch $(PATCHES)/prelink.conf
+	rm -rf $(PKGPREFIX) $(BUILD_TMP)/prelink
+	mkdir -p $(PKGPREFIX)/{bin,sbin,etc}
+	$(UNTAR)/prelink-$(PRELINK_VER).tar.bz2
+	set -e ; cd $(BUILD_TMP)/prelink ; \
+	$(PATCH)/prelink-0.4.5.1-sh4_port.patch ;\
+	sed -i -e "s/arch-sh/ARCH-SH/" -e "s/arch-[-0-9a-z_]*\.c//g" -e "s/ARCH-SH/arch-sh/" src/Makefile.am ; \
+	sed -i -e "s#/usr/#$(TARGETPREFIX)/#" configure.in ; \
+	sed -i -e "s/elf32_xlatetom(e,d,s,n)/elf32_xlatetom(d,s,n)/" -e "s/elf32_xlatetof(e,d,s,n)/elf32_xlatetof(d,s,n)/" gelfx32/gelfx.h ; \
+	autoreconf -v --install; \
+	$(BUILDENV) ./configure --prefix=$(PKGPREFIX) --build=$(BUILD) --host=$(TARGET) --target=$(TARGET) --enable-64-bit=no ; \
+	make all install ; \
+	cp -a $(PKGPREFIX)/* $(TARGETPREFIX); \
+	rm -rf $(PKGPREFIX)/share $(PKGPREFIX)/bin ; \
+	cp $(PATCHES)/prelink.conf $(PKGPREFIX)/etc ; \
+	PKG_VER=$(PRELINK_VER) $(OPKG_SH) $(CONTROL_DIR)/prelink; \
+	$(REMOVE)/prelink $(PKGPREFIX); \
+	rm -rf $(PKGPREFIX); \
+	touch $@

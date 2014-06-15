@@ -1,0 +1,197 @@
+sh: add tls support and some arch specific fixes
+
+This patch extend the prelink tool also for sh architecture adding the tls 
+support, and fixes some architecture specific issue.
+
+Signed-off-by: Filippo Arcidiacono <filippo.arcidiacono@st.com>
+Reviewed-by:   Carmelo Amoroso <carmelo.amoroso@st.com>
+
+--- prelink-orig/src/arch-sh.c	2011-05-10 12:17:54.000000000 +0200
++++ prelink/src/arch-sh.c	2011-05-11 15:39:36.000000000 +0200
+@@ -85,8 +85,10 @@ sh_adjust_rela (DSO *dso, GElf_Rela *rel
+       if (rela->r_addend && (Elf32_Addr) rela->r_addend >= start)
+ 	{
+ 	  rela->r_addend += (Elf32_Sword) adjust;
++	  write_ne32 (dso, rela->r_offset, rela->r_addend);
+ 	  break;
+ 	}
++	break;
+       /* FALLTHROUGH */
+     case R_SH_JMP_SLOT:
+       data = read_une32 (dso, rela->r_offset);
+@@ -133,7 +135,25 @@ sh_prelink_rela (struct prelink_info *in
+       write_ne32 (dso, rela->r_offset, value);
+       break;
+     case R_SH_REL32:
+-      write_ne32 (dso, rela->r_offset, value - rela->r_addend);
++      write_ne32 (dso, rela->r_offset, value - rela->r_offset);
++      break;
++    case R_SH_TLS_DTPOFF32:
++      write_ne32 (dso, rela->r_offset, value);
++      break;
++    /* DTPMOD32 and TPOFF{32,} is impossible to predict unless prelink
++       sets the rules.  */
++    case R_SH_TLS_DTPMOD32:
++      if (dso->ehdr.e_type == ET_EXEC)
++        {
++          error (0, 0, "%s: R_SH_TLS_DTPMOD32 reloc in executable?",
++                 dso->filename);
++          return 1;
++        }
++      break;
++    case R_SH_TLS_TPOFF32:
++      if (dso->ehdr.e_type == ET_EXEC && info->resolvetls)
++        write_ne32 (dso, rela->r_offset,
++                    (value + info->resolvetls->offset));
+       break;
+     case R_SH_COPY:
+       if (dso->ehdr.e_type == ET_EXEC)
+@@ -218,6 +238,7 @@ sh_prelink_conflict_rela (DSO *dso, stru
+ {
+   GElf_Addr value;
+   struct prelink_conflict *conflict;
++  struct prelink_tls *tls;
+   GElf_Rela *ret;
+ 
+   if (GELF_R_TYPE (rela->r_info) == R_SH_RELATIVE
+@@ -228,14 +249,39 @@ sh_prelink_conflict_rela (DSO *dso, stru
+   conflict = prelink_conflict (info, GELF_R_SYM (rela->r_info),
+ 			       GELF_R_TYPE (rela->r_info));
+   if (conflict == NULL)
+-    return 0;
++    {
++       if (info->curtls == NULL)
++         return 0;
++
++       switch (GELF_R_TYPE (rela->r_info))
++        {
++        /* Even local DTPMOD and TPOFF relocs need conflicts.  */
++        case R_SH_TLS_DTPMOD32:
++        case R_SH_TLS_TPOFF32:
++          break;
++        default:
++          return 0;
++        }
++        value = 0;
++    }
+   else if (conflict->ifunc)
+     {
+       error (0, 0, "%s: STT_GNU_IFUNC not handled on SuperH yet",
+ 	     dso->filename);
+       return 1;
+     }
+-  value = conflict_lookup_value (conflict);
++  else
++    {
++      /* DTPOFF32 wants to see only real conflicts, not lookups
++        with reloc_class RTYPE_CLASS_TLS.  */
++      if (GELF_R_TYPE (rela->r_info) == R_SH_TLS_DTPOFF32
++         && conflict->lookup.tls == conflict->conflict.tls
++         && conflict->lookupval == conflict->conflictval)
++       return 0;
++
++      value = conflict_lookup_value (conflict);
++    }
++
+   ret = prelink_conflict_add_rela (info);
+   if (ret == NULL)
+     return 1;
+@@ -254,11 +300,38 @@ sh_prelink_conflict_rela (DSO *dso, stru
+       /* FALLTHROUGH */
+     case R_SH_GLOB_DAT:
+     case R_SH_JMP_SLOT:
+-      ret->r_addend = (Elf32_Sword) (value + rela->r_addend);
++      ret->r_addend = (Elf32_Sword) (value);
+       break;
+     case R_SH_COPY:
+       error (0, 0, "R_SH_COPY should not be present in shared libraries");
+       return 1;
++    case R_SH_TLS_DTPMOD32:
++    case R_SH_TLS_DTPOFF32:
++    case R_SH_TLS_TPOFF32:
++      if (conflict != NULL
++          && (conflict->reloc_class != RTYPE_CLASS_TLS
++              || conflict->lookup.tls == NULL))
++        {
++          error (0, 0, "%s: R_SH_TLS not resolving to STT_TLS symbol",
++                 dso->filename);
++          return 1;
++        }
++      tls = conflict ? conflict->lookup.tls : info->curtls;
++      ret->r_info = GELF_R_INFO (0, R_SH_DIR32);
++      switch (GELF_R_TYPE (rela->r_info))
++        {
++        case R_SH_TLS_DTPMOD32:
++          ret->r_addend = tls->modid;
++          break;
++        case R_SH_TLS_DTPOFF32:
++          ret->r_addend += value;
++          break;
++        case R_SH_TLS_TPOFF32:
++          ret->r_addend = value + tls->offset;
++          break;
++        }
++      break;
++
+     default:
+       error (0, 0, "%s: Unknown sh relocation type %d", dso->filename,
+ 	     (int) GELF_R_TYPE (rela->r_info));
+@@ -355,7 +428,7 @@ sh_undo_prelink_rela (DSO *dso, GElf_Rel
+       break;
+     case R_SH_RELATIVE:
+       if (rela->r_addend)
+-	write_le32 (dso, rela->r_offset, 0);
++        write_ne32 (dso, rela->r_offset, 0);
+       break;
+     case R_SH_JMP_SLOT:
+       sec = addr_to_sec (dso, rela->r_offset);
+@@ -380,7 +453,7 @@ sh_undo_prelink_rela (DSO *dso, GElf_Rel
+     case R_SH_GLOB_DAT:
+     case R_SH_DIR32:
+     case R_SH_REL32:
+-      write_ne32 (dso, rela->r_offset, 0);
++      write_ne32 (dso, rela->r_offset, rela->r_addend);
+       break;
+     case R_SH_COPY:
+       if (dso->ehdr.e_type == ET_EXEC)
+@@ -388,6 +461,11 @@ sh_undo_prelink_rela (DSO *dso, GElf_Rel
+ 	return 0;
+       error (0, 0, "%s: R_SH_COPY reloc in shared library?", dso->filename);
+       return 1;
++    case R_SH_TLS_DTPMOD32:
++    case R_SH_TLS_DTPOFF32:
++    case R_SH_TLS_TPOFF32:
++      write_ne32 (dso, rela->r_offset, 0);
++      break;
+     default:
+       error (0, 0, "%s: Unknown sh relocation type %d", dso->filename,
+ 	     (int) GELF_R_TYPE (rela->r_info));
+@@ -409,6 +487,10 @@ sh_reloc_class (int reloc_type)
+     {
+     case R_SH_COPY: return RTYPE_CLASS_COPY;
+     case R_SH_JMP_SLOT: return RTYPE_CLASS_PLT;
++    case R_SH_TLS_DTPMOD32:
++    case R_SH_TLS_DTPOFF32:
++    case R_SH_TLS_TPOFF32:
++      return RTYPE_CLASS_TLS;
+     default: return RTYPE_CLASS_VALID;
+     }
+ }
+@@ -448,6 +530,6 @@ PL_ARCH = {
+      even dlopened libraries will get the slots they desire.  */
+   .mmap_base = 0x30000000,
+   .mmap_end =  0x40000000,
+-  .max_page_size = 0x2000,
++  .max_page_size = 0x10000,
+   .page_size = 0x1000
+ };
+--- prelink-orig/src/get.c	2011-09-06 09:34:31.000000000 +0200
++++ prelink/src/get.c	2011-09-06 09:37:52.000000000 +0200
+@@ -30,6 +30,7 @@ int
+ is_ldso_soname (const char *soname)
+ {
+   if (! strcmp (soname, "ld-linux.so.2")
++      || ! strcmp (soname, "ld-uClibc.so.0")
+       || ! strcmp (soname, "ld.so.1")
+       || ! strcmp (soname, "ld-linux-ia64.so.2")
+       || ! strcmp (soname, "ld-linux-x86-64.so.2")

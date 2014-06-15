@@ -1,0 +1,11 @@
+Package: elfutils-libelf
+Version: @VER@-1
+Description: libelf library from elfutils
+Section: base/libraries
+Priority: extra
+Maintainer: @MAINT@
+Architecture: @ARCH@
+Homepage: https://fedorahosted.org/elfutils/
+Source:
+Depends: @DEP@
+Provides: @PROV@
