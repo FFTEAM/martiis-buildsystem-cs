@@ -32,7 +32,7 @@ restart)
 init)
 	sleep 2
 	cam_start
-	if grep lastChannelTVScrambled=true /var/tuxbox/config/zapit/zapit.conf
+	if [ "$REZAP" == 1 ]
 	then
 		sleep 5
 		/bin/pzapit -rz
