@@ -41,7 +41,7 @@ $(D)/libuuid: $(ARCHIVE)/util-linux-ng-$(UTIL_LINUX_NG_VER).tar.bz2 | $(TARGETPR
 	rm -rf $(PKGPREFIX)
 	touch $(D)/libuuid $(D)/libblkid
 
-$(D)/libbluray: $(ARCHIVE)/libbluray-$(LIBBLURAY_VER).tar.bz2
+$(D)/libbluray: $(D)/libxml2 $(D)/zlib $(ARCHIVE)/libbluray-$(LIBBLURAY_VER).tar.bz2
 	$(UNTAR)/libbluray-$(LIBBLURAY_VER).tar.bz2
 	set -e; cd $(BUILD_TMP)/libbluray-$(LIBBLURAY_VER); \
 		$(PATCH)/libbluray-0001-Optimized-file-I-O-for-chained-usage-with-libavforma.patch; \
@@ -49,7 +49,6 @@ $(D)/libbluray: $(ARCHIVE)/libbluray-$(LIBBLURAY_VER).tar.bz2
 		$(PATCH)/libbluray-0005-Don-t-abort-demuxing-if-the-disc-looks-encrypted.patch; \
 		$(PATCH)/libbluray-0006-disable-M2TS_TRACE.patch; \
 		$(CONFIGURE) --prefix= LDFLAGS="-Wl,-rpath-link,$(TARGETLIB)" CFLAGS="$(TARGET_CFLAGS)" \
-			     --without-libxml2 \
 			     --without-freetype; \
 		$(MAKE); \
 		$(MAKE) install DESTDIR=$(TARGETPREFIX); \
@@ -340,7 +339,7 @@ FFMPEG_CONFIGURE += --enable-ffmpeg --enable-demuxers
 FFMPEG_CONFIGURE += --enable-parser=mjpeg --enable-demuxer=mjpeg --enable-decoder=mjpeg
 FFMPEG_CONFIGURE += --enable-encoder=mpeg2video --enable-encoder=png --enable-muxer=mpeg2video
 FFMPEG_CONFIGURE += --disable-bsfs
-FFMPEG_CONFIGURE += --enable-protocol=bluray --enable-libbluray \
+FFMPEG_CONFIGURE += --enable-protocol=bluray --enable-libbluray
 #FFMPEG_CONFIGURE += --enable-avresample
 endif
 ifeq ($(BOXARCH), mipsel)
@@ -361,6 +360,7 @@ ifeq ($(PLATFORM), coolstream)
 	rm -rf $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 	cp -a $(UNCOOL_GIT)/cst-public-libraries-ffmpeg $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER)
 else
+	$(REMOVE)/ffmpeg-$(FFMPEG_VER) $(PKGPREFIX)
 	$(UNTAR)/ffmpeg-$(FFMPEG_VER).tar.bz2
 endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
@@ -368,13 +368,13 @@ endif
 		$(PATCH)/ffmpeg-$(FFMPEG_VER)-remove-buildtime.diff; \
 		./configure \
 			--extra-cflags="-I$(TARGET_CFLAGS)" \
-			--extra-ldflags="-L$(LD_FLAGS)" \
+			--extra-ldflags="-L$(LD_FLAGS) -Wl,-rpath-link,$(TARGETLIB)" \
 			--disable-encoders \
 			--disable-muxers --disable-ffplay --disable-ffserver \
 			$(FFMPEG_CONFIGURE) \
 			--enable-decoder=dvbsub --enable-demuxer=mpegps \
 			--disable-devices --disable-mmx --disable-altivec \
-			--disable-zlib --enable-bzlib \
+			--enable-zlib --enable-bzlib \
 			--disable-static --enable-shared \
 			--enable-cross-compile \
 			--cross-prefix=$(TARGET)- \
@@ -395,8 +395,7 @@ endif
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libswresample.pc
 	test -e $(PKG_CONFIG_PATH)/libswscale.pc && $(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/libswscale.pc || true
 	rm -rf $(PKGPREFIX)/include $(PKGPREFIX)/lib/pkgconfig $(PKGPREFIX)/lib/*.so $(PKGPREFIX)/.remove
-	PKG_VER=$(FFMPEG_VER) PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` \
-		$(OPKG_SH) $(CONTROL_DIR)/ffmpeg
+	PKG_VER=$(FFMPEG_VER) PKG_DEP=`opkg-find-requires.sh $(PKGPREFIX)` PKG_PROV=`opkg-find-provides.sh $(PKGPREFIX)` $(OPKG_SH) $(CONTROL_DIR)/ffmpeg
 	$(REMOVE)/ffmpeg-$(FFMPEG_VER) $(PKGPREFIX)
 	touch $@
 
