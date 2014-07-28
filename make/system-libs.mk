@@ -366,6 +366,7 @@ endif
 	set -e; cd $(BUILD_TMP)/ffmpeg-$(FFMPEG_VER); \
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
 		$(PATCH)/ffmpeg-$(FFMPEG_VER)-remove-buildtime.diff; \
+		patch -Rp1 < $(PATCHES)/ffmpeg-$(FFMPEG_VER)-61b5ef7754132c43e6db1a273066e82c469fa39c.diff ; \
 		./configure \
 			--extra-cflags="-I$(TARGET_CFLAGS)" \
 			--extra-ldflags="-L$(LD_FLAGS) -Wl,-rpath-link,$(TARGETLIB)" \
