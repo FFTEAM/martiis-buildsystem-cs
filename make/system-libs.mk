@@ -352,7 +352,7 @@ FFMPEG_CONFIGURE += --disable-network
 endif
 $(D)/ffmpeg: $(D)/ffmpeg-$(FFMPEG_VER)
 	touch $@
-$(D)/ffmpeg-$(FFMPEG_VER): $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(PATCHES)/.rebuild.ffmpeg $(D)/libbluray | $(TARGETPREFIX)
+$(D)/ffmpeg-$(FFMPEG_VER): libxml2 $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(PATCHES)/.rebuild.ffmpeg $(D)/libbluray $(PATCHES)/ffmpeg-$(FFMPEG_VER)-61b5ef7754132c43e6db1a273066e82c469fa39c.diff | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
 		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
