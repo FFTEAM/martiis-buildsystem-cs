@@ -1,0 +1,27 @@
+diff -ur ffmpeg-2.3-original/cmdutils.c ffmpeg-2.3/cmdutils.c
+--- ffmpeg-2.3-original/cmdutils.c	2014-07-16 03:00:37.000000000 +0200
++++ ffmpeg-2.3/cmdutils.c	2014-07-27 08:58:21.370144025 +0200
+@@ -1074,8 +1074,7 @@
+         av_log(NULL, level, " Copyright (c) %d-%d the FFmpeg developers",
+                program_birth_year, CONFIG_THIS_YEAR);
+     av_log(NULL, level, "\n");
+-    av_log(NULL, level, "%sbuilt on %s %s with %s\n",
+-           indent, __DATE__, __TIME__, CC_IDENT);
++    av_log(NULL, level, "%sbuilt with %s\n", indent, CC_IDENT);
+ 
+     av_log(NULL, level, "%sconfiguration: " FFMPEG_CONFIGURATION "\n", indent);
+ }
+Only in ffmpeg-2.3: cmdutils.c.orig
+diff -ur ffmpeg-2.3-original/ffprobe.c ffmpeg-2.3/ffprobe.c
+--- ffmpeg-2.3-original/ffprobe.c	2014-07-16 03:00:37.000000000 +0200
++++ ffmpeg-2.3/ffprobe.c	2014-07-27 08:58:21.374144025 +0200
+@@ -2476,8 +2476,6 @@
+     print_str("version", FFMPEG_VERSION);
+     print_fmt("copyright", "Copyright (c) %d-%d the FFmpeg developers",
+               program_birth_year, CONFIG_THIS_YEAR);
+-    print_str("build_date", __DATE__);
+-    print_str("build_time", __TIME__);
+     print_str("compiler_ident", CC_IDENT);
+     print_str("configuration", FFMPEG_CONFIGURATION);
+     writer_print_section_footer(w);
+Only in ffmpeg-2.3: ffprobe.c.orig
