@@ -352,7 +352,7 @@ FFMPEG_CONFIGURE += --disable-network
 endif
 $(D)/ffmpeg: $(D)/ffmpeg-$(FFMPEG_VER)
 	touch $@
-$(D)/ffmpeg-$(FFMPEG_VER): libxml2 $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(PATCHES)/.rebuild.ffmpeg $(D)/libbluray $(PATCHES)/ffmpeg-$(FFMPEG_VER)-61b5ef7754132c43e6db1a273066e82c469fa39c.diff | $(TARGETPREFIX)
+$(D)/ffmpeg-$(FFMPEG_VER): libxml2 $(ARCHIVE)/ffmpeg-$(FFMPEG_VER).tar.bz2 $(PATCHES)/ffmpeg-hds.patch $(PATCHES)/.rebuild.ffmpeg $(D)/libbluray $(PATCHES)/ffmpeg-$(FFMPEG_VER)-61b5ef7754132c43e6db1a273066e82c469fa39c.diff | $(TARGETPREFIX)
 ifeq ($(PLATFORM), coolstream)
 	if ! test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
 		make $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
@@ -367,6 +367,7 @@ endif
 		: $(PATCH)/ffmpeg-dvbsubs.diff; \
 		$(PATCH)/ffmpeg-$(FFMPEG_VER)-remove-buildtime.diff; \
 		patch -Rp1 < $(PATCHES)/ffmpeg-$(FFMPEG_VER)-61b5ef7754132c43e6db1a273066e82c469fa39c.diff ; \
+		$(PATCH)/ffmpeg-hds.patch; \
 		./configure \
 			--extra-cflags="-I$(TARGET_CFLAGS)" \
 			--extra-ldflags="-L$(LD_FLAGS) -Wl,-rpath-link,$(TARGETLIB)" \
