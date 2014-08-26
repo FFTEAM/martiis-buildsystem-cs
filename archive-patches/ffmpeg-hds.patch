@@ -51,8 +51,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/allformats.c ffmpeg-2.3/liba
      REGISTER_DEMUXER (HNM,              hnm);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/libavformat/amfmetadata.c
 --- ffmpeg-2.3-original/libavformat/amfmetadata.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/amfmetadata.c	2014-08-10 14:36:01.216099009 +0200
-@@ -0,0 +1,232 @@
++++ ffmpeg-2.3/libavformat/amfmetadata.c	2014-08-26 16:46:32.077848245 +0200
+@@ -0,0 +1,294 @@
 +/*
 + * Adobe Action Message Format Parser
 + * Copyright (c) 2013 Cory McCarthy
@@ -87,6 +87,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +#include "flv.h"
 +#include "libavutil/avstring.h"
 +#include "libavutil/intfloat.h"
++#include "libavformat/avformat.h"
 +
 +static int amf_metadata_parse_value(AVIOContext *in, AMFMetadata *metadata, const char *name);
 +
@@ -96,8 +97,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +
 +    type = avio_r8(in);
 +    if(type != 0x02) {
-+        av_log(NULL, AV_LOG_ERROR, "amfmetadata Expected type 2, type = %d \n", type);
-+        return -1;
++	av_log(NULL, AV_LOG_ERROR, "amfmetadata Expected type 2, type = %d \n", type);
++	return -1;
 +    }
 +
 +    return flv_amf_get_string(in, str, str_size);
@@ -107,47 +108,102 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    const char *name, double value)
 +{
 +    if(!av_strcasecmp("width", name)) {
-+        metadata->width = (int)value;
++	metadata->width = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("height", name)) {
-+        metadata->height = (int)value;
++	metadata->height = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("framerate", name)) {
-+        metadata->frame_rate = (int)value;
++	metadata->frame_rate = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("videodatarate", name)) {
-+        metadata->video_data_rate = (int)value;
++	metadata->video_data_rate = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("audiosamplerate", name)) {
-+        metadata->audio_sample_rate = (int)value;
++	metadata->audio_sample_rate = (int)value;
++    }
++    else
++    if(!av_strcasecmp("audiosamplesize", name)) {
++	metadata->audio_sample_size = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("audiochannels", name)) {
-+        metadata->nb_audio_channels = (int)value;
++	metadata->nb_audio_channels = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("stereo", name)) {
-+        metadata->nb_audio_channels = ((int)value) ? 2 : 1;
++	metadata->nb_audio_channels = ((int)value) ? 2 : 1;
 +    }
 +    else
 +    if(!av_strcasecmp("audiodatarate", name)) {
-+        metadata->audio_data_rate = (int)value;
++	metadata->audio_data_rate = (int)value;
 +    }
 +    else
 +    if(!av_strcasecmp("audiocodecid", name)) {
-+        if((int)value == 10)
-+            metadata->audio_codec_id = AV_CODEC_ID_AAC;
-+        else if((int)value == 3)
-+            metadata->audio_codec_id = AV_CODEC_ID_MP3;
++	switch(FLV_AUDIO_CODECID_MASK & ((int)value << FLV_AUDIO_CODECID_OFFSET)) {
++	case FLV_CODECID_PCM:
++	    metadata->audio_codec_id = metadata->audio_sample_size == 8
++				       ? AV_CODEC_ID_PCM_U8
++#if HAVE_BIGENDIAN
++				       : AV_CODEC_ID_PCM_S16BE;
++#else
++				       : AV_CODEC_ID_PCM_S16LE;
++#endif
++	    break;
++	case FLV_CODECID_ADPCM:
++	    metadata->audio_codec_id = AV_CODEC_ID_ADPCM_SWF;
++	    break;
++	case FLV_CODECID_MP3:
++	    metadata->audio_stream_need_parsing = AVSTREAM_PARSE_FULL;
++	    metadata->audio_codec_id = AV_CODEC_ID_MP3;
++	    break;
++	case FLV_CODECID_PCM_LE:
++	    metadata->audio_codec_id = metadata->audio_sample_size == 8
++				       ? AV_CODEC_ID_PCM_U8
++				       : AV_CODEC_ID_PCM_S16LE;
++	    break;
++	case FLV_CODECID_NELLYMOSER_16KHZ_MONO:
++	    if (!metadata->audio_sample_rate)
++		metadata->audio_sample_rate = 16000;
++	    metadata->nb_audio_channels = 1;
++	    metadata->audio_codec_id = AV_CODEC_ID_NELLYMOSER;
++	    break;
++	case FLV_CODECID_NELLYMOSER_8KHZ_MONO:
++	    if (!metadata->audio_sample_rate)
++		metadata->audio_sample_rate = 8000;
++	    metadata->nb_audio_channels = 1;
++	    metadata->audio_codec_id = AV_CODEC_ID_NELLYMOSER;
++	    break;
++	case FLV_CODECID_NELLYMOSER:
++	    metadata->audio_codec_id = AV_CODEC_ID_NELLYMOSER;
++	    break;
++	case FLV_CODECID_PCM_ALAW:
++	    metadata->audio_sample_rate = 8000;
++	    metadata->audio_codec_id = AV_CODEC_ID_PCM_ALAW;
++	    break;
++	case FLV_CODECID_PCM_MULAW:
++	    metadata->audio_sample_rate = 8000;
++	    metadata->audio_codec_id = AV_CODEC_ID_PCM_MULAW;
++	    break;
++	case FLV_CODECID_AAC:
++	    metadata->audio_codec_id = AV_CODEC_ID_AAC;
++	    break;
++	case FLV_CODECID_SPEEX:
++	    metadata->audio_sample_rate = 16000;
++	    metadata->audio_codec_id = AV_CODEC_ID_SPEEX;
++	    break;
++	default:
++	    break;
++	}
 +    }
 +    else
 +    if(!av_strcasecmp("videocodecid", name)) {
-+        if((int)value == 7)
-+            metadata->video_codec_id = AV_CODEC_ID_H264;
++	if((int)value == 7)
++	    metadata->video_codec_id = AV_CODEC_ID_H264;
 +    }
 +}
 +
@@ -155,15 +211,21 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    const char *name, const char *value)
 +{
 +    if(!av_strcasecmp("audiocodecid", name)) {
-+        if(!av_strcasecmp("mp4a", value))
-+            metadata->audio_codec_id = AV_CODEC_ID_AAC;
-+        else if(!av_strcasecmp(".mp3", value))
-+            metadata->audio_codec_id = AV_CODEC_ID_MP3;
++	if(!av_strcasecmp("mp4a", value))
++	    metadata->audio_codec_id = AV_CODEC_ID_AAC;
++	else if(!av_strcasecmp(".mp3", value)) {
++	    metadata->audio_stream_need_parsing = AVSTREAM_PARSE_FULL;
++	    metadata->audio_codec_id = AV_CODEC_ID_MP3;
++	}
++	else
++	    av_log(NULL, AV_LOG_ERROR, "amfmetadata audiocodecid=%s unhandled\n", value);
 +    }
 +    else
 +    if(!av_strcasecmp("videocodecid", name)) {
-+        if(!av_strcasecmp("avc1", value))
-+            metadata->video_codec_id = AV_CODEC_ID_H264;
++	if(!av_strcasecmp("avc1", value))
++	    metadata->video_codec_id = AV_CODEC_ID_H264;
++	else
++	    av_log(NULL, AV_LOG_ERROR, "amfmetadata videocodecid=%s unhandled\n", value);
 +    }
 +}
 +
@@ -173,10 +235,10 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    int ret;
 +
 +    if((ret = flv_amf_get_string(in, name, sizeof(name))) < 0)
-+        return ret;
++	return ret;
 +
 +    if(!strlen(name))
-+        return -1;
++	return -1;
 +
 +    return amf_metadata_parse_value(in, metadata, name);
 +}
@@ -186,11 +248,11 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    int ret;
 +
 +    while(!url_feof(in)) {
-+        if((ret = amf_metadata_parse_object_property(in, metadata)) < 0) {
-+            if(avio_r8(in) != AMF_END_OF_OBJECT)
-+                return ret;
-+            break;
-+        }
++	if((ret = amf_metadata_parse_object_property(in, metadata)) < 0) {
++	    if(avio_r8(in) != AMF_END_OF_OBJECT)
++		return ret;
++	    break;
++	}
 +    }
 +
 +    return 0;
@@ -203,9 +265,9 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +
 +    length = avio_rb32(in);
 +    while(!url_feof(in) && length > 0) {
-+        if((ret = amf_metadata_parse_value(in, metadata, NULL)) < 0)
-+            return ret;
-+        length--;
++	if((ret = amf_metadata_parse_value(in, metadata, NULL)) < 0)
++	    return ret;
++	length--;
 +    }
 +
 +    return 0;
@@ -221,27 +283,27 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    type = avio_r8(in);
 +
 +    if(type == AMF_DATA_TYPE_NUMBER) {
-+        value_number = av_int2double(avio_rb64(in));
-+        amf_metadata_assign_property_number(metadata, name, value_number);
++	value_number = av_int2double(avio_rb64(in));
++	amf_metadata_assign_property_number(metadata, name, value_number);
 +    }
 +    else if(type == AMF_DATA_TYPE_BOOL) {
-+        value_number = avio_r8(in);
-+        amf_metadata_assign_property_number(metadata, name, value_number);
++	value_number = avio_r8(in);
++	amf_metadata_assign_property_number(metadata, name, value_number);
 +    }
 +    else if(type == AMF_DATA_TYPE_STRING) {
-+        if((ret = flv_amf_get_string(in, value_str, sizeof(value_str))) < 0)
-+            return ret;
-+        amf_metadata_assign_property_string(metadata, name, value_str);
++	if((ret = flv_amf_get_string(in, value_str, sizeof(value_str))) < 0)
++	    return ret;
++	amf_metadata_assign_property_string(metadata, name, value_str);
 +    }
 +    else if(type == AMF_DATA_TYPE_OBJECT) {
-+        ret = amf_metadata_parse_object(in, metadata);
++	ret = amf_metadata_parse_object(in, metadata);
 +    }
 +    else if(type == AMF_DATA_TYPE_MIXEDARRAY) {
-+        avio_skip(in, 4);
-+        ret = amf_metadata_parse_object(in, metadata);
++	avio_skip(in, 4);
++	ret = amf_metadata_parse_object(in, metadata);
 +    }
 +    else if(type == AMF_DATA_TYPE_ARRAY) {
-+        ret = amf_metadata_parse_strict_array(in, metadata);
++	ret = amf_metadata_parse_strict_array(in, metadata);
 +    }
 +
 +    return ret;
@@ -253,13 +315,13 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    int ret;
 +
 +    if((ret = amf_metadata_read_string_value(in, name, sizeof(name))) < 0) {
-+        av_log(NULL, AV_LOG_ERROR, "amfmetadata Failed to read onMetadata string, ret: %d \n", ret);
-+        return ret;
++	av_log(NULL, AV_LOG_ERROR, "amfmetadata Failed to read onMetadata string, ret: %d \n", ret);
++	return ret;
 +    }
 +
 +    if(av_strcasecmp(name, "onMetaData")) {
-+        av_log(NULL, AV_LOG_ERROR, "amfmetadata Expected onMetadata, str = %s \n", name);
-+        return -1;
++	av_log(NULL, AV_LOG_ERROR, "amfmetadata Expected onMetadata, str = %s \n", name);
++	return -1;
 +    }
 +
 +    return amf_metadata_parse_value(in, metadata, name);
@@ -271,14 +333,14 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    int ret;
 +
 +    if(!buffer)
-+        return 0;
++	return 0;
 +    if(buffer_size <= 0)
-+        return 0;
++	return 0;
 +
 +    in = avio_alloc_context(buffer, buffer_size,
-+        0, NULL, NULL, NULL, NULL);
++	0, NULL, NULL, NULL, NULL);
 +    if(!in)
-+        return AVERROR(ENOMEM);
++	return AVERROR(ENOMEM);
 +
 +    ret = amf_metadata_parse(in, metadata);
 +    av_free(in);
@@ -287,8 +349,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +}
 diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.h ffmpeg-2.3/libavformat/amfmetadata.h
 --- ffmpeg-2.3-original/libavformat/amfmetadata.h	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/amfmetadata.h	2014-07-31 17:58:33.786371338 +0200
-@@ -0,0 +1,45 @@
++++ ffmpeg-2.3/libavformat/amfmetadata.h	2014-08-24 08:53:46.211048163 +0200
+@@ -0,0 +1,47 @@
 +/*
 + * Adobe Action Message Format Parser
 + * Copyright (c) 2013 Cory McCarthy
@@ -325,9 +387,11 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.h ffmpeg-2.3/lib
 +    int height;
 +    int frame_rate;
 +    int audio_sample_rate;
++    int audio_sample_size;
 +    int nb_audio_channels;
 +    int audio_data_rate;
 +    int video_data_rate;
++    int audio_stream_need_parsing;
 +
 +    enum AVCodecID audio_codec_id;
 +    enum AVCodecID video_codec_id;
@@ -1158,11 +1222,12 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flv.h ffmpeg-2.3/libavformat
  #endif /* AVFORMAT_FLV_H */
 diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.c ffmpeg-2.3/libavformat/flvtag.c
 --- ffmpeg-2.3-original/libavformat/flvtag.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/flvtag.c	2014-08-22 12:31:52.977729680 +0200
-@@ -0,0 +1,402 @@
++++ ffmpeg-2.3/libavformat/flvtag.c	2014-08-26 16:33:59.822814760 +0200
+@@ -0,0 +1,408 @@
 +/*
 + * Adobe FLV Tag Parser
 + * Copyright (c) 2013 Cory McCarthy
++ * Copyright (c) 2014 martii
 + *
 + * This file is part of FFmpeg.
 + *
@@ -1327,7 +1392,6 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.c ffmpeg-2.3/libavfor
 +    uint8_t *p;
 +    uint8_t nb_sps, nb_pps;
 +    uint16_t sps_length, pps_length;
-+    uint32_t nal_size;
 +    int i, ret = 0;
 +
 +    if(header->frame_type == 0x05) {
@@ -1432,13 +1496,19 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.c ffmpeg-2.3/libavfor
 +	p += body->pps_data_size;
 +
 +	while(ret < data_size) {
++	    int length_size = body->length_size_minus_one + 1;
++	    uint32_t nal_size = 0;
 +	    *p++ = 0x00;
 +	    *p++ = 0x00;
 +	    *p++ = 0x00;
 +	    *p++ = 0x01;
 +
-+	    nal_size = avio_rb32(in);
-+	    ret += 4;
++	    while (length_size) {
++		nal_size <<= 8;
++		nal_size |= avio_r8(in);
++		length_size--;
++		ret++;
++	    }
 +
 +	    avio_read(in, p, nal_size);
 +	    p += nal_size;
@@ -1608,8 +1678,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.h ffmpeg-2.3/libavfor
 +    FLVMediaSample **samples, int *nb_samples_out);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavformat/hdsdec.c
 --- ffmpeg-2.3-original/libavformat/hdsdec.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/hdsdec.c	2014-08-22 18:13:59.851052762 +0200
-@@ -0,0 +1,940 @@
++++ ffmpeg-2.3/libavformat/hdsdec.c	2014-08-24 15:45:33.005843781 +0200
+@@ -0,0 +1,986 @@
 +/*
 + * Adobe HTTP Dynamic Streaming (HDS) demuxer
 + * Copyright (c) 2013 Cory McCarthy
@@ -1706,7 +1776,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    FLVMediaSample *samples[MAX_NB_SAMPLES];
 +    int sample_index;
 +
-+    int nb_fragments_read;
++    unsigned int nb_fragments_read;
 +} HDSMedia;
 +
 +typedef struct HDSContext {
@@ -1869,6 +1939,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    st->codec->sample_rate = metadata->audio_sample_rate;
 +    st->codec->sample_fmt = AV_SAMPLE_FMT_S16;
 +    st->codec->bit_rate = metadata->audio_data_rate * 1024;
++    st->need_parsing = metadata->audio_stream_need_parsing;
 +
 +    return 0;
 +}
@@ -2010,7 +2081,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +}
 +
 +static void construct_fragment_url(const char *base_url, const char *media_url,
-+    int segment, int fragment, const char *suffix, char *url_out, size_t url_size)
++    unsigned int segment, unsigned int fragment, const char *suffix, char *url_out, size_t url_size)
 +{
 +    char *p;
 +    char *fragment_str;
@@ -2019,11 +2090,35 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    p += av_strlcat(p, base_url, url_size);
 +    p += av_strlcat(p, media_url, url_size);
 +
-+    fragment_str = av_asprintf("Seg%d-Frag%d", segment, fragment);
++    fragment_str = av_asprintf("Seg%u-Frag%u", segment, fragment);
 +    p += av_strlcat(p, fragment_str, url_size);
 +    av_free(fragment_str);
 +
 +    p += av_strlcat(p, suffix, url_size);
++}
++
++static int get_fragment_count(HDSBootstrapInfo *bootstrap_info, HDSMedia *media)
++{
++    F4FBootstrapInfoBox *abst = &(bootstrap_info->box.abst);
++    int fragments_max = 0;
++    int i, j;
++
++    for(i = 0; i < abst->nb_segment_run_table_boxes; i++) {
++	F4FSegmentRunTableBox *asrt = abst->segment_run_table_boxes[i];
++	int found = 0;
++	if (asrt->nb_quality_entries && bootstrap_info->quality)
++	    for(j = 0; !found && j < asrt->nb_quality_entries; j++)
++		found = !strcmp(asrt->quality_entries[j], bootstrap_info->quality);
++	else
++	    found = 1;
++
++	if (found) {
++	    F4FSegmentRunEntry *segment_entry = segment_entry = asrt->segment_run_entries[asrt->nb_segment_run_entries - 1];
++	    fragments_max = segment_entry->fragments_per_segment;
++	    break;
++	}
++    }
++    return fragments_max;
 +}
 +
 +static int get_fragment_offset(HDSBootstrapInfo *bootstrap_info, HDSMedia *media, int64_t timestamp)
@@ -2034,7 +2129,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +
 +    for(i = 0; i < abst->nb_segment_run_table_boxes; i++) {
 +	F4FSegmentRunTableBox *asrt = abst->segment_run_table_boxes[i];
-+        int found = 0;
++	int found = 0;
 +	if (asrt->nb_quality_entries && bootstrap_info->quality)
 +	    for(j = 0; !found && j < asrt->nb_quality_entries; j++)
 +		found = !strcmp(asrt->quality_entries[j], bootstrap_info->quality);
@@ -2062,7 +2157,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    for(j = 0; j < afrt->nb_fragment_run_entries; j++) {
 +		int fragcount;
 +		F4FFragmentRunEntry *fre = afrt->fragment_run_entries[j];
-+	        if (j + 1 < afrt->nb_fragment_run_entries) {
++		if (j + 1 < afrt->nb_fragment_run_entries) {
 +		    fragcount = afrt->fragment_run_entries[j + 1]->first_fragment - fre->first_fragment;
 +		    fragments_max -= fragcount;
 +		} else
@@ -2078,16 +2173,16 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +}
 +
 +static int get_segment_fragment(int is_live, HDSBootstrapInfo *bootstrap_info,
-+    HDSMedia *media, int *segment_out, int *fragment_out)
++    HDSMedia *media, unsigned int *segment_out, unsigned int *fragment_out)
 +{
 +    F4FBootstrapInfoBox *abst = &(bootstrap_info->box.abst);
-+    int segment = -1, fragment = -1, fragments_max = 0;
++    unsigned int segment = ~0, fragment = ~0, fragments_max = 0;
 +    int i, j;
 +
 +    int skip = media->nb_fragments_read;
-+    for(i = 0; segment < 0 && i < abst->nb_segment_run_table_boxes; i++) {
++    for(i = 0; segment == ~0 && i < abst->nb_segment_run_table_boxes; i++) {
 +	F4FSegmentRunTableBox *asrt = abst->segment_run_table_boxes[i];
-+        int found = 0;
++	int found = 0;
 +	if (asrt->nb_quality_entries && bootstrap_info->quality)
 +	    for(j = 0; !found && j < asrt->nb_quality_entries; j++)
 +		found = !strcmp(asrt->quality_entries[j], bootstrap_info->quality);
@@ -2095,25 +2190,32 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    found = 1;
 +
 +	if (found) {
-+	    for (j = 0; segment < 0 && j < asrt->nb_segment_run_entries; j++) {
-+		F4FSegmentRunEntry *segment_entry = segment_entry = asrt->segment_run_entries[j];
++		F4FSegmentRunEntry *last_segment_entry = NULL;;
++	    for (j = 0; segment == ~0 && j < asrt->nb_segment_run_entries; j++) {
++		F4FSegmentRunEntry *segment_entry = last_segment_entry = asrt->segment_run_entries[j];
++		if (is_live) {
++			fragment = skip;
++		}
++
 +		if (segment_entry->fragments_per_segment < skip) {
 +		    skip -= segment_entry->fragments_per_segment;
 +		    fragments_max = segment_entry->fragments_per_segment;
 +		} else
 +		    segment = segment_entry->first_segment;
 +	    }
++	    if (is_live && !segment)
++		    segment = last_segment_entry->first_segment;
 +	    break;
 +	}
 +    }
 +
-+    if(segment < 0) {
++    if(segment == ~0) {
 +	av_log(NULL, AV_LOG_ERROR, "hds segment entry not found\n");
 +	return -1;
 +    }
 +
 +    skip = media->nb_fragments_read;
-+    for(i = 0; fragment < 0 && i < abst->nb_fragment_run_table_boxes; i++) {
++    for(i = 0; fragment == ~0 && i < abst->nb_fragment_run_table_boxes; i++) {
 +	int found = 0;
 +	F4FFragmentRunTableBox *afrt = abst->fragment_run_table_boxes[i];
 +	if (afrt->nb_quality_entries && bootstrap_info->quality)
@@ -2123,7 +2225,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    found = 1;
 +
 +	if (found) {
-+	    for(j = 0; fragment < 0 && j < afrt->nb_fragment_run_entries; j++) {
++	    for(j = 0; fragment == ~0 && j < afrt->nb_fragment_run_entries; j++) {
 +		int fragcount;
 +		F4FFragmentRunEntry *fre = afrt->fragment_run_entries[j];
 +		if (j + 1 < afrt->nb_fragment_run_entries) {
@@ -2142,10 +2244,13 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    break;
 +	}
 +    }
-+    if (skip > 0)
-+	return AVERROR_EOF;
 +
-+    if(fragment < 0) {
++    if (!is_live && skip > 0) {
++	av_log(NULL, AV_LOG_ERROR, "hds fragment %d fragments beyond EOF\n", skip);
++	return AVERROR_EOF;
++    }
++
++    if(fragment == ~0) {
 +	av_log(NULL, AV_LOG_ERROR, "hds fragment entry not found\n");
 +	return -1;
 +    }
@@ -2207,7 +2312,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	url = alloca(url_len);
 +	strncpy(url, download_data.url, url_len);
 +	pthread_mutex_unlock(&download_data.mutex);
-+	//av_log(NULL, AV_LOG_DEBUG, "%s %d: downloading %s\n", __FILE__,__LINE__, url);
++	av_log(NULL, AV_LOG_DEBUG, "%s %d: downloading %s\n", __FILE__,__LINE__, url); //FIXME
 +
 +	// initiate download
 +	ret = ffurl_open(&puc, url, AVIO_FLAG_READ, &download_abort_callback, &opts);
@@ -2235,7 +2340,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    if (download_data.url)
 +		av_freep(&download_data.url);
 +	} else {
-+	    // av_log(NULL, AV_LOG_DEBUG, "%s %d: downloaded  %s\n", __FILE__,__LINE__, download_data.url);
++	    av_log(NULL, AV_LOG_DEBUG, "%s %d: downloaded  %s\n", __FILE__,__LINE__, download_data.url); //FIXME
 +	    if (download_data.cookies)
 +		av_freep(&download_data.cookies);
 +	    av_opt_get(puc->priv_data, "cookies", 0, (uint8_t**)&(download_data.cookies));
@@ -2297,7 +2402,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +{
 +    HDSContext *c = s->priv_data;
 +    char url[MAX_URL_SIZE];
-+    int segment, fragment;
++    unsigned int segment, fragment;
 +    int ret;
 +
 +    if((ret = get_segment_fragment(c->is_live, bootstrap_info, media, &segment, &fragment)) < 0)
@@ -2344,8 +2449,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +		    construct_fragment_url(c->base_url, media->url, segment, fragment, av_stristr(s->filename, "?"), url, MAX_URL_SIZE);
 +		else
 +		    construct_fragment_url(c->base_url, media->url, segment, fragment, "", url, MAX_URL_SIZE);
-+	        download_data.url = av_strdup(url);
-+	        sem_post(&download_data.to_thread);	// initiate download
++		download_data.url = av_strdup(url);
++		sem_post(&download_data.to_thread);	// initiate download
 +	} else {
 +	    // finished but failed
 +	    ret = AVERROR(EIO);
@@ -2425,6 +2530,17 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +{
 +    HDSContext *c = s->priv_data;
 +    int ret;
++
++    if (c->is_live && !media->nb_fragments_read) {
++#if 0
++	media->nb_fragments_read = get_fragment_count(bootstrap_info, media);
++#else
++	int64_t ts = bootstrap_info->box.abst.current_media_time;
++	media->nb_fragments_read = get_fragment_offset(bootstrap_info, media, ts);
++#endif
++	if (media->nb_fragments_read > 1)
++		media->nb_fragments_read--;
++    }
 +
 +    if (c->seek_timestamp != AV_NOPTS_VALUE) {
 +	int64_t ts = c->seek_timestamp;
