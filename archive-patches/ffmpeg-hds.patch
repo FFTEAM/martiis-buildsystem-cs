@@ -51,8 +51,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/allformats.c ffmpeg-2.3/liba
      REGISTER_DEMUXER (HNM,              hnm);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/libavformat/amfmetadata.c
 --- ffmpeg-2.3-original/libavformat/amfmetadata.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/amfmetadata.c	2014-08-26 16:46:32.077848245 +0200
-@@ -0,0 +1,294 @@
++++ ffmpeg-2.3/libavformat/amfmetadata.c	2014-08-31 12:34:29.661083325 +0200
+@@ -0,0 +1,290 @@
 +/*
 + * Adobe Action Message Format Parser
 + * Copyright (c) 2013 Cory McCarthy
@@ -237,9 +237,6 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    if((ret = flv_amf_get_string(in, name, sizeof(name))) < 0)
 +	return ret;
 +
-+    if(!strlen(name))
-+	return -1;
-+
 +    return amf_metadata_parse_value(in, metadata, name);
 +}
 +
@@ -247,13 +244,9 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +{
 +    int ret;
 +
-+    while(!url_feof(in)) {
-+	if((ret = amf_metadata_parse_object_property(in, metadata)) < 0) {
-+	    if(avio_r8(in) != AMF_END_OF_OBJECT)
-+		return ret;
++    while(!url_feof(in))
++	if((ret = amf_metadata_parse_object_property(in, metadata)) < 0)
 +	    break;
-+	}
-+    }
 +
 +    return 0;
 +}
@@ -304,6 +297,9 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.c ffmpeg-2.3/lib
 +    }
 +    else if(type == AMF_DATA_TYPE_ARRAY) {
 +	ret = amf_metadata_parse_strict_array(in, metadata);
++    }
++    else if(type == AMF_END_OF_OBJECT) {
++	ret = -1; // EOF
 +    }
 +
 +    return ret;
@@ -400,7 +396,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/amfmetadata.h ffmpeg-2.3/lib
 +int ff_parse_amf_metadata(uint8_t *buffer, int buffer_size, AMFMetadata *metadata);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/f4fbox.c ffmpeg-2.3/libavformat/f4fbox.c
 --- ffmpeg-2.3-original/libavformat/f4fbox.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/f4fbox.c	2014-08-02 09:53:55.147619434 +0200
++++ ffmpeg-2.3/libavformat/f4fbox.c	2014-08-30 13:55:28.763921994 +0200
 @@ -0,0 +1,345 @@
 +/*
 + * Adobe Fragmented F4V File (F4F) Parser
@@ -863,8 +859,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/f4fbox.h ffmpeg-2.3/libavfor
 +int ff_free_f4f_box(F4FBox *box);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/f4mmanifest.c ffmpeg-2.3/libavformat/f4mmanifest.c
 --- ffmpeg-2.3-original/libavformat/f4mmanifest.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/f4mmanifest.c	2014-08-22 18:13:53.819052650 +0200
-@@ -0,0 +1,261 @@
++++ ffmpeg-2.3/libavformat/f4mmanifest.c	2014-08-30 13:55:28.767921994 +0200
+@@ -0,0 +1,262 @@
 +/*
 + * Adobe Media Manifest (F4M) File Parser
 + * Copyright (c) 2013 Cory McCarthy
@@ -1034,6 +1030,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/f4mmanifest.c ffmpeg-2.3/lib
 +    int ret = 0;
 +
 +    for(node = root_node->children; node != root_node->last; node = node->next) {
++
 +        if(!strcmp(node->name, "text"))
 +            continue;
 +
@@ -1222,7 +1219,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flv.h ffmpeg-2.3/libavformat
  #endif /* AVFORMAT_FLV_H */
 diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.c ffmpeg-2.3/libavformat/flvtag.c
 --- ffmpeg-2.3-original/libavformat/flvtag.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/flvtag.c	2014-08-26 16:33:59.822814760 +0200
++++ ffmpeg-2.3/libavformat/flvtag.c	2014-08-31 11:56:49.968174364 +0200
 @@ -0,0 +1,408 @@
 +/*
 + * Adobe FLV Tag Parser
@@ -1334,7 +1331,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.c ffmpeg-2.3/libavfor
 +    }
 +
 +    if(header->aac_packet_type == 0) {
-+	av_log(NULL, AV_LOG_ERROR, "flvtag skipped aac_packet_type %d\n", header->aac_packet_type);
++	av_log(NULL, AV_LOG_DEBUG, "flvtag skipped aac_packet_type %d\n", header->aac_packet_type);
 +	return 0;
 +    }
 +
@@ -1678,8 +1675,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.h ffmpeg-2.3/libavfor
 +    FLVMediaSample **samples, int *nb_samples_out);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavformat/hdsdec.c
 --- ffmpeg-2.3-original/libavformat/hdsdec.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/hdsdec.c	2014-08-24 15:45:33.005843781 +0200
-@@ -0,0 +1,986 @@
++++ ffmpeg-2.3/libavformat/hdsdec.c	2014-08-31 11:56:49.972174364 +0200
+@@ -0,0 +1,1030 @@
 +/*
 + * Adobe HTTP Dynamic Streaming (HDS) demuxer
 + * Copyright (c) 2013 Cory McCarthy
@@ -1749,11 +1746,31 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +#include "f4fbox.h"
 +#include "flvtag.h"
 +
++#include <unistd.h>
 +#include <pthread.h>
 +#include <semaphore.h>
 +#include <alloca.h>
 +
 +#define MAX_NB_SAMPLES 1024
++
++struct HDSDownloadThreadData
++{
++    pthread_mutex_t mutex;			// protects access to this struct
++    pthread_t thread;				// download thread id
++    sem_t *to_thread;				// send signal to thread
++    sem_t *to_caller;				// send signal to caller
++    sem_t _to_thread;				// send signal to thread
++    sem_t _to_caller;				// send signal to caller
++    char *cookies;				// cookies, if any
++    char *url;					// current url
++    int run;					// thread will run until == 0
++    int abort;					// setting this to !=0 aborts download
++    uint8_t *buffer;				// set by thread, unset by thread or caller
++    uint32_t buflen;				// set by thread, unset by thread or caller
++    AVIOInterruptCB *interrupt_callback;
++    AVIOInterruptCB *abort_callback;
++    AVIOInterruptCB download_abort_callback;
++};
 +
 +typedef struct HDSBootstrapInfo {
 +    char id[MAX_URL_SIZE];
@@ -1765,9 +1782,10 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +} HDSBootstrapInfo;
 +
 +typedef struct HDSMedia {
++    int media_index;
 +    int bitrate;
 +    char url[MAX_URL_SIZE];
-+    char bootstrap_info_id[MAX_URL_SIZE];
++    HDSBootstrapInfo *bootstrap_info;
 +
 +    AVStream *audio_stream;
 +    AVStream *video_stream;
@@ -1777,12 +1795,15 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    int sample_index;
 +
 +    unsigned int nb_fragments_read;
++
++    struct HDSDownloadThreadData download_data;
 +} HDSMedia;
 +
 +typedef struct HDSContext {
 +    char id[MAX_URL_SIZE];
-+    int is_live;
 +    char base_url[MAX_URL_SIZE];
++    int is_live;
++    int last_media_index;
 +
 +    int nb_bootstraps;
 +    HDSBootstrapInfo *bootstrap_info[MAX_NB_BOOTSTRAPS];
@@ -1846,7 +1867,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +
 +    if (c->cookies)
 +	av_freep(&c->cookies);
-+    av_opt_get(puc->priv_data, "cookies", 0, (uint8_t**)&(c->cookies));
++    av_opt_get(puc->priv_data, "cookies", 0, (uint8_t **) &c->cookies);
 +    if (c->cookies && !strlen(c->cookies))
 +	av_freep(&c->cookies);
 +
@@ -1904,52 +1925,52 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    return 0;
 +}
 +
-+static int create_streams(AVFormatContext *s, HDSMedia *media, AMFMetadata *metadata)
++static int create_streams(AVFormatContext *s, HDSMedia *media, AMFMetadata *metadata, int i)
 +{
-+    AVStream *st;
++    if (metadata->video_codec_id) {
++	AVStream *st = avformat_new_stream(s, NULL);
++	if(!st)
++	    return AVERROR(ENOMEM);
 +
-+    st = avformat_new_stream(s, NULL);
-+    if(!st)
-+	return AVERROR(ENOMEM);
++	media->video_stream = st;
++	avpriv_set_pts_info(st, 32, 1, 1000);
++	st->discard = AVDISCARD_ALL;
++	st->id = 0 + 2 * i;
++	st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
++	st->codec->codec_id = metadata->video_codec_id;
++	st->codec->width = metadata->width;
++	st->codec->height = metadata->height;
++	st->codec->bit_rate = metadata->video_data_rate * 1000;
++    }
 +
-+    media->video_stream = st;
++    if (metadata->audio_codec_id) {
++	AVStream *st = avformat_new_stream(s, NULL);
++	if(!st)
++	    return AVERROR(ENOMEM);
 +
-+    st->id = 0;
-+    avpriv_set_pts_info(st, 32, 1, 1000);
-+
-+    st->codec->codec_type = AVMEDIA_TYPE_VIDEO;
-+    st->codec->codec_id = metadata->video_codec_id;
-+    st->codec->width = metadata->width;
-+    st->codec->height = metadata->height;
-+    st->codec->bit_rate = metadata->video_data_rate * 1024;
-+
-+    st = avformat_new_stream(s, NULL);
-+    if(!st)
-+	return AVERROR(ENOMEM);
-+
-+    media->audio_stream = st;
-+
-+    st->id = 1;
-+    avpriv_set_pts_info(st, 32, 1, 1000);
-+
-+    st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
-+    st->codec->codec_id = metadata->audio_codec_id;
-+    st->codec->channels = metadata->nb_audio_channels;
-+    st->codec->channel_layout = (st->codec->channels == 2) ?  AV_CH_LAYOUT_STEREO : AV_CH_LAYOUT_MONO;
-+    st->codec->sample_rate = metadata->audio_sample_rate;
-+    st->codec->sample_fmt = AV_SAMPLE_FMT_S16;
-+    st->codec->bit_rate = metadata->audio_data_rate * 1024;
-+    st->need_parsing = metadata->audio_stream_need_parsing;
++	media->audio_stream = st;
++	avpriv_set_pts_info(st, 32, 1, 1000);
++	st->discard = AVDISCARD_ALL;
++	st->id = 1 + 2 * i;
++	st->codec->codec_type = AVMEDIA_TYPE_AUDIO;
++	st->codec->codec_id = metadata->audio_codec_id;
++	st->codec->channels = metadata->nb_audio_channels;
++	st->codec->channel_layout = (st->codec->channels == 2) ?  AV_CH_LAYOUT_STEREO : AV_CH_LAYOUT_MONO;
++	st->codec->sample_rate = metadata->audio_sample_rate;
++	st->codec->sample_fmt = AV_SAMPLE_FMT_S16;
++	st->codec->bit_rate = metadata->audio_data_rate * 1000;
++	st->need_parsing = metadata->audio_stream_need_parsing;
++    }
 +
 +    return 0;
 +}
 +
-+static int create_media(AVFormatContext *s, F4MMedia *f4m_media)
++static int create_media(AVFormatContext *s, F4MMedia *f4m_media, int i)
 +{
 +    HDSContext *c = s->priv_data;
 +    HDSMedia *media;
 +    AMFMetadata metadata;
-+    int ret;
++    int ret, j;
 +
 +    media = av_mallocz(sizeof(HDSMedia));
 +    if(!media)
@@ -1957,9 +1978,16 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +
 +    c->media[c->nb_media++] = media;
 +
++    media->media_index = i;
 +    media->bitrate = f4m_media->bitrate;
 +    memcpy(media->url, f4m_media->url, sizeof(media->url));
-+    memcpy(media->bootstrap_info_id, f4m_media->bootstrap_info_id, sizeof(media->bootstrap_info_id));
++
++    for(j = 0; j < c->nb_bootstraps; j++) {
++	if(!av_strcasecmp(f4m_media->bootstrap_info_id, c->bootstrap_info[j]->id))
++	    continue;
++	media->bootstrap_info = c->bootstrap_info[j];
++	break;
++    }
 +
 +    memset(&metadata, 0x00, sizeof(AMFMetadata));
 +    metadata.nb_audio_channels = 1;
@@ -1968,10 +1996,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	return ret;
 +    }
 +
-+    if((ret = create_streams(s, media, &metadata)) < 0)
-+	return ret;
-+
-+    return 0;
++    return create_streams(s, media, &metadata, i);
 +}
 +
 +static int create_pmt(AVFormatContext *s)
@@ -1990,16 +2015,18 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    return AVERROR(ENOMEM);
 +
 +	av_dict_set(&p->metadata,"name",
-+	    av_asprintf("Bandwidth: %dKbps", media->bitrate), 0);
++	    av_asprintf("%d kbit/s", media->bitrate), 0);
 +
-+	ff_program_add_stream_index(s, p->id, media->video_stream->index);
-+	ff_program_add_stream_index(s, p->id, media->audio_stream->index);
++	if (media->video_stream)
++	    ff_program_add_stream_index(s, p->id, media->video_stream->index);
++	if (media->audio_stream)
++	    ff_program_add_stream_index(s, p->id, media->audio_stream->index);
 +    }
 +
 +    return 0;
 +}
 +
-+static void download_thread_start(AVFormatContext *s);
++static void download_thread_start(AVFormatContext *s, HDSMedia *media);
 +
 +static int initialize_context(AVFormatContext *s, F4MManifest *manifest)
 +{
@@ -2018,7 +2045,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +
 +    for(i = 0; i < manifest->nb_media; i++) {
 +	f4m_media = manifest->media[i];
-+	if((ret = create_media(s, f4m_media)) < 0) {
++	if((ret = create_media(s, f4m_media, i)) < 0) {
 +	    av_log(NULL, AV_LOG_ERROR, "hds Failed to create media, ret: %d \n", ret);
 +	    return ret;
 +	}
@@ -2035,10 +2062,19 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    s->duration = manifest->duration;
 +    c->seek_timestamp = AV_NOPTS_VALUE;
 +
-+    download_thread_start(s);
++    for(i = 0; i < c->nb_media; i++)
++	download_thread_start(s, c->media[i]);
 +
 +    return 0;
 +}
++
++//#define HDS_ENABLE_LOG_CALLBACK
++#ifdef HDS_ENABLE_LOG_CALLBACK
++static void log_callback(void *ptr __attribute__ ((unused)), int lvl __attribute__ ((unused)), const char *format, va_list ap)
++{
++    vfprintf(stderr, format, ap);
++}
++#endif
 +
 +static int hds_read_header(AVFormatContext *s)
 +{
@@ -2049,6 +2085,9 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    uint8_t *buf;
 +    char *p;
 +    int ret;
++#ifdef HDS_ENABLE_LOG_CALLBACK
++    av_log_set_callback(log_callback);
++#endif
 +
 +    p = av_stristr(s->filename, "manifest.f4m");
 +    if(!p) {
@@ -2097,47 +2136,23 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    p += av_strlcat(p, suffix, url_size);
 +}
 +
-+static int get_fragment_count(HDSBootstrapInfo *bootstrap_info, HDSMedia *media)
++static int get_fragment_offset(HDSMedia *media, int64_t timestamp)
 +{
-+    F4FBootstrapInfoBox *abst = &(bootstrap_info->box.abst);
++    F4FBootstrapInfoBox *abst = &(media->bootstrap_info->box.abst);
 +    int fragments_max = 0;
 +    int i, j;
 +
 +    for(i = 0; i < abst->nb_segment_run_table_boxes; i++) {
 +	F4FSegmentRunTableBox *asrt = abst->segment_run_table_boxes[i];
 +	int found = 0;
-+	if (asrt->nb_quality_entries && bootstrap_info->quality)
++	if (asrt->nb_quality_entries && media->bootstrap_info->quality)
 +	    for(j = 0; !found && j < asrt->nb_quality_entries; j++)
-+		found = !strcmp(asrt->quality_entries[j], bootstrap_info->quality);
++		found = !strcmp(asrt->quality_entries[j], media->bootstrap_info->quality);
 +	else
 +	    found = 1;
 +
 +	if (found) {
-+	    F4FSegmentRunEntry *segment_entry = segment_entry = asrt->segment_run_entries[asrt->nb_segment_run_entries - 1];
-+	    fragments_max = segment_entry->fragments_per_segment;
-+	    break;
-+	}
-+    }
-+    return fragments_max;
-+}
-+
-+static int get_fragment_offset(HDSBootstrapInfo *bootstrap_info, HDSMedia *media, int64_t timestamp)
-+{
-+    F4FBootstrapInfoBox *abst = &(bootstrap_info->box.abst);
-+    int fragments_max = 0;
-+    int i, j;
-+
-+    for(i = 0; i < abst->nb_segment_run_table_boxes; i++) {
-+	F4FSegmentRunTableBox *asrt = abst->segment_run_table_boxes[i];
-+	int found = 0;
-+	if (asrt->nb_quality_entries && bootstrap_info->quality)
-+	    for(j = 0; !found && j < asrt->nb_quality_entries; j++)
-+		found = !strcmp(asrt->quality_entries[j], bootstrap_info->quality);
-+	else
-+	    found = 1;
-+
-+	if (found) {
-+	    F4FSegmentRunEntry *segment_entry = segment_entry = asrt->segment_run_entries[asrt->nb_segment_run_entries - 1];
++	    F4FSegmentRunEntry *segment_entry = asrt->segment_run_entries[asrt->nb_segment_run_entries - 1];
 +	    fragments_max = segment_entry->fragments_per_segment;
 +	    break;
 +	}
@@ -2146,17 +2161,16 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    for(i = 0; i < abst->nb_fragment_run_table_boxes; i++) {
 +	int found = 0;
 +	F4FFragmentRunTableBox *afrt = abst->fragment_run_table_boxes[i];
-+	if (afrt->nb_quality_entries && bootstrap_info->quality)
++	if (afrt->nb_quality_entries && media->bootstrap_info->quality)
 +	    for(j = 0; !found && j < afrt->nb_quality_entries; j++)
-+		found = !strcmp(afrt->quality_entries[j], bootstrap_info->quality);
++		found = !strcmp(afrt->quality_entries[j], media->bootstrap_info->quality);
 +	else
 +	    found = 1;
 +
 +	if (found) {
-+	    int first_fragment = afrt->fragment_run_entries[0]->first_fragment;
 +	    for(j = 0; j < afrt->nb_fragment_run_entries; j++) {
-+		int fragcount;
 +		F4FFragmentRunEntry *fre = afrt->fragment_run_entries[j];
++		int fragcount;
 +		if (j + 1 < afrt->nb_fragment_run_entries) {
 +		    fragcount = afrt->fragment_run_entries[j + 1]->first_fragment - fre->first_fragment;
 +		    fragments_max -= fragcount;
@@ -2164,7 +2178,7 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +		    fragcount = fragments_max;
 +
 +		if (timestamp >= fre->first_fragment_time_stamp && timestamp <= fre->first_fragment_time_stamp + fragcount * fre->fragment_duration)
-+		    return fre->first_fragment - first_fragment + (timestamp - fre->first_fragment_time_stamp)/fre->fragment_duration;
++		    return fre->first_fragment + (timestamp - fre->first_fragment_time_stamp)/fre->fragment_duration;
 +	    }
 +	    break;
 +	}
@@ -2172,30 +2186,32 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    return 0;
 +}
 +
-+static int get_segment_fragment(int is_live, HDSBootstrapInfo *bootstrap_info,
-+    HDSMedia *media, unsigned int *segment_out, unsigned int *fragment_out)
++static int get_segment_fragment(int is_live, HDSMedia *media, unsigned int *segment_out, unsigned int *fragment_out)
 +{
-+    F4FBootstrapInfoBox *abst = &(bootstrap_info->box.abst);
++    F4FBootstrapInfoBox *abst = &(media->bootstrap_info->box.abst);
 +    unsigned int segment = ~0, fragment = ~0, fragments_max = 0;
-+    int i, j;
++    int i, j, skip;
 +
-+    int skip = media->nb_fragments_read;
++    if (is_live) {
++	// FIXME. This is a crude hack.
++	*segment_out = 1;
++	*fragment_out = media->nb_fragments_read;
++	return 0;
++    }
++
++    skip = media->nb_fragments_read;
 +    for(i = 0; segment == ~0 && i < abst->nb_segment_run_table_boxes; i++) {
 +	F4FSegmentRunTableBox *asrt = abst->segment_run_table_boxes[i];
 +	int found = 0;
-+	if (asrt->nb_quality_entries && bootstrap_info->quality)
++	if (asrt->nb_quality_entries && media->bootstrap_info->quality)
 +	    for(j = 0; !found && j < asrt->nb_quality_entries; j++)
-+		found = !strcmp(asrt->quality_entries[j], bootstrap_info->quality);
++		found = !strcmp(asrt->quality_entries[j], media->bootstrap_info->quality);
 +	else
 +	    found = 1;
 +
 +	if (found) {
-+		F4FSegmentRunEntry *last_segment_entry = NULL;;
 +	    for (j = 0; segment == ~0 && j < asrt->nb_segment_run_entries; j++) {
-+		F4FSegmentRunEntry *segment_entry = last_segment_entry = asrt->segment_run_entries[j];
-+		if (is_live) {
-+			fragment = skip;
-+		}
++		F4FSegmentRunEntry *segment_entry = asrt->segment_run_entries[j];
 +
 +		if (segment_entry->fragments_per_segment < skip) {
 +		    skip -= segment_entry->fragments_per_segment;
@@ -2203,24 +2219,22 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +		} else
 +		    segment = segment_entry->first_segment;
 +	    }
-+	    if (is_live && !segment)
-+		    segment = last_segment_entry->first_segment;
 +	    break;
 +	}
 +    }
 +
 +    if(segment == ~0) {
-+	av_log(NULL, AV_LOG_ERROR, "hds segment entry not found\n");
-+	return -1;
++	av_log(NULL, AV_LOG_ERROR, "hds segment entry for next fragment (%u) not found, skip: %d\n", media->nb_fragments_read, skip);
++	return 0;
 +    }
 +
 +    skip = media->nb_fragments_read;
 +    for(i = 0; fragment == ~0 && i < abst->nb_fragment_run_table_boxes; i++) {
 +	int found = 0;
 +	F4FFragmentRunTableBox *afrt = abst->fragment_run_table_boxes[i];
-+	if (afrt->nb_quality_entries && bootstrap_info->quality)
++	if (afrt->nb_quality_entries && media->bootstrap_info->quality)
 +	    for(j = 0; !found && j < afrt->nb_quality_entries; j++)
-+		found = !strcmp(afrt->quality_entries[j], bootstrap_info->quality);
++		found = !strcmp(afrt->quality_entries[j], media->bootstrap_info->quality);
 +	else
 +	    found = 1;
 +
@@ -2263,59 +2277,56 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    return 0;
 +}
 +
-+static struct thread_data
++static int download_abort_callback_function(void *opaque)
 +{
-+    pthread_mutex_t mutex;			// protects access to this struct
-+    pthread_t thread;				// download thread id
-+    sem_t to_thread;				// send signal to thread
-+    sem_t to_caller;				// send signal to caller
-+    char *cookies;				// cookies, if any
-+    char *url;					// current url
-+    int run;					// thread will run until == 0
-+    int abort;					// setting this to !=0 aborts download
-+    uint8_t *buffer;				// set by thread, unset by thread or caller
-+    uint32_t buflen;				// set by thread, unset by thread or caller
-+    AVIOInterruptCB *interrupt_callback;
-+    AVIOInterruptCB *abort_callback;
-+} download_data;
-+
-+static int download_abort_callback_function(void *opaque __attribute__((unused)))
-+{
-+    return download_data.abort || ff_check_interrupt(download_data.interrupt_callback);
++    HDSMedia *media = (HDSMedia *) opaque;
++    return media->download_data.abort || ff_check_interrupt(media->download_data.interrupt_callback);
 +}
 +
-+static AVIOInterruptCB download_abort_callback;
-+
-+static void *download_thread(void *arg __attribute__((unused)))
++static void *download_thread(void *opaque)
 +{
-+    while (download_data.run) {
++    HDSMedia *media = (HDSMedia *) opaque;
++
++    while (media->download_data.run && !download_abort_callback_function(media)) {
 +	AVDictionary *opts = NULL;
 +	URLContext *puc = NULL;
 +	uint8_t *buffer = NULL;
 +	int buffer_size = 0, ret;
 +	char *url = NULL;
 +	int url_len;
-+	if (sem_wait(&download_data.to_thread))
++	int tries_left = 15;
++
++	if (sem_wait(media->download_data.to_thread))
 +	    break;
-+	if (!download_data.run)
++	if (!media->download_data.run)
 +	    continue;
 +
-+	pthread_mutex_lock(&download_data.mutex);
-+	download_data.abort = 0;
-+	if (download_data.buffer)
-+	    av_freep(&download_data.buffer);
-+	download_data.buflen = 0;
-+	// generate local copies from thread_data
-+	if (download_data.cookies)
-+	    av_dict_set(&opts, "cookies", download_data.cookies, 0);
-+	url_len = strlen(download_data.url) + 1;
++	pthread_mutex_lock(&media->download_data.mutex);
++	media->download_data.abort = 0;
++	if (media->download_data.buffer)
++	    av_freep(&media->download_data.buffer);
++	media->download_data.buflen = 0;
++	// generate local copies from HDSDownloadThreadData
++	if (media->download_data.cookies)
++	    av_dict_set(&opts, "cookies", media->download_data.cookies, 0);
++	url_len = strlen(media->download_data.url) + 1;
 +	url = alloca(url_len);
-+	strncpy(url, download_data.url, url_len);
-+	pthread_mutex_unlock(&download_data.mutex);
-+	av_log(NULL, AV_LOG_DEBUG, "%s %d: downloading %s\n", __FILE__,__LINE__, url); //FIXME
++	strncpy(url, media->download_data.url, url_len);
++	pthread_mutex_unlock(&media->download_data.mutex);
++	//av_log(NULL, AV_LOG_DEBUG, "%s %d: downloading %s\n", __FILE__,__LINE__, url);
 +
 +	// initiate download
-+	ret = ffurl_open(&puc, url, AVIO_FLAG_READ, &download_abort_callback, &opts);
++	do {
++	    ret = ffurl_open(&puc, url, AVIO_FLAG_READ, &media->download_data.download_abort_callback, &opts);
++	    if (ret < 0) {
++		sleep(1);
++		if (download_abort_callback_function(media))
++		    break;
++		sleep(1);
++		tries_left--;
++	    }
++    	} while (ret < 0 && media->download_data.run && !download_abort_callback_function(media) && tries_left > 0);
++
 +	if (opts)
 +	    av_dict_free(&opts);
 +
@@ -2334,78 +2345,100 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	    av_freep(&buffer);
 +	}
 +
-+	pthread_mutex_lock(&download_data.mutex);
-+	if (download_data.abort || !buffer) {
-+	    download_data.abort = 0;
-+	    if (download_data.url)
-+		av_freep(&download_data.url);
++	pthread_mutex_lock(&media->download_data.mutex);
++	if (media->download_data.abort || !buffer) {
++	    media->download_data.abort = 0;
 +	} else {
-+	    av_log(NULL, AV_LOG_DEBUG, "%s %d: downloaded  %s\n", __FILE__,__LINE__, download_data.url); //FIXME
-+	    if (download_data.cookies)
-+		av_freep(&download_data.cookies);
-+	    av_opt_get(puc->priv_data, "cookies", 0, (uint8_t**)&(download_data.cookies));
-+	    download_data.buffer = buffer;
-+	    download_data.buflen = buffer_size;
++	    //av_log(NULL, AV_LOG_DEBUG, "%s %d: downloaded  %s\n", __FILE__,__LINE__, media->download_data.url);
++	    if (media->download_data.cookies)
++		av_freep(&media->download_data.cookies);
++	    av_opt_get(puc->priv_data, "cookies", 0, (uint8_t **) &media->download_data.cookies);
++	    if (media->download_data.cookies && !strlen(media->download_data.cookies))
++		av_freep(&media->download_data.cookies);
++	    media->download_data.buffer = buffer;
++	    media->download_data.buflen = buffer_size;
 +	}
-+	sem_post(&download_data.to_caller);	// confirm download
-+	pthread_mutex_unlock(&download_data.mutex);
++	sem_post(media->download_data.to_caller);	// confirm download
++	pthread_mutex_unlock(&media->download_data.mutex);
 +	if (puc)
 +	    ffurl_close(puc);
 +    }
 +    pthread_exit(NULL);
 +}
 +
-+static void download_thread_start(AVFormatContext *s)
++static void download_thread_start(AVFormatContext *s, HDSMedia *media)
 +{
-+    pthread_mutex_init(&download_data.mutex, NULL);
-+    sem_init(&download_data.to_thread, 0, 0);
-+    sem_init(&download_data.to_caller, 0, 0);
-+    download_abort_callback.callback = download_abort_callback_function;
-+    download_abort_callback.opaque = NULL;
-+    download_data.thread = 0;
-+    download_data.run = 1;
-+    download_data.abort = 0;
-+    download_data.url = NULL;
-+    download_data.buffer = NULL;
-+    download_data.buflen = 0;
-+    download_data.cookies = NULL;
-+    download_data.interrupt_callback = &s->interrupt_callback;
-+    download_data.abort_callback = &download_abort_callback;
-+    if (pthread_create(&download_data.thread, NULL, download_thread, NULL))
++#if defined(__APPLE__)
++    char buf[40];
++#endif
++    pthread_mutex_init(&media->download_data.mutex, NULL);
++#if defined(__APPLE__) // no unnamed semaphores on darwin
++    snprintf(buf, sizeof(buf), "sem_to_thread%d", media->media_index);
++    media->download_data.to_thread = sem_open(buf, O_CREAT, 0644, 0);
++    snprintf(buf, sizeof(buf), "sem_to_caller%d", media->media_index);
++    media->download_data.to_caller = sem_open(buf, O_CREAT, 0644, 0);
++#else
++    sem_init(&media->download_data._to_thread, 0, 0);
++    sem_init(&media->download_data._to_caller, 0, 0);
++    media->download_data.to_thread = &media->download_data._to_thread;
++    media->download_data.to_caller = &media->download_data._to_caller;
++#endif
++    media->download_data.thread = 0;
++    media->download_data.run = 1;
++    media->download_data.abort = 0;
++    media->download_data.url = NULL;
++    media->download_data.buffer = NULL;
++    media->download_data.buflen = 0;
++    media->download_data.cookies = NULL;
++    media->download_data.interrupt_callback = &s->interrupt_callback;
++    media->download_data.download_abort_callback.callback = download_abort_callback_function;
++    media->download_data.download_abort_callback.opaque = media;
++    media->download_data.abort_callback = &media->download_data.download_abort_callback;
++    if (pthread_create(&media->download_data.thread, NULL, download_thread, media))
 +	av_log(NULL, AV_LOG_ERROR, "hds: creating download thread failed\n");
 +}
 +
-+static void download_thread_stop(void)
++static void download_thread_stop(HDSMedia *media)
 +{
-+    if (download_data.thread) {
-+	download_data.run = 0;
-+	download_data.abort = 1;
-+	sem_post(&download_data.to_thread);
-+	pthread_join(download_data.thread, NULL);
-+	download_data.thread = 0;
-+	if (download_data.url)
-+		av_freep(&download_data.url);
-+	if (download_data.cookies)
-+		av_freep(&download_data.cookies);
-+	if (download_data.buffer)
-+		av_freep(&download_data.buffer);
-+	download_data.buflen = 0;
-+	sem_destroy(&download_data.to_thread);
-+	sem_destroy(&download_data.to_caller);
-+	pthread_mutex_destroy(&download_data.mutex);
++    if (media->download_data.thread) {
++#if defined(__APPLE__)
++	char buf[40];
++#endif
++	media->download_data.run = 0;
++	media->download_data.abort = 1;
++	sem_post(media->download_data.to_thread);
++	pthread_join(media->download_data.thread, NULL);
++	media->download_data.thread = 0;
++	if (media->download_data.url)
++		av_freep(&media->download_data.url);
++	if (media->download_data.cookies)
++		av_freep(&media->download_data.cookies);
++	if (media->download_data.buffer)
++		av_freep(&media->download_data.buffer);
++	media->download_data.buflen = 0;
++#if defined(__APPLE__)
++	sem_close(media->download_data.to_thread);
++	sem_close(media->download_data.to_caller);
++	snprintf(buf, sizeof(buf), "sem_to_thread%d", media->media_index);
++	sem_unlink(buf);
++	snprintf(buf, sizeof(buf), "sem_to_caller%d", media->media_index);
++	sem_unlink(buf);
++#else
++	sem_destroy(&media->download_data._to_thread);
++	sem_destroy(&media->download_data._to_caller);
++#endif
++	pthread_mutex_destroy(&media->download_data.mutex);
 +    }
 +}
 +
-+static int download_fragment(AVFormatContext *s,
-+    HDSBootstrapInfo *bootstrap_info, HDSMedia *media,
-+    uint8_t **buffer_out, int *buffer_size_out)
++static int download_fragment(AVFormatContext *s, HDSMedia *media, uint8_t **buffer_out, int *buffer_size_out)
 +{
 +    HDSContext *c = s->priv_data;
 +    char url[MAX_URL_SIZE];
 +    unsigned int segment, fragment;
 +    int ret;
 +
-+    if((ret = get_segment_fragment(c->is_live, bootstrap_info, media, &segment, &fragment)) < 0)
++    if((ret = get_segment_fragment(c->is_live, media, &segment, &fragment)) < 0)
 +	return ret;
 +    memset(url, 0x00, sizeof(url));
 +    if(!av_stristr(media->url, "?") && av_stristr(s->filename, "?"))
@@ -2413,61 +2446,64 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    else
 +	construct_fragment_url(c->base_url, media->url, segment, fragment, "", url, MAX_URL_SIZE);
 +
-+    pthread_mutex_lock(&download_data.mutex);
-+    if (!download_data.cookies)
-+	download_data.cookies = av_strdup(c->cookies);
-+    if (download_data.url && strcmp(download_data.url, url)) {
++    pthread_mutex_lock(&media->download_data.mutex);
++
++    if (!media->download_data.cookies)
++	media->download_data.cookies = av_strdup(c->cookies);
++    if (media->download_data.url && strcmp(media->download_data.url, url)) {
 +	// download in progress or finished, but not the wanted one. abort it.
-+	download_data.abort = 1;	// initiate abort
-+	pthread_mutex_unlock(&download_data.mutex);
-+	sem_wait(&download_data.to_caller); // wait until current transfer has finished
-+	pthread_mutex_lock(&download_data.mutex);
-+	av_freep(&download_data.url);
++	media->download_data.abort = 1;	// initiate abort
++	pthread_mutex_unlock(&media->download_data.mutex);
++	sem_wait(media->download_data.to_caller); // wait until current transfer has finished
++	pthread_mutex_lock(&media->download_data.mutex);
++	av_freep(&media->download_data.url);
 +    }
-+    if (!download_data.url) {
++    if (!media->download_data.url) {
 +	// queue retrieval of wanted url
-+	download_data.url = av_strdup(url);
-+	sem_post(&download_data.to_thread);	// initiate download
++	media->download_data.url = av_strdup(url);
++	sem_post(media->download_data.to_thread);	// initiate download
 +    }
-+    if (download_data.url && !strcmp(download_data.url, url)) {
++    if (media->download_data.url && !strcmp(media->download_data.url, url)) {
 +	// download matches what we want
-+	pthread_mutex_unlock(&download_data.mutex);
-+	sem_wait(&download_data.to_caller); // wait until finished
-+	pthread_mutex_lock(&download_data.mutex);
-+	av_freep(&download_data.url);
-+	if (download_data.buffer) {
-+	    *buffer_out = download_data.buffer;
-+	    *buffer_size_out = download_data.buflen;
-+	    download_data.buffer = NULL;
-+	    download_data.buflen = 0;
++	pthread_mutex_unlock(&media->download_data.mutex);
++	sem_wait(media->download_data.to_caller); // wait until finished
++	pthread_mutex_lock(&media->download_data.mutex);
++	av_freep(&media->download_data.url);
++	if (media->download_data.buffer) {
++	    *buffer_out = media->download_data.buffer;
++	    *buffer_size_out = media->download_data.buflen;
++	    media->download_data.buffer = NULL;
++	    media->download_data.buflen = 0;
 +	    ret = 0;
 +	    media->nb_fragments_read++;
 +	    //initiate retrieval of next url
-+	    if(!get_segment_fragment(c->is_live, bootstrap_info, media, &segment, &fragment))
++	    if(!get_segment_fragment(c->is_live, media, &segment, &fragment))
 +		memset(url, 0x00, sizeof(url));
 +		if(!av_stristr(media->url, "?") && av_stristr(s->filename, "?"))
 +		    construct_fragment_url(c->base_url, media->url, segment, fragment, av_stristr(s->filename, "?"), url, MAX_URL_SIZE);
 +		else
 +		    construct_fragment_url(c->base_url, media->url, segment, fragment, "", url, MAX_URL_SIZE);
-+		download_data.url = av_strdup(url);
-+		sem_post(&download_data.to_thread);	// initiate download
++		media->download_data.url = av_strdup(url);
++		sem_post(media->download_data.to_thread);	// initiate download
 +	} else {
 +	    // finished but failed
 +	    ret = AVERROR(EIO);
 +	}
 +    }
-+    pthread_mutex_unlock(&download_data.mutex);
++    pthread_mutex_unlock(&media->download_data.mutex);
 +    return ret;
 +}
 +
-+static int get_next_fragment(AVFormatContext *s,
-+    HDSBootstrapInfo *bootstrap_info, HDSMedia *media)
++static int get_next_fragment(AVFormatContext *s, HDSMedia *media)
 +{
 +    F4FBox box;
 +    uint8_t *buffer = NULL;
 +    int buffer_size = 0, ret;
 +
-+    if((ret = download_fragment(s, bootstrap_info, media, &buffer, &buffer_size)) < 0)
++    if (ff_check_interrupt(media->download_data.interrupt_callback))
++	return AVERROR(EIO);
++
++    if((ret = download_fragment(s, media, &buffer, &buffer_size)) < 0)
 +	return ret;
 +
 +    memset(&box, 0x00, sizeof(F4FBox));
@@ -2525,19 +2561,14 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    media->sample_index = 0;
 +}
 +
-+static int get_next_packet(AVFormatContext *s,
-+    HDSBootstrapInfo *bootstrap_info, HDSMedia *media, AVPacket *pkt)
++static int get_next_packet(AVFormatContext *s, HDSMedia *media, AVPacket *pkt)
 +{
 +    HDSContext *c = s->priv_data;
 +    int ret;
 +
 +    if (c->is_live && !media->nb_fragments_read) {
-+#if 0
-+	media->nb_fragments_read = get_fragment_count(bootstrap_info, media);
-+#else
-+	int64_t ts = bootstrap_info->box.abst.current_media_time;
-+	media->nb_fragments_read = get_fragment_offset(bootstrap_info, media, ts);
-+#endif
++	int64_t ts = media->bootstrap_info->box.abst.current_media_time;
++	media->nb_fragments_read = get_fragment_offset(media, ts);
 +	if (media->nb_fragments_read > 1)
 +		media->nb_fragments_read--;
 +    }
@@ -2545,12 +2576,12 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    if (c->seek_timestamp != AV_NOPTS_VALUE) {
 +	int64_t ts = c->seek_timestamp;
 +	c->seek_timestamp = AV_NOPTS_VALUE;
-+	media->nb_fragments_read = get_fragment_offset(bootstrap_info, media, ts);
++	media->nb_fragments_read = get_fragment_offset(media, ts);
 +	clear_samples(media);
 +    }
 +
 +    if(media->nb_samples == 0) {
-+	if((ret = get_next_fragment(s, bootstrap_info, media)) < 0) {
++	if((ret = get_next_fragment(s, media)) < 0) {
 +	    return ret;
 +	}
 +    }
@@ -2569,32 +2600,32 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +static int hds_read_packet(AVFormatContext *s, AVPacket *pkt)
 +{
 +    HDSContext *c = s->priv_data;
-+    HDSBootstrapInfo *bootstrap_info = NULL;
 +    HDSMedia *media = NULL;
-+    int i, j, ret;
++    int i, ret;
 +
-+    for(i = 0; !bootstrap_info && i < c->nb_media; i++) {
++    c->last_media_index++;
++    for (i = c->last_media_index; i < c->nb_media; i++) {
 +	media = c->media[i];
-+
-+	if(media->video_stream->discard == AVDISCARD_ALL
-+	&& media->audio_stream->discard == AVDISCARD_ALL)
-+	    continue;
-+
-+	for(j = 0; j < c->nb_bootstraps; j++) {
-+	    if(av_strcasecmp(media->bootstrap_info_id, c->bootstrap_info[j]->id))
-+		continue;
-+
-+	    bootstrap_info = c->bootstrap_info[j];
++	if ((media->video_stream && (media->video_stream->discard != AVDISCARD_ALL))
++	 || (media->audio_stream && (media->audio_stream->discard != AVDISCARD_ALL)))
++	    break;
++    }
++    if (i == c->nb_media)
++	for (i = 0; i < c->last_media_index; i++) {
++	    media = c->media[i];
++	    if ((media->video_stream && (media->video_stream->discard != AVDISCARD_ALL))
++	     || (media->audio_stream && (media->audio_stream->discard != AVDISCARD_ALL)))
 +	    break;
 +	}
-+    }
 +
-+    if(!bootstrap_info)
-+	return 0;
++    c->last_media_index = i;
 +
-+    if((ret = get_next_packet(s, bootstrap_info, media, pkt)) < 0) {
-+	if(ret == AVERROR(EIO))
-+	    return AVERROR(EIO);
++    if (!media->bootstrap_info
++     || ((!media->video_stream || (media->video_stream->discard == AVDISCARD_ALL))
++      && (!media->audio_stream || (media->audio_stream->discard == AVDISCARD_ALL))))
++	return AVERROR(EIO);
++
++    if((ret = get_next_packet(s, media, pkt)) < 0) {
 +	if(ret != AVERROR_EOF)
 +	    av_log(NULL, AV_LOG_ERROR, "hds Failed to get next packet, ret: %d \n", ret);
 +	return ret;
@@ -2610,7 +2641,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    HDSMedia *media;
 +    int i;
 +
-+    download_thread_stop();
++    for(i = 0; i < c->nb_media; i++)
++    	download_thread_stop(c->media[i]);
 +
 +    for(i = 0; i < c->nb_bootstraps; i++) {
 +	bootstrap_info = c->bootstrap_info[i];
@@ -2653,6 +2685,15 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +	return AVERROR(EIO);
 +    }
 +    c->seek_timestamp = timestamp;
++
++    if (c->is_live) {
++	int i;
++	for(i = 0; i < c->nb_media; i++)
++	    c->media[i]->nb_fragments_read = 0;
++	c->seek_timestamp = AV_NOPTS_VALUE;
++	return 0;
++    }
++
 +    return 0;
 +}
 +
@@ -2666,6 +2707,22 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +    .read_close     = hds_close,
 +    .read_seek      = hds_read_seek,
 +};
+diff -ur --new-file ffmpeg-2.3-original/libavformat/http.c ffmpeg-2.3/libavformat/http.c
+--- ffmpeg-2.3-original/libavformat/http.c	2014-07-16 03:00:38.000000000 +0200
++++ ffmpeg-2.3/libavformat/http.c	2014-08-30 15:22:01.668646614 +0200
+@@ -501,7 +501,12 @@
+             if (!s->cookies) {
+                 if (!(s->cookies = av_strdup(p)))
+                     return AVERROR(ENOMEM);
++#if 1
++	    // FIXME, ugly
++            } else if (!strstr(s->cookies, p)) {
++#else
+             } else {
++#endif
+                 char *tmp = s->cookies;
+                 size_t str_size = strlen(tmp) + strlen(p) + 2;
+                 if (!(s->cookies = av_malloc(str_size))) {
 diff -ur --new-file ffmpeg-2.3-original/libavformat/Makefile ffmpeg-2.3/libavformat/Makefile
 --- ffmpeg-2.3-original/libavformat/Makefile	2014-07-16 03:00:38.000000000 +0200
 +++ ffmpeg-2.3/libavformat/Makefile	2014-07-31 17:58:33.794371338 +0200
