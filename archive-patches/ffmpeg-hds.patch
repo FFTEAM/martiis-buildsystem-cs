@@ -1675,8 +1675,8 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/flvtag.h ffmpeg-2.3/libavfor
 +    FLVMediaSample **samples, int *nb_samples_out);
 diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavformat/hdsdec.c
 --- ffmpeg-2.3-original/libavformat/hdsdec.c	1970-01-01 01:00:00.000000000 +0100
-+++ ffmpeg-2.3/libavformat/hdsdec.c	2014-08-31 14:17:59.810882762 +0200
-@@ -0,0 +1,1030 @@
++++ ffmpeg-2.3/libavformat/hdsdec.c	2014-09-21 14:50:27.952090508 +0200
+@@ -0,0 +1,1036 @@
 +/*
 + * Adobe HTTP Dynamic Streaming (HDS) demuxer
 + * Copyright (c) 2013 Cory McCarthy
@@ -1879,6 +1879,9 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +
 +    if(buffer_out)
 +	*buffer_out = buffer;
++    else
++	av_free(buffer);
++
 +    if(buffer_size_out)
 +	*buffer_size_out = buffer_size;
 +
@@ -2653,6 +2656,9 @@ diff -ur --new-file ffmpeg-2.3-original/libavformat/hdsdec.c ffmpeg-2.3/libavfor
 +
 +    for(i = 0; i < c->nb_media; i++) {
 +	media = c->media[i];
++
++	if (media->download_data.buffer)
++	    av_freep(&media->download_data.buffer);
 +
 +	clear_samples(media);
 +	av_freep(&media);
