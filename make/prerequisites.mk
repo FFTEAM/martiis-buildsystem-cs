@@ -50,7 +50,7 @@ $(SOURCE_DIR)/neutrino-mp:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITHUB)/FFTEAM/martiis-neutrino-mp.git
+		git clone $(GITHUB)/FFTEAM/martiis-neutrino-mp.git neutrino-mp
 
 $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
