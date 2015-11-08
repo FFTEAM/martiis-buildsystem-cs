@@ -42,7 +42,7 @@ $(SOURCE_DIR)/neutrino-hd:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd.git neutrino-hd
+		git clone $(GITHUB)/neutrino-hd/neutrino-hd.git neutrino-hd
 
 $(SOURCE_DIR)/neutrino-mp:
 	@echo ' ============================================================================== '
@@ -50,7 +50,7 @@ $(SOURCE_DIR)/neutrino-mp:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-mp/martiis-neutrino-mp.git neutrino-mp
+		git clone $(GITHUB)/FFTEAM/martiis-neutrino-mp.git
 
 $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
@@ -58,20 +58,20 @@ $(SOURCE_DIR)/neutrino-hd-td:
 	@echo ' ============================================================================== '
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
+		git clone $(GITHUB)/neutrino-hd/neutrino-hd-tripledragon.git neutrino-hd-td
 
 $(SOURCE_DIR)/libstb-hal:
 	@echo "=== cloning libstb-hal ==="
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/martiis-libstb-hal.git libstb-hal
-#		git clone $(GITORIOUS)/neutrino-hd/libstb-hal.git libstb-hal
+		git clone $(GITHUB)/FFTEAM/martiis-libstb-hal.git libstb-hal
+#		git clone $(GITHUB)/neutrino-hd/libstb-hal.git libstb-hal
 
 $(PLUGIN_DIR):
 	mkdir -p $(SOURCE_DIR)
 	cd $(SOURCE_DIR) && \
-		git clone $(GITORIOUS)/neutrino-hd/martiis-neutrino-hd-plugins.git neutrino-hd-plugins
-#		git clone $(GITORIOUS)/neutrino-hd/neutrino-hd-plugins.git
+		git clone $(GITHUB)/FFTEAM/martiis-neutrino-hd-plugins.git neutrino-hd-plugins
+#		git clone $(GITHUB)/neutrino-hd/neutrino-hd-plugins.git
 
 $(SOURCE_DIR)/svn/COOLSTREAM:
 	mkdir -p $(shell dirname $@)
@@ -149,7 +149,7 @@ $(SOURCE_DIR)/tdt-driver/.git: | $(SOURCE_DIR)/tdt-driver
 
 $(SOURCE_DIR)/tdt-driver:
 	set -e; cd $(SOURCE_DIR); \
-		git clone $(GITORIOUS)/neutrino-mp/tdt-driver.git
+		git clone $(GITHUB)/FFTEAM/martiis-tdt.git
 
 $(TDT_SRC):
 	set -e; cd $(SOURCE_DIR); \

@@ -48,7 +48,7 @@ $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 $(PATCHES)/kernel.con
 		cp $(PATCHES)/kernel.config-td .config
 
 $(SOURCE_DIR)/td-dvb-wrapper:
-	git clone $(GITORIOUS)/seife/td-dvb-wrapper.git $@
+	git clone $(GITHUB)/seife/td-dvb-wrapper.git $@
 
 # td-dvb-wrapper does not strictly need tdkernel to be built (the source directory
 # with some preparation would be ok), but we'd be missing the module symbols.

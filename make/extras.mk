@@ -119,7 +119,7 @@ $(D)/libdvdread: $(ARCHIVE)/libdvdread-4.1.3.tar.bz2 | $(TARGETPREFIX)
 	$(REWRITE_PKGCONF) $(PKG_CONFIG_PATH)/dvdread.pc
 	$(REWRITE_LIBTOOL)/libdvdread.la
 	mkdir -p $(PKGPREFIX)/lib
-	cp -a $(TARGETPREFIX)/lib/libdvdread.so.* $(PKGPREFIX)/lib
+	cp -a $(TARGETPREFIX)/lib/libdvdread.so.* $(PKGPREFIX)/libt
 	PKG_VER=4.1.3 $(OPKG_SH) $(CONTROL_DIR)/libdvdread
 	$(REMOVE)/libdvdread-4.1.3 $(PKGPREFIX)
 	touch $@
@@ -152,7 +152,7 @@ endif
 arduino-serlcd: | $(TARGETPREFIX)
 	set -e; if [ -d $(BUILD_TMP)/arduino-serlcd ]; \
 		then cd $(BUILD_TMP)/arduino-serlcd; git pull; \
-		else cd $(BUILD_TMP); git clone $(GITORIOUS)/seife/arduino-serlcd.git; \
+		else cd $(BUILD_TMP); git clone $(GITHUB)/seife/arduino-serlcd.git; \
 		fi
 	set -e; cd $(BUILD_TMP)/arduino-serlcd; \
 		make CC=$(TARGET)-gcc; \

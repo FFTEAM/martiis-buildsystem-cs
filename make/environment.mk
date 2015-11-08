@@ -50,10 +50,12 @@ USE_GRAPHLCD ?= yes
 USE_SHAIRPLAY ?= yes
 
 ifneq ($(GIT_PROTOCOL), http)
-GITORIOUS ?= git://gitorious.org
+#GITORIOUS ?= git://gitorious.org
+GITHUB ?= git://github.com
 COOLSTREAM_DE ?= git://coolstreamtech.de
 else
-GITORIOUS ?= https://git.gitorious.org
+#GITORIOUS ?= https://git.gitorious.org
+GITHUB ?= https://github.com
 endif
 
 WHOAMI      := $(shell id -un)
@@ -184,14 +186,15 @@ UNCOOL_DRIVER = $(UNCOOL_DRVBASE)/drivers/$(UNCOOL_KVER_FULL)
 endif
 UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_LIBCA)
 
-TDT_GIT ?= $(GITORIOUS)/~martii/open-duckbox-project-sh4/martiis-tdt.git
+#TDT_GIT ?= $(GITHUB)/~martii/open-duckbox-project-sh4/martiis-tdt.git
+TDT_GIT ?= $(GITHUB)/FFTEAM/martiis-tdt.git
 TDT_SRC ?= $(SOURCE_DIR)/tdt
 
 # either "default", or "yaffs2"
 ROOTFS_TYPE ?= default
 
 # The 7162 build is currently plain broken. I don't see why I should care. --martii
-SPARK_ONLY=1
+#SPARK_ONLY=1
 
 ######### default to non-verbose builds for most packages...
 V ?= 0

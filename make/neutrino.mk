@@ -113,7 +113,8 @@ ifneq ($(FLAVOUR), neutrino-mp)
 HOMEPAGE = "http://gitorious.org/neutrino-hd"
 IMGNAME  = "HD-Neutrino"
 else
-HOMEPAGE = "http://gitorious.org/neutrino-mp"
+#HOMEPAGE = "http://gitorious.org/neutrino-mp"
+HOMEPAGE = "https://github.com/FFTEAM/neutrino-mp"
 IMGNAME  = "Neutrino-MP"
 endif
 $(PKGPREFIX)/.version \
