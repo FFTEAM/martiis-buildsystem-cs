@@ -50,11 +50,9 @@ USE_GRAPHLCD ?= yes
 USE_SHAIRPLAY ?= yes
 
 ifneq ($(GIT_PROTOCOL), http)
-#GITORIOUS ?= git://gitorious.org
 GITHUB ?= git://github.com
 COOLSTREAM_DE ?= git://coolstreamtech.de
 else
-#GITORIOUS ?= https://git.gitorious.org
 GITHUB ?= https://github.com
 endif
 
@@ -186,7 +184,6 @@ UNCOOL_DRIVER = $(UNCOOL_DRVBASE)/drivers/$(UNCOOL_KVER_FULL)
 endif
 UNCOOL_LIBS   = $(UNCOOL_LIBCS) $(UNCOOL_LIBNXP) $(UNCOOL_LIBCA)
 
-#TDT_GIT ?= $(GITHUB)/~martii/open-duckbox-project-sh4/martiis-tdt.git
 TDT_GIT ?= $(GITHUB)/FFTEAM/martiis-tdt.git
 TDT_SRC ?= $(SOURCE_DIR)/tdt
 
