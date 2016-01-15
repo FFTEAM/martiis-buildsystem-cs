@@ -38,6 +38,9 @@ $(ARCHIVE)/djmount-$(DJMOUNT_VER).tar.gz:
 $(ARCHIVE)/evtest_1.29.orig.tar.bz2:
 	$(WGET) http://mirror.informatik.uni-mannheim.de/ubuntu/pool/universe/e/evtest/evtest_1.29.orig.tar.bz2
 
+$(ARCHIVE)/inadyn.v$(INADYN-VER).zip:
+	$(WGET) http://www.inatech.eu/inadyn/inadyn.v$(INADYN-VER).zip
+
 $(ARCHIVE)/libass-$(LIBASS_VER).tar.gz:
 	$(WGET) -O $@ --no-check-certificate https://github.com/libass/libass/archive/$(LIBASS_VER).tar.gz
 
@@ -363,6 +366,9 @@ $(ARCHIVE)/alsa-utils-$(ALSA_VER).tar.bz2:
 $(ARCHIVE)/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz:
 	$(WGET) http://pkgs.fedoraproject.org/repo/pkgs/wireless-tools/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz/e06c222e186f7cc013fd272d023710cb/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz # version 29 only!
 #	$(WGET) http://www.hpl.hp.com/personal/Jean_Tourrilhes/Linux/wireless_tools.$(WIRELESSTOOLS_VER).tar.gz
+
+$(ARCHIVE)/wpa_supplicant-$(WPA_SUPPLICANT_VER).tar.gz:
+	$(WGET) http://hostap.epitest.fi/releases/wpa_supplicant-$(WPA_SUPPLICANT_VER).tar.gz
 
 $(ARCHIVE)/wpa_supplicant-$(WPASUPP_VER).tar.gz:
 	$(WGET) http://hostap.epitest.fi/releases/wpa_supplicant-$(WPASUPP_VER).tar.gz
