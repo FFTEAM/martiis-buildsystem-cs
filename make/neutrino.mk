@@ -11,7 +11,9 @@ else
 N_CFLAGS   = -Os
 endif
 N_CFLAGS   += -Wall -W -Wshadow -fno-strict-aliasing -rdynamic -DNEW_LIBCURL -DCPU_FREQ -DMARTII $(LOCAL_NEUTRINO_CFLAGS)
+N_CFLAGS  += -D__user=
 N_CPPFLAGS = -I$(TARGETPREFIX)/include
+N_CPPFLAGS += -D__STDC_CONSTANT_MACROS
 ifeq ($(PLATFORM), coolstream)
 N_CPPFLAGS += -DUSE_NEVIS_GXA
 endif
@@ -110,8 +112,8 @@ neutrino-pkg-hd:
 	$(MAKE) FLAVOUR=neutrino-mp neutrino-pkg
 
 ifneq ($(FLAVOUR), neutrino-mp)
-HOMEPAGE = "http://gitorious.org/neutrino-hd"
-IMGNAME  = "HD-Neutrino"
+HOMEPAGE = "http://familienforum.biz"
+IMGNAME  = "Neutrino-MP3-FFTeam"
 else
 #HOMEPAGE = "http://gitorious.org/neutrino-mp"
 HOMEPAGE = "https://github.com/FFTEAM/neutrino-mp"
@@ -172,10 +174,11 @@ ifeq ($(PLATFORM), azbox)
 endif
 	#install -p -m 0755 $(TARGETPREFIX)/bin/fbshot $(PKGPREFIX)/bin/
 	find $(PKGPREFIX)/share/tuxbox/neutrino/locale/ -type f \
-		! -name deutsch.locale ! -name english.locale | xargs --no-run-if-empty rm
+		#! -name deutsch.locale ! -name english.locale | xargs --no-run-if-empty rm
 	# ignore the .version file for package  comparison
 	DONT_STRIP=$(NEUTRINO_NOSTRIP) CMP_IGNORE="/.version" $(OPKG_SH) $(BUILD_TMP)/neutrino-control
 	rm -rf $(PKGPREFIX)
+	touch $@
 
 neutrino-clean:
 	-make -C $(N_OBJDIR) uninstall
@@ -208,3 +211,4 @@ libstb-hal: $(LH_OBJDIR)/config.status
 	PKG_CONFIG_PATH=$(PKG_CONFIG_PATH) \
 	$(MAKE) -C $(LH_OBJDIR) all     DESTDIR=$(TARGETPREFIX)
 	$(MAKE) -C $(LH_OBJDIR) install DESTDIR=$(TARGETPREFIX)
+	touch $@
