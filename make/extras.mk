@@ -86,6 +86,38 @@ $(D)/evtest: $(ARCHIVE)/evtest_1.29.orig.tar.bz2
 	$(REMOVE)/evtest-1.29
 	touch $@
 
+$(D)/inadyn: $(ARCHIVE)/inadyn-1.99.3.tar.bz2 | $(TARGETPREFIX)
+	$(UNTAR)/inadyn-1.99.3.tar.bz2
+	pushd $(BUILD_TMP)/inadyn-1.99.3 && \
+		PKG_CONFIG_PATH=$(TARGETPREFIX)/lib/pkgconfig \
+		LD_LIBRARY_PATH=$(TARGETPREFIX)/lib \
+		CC=$(TARGET)-gcc \
+		AR=$(TARGET)-ar \
+		NM=$(TARGET)-nm \
+		RANLIB=$(TARGET)-ranlib \
+		OBJDUMP=$(TARGET)-objdump \
+		STRIP=$(TARGET)-strip \
+		CFLAGS="-I$(TARGETPREFIX)/include" \
+		LDFLAGS="-L$(TARGETPREFIX)/lib -lz" \
+		LIBS="-Wl,--rpath-link -Wl,$(TARGETPREFIX)/lib" \
+		CCPATH= \
+		DESTDIR=$(TARGETPREFIX) \
+		PATH=/bin:$(PATH) \
+		$(MAKE) all && \
+		install -D -m 755 $(BUILD_TMP)/inadyn-1.99.3/src/inadyn $(TARGETPREFIX)/bin
+		echo "# Basic configuration file for inadyn"		 > $(TARGETPREFIX)/etc/inadyn.conf
+		echo "#"	 					>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo "# /etc/inadyn.conf"				>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo "update_period_sec 60"	 			>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo "username username"	 			>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo "password password"	 			>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo "dyndns_system default@no-ip.com"			>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo "alias yourhost.no-ip.org"		 		>> $(TARGETPREFIX)/etc/inadyn.conf
+		echo ""					 		>> $(TARGETPREFIX)/etc/inadyn.conf
+		PKG_VER=$(INADYN-VER) $(OPKG_SH) $(CONTROL_DIR)/inadyn
+		$(REMOVE)/inadyn-1.99.3 $(PKGPREFIX)
+		touch $@
+
 $(D)/libdvdcss: $(ARCHIVE)/libdvdcss-$(DVDCSS_VER).tar.bz2 | $(TARGETPREFIX)
 	rm -rf $(PKGPREFIX)
 	$(UNTAR)/libdvdcss-$(DVDCSS_VER).tar.bz2
