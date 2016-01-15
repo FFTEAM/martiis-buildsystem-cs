@@ -142,10 +142,12 @@ $(TDT_TOOLS)/config.status:
 			;
 
 ustslave: $(TARGETPREFIX)/bin/ustslave
+showiframe: $(TARGETPREFIX)/bin/showiframe
 stfbcontrol: $(TARGETPREFIX)/bin/stfbcontrol
 
 # BUILD_TMP/driver "provides" include/linux/stmfb.h
 $(TARGETPREFIX)/bin/ustslave \
+$(TARGETPREFIX)/bin/showiframe \
 $(TARGETPREFIX)/bin/stfbcontrol: \
 	$(TDT_TOOLS)/config.status \
 	| $(BUILD_TMP)/driver
