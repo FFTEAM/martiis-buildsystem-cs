@@ -48,7 +48,7 @@ $(BUILD_TMP)/linux-2.6.12: $(ARCHIVE)/linux-2.6.12.tar.bz2 $(PATCHES)/kernel.con
 		cp $(PATCHES)/kernel.config-td .config
 
 $(SOURCE_DIR)/td-dvb-wrapper:
-	git clone $(GITORIOUS)/seife/td-dvb-wrapper.git $@
+	git clone $(GITHUB)/seife/td-dvb-wrapper.git $@
 
 # td-dvb-wrapper does not strictly need tdkernel to be built (the source directory
 # with some preparation would be ok), but we'd be missing the module symbols.
@@ -327,13 +327,16 @@ _sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)$(K_EXTRA)
 			INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install; \
 		cp -L arch/sh/boot/uImage $(BUILD_TMP)/uImage$(K_EXTRA)
 
-sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
+$(D)/sparkkernel: $(BUILD_TMP)/linux-$(KVERSION_FULL)
 ifeq ($(SPARK7162_ONLY), )
 	$(MAKE) _sparkkernel
+	touch $(BUILD_TMP)/uImage-7162
 endif
 ifeq ($(SPARK_ONLY), )
 	$(MAKE) _sparkkernel K_EXTRA=-7162
+	touch $(BUILD_TMP)/uImage
 endif
+	touch $@
 
 $(TARGETPREFIX)/include/linux/dvb:
 	mkdir -p $@
@@ -401,7 +404,7 @@ _sparkdriver: $(BUILD_TMP)/driver$(K_EXTRA) | $(BUILD_TMP)/linux-$(KVERSION_FULL
 		CROSS_COMPILE=$(TARGET)- \
 		INSTALL_MOD_PATH=$(TARGETPREFIX)/mymodules$(K_EXTRA) modules_install
 
-sparkdriver:
+$(D)/sparkdriver:
 ifeq ($(SPARK7162_ONLY), )
 	$(MAKE) _sparkdriver SPARK=1
 endif
@@ -410,11 +413,13 @@ ifeq ($(SPARK_ONLY), )
 	find $(TARGETPREFIX)/mymodules-7162 -name stmcore-display-sti7106.ko | \
 		xargs -r rm # we don't have a 7106 chip
 endif
+	touch $@
 
 sparkfirmware: $(STL_ARCHIVE)/stlinux24-sh4-stmfb-firmware-1.20-1.noarch.rpm
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules $^
 	unpack-rpm.sh $(BUILD_TMP) $(STM_RELOCATE)/devkit/sh4/target $(TARGETPREFIX)/mymodules-7162 $^
 	ln -sf component_7111_mb618.fw	 $(TARGETPREFIX)/mymodules/lib/firmware/component.fw
+	ln -sf fdvo0_7105.fw		 $(TARGETPREFIX)/mymodules/lib/firmware/fdvo0.fw
 	ln -sf component_7105_hdk7105.fw $(TARGETPREFIX)/mymodules-7162/lib/firmware/component.fw
 	ln -sf fdvo0_7105.fw		 $(TARGETPREFIX)/mymodules-7162/lib/firmware/fdvo0.fw
 
