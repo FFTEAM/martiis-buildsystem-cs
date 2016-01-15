@@ -276,7 +276,7 @@ endif
 
 AAA_BASE_DEPS = 
 ifeq ($(PLATFORM), spark)
-AAA_BASE_DEPS += stfbcontrol ustslave libstb-hal
+AAA_BASE_DEPS += stfbcontrol ustslave showiframe libstb-hal
 endif
 
 aaa_base-pkg: $(AAA_BASE_DEPS) timezone
@@ -290,6 +290,7 @@ ifeq ($(PLATFORM), spark)
 	cp -a $(TARGETPREFIX)/bin/stfbcontrol \
 		$(TARGETPREFIX)/bin/ustslave \
 		$(TARGETPREFIX)/bin/spark_fp \
+		$(TARGETPREFIX)/bin/showiframe \
 		$(PKGPREFIX)/bin
 	rm $(PKGPREFIX)/etc/init.d/start_neutrino
 else
@@ -297,6 +298,7 @@ else
 endif
 	$(OPKG_SH) $(CONTROL_DIR)/aaa_base
 	rm -rf $(PKGPREFIX)
+	touch $@
 
 pkg-index: $(HOSTPREFIX)/bin/opkg-make-index.sh $(OPKG_PKGS)
 	cd $(PACKAGE_DIR) && opkg-make-index.sh . > Packages
