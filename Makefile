@@ -104,7 +104,7 @@ ifeq ($(BOXARCH), sh4)
 ifdef $(PLATFORM_SUB)
 include make/stlinux.mk
 else
-include make/stlinux-211.mk
+include make/stlinux-217.mk
 endif
 endif
 # define package versions first...
@@ -122,7 +122,7 @@ ifeq ($(BOXARCH), sh4)
 ifdef $(PLATFORM_SUB)
 include make/linuxkernel.mk
 else
-include make/linuxkernel-211.mk
+include make/linuxkernel-217.mk
 endif
 else
 include make/linuxkernel.mk
@@ -217,11 +217,12 @@ update-uncool:
 		done
 	if test -d $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; then \
 		cd $(UNCOOL_GIT)/cst-public-libraries-ffmpeg; \
-		if [ x"`git rev-parse --abbrev-ref HEAD`" != xcoolstream ]; then \
-			if [ x"`git branch --list coolstream`" = xcoolstream ]; then \
-				git checkout coolstream; \
+		if [ x"`git rev-parse --abbrev-ref HEAD`" != xmaster ]; then \
+			X=`git branch --list master`; \
+			if [ x`echo $$X` = xmaster ]; then \
+				git checkout master; \
 			else \
-				git checkout -b coolstream origin/coolstream; \
+				git checkout -b master origin/master; \
 			fi; \
 		fi; \
 	fi
