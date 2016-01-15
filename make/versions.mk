@@ -76,6 +76,9 @@ ifeq ($(PLATFORM), spark)
 FFMPEG_VER=2.3.3
 endif
 
+# inadyn
+INADYN-VER=1.99.3
+
 # libogg; encoding, decoding of the ogg file format
 OGG_VER=1.3.0
 
@@ -115,13 +118,15 @@ LUACURL_TAG=89ca8b6b8fdc9c0237bf6184abb1885101d2023e
 
 # luasec (prosody version)
 LUASEC_PROSODY_VER=0.5.1
+# luabasis
+LUABASIS_VER=0.1
 
 # lua-feedparser
 LUAFEEDPARSER_VER=0.7
 LUAFEEDPARSER_TAG=74a96a4d8a9939108ac96948c40619028b7e3cc2
 
 # ncurses; software for controlling writing to the console screen
-NCURSES_VER=5.6
+NCURSES_VER=5.9
 
 # nano; a simple editor for Linux
 NANO_VER=2.2.6
@@ -187,7 +192,7 @@ YAFFS2UTILS-VER=0.2.9
 XFSPROGS-VER=3.1.8
 
 # ntfs-3g; file system driver for the NTFS file system, enabling read/write support of NTFS file systems
-NTFS_3G_VER=2013.1.13
+NTFS_3G_VER=2015.3.14
 
 # autofs; mounting filesystems on demand
 AUTOFS-VER=4.1.4
