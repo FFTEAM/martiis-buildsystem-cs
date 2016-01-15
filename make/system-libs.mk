@@ -844,6 +844,7 @@ $(D)/luasec-prosody: $(ARCHIVE)/luasec-prosody-$(LUASEC_PROSODY_VER).tar.gz lua 
 $(D)/lua-feedparser: $(ARCHIVE)/lua-feedparser-$(LUAFEEDPARSER_VER).tar.bz2 lua luasocket luaexpat
 	$(REMOVE)/lua-feedparser-$(LUAFEEDPARSER_VER) $(PKGPREFIX)
 	mkdir -p $(PKGPREFIX)/lib/lua/$(LUA_VER_SHORT)/
+	mkdir -p $(PKGPREFIX)/share/lua/$(LUA_VER_SHORT)/
 	$(UNTAR)/lua-feedparser-$(LUAFEEDPARSER_VER).tar.bz2; \
 	cd $(BUILD_TMP)/lua-feedparser-$(LUAFEEDPARSER_VER); \
 	sed -i -e "s/^PREFIX.*//" -e "s/^LUA_DIR.*//" Makefile ; \
