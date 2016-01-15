@@ -257,18 +257,24 @@ MY_KERNELPATCHES =
 # The reason for this patch is, that the spark_setup and spark7162_setup patches
 # can not both be applied, because they overlap in a single file. The spark7162
 # patch has everything that's needed in this file, so I partly revert the former...
-$(TDT_PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch: \
-		$(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch
-	ln -sf $(PATCHES)/linux-sh4-seife-revert-spark_setup_stmmac_mdio.patch $(TDT_PATCHES)
+#$(TDT_PATCHES)/linux-sh4-spark_setup_stm24$(PATCH_STR)_revert.patch: \
+#		$(PATCHES)/linux-sh4-spark_setup_stm24$(PATCH_STR)_revert.patch
+#	ln -sf $(PATCHES)/linux-sh4-spark_setup_stm24$(PATCH_STR)_revert.patch $(TDT_PATCHES)
 
 # if you only want to build for one version, set SPARK_ONLY=1 or SPARK7162_ONLY=1 in config
-SPARKKERNELDEPS =
-ifeq ($(SPARK7162_ONLY), )
-SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark-0217
-endif
-ifeq ($(SPARK_ONLY), )
-SPARKKERNELDEPS += $(PATCHES)/kernel.config-spark7162-0217
-endif
+
+#$(BUILD_TMP)/linux-$(KVERSION_FULL): \
+#		$(STL_ARCHIVE)/stlinux24-host-kernel-source-sh4-$(KVERSION_FULL)-$(subst _0,,$(PATCH_STR)).src.rpm \
+#		$(MY_KERNELPATCHES) \
+#		$(SPARK_PATCHES_24:%=$(TDT_PATCHES)/%)
+#	unpack-rpm.sh $(BUILD_TMP) "" $(BUILD_TMP)/ksrc $<
+#	rm -fr $(TMP_KDIR)
+#	tar -C $(BUILD_TMP) -xf $(BUILD_TMP)/ksrc/linux-2.6.32.tar.bz2
+#	set -e; cd $(TMP_KDIR); \
+#		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION).patch.bz2 | patch -p1 ;\
+#		bzcat $(BUILD_TMP)/ksrc/linux-$(KVERSION)_stm24_sh4$(PATCH_STR).patch.bz2 | patch -p1; \
+#		sed -i "s/_0213/$(PATCH_STR)/g" ./localversion-stm; \
+
 
 $(BUILD_TMP)/linux-$(KVERSION_FULL):
 	$(if $(HOST_KERNEL_PATCHES),$(HOST_KERNEL_PATCHES:%=Patches/$(BUILDCONFIG$)/%))

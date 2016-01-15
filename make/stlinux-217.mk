@@ -98,14 +98,17 @@ COMMONPATCHES_24 = \
 		bpa2_procfs_stm24$(PATCH_STR).patch \
 		linux-ftdi_sio.c_stm24$(PATCH_STR).patch \
 		linux-sh4-lzma-fix_stm24$(PATCH_STR).patch \
-		linux-tune_stm24.patch
+		linux-tune_stm24.patch \
+		linux-sh4-cifs-unaligned-mem-access-kernel_stm24.patch \
+		linux-sh4-linux_yaffs2_stm24$(PATCH_STR).patch \
+		linux-sh4-stmmac_stm24$(PATCH_STR).patch \
+		linux-sh4-lmb_stm24$(PATCH_STR).patch
 
-SPARK_PATCHES_24 = $(COMMONPATCHES_24) \
-	linux-sh4-stmmac_stm24$(PATCH_STR).patch \
-	linux-sh4-lmb_stm24$(PATCH_STR).patch \
-	linux-sh4-spark_setup_stm24$(PATCH_STR)_$(ROOTFS_TYPE).patch \
-	linux-sh4-cifs-unaligned-mem-access-kernel_stm24.patch \
-	linux-sh4-linux_yaffs2_stm24$(PATCH_STR).patch
+SPARK_PATCHES_24 = $(COMMONPATCHES_24)
+##	moved to kernel_build:
+##	linux-sh4-spark_setup_stm24$(PATCH_STR)_$(ROOTFS_TYPE).patch \
+##	linux-sh4-spark_setup_stm24$(PATCH_STR)_revert.patch \
+##	linux-sh4-spark7162_setup_stm24$(PATCH_STR).patch \
 
 ## temporary until I sort out the mess and find a better place...
 
