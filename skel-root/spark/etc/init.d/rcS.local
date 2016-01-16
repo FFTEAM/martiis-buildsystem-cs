@@ -1,0 +1,13 @@
+#!/bin/sh
+crond
+stbup &
+  if [ -e /var/etc/.bootlogo ]; then
+     showiframe -p /boot/bootlogo.mvi &
+     echo "show bootlogo"
+     sleep 10
+     killall -9 showiframe
+  else
+    echo "show no bootlogo"
+  fi
+
+exit 0
