@@ -50,6 +50,7 @@ stop)
 			echo "correcting WAKEUP to $WAKEUP"
 		fi
 		echo $WAKEUP > /sys/class/rtc/rtc0/wakealarm
+                spark_fp -w $((WAKEUP - OFFSET)) 
 		FP_OPTS="-l 1 -L 1" # enable green LED only
 	else
 		FP_OPTS="-L 0 -L 1" # disable LEDs
