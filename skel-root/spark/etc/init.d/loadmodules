@@ -61,10 +61,12 @@ start)
 		STMCORE_DISP=stmcore-display-sti7105
 		FRONTEND_MOD=spark7162
 		AVS_PARAM="type=avs_pio"
+		DVB_PARAM="duckbox=0"
 	else
 		STMCORE_DISP=stmcore-display-sti7111
 		FRONTEND_MOD=stv090x
 		AVS_PARAM="type=avs_pio"
+		DVB_PARAM="duckbox=1"
 	fi
 	read dummy dummy KVER dummy < /proc/version
 	grep -q uinput /lib/modules/${KVER}/modules.dep || depmod -a
@@ -85,7 +87,7 @@ start)
 	) &
 	im cpu_frequ $(get_cpufreq)
 	#im aotom
-	echo loading > /dev/vfd
+	echo FFTEAM NEUTRINO STARTET > /dev/vfd
 	im uinput
 	im e2_proc
 	im $STMCORE_DISP
@@ -97,6 +99,7 @@ start)
 	im embxshm mailbox0=shm:0:7:0x60000000:0:256:256:0:512:0x40000000:0x10000000
 	im mme_host transport0=shm
 	im avs $AVS_PARAM
+	read PLAYER < /proc/stb/player/version
 	im mmelog
 	im ksound
 	im p2div64
@@ -104,11 +107,16 @@ start)
 	im stmvout
 	im stmvbi
 	im pseudocard
+		if [ -e /var/etc/.cable ]; then
+			im spark7162.ko UnionTunerType=c
+		else	
+			im spark7162.ko UnionTunerType=t
+		fi
 	im $FRONTEND_MOD
 	im pti waitMS=20 videoMem=4096
 	im stm_monitor
 	im stmsysfs
-	im stmdvb
+	im stmdvb $DVB_PARAM
 	im player2 discardlateframe=0
 	im sth264pp
 	im stmalloc
@@ -120,6 +128,6 @@ start)
 	while [ -f /tmp/.init_loading_firmware ] ; do
         	usleep 100000   # 100ms
 	done
-	echo done loading > /dev/vfd
+	echo FFTEAM NEUTRINO STARTET > /dev/vfd
 	;;
 esac
