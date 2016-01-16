@@ -26,7 +26,8 @@ if [ -e /sys/class/stmcoredisplay/hdmi0.0/hotplug ]; then
 	echo
 fi
 
-echo "starting neutrino"
+echo "FFTEAM neutrino"
+spark_fp -p 20 -L 2
 until neutrino; do
 	RET=$?
 	echo "Neutrino exited with exit code $RET"
